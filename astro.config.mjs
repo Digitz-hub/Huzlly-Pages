@@ -1,8 +1,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://huzlly-pages.pages.dev', // Custom domain aane par update kar sakte hain
-  integrations: [sitemap()],
+  site: 'https://huzlly-pages.pages.dev',
+  integrations: [
+    sitemap(),
+    tailwind({
+      applyBaseStyles: false,
+    }),
+  ],
 });
