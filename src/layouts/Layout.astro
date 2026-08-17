@@ -1,37 +1,96 @@
 ---
-const { title = "Huzlly - Modern Web", description = "Digital solutions by Huzlly" } = Astro.props;
+import { LucideShieldCheck } from 'lucide-astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = "Huzlly - Modern Digital Solutions",
+  description = "Fast, SEO-optimized digital solutions tailored to scale your brand efficiently.",
+  image = "/favicon.svg",
+} = Astro.props;
+
+const siteTitle = title.includes("Huzlly") ? title : `${title} | Huzlly`;
+const siteUrl = "https://huzlly-pages.pages.dev";
 ---
+
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
+    <link rel="canonical" href={siteUrl} />
+
+    <!-- Primary Meta Tags -->
+    <title>{siteTitle}</title>
+    <meta name="title" content={siteTitle} />
     <meta name="description" content={description} />
-    <style is:global>
-      * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
-      body { background-color: #0d1117; color: #e6edf3; min-height: 100vh; display: flex; flex-direction: column; }
-      header { display: flex; justify-content: space-between; padding: 20px 8%; border-bottom: 1px solid #30363d; }
-      .logo { font-size: 1.5rem; font-weight: bold; color: #58a6ff; text-decoration: none; }
-      nav a { color: #8b949e; text-decoration: none; margin-left: 20px; }
-      footer { margin-top: auto; text-align: center; padding: 25px; border-top: 1px solid #30363d; color: #8b949e; }
-    </style>
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${image}`} />
+
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={siteUrl} />
+    <meta property="twitter:title" content={siteTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={`${siteUrl}${image}`} />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Huzlly",
+        "url": "https://huzlly-pages.pages.dev",
+        "logo": "https://huzlly-pages.pages.dev/favicon.svg"
+      }
+    </script>
   </head>
-  <body>
-    <header>
-      <a href="/" class="logo">Huzlly.</a>
-      <nav>
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/pricing">Pricing</a>
-      </nav>
+  <body class="bg-[#0d1117] text-[#e6edf3] min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white font-sans">
+    
+    <!-- Global Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-[#0d1117]/85 border-b border-gray-800">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="/" class="text-xl font-bold tracking-tight text-blue-400 hover:text-blue-300 transition-colors">
+          Huzlly.
+        </a>
+        <nav class="flex items-center gap-6 text-sm font-medium text-gray-400">
+          <a href="/" class="hover:text-blue-400 transition-colors">Home</a>
+          <a href="/about" class="hover:text-blue-400 transition-colors">About</a>
+          <a href="/pricing" class="hover:text-blue-400 transition-colors">Pricing</a>
+          <a href="/pricing" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-colors">
+            Get Started
+          </a>
+        </nav>
+      </div>
     </header>
 
-    <slot />
+    <!-- Dynamic Page Content Slot -->
+    <div class="flex-grow">
+      <slot />
+    </div>
 
-    <footer>
-      <p>© 2026 Huzlly. All rights reserved.</p>
+    <!-- Global Footer -->
+    <footer class="border-t border-gray-800 bg-[#090d13] py-10 mt-20">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+        <p>© 2026 Huzlly. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="/terms" class="hover:text-gray-200 transition-colors">Terms</a>
+          <a href="/privacy" class="hover:text-gray-200 transition-colors">Privacy</a>
+          <a href="/about" class="hover:text-gray-200 transition-colors">About</a>
+        </div>
+      </div>
     </footer>
+
   </body>
 </html>
