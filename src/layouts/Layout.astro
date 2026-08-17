@@ -1,6 +1,4 @@
 ---
-import { LucideShieldCheck } from 'lucide-astro';
-
 interface Props {
   title?: string;
   description?: string;
@@ -18,7 +16,7 @@ const siteUrl = "https://huzlly-pages.pages.dev";
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth dark">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -56,19 +54,19 @@ const siteUrl = "https://huzlly-pages.pages.dev";
       }
     </script>
   </head>
-  <body class="bg-[#0d1117] text-[#e6edf3] min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white font-sans">
+  <body class="bg-white text-gray-900 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white font-sans">
     
-    <!-- Global Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-md bg-[#0d1117]/85 border-b border-gray-800">
+    <!-- Global Header (Light Mode) -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200">
       <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" class="text-xl font-bold tracking-tight text-blue-400 hover:text-blue-300 transition-colors">
+        <a href="/" class="text-xl font-bold tracking-tight text-blue-600 hover:text-blue-700 transition-colors">
           Huzlly.
         </a>
-        <nav class="flex items-center gap-6 text-sm font-medium text-gray-400">
-          <a href="/" class="hover:text-blue-400 transition-colors">Home</a>
-          <a href="/about" class="hover:text-blue-400 transition-colors">About</a>
-          <a href="/pricing" class="hover:text-blue-400 transition-colors">Pricing</a>
-          <a href="/pricing" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-colors">
+        <nav class="flex items-center gap-6 text-sm font-medium text-gray-600">
+          <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
+          <a href="/about" class="hover:text-blue-600 transition-colors">About</a>
+          <a href="/pricing" class="hover:text-blue-600 transition-colors">Pricing</a>
+          <a href="/pricing" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold shadow-sm">
             Get Started
           </a>
         </nav>
@@ -80,14 +78,14 @@ const siteUrl = "https://huzlly-pages.pages.dev";
       <slot />
     </div>
 
-    <!-- Global Footer -->
-    <footer class="border-t border-gray-800 bg-[#090d13] py-10 mt-20">
-      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+    <!-- Global Footer (Light Mode) -->
+    <footer class="border-t border-gray-200 bg-gray-50 py-10 mt-20">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
         <p>© 2026 Huzlly. All rights reserved.</p>
         <div class="flex gap-6">
-          <a href="/terms" class="hover:text-gray-200 transition-colors">Terms</a>
-          <a href="/privacy" class="hover:text-gray-200 transition-colors">Privacy</a>
-          <a href="/about" class="hover:text-gray-200 transition-colors">About</a>
+          <a href="/terms" class="hover:text-gray-900 transition-colors">Terms</a>
+          <a href="/privacy" class="hover:text-gray-900 transition-colors">Privacy</a>
+          <a href="/about" class="hover:text-gray-900 transition-colors">About</a>
         </div>
       </div>
     </footer>
