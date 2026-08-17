@@ -1,61 +1,135 @@
 ---
-// ==========================================
-// 1. FRONTMATTER & SEO CONFIGURATION (Astro Component Logic)
-// ==========================================
-// Claude ko bolna: "Is page ke title aur meta description ko Huzlly ke primary business keywords ke hisab se optimize karo."
-import Layout from '../layouts/Layout.astro';
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
 
-const pageTitle = "Huzlly - [Apna Main Headline / Value Proposition Yahan Likhein]";
-const pageDescription = "Huzlly helps [Target Audience] achieve [Primary Goal]. High-performance solutions built for scale.";
+const {
+  title = "Huzlly - Modern Digital Solutions",
+  description = "Discover modern, scalable digital solutions with Huzlly. Fast, reliable, and built for growth.",
+  image = "/favicon.svg",
+} = Astro.props;
+
+const siteTitle = title.includes("Huzlly") ? title : `${title} | Huzlly`;
+const siteUrl = "https://huzlly-pages.pages.dev";
 ---
 
-<!-- ==========================================
-2. MAIN PAGE LAYOUT WRAPPER
-Layout.astro automatically contains:
-- Primary Meta Tags & OpenGraph Tags
-- Structured JSON-LD Schema
-- Navigation Header & Footer
-========================================== -->
-<Layout title={pageTitle} description={pageDescription}>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={siteUrl} />
+    
+    <!-- Primary SEO Meta Tags -->
+    <title>{siteTitle}</title>
+    <meta name="title" content={siteTitle} />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
 
-  <main>
-    <!-- HERO SECTION: Main headline, subheadline aur primary call-to-action (CTA) buttons yahan aayenge -->
-    <section id="hero">
-      <!-- <h1>: Page ka primary target keyword hamesha isme aana chahiye -->
-      <h1>[Main Business Headline / Hook]</h1>
-      <p>[Short supporting paragraph explaining the exact product or service]</p>
-      
-      <!-- Action Buttons -->
-      <div>
-        <a href="/pricing">[Primary CTA - e.g., Get Started / Book Demo]</a>
-        <a href="/about">[Secondary CTA - Learn More]</a>
-      </div>
-    </section>
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}${image}`} />
 
-    <!-- VALUE PROPOSITION / FEATURES SECTION: Key benefits aur highlights -->
-    <section id="features">
-      <h2>[Why Choose Huzlly / Core Benefits]</h2>
-      <!-- Claude se grid cards ya 3-column value props generate karwayenge -->
-    </section>
+    <!-- Twitter Cards -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={siteUrl} />
+    <meta property="twitter:title" content={siteTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={`${siteUrl}${image}`} />
 
-    <!-- SOCIAL PROOF / TESTIMONIALS / FAQ SECTION: Trust building content -->
-    <section id="social-proof">
-      <!-- Reviews, client metrics ya FAQs yahan rahenge -->
-    </section>
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Huzlly",
+        "url": "https://huzlly-pages.pages.dev",
+        "logo": "https://huzlly-pages.pages.dev/favicon.svg"
+      }
+    </script>
 
-    <!-- FINAL CTA SECTION: Bottom conversion banner -->
-    <section id="final-cta">
-      <h2>[Ready to scale your business?]</h2>
-      <a href="/contact">[Contact Us / Sign Up]</a>
-    </section>
-  </main>
+    <style is:global>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      body {
+        background-color: #0d1117;
+        color: #e6edf3;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 8%;
+        border-bottom: 1px solid #30363d;
+        position: sticky;
+        top: 0;
+        background-color: rgba(13, 17, 23, 0.95);
+        backdrop-filter: blur(8px);
+        z-index: 100;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #58a6ff;
+        text-decoration: none;
+      }
+      nav a {
+        color: #8b949e;
+        text-decoration: none;
+        margin-left: 20px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+      nav a:hover {
+        color: #58a6ff;
+      }
+      footer {
+        margin-top: auto;
+        text-align: center;
+        padding: 30px 20px;
+        border-top: 1px solid #30363d;
+        color: #8b949e;
+        font-size: 0.9rem;
+      }
+      footer a {
+        color: #8b949e;
+        text-decoration: none;
+        margin: 0 8px;
+      }
+      footer a:hover {
+        color: #58a6ff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">Huzlly.</a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/pricing">Pricing</a>
+        <a href="/contact">Contact</a>
+      </nav>
+    </header>
 
-</Layout>
+    <slot />
 
-<!-- ==========================================
-3. PAGE-SPECIFIC SCOPED CSS STYLING
-Astro me yeh styling sirf isi page par apply hogi, baaki pages affect nahi honge.
-========================================== -->
-<style>
-  /* Claude ko bolna: "Modern dark-themed CSS styling with responsive flex/grid layouts yahan add karo" */
-</style>
+    <footer>
+      <p>© 2026 Huzlly. All rights reserved. | <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+    </footer>
+  </body>
+</html>
