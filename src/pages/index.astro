@@ -1,190 +1,246 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Primary SEO Meta Tags -->
-    <title>Huzlly - Build, Grow & Scale</title>
-    <meta name="title" content="Huzlly - Build, Grow & Scale">
-    <meta name="description" content="Welcome to Huzlly. Discover modern solutions designed to scale your business faster.">
-    <meta name="keywords" content="Huzlly, business, landing page, growth, modern web">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Huzlly - Build, Grow & Scale">
-    <meta property="og:description" content="Discover modern solutions designed to scale your business faster.">
-    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Huzlly">
-    
-    <!-- Styling -->
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+---
+import Layout from '../layouts/Layout.astro';
 
-        body {
-            background-color: #0d1117;
-            color: #e6edf3;
-            line-height: 1.6;
-        }
+const pageTitle = "Huzlly - Build, Grow & Scale Modern Web";
+const pageDescription = "Fast, SEO-optimized, and modern digital solutions tailored to scale your brand efficiently.";
+---
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 8%;
-            border-bottom: 1px solid #30363d;
-            position: sticky;
-            top: 0;
-            background-color: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(8px);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #58a6ff;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        nav a {
-            color: #8b949e;
-            text-decoration: none;
-            margin-left: 24px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        nav a:hover {
-            color: #58a6ff;
-        }
-
-        .hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 100px 20px 80px;
-            min-height: 65vh;
-        }
-
-        .badge {
-            background-color: #1f6feb22;
-            color: #58a6ff;
-            border: 1px solid #1f6feb;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff 40%, #8b949e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            max-width: 800px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: #8b949e;
-            max-width: 600px;
-            margin-bottom: 35px;
-        }
-
-        .cta-group {
-            display: flex;
-            gap: 16px;
-        }
-
-        .btn {
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform 0.15s ease, opacity 0.15s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-primary {
-            background-color: #238636;
-            color: #ffffff;
-        }
-
-        .btn-secondary {
-            background-color: #21262d;
-            color: #c9d1d9;
-            border: 1px solid #30363d;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            border-top: 1px solid #30363d;
-            color: #8b949e;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.3rem;
-            }
-            .hero p {
-                font-size: 1rem;
-            }
-            .cta-group {
-                flex-direction: column;
-                width: 100%;
-                max-width: 280px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header Navigation -->
-    <header>
-        <a href="index.html" class="logo">Huzlly.</a>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="about.html">About</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="contact.html">Contact</a>
-        </nav>
-    </header>
-
+<Layout title={pageTitle} description={pageDescription}>
+  <main>
     <!-- Hero Section -->
-    <main class="hero">
-        <div class="badge">🚀 Cloudflare Pages Ready</div>
-        <h1>Build Faster, Scale Better with Huzlly</h1>
-        <p>Your ultimate destination for modern digital solutions. Fast, reliable, and optimized for peak performance.</p>
-        
-        <div class="cta-group">
-            <a href="pricing.html" class="btn btn-primary">Get Started</a>
-            <a href="about.html" class="btn btn-secondary">Learn More</a>
+    <section class="hero">
+      <div class="badge">🚀 Powered by Astro & Cloudflare</div>
+      <h1>Scale Your Business With <span class="gradient-text">Huzlly</span></h1>
+      <p class="hero-desc">
+        Deliver lightning-fast web experiences designed to convert visitors into loyal customers. Zero lag, high SEO performance.
+      </p>
+      
+      <div class="cta-buttons">
+        <a href="/pricing" class="btn btn-primary">Get Started Today</a>
+        <a href="/about" class="btn btn-secondary">Learn More</a>
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+      <div class="stat-item">
+        <h3>100/100</h3>
+        <p>PageSpeed Score</p>
+      </div>
+      <div class="stat-item">
+        <h3>0ms</h3>
+        <p>Cold Start</p>
+      </div>
+      <div class="stat-item">
+        <h3>99.9%</h3>
+        <p>Global Uptime</p>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+      <h2>Why Choose Huzlly?</h2>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>Ultra Fast Performance</h3>
+          <p>Zero-JS by default ensures your pages load in milliseconds across any device.</p>
         </div>
-    </main>
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <h3>SEO Engineered</h3>
+          <p>Built-in structured data, sitemaps, and optimized open-graph previews to rank higher on Google.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🛡️</div>
+          <h3>Secure & Reliable</h3>
+          <p>Enterprise-grade security powered by Cloudflare edge network globally.</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>© 2026 Huzlly. All rights reserved. | <a href="terms.html" style="color: #8b949e;">Terms</a> · <a href="privacy.html" style="color: #8b949e;">Privacy</a></p>
-    </footer>
+    <!-- Bottom CTA -->
+    <section class="final-cta">
+      <h2>Ready to build something great?</h2>
+      <p>Start your journey today and supercharge your online presence.</p>
+      <a href="/contact" class="btn btn-primary">Contact Us</a>
+    </section>
+  </main>
+</Layout>
 
-</body>
-</html>
+<style>
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(88, 166, 255, 0.1);
+    color: #58a6ff;
+    border: 1px solid rgba(88, 166, 255, 0.3);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #58a6ff 0%, #a371f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-desc {
+    font-size: 1.2rem;
+    color: #8b949e;
+    max-width: 650px;
+    margin: 0 auto 36px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .btn {
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-primary {
+    background-color: #238636;
+    color: #ffffff;
+  }
+
+  .btn-secondary {
+    background-color: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    text-align: center;
+    padding: 40px 20px;
+    margin: 40px 0;
+    background: #161b22;
+    border-radius: 12px;
+    border: 1px solid #30363d;
+  }
+
+  .stat-item h3 {
+    font-size: 2rem;
+    color: #58a6ff;
+    margin-bottom: 4px;
+  }
+
+  .stat-item p {
+    color: #8b949e;
+    font-size: 0.95rem;
+  }
+
+  .features {
+    padding: 60px 0;
+    text-align: center;
+  }
+
+  .features h2 {
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    text-align: left;
+  }
+
+  .card {
+    background: #161b22;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #30363d;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: #58a6ff;
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+  }
+
+  .card h3 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+  }
+
+  .card p {
+    color: #8b949e;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .final-cta {
+    text-align: center;
+    background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+    padding: 60px 20px;
+    border-radius: 12px;
+    border: 1px solid #30363d;
+    margin-top: 40px;
+  }
+
+  .final-cta h2 {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+
+  .final-cta p {
+    color: #8b949e;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2.3rem;
+    }
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    .btn {
+      width: 100%;
+      max-width: 280px;
+      text-align: center;
+    }
+  }
+</style>
