@@ -1,0 +1,146 @@
+---
+// src/pages/pricing.astro
+// Pricing is not public yet — Huzlly is pre-launch, onboarding freelancers
+// in closed-beta cohorts (see Hero.astro / FAQAccordion.astro). This page
+// intentionally does not name tiers, features, or numbers. It states the
+// pricing philosophy already public sitewide (flat rate, no per-seat fees),
+// explains why the number itself isn't locked yet, and routes people to
+// the waitlist to be notified when it is.
+
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+import WaitlistForm from '../components/sections/WaitlistForm.astro';
+import FAQAccordion from '../components/sections/FAQAccordion.astro';
+import type { FAQItem } from '../components/sections/FAQAccordion.astro';
+import { ArrowRight, Gift, Tag, SlidersHorizontal } from 'lucide-astro';
+
+const promises = [
+  {
+    icon: Gift,
+    title: 'There will be a free way in',
+    body: 'Whatever the final pricing looks like, trying Huzlly won’t require a credit card up front.',
+  },
+  {
+    icon: Tag,
+    title: 'One flat upgrade, not a ladder',
+    body: 'When you’re ready for more, it’s a single paid upgrade — not a stack of tiers to compare against each other.',
+  },
+  {
+    icon: SlidersHorizontal,
+    title: 'No per-seat math, ever',
+    body: 'Huzlly is built for one freelancer running one flow. There’s no team pricing to design around, so there won’t be one.',
+  },
+];
+
+const pricingFaq: FAQItem[] = [
+  {
+    question: 'So how much will Huzlly cost?',
+    answer:
+      'We haven’t locked in a number yet. Huzlly is in closed beta, and we’d rather price it after watching real freelancers run real client flows through it than guess up front.',
+  },
+  {
+    question: 'Will there be hidden fees or per-seat pricing?',
+    answer:
+      'No. Huzlly is being built around one flat-rate tier instead of per-seat or usage-based pricing — that part is decided even though the number isn’t yet.',
+  },
+  {
+    question: 'When will pricing be announced?',
+    answer:
+      'When Huzlly comes out of closed beta. Join the waitlist below and you’ll hear about it before it’s public anywhere else.',
+  },
+];
+---
+
+<Layout
+  title="Pricing | Huzlly"
+  description="Huzlly's pricing isn't public yet — we're pricing after closed beta, not before it. Here's what's already decided, and how to hear the number first."
+  canonicalPath="/pricing"
+  ogImage="/og/og-pricing.png"
+>
+  <main>
+    <!-- Hero -->
+    <section class="bg-white px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-6xl rounded-3xl bg-blue-50/50 sm:bg-blue-50/40 px-6 py-16 text-center sm:px-12 sm:py-24 mt-6">
+        <Badge variant="beta" class="mx-auto">Closed beta &middot; pricing not yet public</Badge>
+        <h1 class="mt-6 text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+          We're pricing this <span class="text-blue-600">after</span> the beta, not before it.
+        </h1>
+        <p class="mt-4 text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+          Huzlly is onboarding freelancers in small cohorts while we get the flow right. We'd
+          rather set a fair price from watching real client flows run through it than guess a
+          number today and walk it back later.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button href="/waitlist" size="lg">
+            Get notified when pricing lands
+            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+          <Button href="#pricing-faq" variant="outline" size="lg">
+            Read the pricing FAQ
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    <!-- What's already decided -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-6xl">
+        <SectionHeader
+          eyebrow="What we can tell you now"
+          title="The number isn't set. The shape of it already is."
+          subtitle="These three things aren't changing between now and launch, whatever the price ends up being."
+        />
+
+        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {promises.map((promise) => (
+            <Card variant="elevated" class="text-center sm:text-left">
+              <span class="mx-auto sm:mx-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white">
+                <promise.icon class="w-5 h-5" stroke-width="1.75" />
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-gray-900">{promise.title}</h3>
+              <p class="mt-2 text-sm text-gray-600 leading-relaxed">{promise.body}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Why no number yet -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-2xl">
+        <Card variant="highlighted" class="p-8 sm:p-12 text-center">
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+            Why we're not putting up a number yet
+          </h2>
+          <p class="mt-4 text-gray-600 leading-relaxed">
+            Huzlly is onboarding 50 freelancers this cohort, on purpose — small enough that we
+            can watch how the proposal-to-intake flow actually gets used before we decide what
+            it's worth charging for. A number picked before that feels like a guess. A number
+            picked after it is a price.
+          </p>
+        </Card>
+      </div>
+    </section>
+
+    <!-- Pricing FAQ -->
+    <section id="pricing-faq" class="scroll-mt-20 bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl">
+        <SectionHeader eyebrow="Pricing FAQ" title="Questions people ask before there's a number" />
+        <div class="mt-14">
+          <FAQAccordion items={pricingFaq} />
+        </div>
+        <p class="mt-10 text-center text-sm text-gray-500">
+          More questions? Check the <a href="/faq" class="text-blue-600 font-semibold hover:text-blue-700">full FAQ</a>.
+        </p>
+      </div>
+    </section>
+
+    <WaitlistForm
+      heading="Get pricing the moment it's live"
+      subheading="Join the waitlist and you'll hear about pricing before it's public anywhere else — no sales calls, no spam."
+    />
+  </main>
+</Layout>
