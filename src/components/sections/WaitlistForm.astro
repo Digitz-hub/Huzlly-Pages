@@ -1,1 +1,84 @@
+---
+// src/components/sections/WaitlistForm.astro
+// Homepage waitlist capture. NOTE: the <form> has no `action` wired yet —
+// it currently just swaps to a confirmation state client-side so the page
+// is demo-ready. Point it at a real endpoint (Cloudflare Pages Function,
+// Formspree, ConvertKit, etc.) before launch; see the TODO in the script.
 
+import { ArrowRight, Check } from 'lucide-astro';
+import Card from '../ui/Card.astro';
+import Badge from '../ui/Badge.astro';
+---
+
+<section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+  <div class="mx-auto max-w-2xl">
+    <Card variant="highlighted" class="p-8 sm:p-12 text-center">
+      <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
+
+      <h2 class="mt-5 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+        Get early access
+      </h2>
+      <p class="mt-4 text-gray-600 leading-relaxed max-w-md mx-auto">
+        Huzlly is in closed beta. Join the waitlist and we'll email you when a spot opens —
+        no sales calls, no spam, unsubscribe any time.
+      </p>
+
+      <form id="waitlist-form" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" novalidate>
+        <label for="waitlist-email" class="sr-only">Email address</label>
+        <input
+          id="waitlist-email"
+          name="email"
+          type="email"
+          required
+          placeholder="you@studio.com"
+          class="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+        />
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 whitespace-nowrap"
+        >
+          Join waitlist
+          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        </button>
+      </form>
+
+      <p id="waitlist-error" class="mt-3 text-sm text-red-600 hidden">
+        Enter a valid email address to join the waitlist.
+      </p>
+
+      <div id="waitlist-success" class="mt-8 hidden flex-col items-center gap-2">
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+          <Check class="w-5 h-5" stroke-width="2" />
+        </span>
+        <p class="text-sm font-semibold text-gray-900">You're on the list.</p>
+        <p class="text-sm text-gray-600">We'll email you when your spot opens up.</p>
+      </div>
+    </Card>
+  </div>
+</section>
+
+<script>
+  // TODO before launch: replace this client-side stand-in with a real
+  // submit — e.g. POST to a Cloudflare Pages Function at /api/waitlist,
+  // or an external form service. Currently no email is sent anywhere.
+  const form = document.getElementById('waitlist-form');
+  const errorEl = document.getElementById('waitlist-error');
+  const successEl = document.getElementById('waitlist-success');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const emailInput = document.getElementById('waitlist-email');
+    const email = emailInput.value.trim();
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!isValid) {
+      errorEl?.classList.remove('hidden');
+      return;
+    }
+
+    errorEl?.classList.add('hidden');
+    form.classList.add('hidden');
+    successEl?.classList.remove('hidden');
+    successEl?.classList.add('flex');
+  });
+</script>
