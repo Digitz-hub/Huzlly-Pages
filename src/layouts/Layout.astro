@@ -1,94 +1,86 @@
 ---
-interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
+// src/layouts/Layout.astro
+// Owns the entire document shell per CLAUDE.md Section 1 — the ONLY file
+// permitted to contain <!doctype>, <html>, <head>, <body>, <header>, <footer>.
+//
+// Canonical/OG/meta implementation follows the exact pattern specified in
+// PAGE_MAP_AND_SEO.md ("Base Layout Implementation Pattern").
+//
+// Organization JSON-LD is rendered sitewide here, since PAGE_MAP_AND_SEO.md
+// Section 4 lists Organization schema as present on every route (e.g. /waitlist
+// gets "None beyond sitewide Organization"). Page-specific schema
+// (SoftwareApplication, FAQPage, etc.) is added by individual pages inside
+// their own <main> content, per CLAUDE.md Section 4's per-page JSON-LD rule —
+// schema.org script tags are valid anywhere in the document, not only <head>.
+
+import Nav from '../components/layout/Nav.astro';
+import Footer from '../components/layout/Footer.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  canonicalPath: string;
+  noindex?: boolean;
 }
 
 const {
-  title = "Huzlly - Modern Digital Solutions",
-  description = "Fast, SEO-optimized digital solutions tailored to scale your brand efficiently.",
-  image = "/favicon.svg",
+  title,
+  description,
+  ogImage = '/og/og-home.png',
+  canonicalPath,
+  noindex = false,
 } = Astro.props;
 
-const siteTitle = title.includes("Huzlly") ? title : `${title} | Huzlly`;
-const siteUrl = "https://huzlly-pages.pages.dev";
+const siteUrl = 'https://huzlly.com';
+const canonicalURL = new URL(canonicalPath, siteUrl).toString();
+const ogImageURL = new URL(ogImage, siteUrl).toString();
+
+// Organization schema — copied verbatim from SITE_IDENTITY_AND_AEO.md Section 5.
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Huzlly',
+  url: 'https://huzlly.com/',
+  email: 'contact@huzlly.com',
+  sameAs: ['https://x.com/huzlly', 'https://instagram.com/huzllyofficial'],
+  description:
+    'Huzlly is a lean, clutter-free software tool that helps freelancers automate manual work without paying for bloated, overpriced enterprise features.',
+};
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={siteUrl} />
 
-    <!-- Primary Meta Tags -->
-    <title>{siteTitle}</title>
-    <meta name="title" content={siteTitle} />
+    <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:site_name" content="Huzlly" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={siteUrl} />
-    <meta property="og:title" content={siteTitle} />
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={`${siteUrl}${image}`} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:url" content={canonicalURL} />
 
-    <!-- Twitter Card -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={siteUrl} />
-    <meta property="twitter:title" content={siteTitle} />
-    <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={`${siteUrl}${image}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@huzlly" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
 
-    <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json" is:inline>
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Huzlly",
-        "url": "https://huzlly-pages.pages.dev",
-        "logo": "https://huzlly-pages.pages.dev/favicon.svg"
-      }
-    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
   </head>
-  <body class="bg-white text-gray-900 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white font-sans">
-    
-    <!-- Global Header (Light Mode) -->
-    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="/" class="text-xl font-bold tracking-tight text-blue-600 hover:text-blue-700 transition-colors">
-          Huzlly.
-        </a>
-        <nav class="flex items-center gap-6 text-sm font-medium text-gray-600">
-          <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
-          <a href="/about" class="hover:text-blue-600 transition-colors">About</a>
-          <a href="/pricing" class="hover:text-blue-600 transition-colors">Pricing</a>
-          <a href="/pricing" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors font-semibold shadow-sm">
-            Get Started
-          </a>
-        </nav>
-      </div>
-    </header>
-
-    <!-- Dynamic Page Content Slot -->
-    <div class="flex-grow">
-      <slot />
-    </div>
-
-    <!-- Global Footer (Light Mode) -->
-    <footer class="border-t border-gray-200 bg-gray-50 py-10 mt-20">
-      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-        <p>© 2026 Huzlly. All rights reserved.</p>
-        <div class="flex gap-6">
-          <a href="/terms" class="hover:text-gray-900 transition-colors">Terms</a>
-          <a href="/privacy" class="hover:text-gray-900 transition-colors">Privacy</a>
-          <a href="/about" class="hover:text-gray-900 transition-colors">About</a>
-        </div>
-      </div>
-    </footer>
-
+  <body class="bg-white text-gray-900 antialiased">
+    <Nav />
+    <slot />
+    <Footer />
   </body>
 </html>
