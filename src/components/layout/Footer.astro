@@ -1,1 +1,131 @@
+---
+// src/components/layout/Footer.astro
+// Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
+// Link set and social profiles sourced from PAGE_MAP_AND_SEO.md Section 3
+// and SITE_IDENTITY_AND_AEO.md Section 1.
 
+import { Twitter, Instagram, Mail } from 'lucide-astro';
+
+const exploreLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/features', label: 'Features' },
+  { href: '/pricing', label: 'Pricing' },
+];
+
+const companyLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/waitlist', label: 'Waitlist' },
+];
+
+const legalLinks = [
+  { href: '/privacy', label: 'Privacy Policy' },
+  { href: '/terms', label: 'Terms of Service' },
+];
+
+const socialLinks = [
+  { href: 'https://x.com/huzlly', label: 'Huzlly on X', icon: Twitter },
+  { href: 'https://instagram.com/huzllyofficial', label: 'Huzlly on Instagram', icon: Instagram },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-gray-100 bg-white">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <a
+          href="/"
+          class="text-lg font-bold tracking-tight text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+        >
+          Huzlly
+        </a>
+        <p class="mt-4 text-sm text-gray-600 leading-relaxed">
+          Lean, clutter-free workflow automation for freelancers — no enterprise bloat, no
+          per-seat pricing.
+        </p>
+        <div class="mt-6 flex items-center gap-3">
+          {
+            socialLinks.map((social) => (
+              <a
+                href={social.href}
+                aria-label={social.label}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center rounded-lg p-2.5 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+              >
+                <social.icon class="w-5 h-5 text-gray-900" stroke-width="1.75" />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Explore</p>
+        <ul class="mt-4 space-y-4">
+          {
+            exploreLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Company</p>
+        <ul class="mt-4 space-y-4">
+          {
+            companyLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <p class="text-xs font-medium uppercase tracking-wide text-gray-500">Legal</p>
+        <ul class="mt-4 space-y-4">
+          {
+            legalLinks.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a
+          href="mailto:contact@huzlly.com"
+          class="mt-4 inline-flex items-center gap-2 text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+        >
+          <Mail class="w-4 h-4 text-gray-500" stroke-width="2" />
+          contact@huzlly.com
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-12 border-t border-gray-100 pt-8">
+      <p class="text-sm text-gray-500">&copy; {year} Huzlly. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
