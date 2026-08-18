@@ -1,15 +1,37 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/sections/Hero.astro';
+import FeaturesSummary from '../components/sections/FeaturesSummary.astro';
+import WaitlistForm from '../components/sections/WaitlistForm.astro';
+
+// Minimal SoftwareApplication schema, page-specific per Layout.astro's
+// sitewide-Organization / per-page-extra JSON-LD split.
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Huzlly',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description:
+    'Huzlly connects proposal approval, contract signing, payment collection, and client intake into one automated flow for solo freelancers.',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    description: 'Free tier available; single flat-rate paid upgrade.',
+  },
+};
 ---
 
-<Layout title="Huzlly - Build & Scale Modern Web" description="Fast, SEO-optimized digital solutions tailored to scale your brand.">
-  <main style="max-width: 900px; margin: 60px auto; padding: 0 20px; text-align: center;">
-    <h1 style="font-size: 3rem; margin-bottom: 16px; color: #58a6ff;">Welcome to Huzlly</h1>
-    <p style="font-size: 1.2rem; color: #8b949e; margin-bottom: 30px;">
-      Zero lag, modern architecture powered by Astro & Cloudflare.
-    </p>
-    <a href="/pricing" style="display: inline-block; background: #238636; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
-      Get Started
-    </a>
+<Layout
+  title="Huzlly — One flow, not five apps"
+  description="Huzlly connects proposal approval, contract signing, payments, and intake into one automated flow for solo freelancers. No per-seat pricing, no bloat."
+  canonicalPath="/"
+>
+  <main>
+    <Hero />
+    <FeaturesSummary />
+    <WaitlistForm />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
   </main>
 </Layout>
