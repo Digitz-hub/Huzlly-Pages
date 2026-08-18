@@ -1,0 +1,255 @@
+---
+// src/pages/features.astro
+// Deep-dive version of the homepage's FeaturesSummary teaser. Same four
+// steps and same Bonsai/HoneyBook/Dubsado positioning referenced in
+// Hero.astro and FAQAccordion.astro, expanded with the detail the
+// homepage card grid intentionally leaves out.
+
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Card from '../components/ui/Card.astro';
+import Button from '../components/ui/Button.astro';
+import WaitlistForm from '../components/sections/WaitlistForm.astro';
+import {
+  ArrowRight,
+  FileText,
+  PenTool,
+  CreditCard,
+  Inbox,
+  Check,
+  X,
+  User,
+  Users,
+  Layers,
+  Settings2,
+} from 'lucide-astro';
+
+const steps = [
+  {
+    icon: FileText,
+    title: 'Proposal',
+    trigger:
+      "You send a proposal — built from a saved template or from scratch — straight to your client's inbox.",
+    customize:
+      'Line items, pricing, your branding, and payment terms, set once in a template and reused every time.',
+    clientSees:
+      'A clean, mobile-friendly proposal page. They review and approve online — no login, no PDF, no scanned signature.',
+    next: 'Approval is what starts the contract step. You don’t have to remember to send it yourself.',
+  },
+  {
+    icon: PenTool,
+    title: 'Contract',
+    trigger: 'The moment your client approves the proposal.',
+    customize:
+      'Your own contract language, set up once — Huzlly pre-fills the scope and pricing the client just approved.',
+    clientSees:
+      'A ready-to-sign contract with their details already in it. No re-typing what they already agreed to, no separate e-sign account to create.',
+    next: 'A signed contract is what releases the invoice.',
+  },
+  {
+    icon: CreditCard,
+    title: 'Payment',
+    trigger: 'A signature on the contract.',
+    customize:
+      'How payment is structured — full upfront, deposit plus balance, or milestones — and which methods you accept.',
+    clientSees:
+      'An invoice with a pay-now link, sent the moment they sign. No waiting on a separate email from you.',
+    next: 'A cleared payment is what releases the intake form.',
+  },
+  {
+    icon: Inbox,
+    title: 'Intake',
+    trigger: 'Payment clearing.',
+    customize:
+      'The intake form itself — build one per project type once, and every client gets the right version automatically.',
+    clientSees:
+      'Their intake form, delivered the moment they’ve paid. They land in your project ready to start, not waiting on a welcome email.',
+    next: 'You end up with a paid, signed, briefed client without opening your inbox once.',
+  },
+];
+
+const forYou = [
+  'You’re a solo freelancer, consultant, coach, or designer running your own client pipeline.',
+  'You send proposals, contracts, invoices, and intake forms yourself — no team behind you.',
+  'You want one flat price instead of a bill that grows with every seat you add.',
+  'You want something that works the day you sign up, not after weeks of setup.',
+];
+
+const notForYou = [
+  'Agencies or studios that need multiple logins, roles, or approval chains.',
+  'Teams that need shared pipelines across several staff members.',
+  'Businesses wanting a fully custom, build-your-own-CRM platform.',
+  'Anyone who needs multi-seat collaboration on a single client account.',
+];
+
+const comparisons = [
+  {
+    icon: Layers,
+    title: 'vs. Bonsai',
+    body: 'Bonsai started lean but has grown into a fuller business-management suite — time tracking, expense tracking, and team seats layered on top of the core flow. If proposal-to-intake is all you need, Huzlly stays scoped to just that, at a lower flat price.',
+  },
+  {
+    icon: Users,
+    title: 'vs. HoneyBook',
+    body: 'HoneyBook is built with studios and small teams in mind — its pricing and features assume more than one person working a pipeline. Huzlly skips the team layer entirely: one flat rate, built for the person actually doing the client work.',
+  },
+  {
+    icon: Settings2,
+    title: 'vs. Dubsado',
+    body: 'Dubsado is capable once it’s fully configured — but that configuration is the catch. Workflows, forms, and templates all need building before it does anything for you. Huzlly’s flow already exists, so you’re automating from day one, not week three.',
+  },
+];
+---
+
+<Layout
+  title="Features | Huzlly"
+  description="How Huzlly automates a freelancer's client workflow: proposal approval, contract signing, payment collection, and intake, connected into one flow."
+  canonicalPath="/features"
+  ogImage="/og/og-features.png"
+>
+  <main>
+    <!-- Hero -->
+    <section class="bg-white px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-6xl rounded-3xl bg-blue-50/50 sm:bg-blue-50/40 px-6 py-16 text-center sm:px-12 sm:py-24 mt-6">
+        <p class="text-xs font-medium uppercase tracking-wide text-blue-600">Features</p>
+        <h1 class="mt-2 text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+          One flow, four steps, <span class="text-blue-600">zero handoffs.</span>
+        </h1>
+        <p class="mt-4 text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+          Proposal approval, contract signing, payment collection, and intake — connected so
+          each step starts the next one on its own. Here's exactly what happens at every stage,
+          and what your client sees along the way.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button href="/waitlist" size="lg">
+            Join the waitlist
+            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+          <Button href="#comparisons" variant="outline" size="lg">
+            See how it compares
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Is this for you -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <SectionHeader
+          eyebrow="Who it's for"
+          title="Built for the person doing the work, not a team"
+          subtitle="Huzlly is intentionally single-user first. That shapes everything below, so it's worth being upfront about it."
+        />
+
+        <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Card variant="elevated" class="p-8">
+            <div class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <User class="w-5 h-5" stroke-width="1.75" />
+              </span>
+              <h3 class="text-lg font-semibold text-gray-900">Huzlly is for you if</h3>
+            </div>
+            <ul class="mt-6 space-y-4">
+              {forYou.map((item) => (
+                <li class="flex items-start gap-3">
+                  <Check class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" stroke-width="2" />
+                  <span class="text-sm text-gray-600 leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+
+          <Card variant="flat" class="p-8">
+            <div class="flex items-center gap-3">
+              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+                <Users class="w-5 h-5" stroke-width="1.75" />
+              </span>
+              <h3 class="text-lg font-semibold text-gray-900">Not built for</h3>
+            </div>
+            <ul class="mt-6 space-y-4">
+              {notForYou.map((item) => (
+                <li class="flex items-start gap-3">
+                  <X class="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-400" stroke-width="2" />
+                  <span class="text-sm text-gray-600 leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </div>
+      </div>
+    </section>
+
+    <!-- The flow, in full -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <SectionHeader
+          eyebrow="The flow"
+          title="Four steps. Here's exactly what happens."
+          subtitle="Each step triggers the next one automatically. Here's what starts it, what you can customize, and what your client experiences."
+        />
+
+        <div class="mt-14 flex flex-col gap-6">
+          {steps.map((step, i) => (
+            <Card variant="elevated" class="p-6 sm:p-8">
+              <div class="flex items-center gap-4">
+                <span class="font-mono text-[11px] text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-900 text-white shadow-sm">
+                  <step.icon class="w-5 h-5" stroke-width="1.75" />
+                </span>
+                <h3 class="text-xl font-semibold text-gray-900">{step.title}</h3>
+              </div>
+
+              <div class="mt-6 grid grid-cols-1 gap-6 border-t border-gray-100 pt-6 sm:grid-cols-3">
+                <div>
+                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Triggered by</p>
+                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.trigger}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">You customize</p>
+                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.customize}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Client sees</p>
+                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.clientSees}</p>
+                </div>
+              </div>
+
+              <p class="mt-6 flex items-start gap-2 border-t border-gray-100 pt-6 text-sm font-medium text-blue-600">
+                <ArrowRight class="mt-0.5 h-4 w-4 flex-shrink-0" stroke-width="2" />
+                {step.next}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparisons -->
+    <section id="comparisons" class="scroll-mt-20 bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-6xl">
+        <SectionHeader
+          eyebrow="Comparisons"
+          title="How Huzlly stacks up"
+          subtitle="Bonsai, HoneyBook, and Dubsado all do parts of this. Here's specifically where Huzlly is different."
+        />
+
+        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {comparisons.map((c) => (
+            <Card variant="elevated" class="text-left">
+              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white">
+                <c.icon class="w-5 h-5" stroke-width="1.75" />
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-gray-900">{c.title}</h3>
+              <p class="mt-2 text-sm text-gray-600 leading-relaxed">{c.body}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <WaitlistForm
+      heading="See the flow in action"
+      subheading="Join the waitlist and we'll walk you through how the four steps fit your workflow — no sales calls, no pressure."
+    />
+  </main>
+</Layout>
