@@ -1,1 +1,63 @@
+---
+// src/components/ui/Button.astro
+// Primitive button/link per DESIGN_SYSTEM.md Section 3 (Buttons).
+// Renders an <a> when `href` is passed, otherwise a native <button>.
 
+export interface Props {
+  variant?: 'primary' | 'secondary' | 'outline' | 'accent';
+  size?: 'sm' | 'default' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  ariaLabel?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'default',
+  href,
+  type = 'button',
+  class: className,
+  ariaLabel,
+} = Astro.props;
+
+// Base classes per variant — copied verbatim from DESIGN_SYSTEM.md Section 3,
+// with padding/text-size split out into `sizeByVariant` below so size can vary
+// independently of variant. Focus-visible ring applied to every variant per
+// the sitewide accessibility requirement in DESIGN_SYSTEM.md Section 5.
+const baseByVariant: Record<string, string> = {
+  primary:
+    'inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+  secondary:
+    'inline-flex items-center justify-center gap-2 rounded-lg text-gray-900 hover:bg-gray-100 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+  outline:
+    'inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-900 bg-white hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+  accent:
+    'inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+};
+
+// Button Sizing Variants (DESIGN_SYSTEM.md Section 3)
+const sizeByVariant: Record<string, string> = {
+  sm: 'px-3.5 py-2 text-sm font-semibold',
+  default: 'px-5 py-2.5 text-sm font-semibold',
+  lg: 'px-6 py-3 text-base font-semibold',
+};
+
+// The "accent" variant is a text-style link, not a padded button surface —
+// per the design system it carries no px/py, only text sizing.
+const sizeClasses = variant === 'accent' ? 'text-sm font-semibold' : sizeByVariant[size];
+
+const classes = [baseByVariant[variant], sizeClasses, className].filter(Boolean).join(' ');
+---
+
+{
+  href ? (
+    <a href={href} class={classes} aria-label={ariaLabel}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={classes} aria-label={ariaLabel}>
+      <slot />
+    </button>
+  )
+}
