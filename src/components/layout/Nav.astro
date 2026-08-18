@@ -3,10 +3,8 @@
 // Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
 // Mobile menu uses a checkbox-driven CSS toggle — no inline <script>,
 // per CLAUDE.md's zero-tolerance rule on inline scripts outside JSON-LD.
-
 import { Menu, X } from 'lucide-astro';
 import Button from '../ui/Button.astro';
-
 const navLinks = [
   { href: '/features', label: 'Features' },
   { href: '/pricing', label: 'Pricing' },
@@ -14,35 +12,25 @@ const navLinks = [
   { href: '/about', label: 'About' },
 ];
 ---
-
 <header class="border-b border-gray-100 bg-white">
   <nav
     class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8"
     aria-label="Primary"
   >
-    <a
-      href="/"
-      class="text-lg font-bold tracking-tight text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-    >
+    <a href="/" class="text-lg font-bold tracking-tight text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
       Huzlly
     </a>
-
     <input type="checkbox" id="nav-toggle" class="peer sr-only" />
-
     <div class="hidden md:order-2 md:flex md:items-center md:gap-8">
       {
         navLinks.map((link) => (
-          <a
-            href={link.href}
-            class="text-sm font-semibold text-gray-900 transition-colors duration-200 ease-in-out hover:text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-          >
+          <a href={link.href} class="text-sm font-semibold text-gray-900 transition-colors duration-200 ease-in-out hover:text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
             {link.label}
           </a>
         ))
       }
       <Button href="/waitlist" variant="primary" size="default">Join the Waitlist</Button>
     </div>
-
     <label
       for="nav-toggle"
       class="order-2 inline-flex cursor-pointer items-center justify-center rounded-lg p-2.5 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 peer-checked:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 md:hidden"
@@ -59,17 +47,13 @@ const navLinks = [
     >
       <X class="w-5 h-5 text-gray-900" stroke-width="1.75" />
     </label>
-
     <div
       id="mobile-menu"
       class="order-3 hidden w-full flex-col gap-1 border-t border-gray-100 pt-4 peer-checked:flex md:hidden"
     >
       {
         navLinks.map((link) => (
-          <a
-            href={link.href}
-            class="rounded-lg px-3.5 py-2.5 text-sm font-semibold text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-          >
+          <a href={link.href} class="rounded-lg px-3.5 py-2.5 text-sm font-semibold text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
             {link.label}
           </a>
         ))
