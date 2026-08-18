@@ -13,9 +13,9 @@ export interface Props {
 const { items } = Astro.props;
 ---
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 max-w-6xl mx-auto mt-10">
+<div>
   {items.map((item) => (
-    <details class="group rounded-2xl bg-gray-50/70 hover:bg-gray-100/80 border border-transparent p-5 sm:p-6 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
+    <details class="group rounded-2xl bg-gray-50/70 hover:bg-gray-100/80 border border-gray-100/80 p-5 sm:p-6 mb-4 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
       <summary class="flex items-center justify-between text-left font-semibold text-gray-900 text-base sm:text-lg gap-4 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
         <span>
           {item.question}
