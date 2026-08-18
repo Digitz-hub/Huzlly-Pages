@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WaitlistForm from '../components/sections/WaitlistForm.astro';
+import Badge from '../components/ui/Badge.astro';
+import { FileText, PenTool, CreditCard, Inbox } from 'lucide-astro';
+
+const steps = [
+  { icon: FileText, title: 'You join the list', body: 'Takes ten seconds. No credit card, no account to set up yet.' },
+  { icon: PenTool, title: "We'll send an invite", body: 'As the beta cohort opens up spots, we email invites in order.' },
+  { icon: CreditCard, title: 'You set up your flow', body: 'Connect your proposal, contract, and payment steps in one sitting.' },
+  { icon: Inbox, title: 'Clients move through it', body: 'Every new client goes proposal to intake without you chasing a thing.' },
+];
+---
+
+<Layout
+  title="Join the Waitlist | Huzlly"
+  description="Join the Huzlly closed beta waitlist. 50 spots this cohort for freelancers who want proposals, contracts, payments, and intake running in one automatic flow."
+  canonicalPath="/waitlist"
+>
+  <main>
+    <section class="bg-white px-4 pt-16 pb-4 sm:px-6 sm:pt-24 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <Badge variant="beta" class="mx-auto">Closed beta &middot; 50 spots this cohort</Badge>
+        <h1 class="mt-6 text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.1]">
+          Be first in when a spot opens
+        </h1>
+        <p class="mt-5 text-lg text-gray-600 leading-relaxed max-w-xl mx-auto">
+          Huzlly is onboarding freelancers in small cohorts while we get the flow right.
+          Join the list and we'll email you the moment it's your turn — no sales calls, no spam.
+        </p>
+      </div>
+    </section>
+
+    <WaitlistForm />
+
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-center text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+          What happens after you join
+        </h2>
+        <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map((step, i) => (
+            <div class="text-center sm:text-left">
+              <span class="font-mono text-[11px] text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
+              <span class="mt-2 flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-900 mx-auto sm:mx-0">
+                <step.icon class="w-5 h-5" stroke-width="1.75" />
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-gray-900">{step.title}</h3>
+              <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-14 text-center text-sm text-gray-500">
+          Have a question first? Check the <a href="/faq" class="text-blue-600 font-semibold hover:text-blue-700">FAQ</a>.
+        </p>
+      </div>
+    </section>
+  </main>
+</Layout>
