@@ -3,13 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import FAQAccordion from '../components/sections/FAQAccordion.astro';
 import type { FAQItem } from '../components/sections/FAQAccordion.astro';
 
-interface Category {
+interface CategoryInput {
   id: string;
   label: string;
   items: FAQItem[];
 }
 
-const categories: Category[] = [
+const categoryInputs: CategoryInput[] = [
   {
     id: 'general',
     label: 'General',
@@ -91,6 +91,15 @@ const categories: Category[] = [
   },
 ];
 
+// Precompute the anchor href in plain frontmatter script, not inline in the
+// template attribute — the pinned Astro compiler on this build chokes on
+// binary expressions (`+`, template literals) written directly inside a
+// JSX-style attribute within a mapped/parenthesized fragment.
+const categories = categoryInputs.map((category) => ({
+  ...category,
+  anchorHref: '#' + category.id,
+}));
+
 // Strip inline HTML for schema.org text values — schema stays a faithful,
 // markup-free mirror of the on-page copy per SITE_IDENTITY_AND_AEO.md Section 5.
 const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '');
@@ -131,7 +140,7 @@ const faqSchema = {
         <nav aria-label="Jump to FAQ category" class="mt-8 flex flex-wrap justify-center gap-2">
           {categories.map((category) => (
             
-              href={'#' + category.id}
+              href={category.anchorHref}
               class="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
             >
               {category.label}
