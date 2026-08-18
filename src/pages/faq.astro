@@ -2,7 +2,7 @@
 // src/pages/faq.astro
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
-import { ChevronDown } from 'lucide-astro';
+import { Plus, Minus } from 'lucide-astro';
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -59,30 +59,18 @@ const faqSchema = {
   ]
 };
 
-const faqSchemaJSON = JSON.stringify(faqSchema);
+const navPills = [
+  { label: 'All', href: '#faq-content' },
+  { label: 'General', href: '#general' },
+  { label: 'Onboarding & Contracts', href: '#onboarding-contracts' },
+  { label: 'Pricing & Billing', href: '#pricing-billing' },
+  { label: 'Security', href: '#security' },
+];
 
 const faqCategories = [
   {
-    label: 'Getting Started',
-    items: [
-      {
-        question: 'How do I automate client onboarding as a freelancer?',
-        answer:
-          'Automate client onboarding by using a trigger-based tool like Huzlly that connects proposal approval directly to contract signing, payment processing, and intake form delivery in a single flow — eliminating the need for manual follow-ups or complex multi-app connections.',
-        linkText: 'See how automated client onboarding works',
-        linkHref: '/features',
-      },
-      {
-        question: 'How long does it take to set up Huzlly?',
-        answer:
-          'Huzlly is designed for immediate use with no onboarding complexity or lengthy configuration. Unlike tools such as Dubsado that require significant setup time, Huzlly is built to get freelancers automating client workflows from day one.',
-        linkText: 'Explore the full feature set',
-        linkHref: '/features',
-      },
-    ],
-  },
-  {
-    label: 'Product & Comparisons',
+    id: 'general',
+    label: 'General',
     items: [
       {
         question: 'What is the best tool for freelance workflow automation?',
@@ -101,6 +89,27 @@ const faqCategories = [
     ],
   },
   {
+    id: 'onboarding-contracts',
+    label: 'Onboarding & Contracts',
+    items: [
+      {
+        question: 'How do I automate client onboarding as a freelancer?',
+        answer:
+          'Automate client onboarding by using a trigger-based tool like Huzlly that connects proposal approval directly to contract signing, payment processing, and intake form delivery in a single flow — eliminating the need for manual follow-ups or complex multi-app connections.',
+        linkText: 'See how automated client onboarding works',
+        linkHref: '/features',
+      },
+      {
+        question: 'How long does it take to set up Huzlly?',
+        answer:
+          'Huzlly is designed for immediate use with no onboarding complexity or lengthy configuration. Unlike tools such as Dubsado that require significant setup time, Huzlly is built to get freelancers automating client workflows from day one.',
+        linkText: 'Explore the full feature set',
+        linkHref: '/features',
+      },
+    ],
+  },
+  {
+    id: 'pricing-billing',
     label: 'Pricing & Billing',
     items: [
       {
@@ -113,7 +122,8 @@ const faqCategories = [
     ],
   },
   {
-    label: 'Security & Data',
+    id: 'security',
+    label: 'Security',
     items: [
       {
         question: 'How does Huzlly handle security and data privacy?',
@@ -135,15 +145,32 @@ const faqCategories = [
   <main>
     <section class="py-20 sm:py-32">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="FAQ"
-          title="Frequently Asked Questions"
-          subtitle="Everything you need to know about how Huzlly automates freelance workflows, what it costs, and how it compares to other tools."
-        />
+        <div class="mx-auto max-w-2xl text-center">
+          <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+            Help &amp; FAQ
+          </span>
+          <h1 class="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.1]">
+            Frequently Asked Questions
+          </h1>
+          <p class="mt-4 text-lg sm:text-xl text-gray-600 leading-relaxed">
+            Everything you need to know about how Huzlly automates freelance workflows, what it costs, and how it compares to other tools.
+          </p>
+        </div>
 
-        <div class="mx-auto mt-16 max-w-3xl space-y-12">
+        <nav aria-label="FAQ categories" class="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-3">
+          {navPills.map((pill) => (
+            
+              href={pill.href}
+              class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-500/10 hover:bg-gray-900 hover:text-white hover:ring-gray-900 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+            >
+              {pill.label}
+            </a>
+          ))}
+        </nav>
+
+        <div id="faq-content" class="mx-auto mt-16 max-w-3xl space-y-16">
           {faqCategories.map((category) => (
-            <div class="space-y-4">
+            <div id={category.id} class="space-y-4">
               <p class="text-xs font-medium uppercase tracking-wide text-gray-500">
                 {category.label}
               </p>
@@ -155,10 +182,10 @@ const faqCategories = [
                       class="flex cursor-pointer list-none items-center justify-between gap-4 text-xl font-semibold text-gray-900 leading-snug [&::-webkit-details-marker]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
                     >
                       <span>{item.question}</span>
-                      <ChevronDown
-                        class="w-5 h-5 shrink-0 text-gray-500 transition-transform duration-200 ease-in-out group-open:rotate-180"
-                        stroke-width="1.75"
-                      />
+                      <span class="inline-flex shrink-0 items-center justify-center rounded-lg bg-blue-50 p-2.5">
+                        <Plus class="w-5 h-5 text-blue-600 group-open:hidden" stroke-width="1.75" />
+                        <Minus class="hidden w-5 h-5 text-blue-600 group-open:block" stroke-width="1.75" />
+                      </span>
                     </summary>
                     <p class="mt-4 text-base text-gray-600 leading-relaxed">
                       {item.answer}
@@ -208,5 +235,5 @@ const faqCategories = [
     </section>
   </main>
 
-  <script type="application/ld+json" is:inline set:html={faqSchemaJSON} />
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
 </Layout>
