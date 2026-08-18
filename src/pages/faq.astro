@@ -131,7 +131,7 @@ const faqSchema = {
         <nav aria-label="Jump to FAQ category" class="mt-8 flex flex-wrap justify-center gap-2">
           {categories.map((category) => (
             
-              href={`#${category.id}`}
+              href={'#' + category.id}
               class="rounded-full bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors duration-200 ease-in-out hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
             >
               {category.label}
