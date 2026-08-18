@@ -35,10 +35,7 @@ const year = new Date().getFullYear();
   <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
       <div>
-        <a
-          href="/"
-          class="text-lg font-bold tracking-tight text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-        >
+        <a href="/" class="text-lg font-bold tracking-tight text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
           Huzlly
         </a>
         <p class="mt-4 text-sm text-gray-600 leading-relaxed">
@@ -48,13 +45,7 @@ const year = new Date().getFullYear();
         <div class="mt-6 flex items-center gap-3">
           {
             socialLinks.map((social) => (
-              <a
-                href={social.href}
-                aria-label={social.label}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center justify-center rounded-lg p-2.5 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-              >
+              <a href={social.href} aria-label={social.label} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-lg p-2.5 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
                 <social.icon class="w-5 h-5 text-gray-900" stroke-width="1.75" />
               </a>
             ))
@@ -68,10 +59,7 @@ const year = new Date().getFullYear();
           {
             exploreLinks.map((link) => (
               <li>
-                <a
-                  href={link.href}
-                  class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-                >
+                <a href={link.href} class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
                   {link.label}
                 </a>
               </li>
@@ -86,10 +74,7 @@ const year = new Date().getFullYear();
           {
             companyLinks.map((link) => (
               <li>
-                <a
-                  href={link.href}
-                  class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-                >
+                <a href={link.href} class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
                   {link.label}
                 </a>
               </li>
@@ -104,20 +89,14 @@ const year = new Date().getFullYear();
           {
             legalLinks.map((link) => (
               <li>
-                <a
-                  href={link.href}
-                  class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-                >
+                <a href={link.href} class="text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
                   {link.label}
                 </a>
               </li>
             ))
           }
         </ul>
-        <a
-          href="mailto:contact@huzlly.com"
-          class="mt-4 inline-flex items-center gap-2 text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-        >
+        <a href="mailto:contact@huzlly.com" class="mt-4 inline-flex items-center gap-2 text-sm text-gray-600 transition-colors duration-200 ease-in-out hover:text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
           <Mail class="w-4 h-4 text-gray-500" stroke-width="2" />
           contact@huzlly.com
         </a>
