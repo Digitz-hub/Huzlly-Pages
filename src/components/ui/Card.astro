@@ -1,1 +1,28 @@
+---
+// src/components/ui/Card.astro
+// Primitive card/container per DESIGN_SYSTEM.md Section 3 (Cards & Containers).
 
+export interface Props {
+  variant?: 'flat' | 'elevated' | 'highlighted';
+  class?: string;
+  as?: 'div' | 'li' | 'article';
+}
+
+const { variant = 'flat', class: className, as: Tag = 'div' } = Astro.props;
+
+// Classes copied verbatim from DESIGN_SYSTEM.md Section 3.
+// "flat" = Standard Feature Card, "elevated" = Elevated Card (pricing/testimonials),
+// "highlighted" = Highlighted / Featured Card (e.g. recommended pricing tier).
+const classesByVariant: Record<string, string> = {
+  flat: 'rounded-lg border border-gray-200 bg-white p-6 hover:shadow-md hover:border-gray-300 transition-all duration-200 ease-in-out',
+  elevated:
+    'rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out',
+  highlighted: 'rounded-lg border-2 border-gray-900 bg-white p-6 shadow-md',
+};
+
+const classes = [classesByVariant[variant], className].filter(Boolean).join(' ');
+---
+
+<Tag class={classes}>
+  <slot />
+</Tag>
