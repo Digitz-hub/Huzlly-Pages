@@ -1,1 +1,97 @@
+---
+// src/components/sections/FeaturesSummary.astro
+// Homepage features summary: the four-step flow explained in card form,
+// plus a short "why lean, not bloated" strip pulled from the same
+// positioning used in FAQAccordion's Comparisons category. Deep-dive
+// copy stays on /features — this is the summary version.
 
+import { FileText, PenTool, CreditCard, Inbox, Tag, Zap, Feather } from 'lucide-astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+import Card from '../ui/Card.astro';
+
+const steps = [
+  {
+    icon: FileText,
+    title: 'Proposal',
+    body: 'Send a proposal. The moment a client approves it, the rest of the flow kicks off on its own.',
+  },
+  {
+    icon: PenTool,
+    title: 'Contract',
+    body: 'A contract goes out pre-filled with the approved scope, ready to sign — no re-typing, no separate app.',
+  },
+  {
+    icon: CreditCard,
+    title: 'Payment',
+    body: 'Signing triggers the invoice. Payment is collected without a follow-up email from you.',
+  },
+  {
+    icon: Inbox,
+    title: 'Intake',
+    body: 'Once paid, the client gets their intake form automatically. You get a client who is ready to start.',
+  },
+];
+
+const reasons = [
+  {
+    icon: Feather,
+    title: 'Nothing you don\u2019t use',
+    body: 'Built for one freelancer running one flow, not a scaled-down version of enterprise software.',
+  },
+  {
+    icon: Zap,
+    title: 'Live in minutes',
+    body: 'No consultant, no onboarding call. Connect your flow and it runs the same day.',
+  },
+  {
+    icon: Tag,
+    title: 'One flat price',
+    body: 'No per-seat fees, no usage tiers to track. What you see is what you pay.',
+  },
+];
+---
+
+<section id="how-it-works" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader
+      eyebrow="How it works"
+      title="Four steps. Zero handoffs."
+      subtitle="Each step in your client workflow triggers the next one automatically — you only touch what actually needs a human."
+    />
+
+    <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {steps.map((step, i) => (
+        <Card variant="flat" class="relative">
+          <span class="font-mono text-[11px] text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
+          <span class="mt-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+            <step.icon class="w-5 h-5" stroke-width="1.75" />
+          </span>
+          <h3 class="mt-4 text-base font-semibold text-gray-900">{step.title}</h3>
+          <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.body}</p>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+  <div class="mx-auto max-w-6xl">
+    <SectionHeader
+      eyebrow="Why lean"
+      title="Built for one freelancer, not a whole team"
+      subtitle="Bonsai and HoneyBook grew into agency platforms. Huzlly stayed built for the person doing the work."
+    />
+
+    <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+      {reasons.map((reason) => (
+        <Card variant="elevated" class="text-center sm:text-left">
+          <span class="mx-auto sm:mx-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white">
+            <reason.icon class="w-5 h-5" stroke-width="1.75" />
+          </span>
+          <h3 class="mt-4 text-base font-semibold text-gray-900">{reason.title}</h3>
+          <p class="mt-2 text-sm text-gray-600 leading-relaxed">{reason.body}</p>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
