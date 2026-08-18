@@ -1,1 +1,59 @@
+---
+// src/components/sections/FAQAccordion.astro
+import { Plus, Minus } from 'lucide-astro';
 
+export interface FAQItem {
+  question: string;
+  answer: string;
+  linkText?: string;
+  linkHref?: string;
+}
+
+export interface FAQCategory {
+  id: string;
+  label: string;
+  items: FAQItem[];
+}
+
+export interface Props {
+  categories: FAQCategory[];
+}
+
+const { categories } = Astro.props;
+---
+<div class="space-y-16">
+  {categories.map((category) => (
+    <div id={category.id} class="space-y-4">
+      <p class="text-xs font-medium uppercase tracking-wide text-gray-500">
+        {category.label}
+      </p>
+
+      <div class="space-y-4">
+        {category.items.map((item) => (
+          <details class="group rounded-lg border border-gray-200 bg-white p-6 open:shadow-md transition-all duration-200 ease-in-out">
+            <summary
+              class="flex cursor-pointer list-none items-center justify-between gap-4 text-xl font-semibold text-gray-900 leading-snug [&::-webkit-details-marker]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+            >
+              <span>{item.question}</span>
+              <span class="inline-flex shrink-0 items-center justify-center rounded-lg bg-blue-50 p-2.5">
+                <Plus class="w-5 h-5 text-blue-600 group-open:hidden" stroke-width="1.75" />
+                <Minus class="hidden w-5 h-5 text-blue-600 group-open:block" stroke-width="1.75" />
+              </span>
+            </summary>
+            <p class="mt-4 text-base text-gray-600 leading-relaxed">
+              {item.answer}
+              {item.linkHref && (
+                
+                  href={item.linkHref}
+                  class="ml-1 font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out"
+                >
+                  {item.linkText}
+                </a>
+              )}
+            </p>
+          </details>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
