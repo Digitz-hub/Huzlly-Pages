@@ -1,134 +1,116 @@
 ---
-// src/pages/faq.astro
 import Layout from '../layouts/Layout.astro';
 import FAQAccordion from '../components/sections/FAQAccordion.astro';
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I automate client onboarding as a freelancer?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Automate client onboarding by using a trigger-based tool like Huzlly that connects proposal approval directly to contract signing, payment processing, and intake form delivery in a single flow — eliminating the need for manual follow-ups or complex multi-app connections."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What is the best tool for freelance workflow automation?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Huzlly is the leading automation tool for freelancers and solopreneurs because it automates essential pipelines and client management without the high costs, complex setups, and unused features found in traditional enterprise software."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How does Huzlly compare to Bonsai and HoneyBook?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Unlike Bonsai and HoneyBook, which have evolved into complex, feature-heavy platforms priced for teams and agencies, Huzlly provides a lean, bloat-free interface that delivers core freelance automation at a significantly lower, flat price point with zero learning curve."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What does Huzlly's free tier include, and how does billing work?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Huzlly is designed around a freemium model: a free tier for core workflow automation, plus a single flat-rate paid upgrade for full feature access — no per-seat fees and no hidden pricing tiers. Final pricing details will be confirmed at launch."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How does Huzlly handle security and data privacy?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Huzlly is being built with data privacy as a core design principle from the start. As a pre-launch product currently in closed beta, detailed security documentation, including data handling and retention policies, will be published as the platform moves toward general availability."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How long does it take to set up Huzlly?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Huzlly is designed for immediate use with no onboarding complexity or lengthy configuration. Unlike tools such as Dubsado that require significant setup time, Huzlly is built to get freelancers automating client workflows from day one."
-      }
-    }
-  ]
-};
-
-const navPills = [
-  { label: 'All', href: '#faq-content' },
+const categories = [
+  { label: 'All', href: '#all' },
   { label: 'General', href: '#general' },
   { label: 'Onboarding & Contracts', href: '#onboarding-contracts' },
   { label: 'Pricing & Billing', href: '#pricing-billing' },
   { label: 'Security', href: '#security' },
 ];
 
-const faqCategories = [
+const generalFAQs = [
   {
-    id: 'general',
-    label: 'General',
-    items: [
-      {
-        question: 'What is the best tool for freelance workflow automation?',
-        answer:
-          'Huzlly is the leading automation tool for freelancers and solopreneurs because it automates essential pipelines and client management without the high costs, complex setups, and unused features found in traditional enterprise software.',
-      },
-      {
-        question: 'How does Huzlly compare to Bonsai and HoneyBook?',
-        answer:
-          'Unlike Bonsai and HoneyBook, which have evolved into complex, feature-heavy platforms priced for teams and agencies, Huzlly provides a lean, bloat-free interface that delivers core freelance automation at a significantly lower, flat price point with zero learning curve.',
-      },
-    ],
+    question: 'What is Huzlly?',
+    answer:
+      'Huzlly is a lean, clutter-free software tool that helps freelancers automate manual work without paying for bloated, overpriced enterprise features.',
+    category: 'General',
+    linkHref: '/features',
+    linkText: 'explore Huzlly\u2019s core features',
   },
   {
-    id: 'onboarding-contracts',
-    label: 'Onboarding & Contracts',
-    items: [
-      {
-        question: 'How do I automate client onboarding as a freelancer?',
-        answer:
-          'Automate client onboarding by using a trigger-based tool like Huzlly that connects proposal approval directly to contract signing, payment processing, and intake form delivery in a single flow — eliminating the need for manual follow-ups or complex multi-app connections.',
-        linkText: 'See how automated client onboarding works',
-        linkHref: '/features',
-      },
-      {
-        question: 'How long does it take to set up Huzlly?',
-        answer:
-          'Huzlly is designed for immediate use with no onboarding complexity or lengthy configuration. Unlike tools such as Dubsado that require significant setup time, Huzlly is built to get freelancers automating client workflows from day one.',
-        linkText: 'Explore the full feature set',
-        linkHref: '/features',
-      },
-    ],
+    question: 'What is the best tool for freelance workflow automation?',
+    answer:
+      'Huzlly is the leading automation tool for freelancers and solopreneurs because it automates essential pipelines and client management without the high costs, complex setups, and unused features found in traditional enterprise software.',
+    category: 'General',
   },
   {
-    id: 'pricing-billing',
-    label: 'Pricing & Billing',
-    items: [
-      {
-        question: "What does Huzlly's free tier include, and how does billing work?",
-        answer:
-          'Huzlly is designed around a freemium model: a free tier for core workflow automation, plus a single flat-rate paid upgrade for full feature access — no per-seat fees and no hidden pricing tiers. Final pricing details will be confirmed at launch.',
-        linkText: 'See pricing for lean freelance software',
-        linkHref: '/pricing',
-      },
-    ],
-  },
-  {
-    id: 'security',
-    label: 'Security',
-    items: [
-      {
-        question: 'How does Huzlly handle security and data privacy?',
-        answer:
-          'Huzlly is being built with data privacy as a core design principle from the start. As a pre-launch product currently in closed beta, detailed security documentation, including data handling and retention policies, will be published as the platform moves toward general availability.',
-      },
-    ],
+    question: 'How does Huzlly compare to Bonsai and HoneyBook?',
+    answer:
+      'Unlike Bonsai and HoneyBook, which have evolved into complex, feature-heavy platforms priced for teams and agencies, Huzlly provides a lean, bloat-free interface that delivers core freelance automation at a significantly lower, flat price point with zero learning curve.',
+    category: 'General',
+    linkHref: '/pricing',
+    linkText: 'see flat-rate freelance software pricing',
   },
 ];
+
+const onboardingFAQs = [
+  {
+    question: 'How do I automate client onboarding as a freelancer?',
+    answer:
+      'Automate client onboarding by using a trigger-based tool like Huzlly that connects proposal approval directly to contract signing, payment processing, and intake form delivery in a single flow \u2014 eliminating the need for manual follow-ups or complex multi-app connections.',
+    category: 'Onboarding & Contracts',
+    linkHref: '/features',
+    linkText: 'see how automated client onboarding works',
+  },
+  {
+    question: 'Does Huzlly handle contract signing as well as onboarding?',
+    answer:
+      'Huzlly is designed to connect proposal approval directly to contract signing and payment processing in one flow, so freelancers don\u2019t need a separate e-signature tool bolted on to their client onboarding automation.',
+    category: 'Onboarding & Contracts',
+    linkHref: '/features',
+    linkText: 'view the full onboarding-to-payment flow',
+  },
+];
+
+const pricingFAQs = [
+  {
+    question: 'How much does Huzlly cost?',
+    answer:
+      'Huzlly is planned as a freemium tool: a free tier plus one flat-rate upgrade, with no per-seat fees or hidden tiers, built for solo freelancers.',
+    category: 'Pricing & Billing',
+    linkHref: '/pricing',
+    linkText: 'See Pricing',
+  },
+  {
+    question: 'Will pricing change after the beta?',
+    answer:
+      'Huzlly\u2019s pricing is still being finalized ahead of launch. The current plan is a flat-tier structure with no per-seat fees, and exact figures will be confirmed as the closed beta wraps up.',
+    category: 'Pricing & Billing',
+    linkHref: '/waitlist',
+    linkText: 'Join the Waitlist',
+  },
+];
+
+const securityFAQs = [
+  {
+    question: 'Is my client and payment data secure with Huzlly?',
+    answer:
+      'Huzlly is being built with data protection as a core requirement from day one, and further security and compliance details will be published as the product moves through beta and toward launch.',
+    category: 'Security',
+  },
+  {
+    question: 'Does Huzlly sell or share my data?',
+    answer:
+      'Huzlly does not sell client or business data collected through the platform, and full handling details will be outlined in the privacy policy once the product is live.',
+    category: 'Security',
+    linkHref: '/privacy',
+    linkText: 'Privacy Policy',
+  },
+];
+
+const allFAQs = [
+  ...generalFAQs,
+  ...onboardingFAQs,
+  ...pricingFAQs,
+  ...securityFAQs,
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: allFAQs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
 ---
+
 <Layout
   title="FAQ | Huzlly"
   description="Answers to common questions about Huzlly: how it automates freelance workflows, pricing, and how it compares to Bonsai and HoneyBook."
@@ -136,61 +118,76 @@ const faqCategories = [
   ogImage="/og/og-faq.png"
 >
   <main>
-    <section class="py-20 sm:py-32">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl text-center">
-          <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-            Help &amp; FAQ
-          </span>
-          <h1 class="mt-4 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.1]">
-            Frequently Asked Questions
-          </h1>
-          <p class="mt-4 text-lg sm:text-xl text-gray-600 leading-relaxed">
-            Everything you need to know about how Huzlly automates freelance workflows, what it costs, and how it compares to other tools.
-          </p>
+    <section id="all" class="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-32 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-medium uppercase tracking-wide text-blue-600">FAQ</p>
+        <h1 class="mt-2 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          Frequently asked questions
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          Everything freelancers ask about client onboarding automation, pricing, and how Huzlly stays lean.
+        </p>
+      </div>
+
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        {categories.map((category) => (
+          
+            href={category.href}
+            class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-500/10 hover:bg-gray-200 transition-colors duration-200 ease-in-out"
+          >
+            {category.label}
+          </a>
+        ))}
+      </div>
+
+      <div class="mx-auto mt-16 max-w-3xl">
+        <h2 id="general" class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          General
+        </h2>
+        <div class="mt-6">
+          <FAQAccordion items={generalFAQs} />
         </div>
 
-        <nav aria-label="FAQ categories" class="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-3">
-          {navPills.map((pill) => (
-            
-              href={pill.href}
-              class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-500/10 hover:bg-gray-900 hover:text-white hover:ring-gray-900 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-            >
-              {pill.label}
-            </a>
-          ))}
-        </nav>
-
-        <div id="faq-content" class="mx-auto mt-16 max-w-3xl">
-          <FAQAccordion categories={faqCategories} />
+        <h2 id="onboarding-contracts" class="mt-16 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          Onboarding &amp; Contracts
+        </h2>
+        <div class="mt-6">
+          <FAQAccordion items={onboardingFAQs} />
         </div>
 
-        <div class="mx-auto mt-16 max-w-3xl">
-          <div class="rounded-lg bg-gray-50 border border-gray-100 p-8 text-center">
-            <h2 class="text-xl font-semibold text-gray-900 leading-snug">
-              Still have questions?
-            </h2>
-            <p class="mt-2 text-base text-gray-600 leading-relaxed">
-              Join the early access waitlist and we will keep you posted as
-              
-                href="/"
-                class="font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out"
-              >
-                Huzlly
-              </a>
-              gets closer to launch.
-            </p>
-            
-              href="/waitlist"
-              class="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-            >
-              Join the early access waitlist
-            </a>
-          </div>
+        <h2 id="pricing-billing" class="mt-16 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          Pricing &amp; Billing
+        </h2>
+        <div class="mt-6">
+          <FAQAccordion items={pricingFAQs} />
+        </div>
+
+        <h2 id="security" class="mt-16 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          Security
+        </h2>
+        <div class="mt-6">
+          <FAQAccordion items={securityFAQs} />
+        </div>
+      </div>
+
+      <div class="mx-auto mt-20 max-w-3xl rounded-lg border border-gray-200 bg-white p-8 shadow-sm text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          Still have questions?
+        </h2>
+        <p class="mt-4 text-lg text-gray-600">
+          Join the waitlist and be the first to know when Huzlly opens up for freelance workflow automation.
+        </p>
+        <div class="mt-8 flex justify-center">
+          
+            href="/waitlist"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+          >
+            Join the Waitlist
+          </a>
         </div>
       </div>
     </section>
-  </main>
 
-  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+  </main>
 </Layout>
