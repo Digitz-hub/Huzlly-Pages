@@ -1,68 +1,128 @@
 ---
-// src/components/layout/Nav.astro
-// Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
-// Mobile menu uses a checkbox-driven CSS toggle — no inline <script>,
-// per CLAUDE.md's zero-tolerance rule on inline scripts outside JSON-LD.
-import { Menu, X } from 'lucide-astro';
-import Button from '../ui/Button.astro';
+import { Menu, X, ArrowRight } from 'lucide-astro';
+
 const navLinks = [
-  { href: '/features', label: 'Features' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'About' },
+  { label: 'Features', href: '/features' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'About', href: '/about' },
 ];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href;
+};
 ---
-<header class="border-b border-gray-100 bg-white">
-  <nav
-    class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8"
-    aria-label="Primary"
-  >
-    <a href="/" class="text-lg font-bold tracking-tight text-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
+
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100/80 transition-all duration-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+    <!-- Brand -->
+    <a
+      href="/"
+      class="text-xl font-bold tracking-tight text-gray-900 flex items-center gap-2 hover:opacity-90 transition-opacity"
+    >
+      <span class="inline-block w-2 h-2 rounded-full bg-blue-600" aria-hidden="true"></span>
       Huzlly
     </a>
-    <input type="checkbox" id="nav-toggle" class="peer sr-only" />
-    <div class="hidden md:order-2 md:flex md:items-center md:gap-8">
-      {
-        navLinks.map((link) => (
-          <a href={link.href} class="text-sm font-semibold text-gray-900 transition-colors duration-200 ease-in-out hover:text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
-            {link.label}
-          </a>
-        ))
-      }
-      <Button href="/waitlist" variant="primary" size="default">Join the Waitlist</Button>
+
+    <!-- Desktop Nav Links -->
+    <nav aria-label="Primary" class="hidden md:flex items-center gap-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class={`text-sm font-medium px-3.5 py-2 rounded-lg transition-all duration-200 ${
+            isActive(link.href)
+              ? 'text-blue-600 bg-blue-50/60 font-semibold'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
+          }`}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Desktop CTA -->
+    <div class="hidden md:flex items-center">
+      <a
+        href="/waitlist"
+        class="group inline-flex items-center gap-2 rounded-lg bg-gray-900 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 hover:shadow-md active:bg-gray-950 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+      >
+        Join Waitlist
+        <ArrowRight class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" stroke-width="1.75" />
+      </a>
     </div>
-    <label
-      for="nav-toggle"
-      class="order-2 inline-flex cursor-pointer items-center justify-center rounded-lg p-2.5 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 peer-checked:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 md:hidden"
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      id="nav-toggle"
+      type="button"
+      class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-900 hover:bg-gray-50/80 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
       aria-controls="mobile-menu"
-      aria-label="Open main menu"
+      aria-expanded="false"
+      aria-label="Toggle navigation menu"
     >
-      <Menu class="w-5 h-5 text-gray-900" stroke-width="1.75" />
-    </label>
-    <label
-      for="nav-toggle"
-      class="order-2 hidden cursor-pointer items-center justify-center rounded-lg p-2.5 text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 peer-checked:flex focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 md:hidden"
-      aria-controls="mobile-menu"
-      aria-label="Close main menu"
-    >
-      <X class="w-5 h-5 text-gray-900" stroke-width="1.75" />
-    </label>
-    <div
-      id="mobile-menu"
-      class="order-3 hidden w-full flex-col gap-1 border-t border-gray-100 pt-4 peer-checked:flex md:hidden"
-    >
-      {
-        navLinks.map((link) => (
-          <a href={link.href} class="rounded-lg px-3.5 py-2.5 text-sm font-semibold text-gray-900 transition-colors duration-200 ease-in-out hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
-            {link.label}
-          </a>
-        ))
-      }
-      <div class="mt-2 pb-2">
-        <Button href="/waitlist" variant="primary" size="default" class="w-full">
-          Join the Waitlist
-        </Button>
-      </div>
-    </div>
-  </nav>
+      <Menu id="nav-icon-menu" class="w-6 h-6" stroke-width="1.75" />
+      <X id="nav-icon-close" class="w-6 h-6 hidden" stroke-width="1.75" />
+    </button>
+  </div>
+
+  <!-- Mobile Menu Sheet -->
+  <div
+    id="mobile-menu"
+    class="md:hidden hidden border-t border-gray-100/80 bg-white/95 backdrop-blur-md"
+  >
+    <nav aria-label="Mobile primary" class="px-4 sm:px-6 py-4 flex flex-col gap-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class={`text-sm font-medium px-3.5 py-2.5 rounded-lg transition-all duration-200 ${
+            isActive(link.href)
+              ? 'text-blue-600 bg-blue-50/60 font-semibold'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
+          }`}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))}
+      <a
+        href="/waitlist"
+        class="group mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+      >
+        Join Waitlist
+        <ArrowRight class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" stroke-width="1.75" />
+      </a>
+    </nav>
+  </div>
 </header>
+
+<script>
+  const toggleBtn = document.getElementById('nav-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const iconMenu = document.getElementById('nav-icon-menu');
+  const iconClose = document.getElementById('nav-icon-close');
+
+  if (toggleBtn && mobileMenu && iconMenu && iconClose) {
+    toggleBtn.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+
+      mobileMenu.classList.toggle('hidden');
+      iconMenu.classList.toggle('hidden');
+      iconClose.classList.toggle('hidden');
+      toggleBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    // Close mobile menu when a link inside it is clicked
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        iconMenu.classList.remove('hidden');
+        iconClose.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+</script>
