@@ -1,0 +1,159 @@
+---
+// src/pages/about.astro
+// Mission/positioning page. Deliberately does not invent founder names,
+// personal history, team size, or company details not established
+// elsewhere in the codebase (index.astro, faq.astro) — it restates and
+// expands on the same facts in a "why this exists" register instead of
+// fabricating a backstory.
+
+import Layout from '../layouts/Layout.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
+import Button from '../components/ui/Button.astro';
+import WaitlistForm from '../components/sections/WaitlistForm.astro';
+import { ArrowRight, Feather, Zap, Tag, Layers, Mail } from 'lucide-astro';
+
+const principles = [
+  {
+    icon: Feather,
+    title: 'Built for one person, not scaled down for one',
+    body: 'Most tools freelancers get pushed toward were built for agencies first and cut down for solos later. Huzlly started with one freelancer running one flow — everything else got left out, not stripped down.',
+  },
+  {
+    icon: Zap,
+    title: 'Live the same day, not after a setup call',
+    body: 'No consultant, no onboarding session, no weeks of configuration before it does anything. Connect your flow and it runs — the same day you sign up.',
+  },
+  {
+    icon: Tag,
+    title: 'One flat price, decided after real use',
+    body: 'No per-seat fees, no usage tiers to track. And because that number matters, we’re setting it after watching real freelancers run real client flows through the beta, not before.',
+  },
+  {
+    icon: Layers,
+    title: 'Fewer apps, not more features bolted on',
+    body: 'The goal was never to out-feature the alternatives. It was to replace the five apps freelancers stitch together with one flow that just runs — and to keep it that way as it grows.',
+  },
+];
+---
+
+<Layout
+  title="About | Huzlly"
+  description="Why Huzlly exists: one automated flow for a freelancer's client workflow, built for solo freelancers instead of agencies, priced flat instead of per seat."
+  canonicalPath="/about"
+  ogImage="/og/og-about.png"
+>
+  <main>
+    <!-- Hero -->
+    <section class="bg-white px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-6xl rounded-3xl bg-blue-50/50 sm:bg-blue-50/40 px-6 py-16 text-center sm:px-12 sm:py-24 mt-6">
+        <p class="text-xs font-medium uppercase tracking-wide text-blue-600">About</p>
+        <h1 class="mt-2 text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+          One flow, built on purpose <span class="text-blue-600">— not by accident.</span>
+        </h1>
+        <p class="mt-4 text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+          Freelance client work shouldn't need five disconnected apps to run. Huzlly connects
+          proposal approval, contract signing, payment collection, and intake into one automated
+          flow — built specifically for the person doing the work alone.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button href="/waitlist" size="lg">
+            Join the waitlist
+            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+          <Button href="/features" variant="outline" size="lg">
+            See how it works
+          </Button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why it exists -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl text-center">
+        <SectionHeader
+          eyebrow="Why Huzlly exists"
+          title="Five apps for one job is the problem, not a fact of life"
+        />
+        <p class="mt-6 text-gray-600 leading-relaxed">
+          A proposal tool. An e-sign app. An invoicing tool. A payment processor. A form builder.
+          Freelancers stitch these together by hand for every single client, then do it again
+          for the next one. None of that busywork is the actual job — it's just what sits
+          between winning the work and starting it. Huzlly connects those steps into one flow so
+          approval triggers the contract, signing triggers the invoice, and payment triggers
+          intake, automatically.
+        </p>
+      </div>
+    </section>
+
+    <!-- Who we build for -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl">
+        <Card variant="highlighted" class="p-8 sm:p-12 text-center">
+          <Badge variant="beta" class="mx-auto">Solo freelancers, not agencies</Badge>
+          <h2 class="mt-5 text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+            We build for one freelancer running one flow
+          </h2>
+          <p class="mt-4 text-gray-600 leading-relaxed max-w-xl mx-auto">
+            Not agencies. Not teams that need multi-seat collaboration or approval chains.
+            Huzlly is deliberately single-user first, for designers, writers, consultants, and
+            coaches who are juggling every part of client work themselves.
+          </p>
+          <div class="mt-6">
+            <a href="/features" class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 rounded-md">
+              See if Huzlly fits how you work
+              <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+            </a>
+          </div>
+        </Card>
+      </div>
+    </section>
+
+    <!-- Principles -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-6xl">
+        <SectionHeader
+          eyebrow="How we build it"
+          title="A few things that aren't up for debate"
+          subtitle="Decisions we made early and haven't reconsidered, whatever else changes along the way."
+        />
+
+        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {principles.map((principle) => (
+            <Card variant="flat">
+              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                <principle.icon class="w-5 h-5" stroke-width="1.75" />
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-gray-900">{principle.title}</h3>
+              <p class="mt-2 text-sm text-gray-600 leading-relaxed">{principle.body}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Where we are now -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <SectionHeader
+          eyebrow="Where we are now"
+          title="Pre-launch, in closed beta, on purpose"
+          subtitle="Huzlly is onboarding freelancers in small cohorts — 50 this round — so we can watch the flow get used before we scale it or price it."
+        />
+        <p class="mt-8 flex items-center justify-center gap-2 text-sm text-gray-600">
+          <Mail class="w-4 h-4 text-gray-400" stroke-width="2" />
+          Questions or feedback? Reach us at
+          <a href="mailto:contact@huzlly.com" class="text-blue-600 font-semibold hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 rounded-md">
+            contact@huzlly.com
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <WaitlistForm
+      heading="Come run your flow through it"
+      subheading="Join the waitlist and we'll walk you through how Huzlly fits your workflow — no sales calls, no pressure."
+    />
+  </main>
+</Layout>
