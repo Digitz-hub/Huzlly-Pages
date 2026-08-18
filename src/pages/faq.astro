@@ -91,18 +91,18 @@ const categoryInputs: CategoryInput[] = [
   },
 ];
 
-const categories = categoryInputs.map((category) => ({
-  ...category,
-  anchorHref: '#' + category.id,
-  heading: category.label + ' questions',
-}));
+// Flatten all categories into a single ordered list for the 2-column grid.
+// Category grouping is preserved only for the JSON-LD schema construction
+// below (kept intact per SITE_IDENTITY_AND_AEO.md / PAGE_MAP_AND_SEO.md),
+// not for the visual layout, per this design's flat-grid requirement.
+const allItems: FAQItem[] = categoryInputs.flatMap((category) => category.items);
 
 const stripHtml = (value: string) => value.replace(/<[^>]*>/g, '');
 
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: categories.flatMap((category) =>
+  mainEntity: categoryInputs.flatMap((category) =>
     category.items.map((item) => ({
       '@type': 'Question',
       name: item.question,
@@ -121,44 +121,24 @@ const faqSchema = {
   ogImage="/og/og-faq.png"
 >
   <main>
-    <section class="bg-white px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-      <div class="mx-auto max-w-5xl rounded-2xl border border-blue-100/60 bg-sky-50/50 px-6 py-12 text-center sm:px-12 sm:py-16">
-        <h1 class="text-3xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-tight">
-          Frequently asked <span class="text-blue-600">Questions</span>
+    <section class="bg-white px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-6xl rounded-3xl bg-blue-50/50 sm:bg-blue-50/40 px-6 py-16 text-center sm:px-12 sm:py-24 mt-6">
+        <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+          Frequently Asked <span class="text-blue-600">Questions</span>
         </h1>
-        <p class="mt-4 text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p class="mt-4 text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
           Everything freelancers ask before automating client onboarding, contracts, and
           payments with Huzlly — no enterprise jargon, just plain answers.
         </p>
-
-        <nav aria-label="Jump to FAQ category" class="mt-8 flex flex-wrap justify-center gap-2">
-          {categories.map((category) => (
-            <a href={category.anchorHref}
-              class="rounded-full bg-white border border-gray-200 px-4 py-1.5 text-xs sm:text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-blue-300 hover:text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-            >
-              {category.label}
-            </a>
-          ))}
-        </nav>
       </div>
     </section>
 
-    <section class="bg-gray-50 px-4 py-12 sm:px-6 sm:py-20 lg:px-8">
-      <div class="mx-auto flex max-w-3xl flex-col gap-16">
-        {categories.map((category) => (
-          <div id={category.id} class="scroll-mt-24">
-            <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-600">
-              {category.label}
-            </span>
-            <h2 class="mt-3 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-              {category.heading}
-            </h2>
-            <div class="mt-8">
-              <FAQAccordion items={category.items} />
-            </div>
-          </div>
-        ))}
-      </div>
+    <section class="bg-white px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+      <h2 class="mt-20 sm:mt-24 text-center text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+        Get to Know Huzlly Better
+      </h2>
+
+      <FAQAccordion items={allItems} />
     </section>
 
     <section class="bg-white px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
