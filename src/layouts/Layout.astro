@@ -58,12 +58,13 @@ const organizationSchema = {
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Type pairing per DESIGN_SYSTEM.md Section 2: Inter (body/UI) + Plus Jakarta Sans (display).
+    <!-- Type pairing per DESIGN_SYSTEM.md v2 Section 2: Inter (body/UI) +
+         Space Grotesk (display) + JetBrains Mono (eyebrows, node captions,
+         step counters). Replaces the superseded Plus Jakarta Sans pairing.
          Loaded once, sitewide, from Layout.astro — the only file that owns <head>. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -87,7 +88,7 @@ const organizationSchema = {
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
   </head>
-  <body class="bg-white text-gray-900 antialiased">
+  <body class="bg-paper text-ink antialiased">
     <Nav />
     <slot />
     <Footer />
