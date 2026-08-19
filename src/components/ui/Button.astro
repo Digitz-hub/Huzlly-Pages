@@ -21,19 +21,21 @@ const {
   ariaLabel,
 } = Astro.props;
 
-// Base classes per variant — copied verbatim from DESIGN_SYSTEM.md Section 3,
-// with padding/text-size split out into `sizeByVariant` below so size can vary
-// independently of variant. Focus-visible ring applied to every variant per
-// the sitewide accessibility requirement in DESIGN_SYSTEM.md Section 5.
+// Base classes per variant — copied verbatim from DESIGN_SYSTEM.md Section 3.
+// Radius bumped to rounded-xl and neutral fill moved to stone-900 as part of
+// the warm-neutral redesign pass. Padding/text-size split out into
+// `sizeByVariant` below so size can vary independently of variant.
+// Focus-visible ring applied to every variant per the sitewide accessibility
+// requirement in DESIGN_SYSTEM.md Section 5.
 const baseByVariant: Record<string, string> = {
   primary:
-    'inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+    'inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 text-white shadow-sm hover:bg-stone-800 active:bg-stone-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
   secondary:
-    'inline-flex items-center justify-center gap-2 rounded-lg text-gray-900 hover:bg-gray-100 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+    'inline-flex items-center justify-center gap-2 rounded-xl text-stone-900 hover:bg-stone-100 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
   outline:
-    'inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 text-gray-900 bg-white hover:bg-gray-50 hover:border-gray-400 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+    'inline-flex items-center justify-center gap-2 rounded-xl border border-stone-300 text-stone-900 bg-white hover:bg-stone-50 hover:border-stone-400 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
   accent:
-    'inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900',
+    'inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
 };
 
 // Button Sizing Variants (DESIGN_SYSTEM.md Section 3)
