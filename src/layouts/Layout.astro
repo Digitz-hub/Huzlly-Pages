@@ -23,6 +23,7 @@ export interface Props {
   ogImage?: string;
   canonicalPath: string;
   noindex?: boolean;
+  hideChrome?: boolean;
 }
 
 const {
@@ -31,6 +32,7 @@ const {
   ogImage = '/og/og-home.png',
   canonicalPath,
   noindex = false,
+  hideChrome = false,
 } = Astro.props;
 
 const siteUrl = 'https://huzlly.com';
@@ -89,8 +91,8 @@ const organizationSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
   </head>
   <body class="bg-paper text-ink antialiased">
-    <Nav />
+    {!hideChrome && <Nav />}
     <slot />
-    <Footer />
+    {!hideChrome && <Footer />}
   </body>
 </html>
