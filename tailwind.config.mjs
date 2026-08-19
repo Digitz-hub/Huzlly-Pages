@@ -4,17 +4,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Warm off-white alt-section background — DESIGN_SYSTEM.md Section 1.
-        // A real config-level token (not an arbitrary bracket value), used as bg-warm-50.
-        warm: {
-          50: '#FAF9F6',
-        },
+        // Ink / Paper / Rail — DESIGN_SYSTEM.md v2 Section 1. Replaces the
+        // superseded stone/warm-50 system entirely. Ink is a warm near-black
+        // (not stone-900), Paper is the base page background, Rail is the
+        // hairline/border/dot-grid tone.
+        ink: '#14110F',
+        paper: '#FCFBF8',
+        rail: '#E4E0D8',
       },
       fontFamily: {
-        // Body/UI face — unchanged, now actually wired to a loaded webfont (see Layout.astro).
-        sans: ['"Inter Variable"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        // Display face — headlines and display numerals only. DESIGN_SYSTEM.md Section 2.
-        display: ['"Plus Jakarta Sans Variable"', '"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Body/UI face — unchanged.
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Display face — Space Grotesk replaces Plus Jakarta Sans.
+        // DESIGN_SYSTEM.md v2 Section 2.
+        display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Mono face (new) — eyebrow labels, flow-node captions, step counters.
+        // DESIGN_SYSTEM.md v2 Section 2.
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
     },
   },
