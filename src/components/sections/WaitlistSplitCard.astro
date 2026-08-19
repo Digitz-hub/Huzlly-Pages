@@ -37,8 +37,8 @@ const bullets = [
 ];
 ---
 
-<section class="relative bg-paper px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-  <div class="split-card mx-auto max-w-6xl overflow-hidden rounded-3xl border border-rail bg-white shadow-xl lg:grid lg:grid-cols-2">
+<section class="relative bg-paper px-4 pt-12 pb-4 sm:px-6 sm:pt-16 sm:pb-6 lg:px-8 lg:pt-20 lg:pb-8">
+  <div class="split-card mx-auto max-w-[90rem] min-h-[640px] overflow-hidden rounded-3xl border border-rail bg-white shadow-[0_30px_80px_-20px_rgba(15,23,42,0.35)] lg:grid lg:grid-cols-2 lg:min-h-[720px]">
     <!-- Left panel: brand + value -->
     <div class="relative flex flex-col gap-10 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-8 sm:p-10 lg:p-12">
       <!-- Ambient pastel accents (decorative, contained within the panel) -->
@@ -142,11 +142,27 @@ const bullets = [
     opacity: 0;
     transform: translateY(10px);
     animation: split-card-in 0.6s ease-out forwards;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    will-change: transform;
   }
   @keyframes split-card-in {
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  /* Subtle floating effect once settled — a light continuous hover so the
+     card reads as elevated above the page background rather than flush
+     against it. */
+  @media (min-width: 1024px) {
+    .split-card {
+      animation:
+        split-card-in 0.6s ease-out forwards,
+        split-card-float 6s ease-in-out 0.6s infinite;
+    }
+    @keyframes split-card-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
   }
   @media (prefers-reduced-motion: reduce) {
