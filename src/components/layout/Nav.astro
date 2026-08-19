@@ -21,7 +21,24 @@
 //   Huzlly's actual page map — content always follows PAGE_MAP_AND_SEO.md,
 //   never the inspiration source, even when the inspiration has a different
 //   link count.
-// - No dropdowns, no hide-on-scroll — CTA and pill stay static/persistent.
+// - No dropdowns — CTA stays static/persistent (no hover-lift motion), but
+//   the shell itself now hides/shows on scroll direction per the animation
+//   brief below (this supersedes the earlier "no hide-on-scroll" note).
+//
+// ANIMATION LAYER (this revision)
+// The load reveal, scroll-driven hide/show + frosted-glass state, and the
+// sliding tab indicator all depend on runtime-measured values (scroll
+// position, link bounding boxes) that can't be expressed as static Tailwind
+// utility classes — so the transition/keyframe timing lives in the scoped
+// <style> block below (real CSS, not Tailwind's bracket arbitrary-value
+// syntax, so this doesn't conflict with CLAUDE.md Section 3's arbitrary-value
+// ban) and the indicator's per-frame position is set via el.style in the
+// <script> block, which is the standard, unavoidable technique for
+// runtime-computed geometry (distinct from hand-authoring a static
+// style="..." attribute in markup, which stays banned and isn't used here).
+// The CTA hover scale uses Tailwind's built-in `hover:scale-105` rather than
+// the requested 1.03 — 105 is the nearest value on Tailwind's default scale,
+// keeping the "no arbitrary values" rule intact for something this close.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -41,10 +58,10 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="sticky top-4 z-50 mt-4 px-4 sm:top-6 sm:mt-6 sm:px-6">
+<header id="site-nav" class="nav-shell sticky top-4 z-50 mt-4 -translate-y-5 px-4 opacity-0 sm:top-6 sm:mt-6 sm:px-6">
   <div class="relative mx-auto max-w-5xl">
     <!-- Floating glass pill bar -->
-    <div class="flex h-14 items-center justify-between rounded-full border border-white/60 bg-white/70 pl-5 pr-2 shadow-lg shadow-black/5 backdrop-blur-xl sm:h-16 sm:pl-6 sm:pr-2.5">
+    <div id="nav-pill" class="nav-pill flex h-14 items-center justify-between rounded-full border border-white/60 bg-white/70 pl-5 pr-2 shadow-lg shadow-black/5 backdrop-blur-xl sm:h-16 sm:pl-6 sm:pr-2.5">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-ink transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -54,13 +71,15 @@ const isActive = (href: string) => {
       </a>
 
       <!-- Center: Desktop nav links -->
-      <nav aria-label="Primary" class="hidden md:flex md:items-center md:gap-1">
+      <nav id="primary-nav" aria-label="Primary" class="relative hidden md:flex md:items-center md:gap-1">
+        <span id="nav-indicator" class="nav-indicator absolute left-0 top-0 z-0 h-full rounded-full bg-blue-50 opacity-0" aria-hidden="true"></span>
         {navLinks.map((link) => (
           <a href={link.href}
-            class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+            data-nav-link
+            class={`relative z-10 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-50 text-blue-600'
-                : 'text-ink/60 hover:text-ink hover:bg-black/[0.03]'
+                ? 'text-blue-600'
+                : 'text-ink/60 hover:text-ink'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
@@ -71,7 +90,7 @@ const isActive = (href: string) => {
 
       <!-- Right: Desktop CTA -->
       <div class="hidden md:flex md:items-center">
-        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none">
+        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none !transition-all !duration-200 !ease-out hover:scale-105 active:scale-95">
           Join Waitlist
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
@@ -116,12 +135,191 @@ const isActive = (href: string) => {
   </div>
 </header>
 
+<style>
+  /* ── Load reveal + scroll hide/show (header shell) ──────────────────── */
+  /* Spring-like overshoot curve for the load-in; reused for scroll
+     hide/show so the whole shell feels like one consistent motion system. */
+  .nav-shell {
+    transition:
+      opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+      transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .nav-shell.is-hidden {
+    transform: translateY(-130%);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── Scroll-state frosted glass + compact pill ───────────────────────
+     Overrides the base Tailwind utility values with real CSS so the
+     transition list below can animate every changed property at once —
+     swapping discrete Tailwind classes would still animate, but coordinating
+     six properties across two states is clearer written directly. */
+  .nav-pill {
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      backdrop-filter 0.3s ease,
+      height 0.3s ease,
+      padding 0.3s ease;
+  }
+  .nav-pill.is-scrolled {
+    background-color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(20, 17, 15, 0.1);
+    box-shadow: 0 10px 30px -12px rgba(20, 17, 15, 0.18);
+    backdrop-filter: blur(20px);
+    height: 3.25rem;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .nav-pill.is-scrolled {
+      height: 3.5rem;
+      padding-left: 1.25rem;
+    }
+  }
+
+  /* ── Sliding active/hover tab indicator ──────────────────────────────
+     Position/width are set per-frame in the script below since they depend
+     on measured link geometry; only the animated easing lives here. */
+  .nav-indicator {
+    transition:
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 0.2s ease;
+    will-change: transform, width;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-shell,
+    .nav-shell.is-hidden,
+    .nav-pill,
+    .nav-indicator {
+      transition: none !important;
+    }
+    .nav-shell {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+
 <script>
+  const header = document.getElementById('site-nav');
+  const pill = document.getElementById('nav-pill');
   const toggleBtn = document.getElementById('nav-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
   const iconMenu = document.getElementById('nav-icon-menu');
   const iconClose = document.getElementById('nav-icon-close');
+  const primaryNav = document.getElementById('primary-nav');
+  const indicator = document.getElementById('nav-indicator');
 
+  const prefersReducedMotion =
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ── 1. Initial load reveal: slide down + fade in ──────────────────────
+  if (header) {
+    if (prefersReducedMotion) {
+      header.classList.remove('opacity-0', '-translate-y-5');
+    } else {
+      // Double rAF ensures the pre-animation state paints first, so removing
+      // the classes actually triggers the CSS transition instead of jumping.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          header.classList.remove('opacity-0', '-translate-y-5');
+        });
+      });
+    }
+  }
+
+  // ── 2. Scroll-driven frosted glass + direction-aware hide/show ────────
+  if (header && pill) {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const isMobileMenuOpen = () => mobileMenu && !mobileMenu.classList.contains('hidden');
+
+    const update = () => {
+      const scrollY = window.scrollY;
+      const scrolled = scrollY > 30;
+
+      pill.classList.toggle('is-scrolled', scrolled);
+
+      if (!scrolled || isMobileMenuOpen()) {
+        header.classList.remove('is-hidden');
+      } else if (scrollY > lastScrollY) {
+        // Scrolling down past the threshold — slide out of view.
+        header.classList.add('is-hidden');
+      } else {
+        // Scrolling up (even slightly) — bring it back immediately.
+        header.classList.remove('is-hidden');
+      }
+
+      lastScrollY = scrollY;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
+  }
+
+  // ── 3. Sliding active/hover tab indicator ──────────────────────────────
+  if (primaryNav && indicator) {
+    const links = Array.from(primaryNav.querySelectorAll('a[data-nav-link]'));
+    const activeLink = links.find((link) => link.getAttribute('aria-current') === 'page');
+
+    const moveIndicatorTo = (el, animate = true) => {
+      const navRect = primaryNav.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+
+      if (!animate) indicator.style.transition = 'none';
+      indicator.style.width = `${elRect.width}px`;
+      indicator.style.transform = `translateX(${elRect.left - navRect.left}px)`;
+      indicator.style.opacity = '1';
+      if (!animate) {
+        // Force a reflow, then restore the CSS-defined transition.
+        void indicator.offsetWidth;
+        indicator.style.transition = '';
+      }
+    };
+
+    if (activeLink) {
+      moveIndicatorTo(activeLink, false);
+    }
+
+    links.forEach((link) => {
+      link.addEventListener('mouseenter', () => moveIndicatorTo(link));
+      link.addEventListener('focus', () => moveIndicatorTo(link));
+    });
+
+    primaryNav.addEventListener('mouseleave', () => {
+      if (activeLink) {
+        moveIndicatorTo(activeLink);
+      } else {
+        indicator.style.opacity = '0';
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      const current = primaryNav.matches(':hover') ? document.activeElement : activeLink;
+      if (current && links.includes(current)) moveIndicatorTo(current, false);
+      else if (activeLink) moveIndicatorTo(activeLink, false);
+    });
+  }
+
+  // ── Mobile menu toggle (unchanged behavior) ────────────────────────────
   if (toggleBtn && mobileMenu && iconMenu && iconClose) {
     toggleBtn.addEventListener('click', () => {
       const isOpen = !mobileMenu.classList.contains('hidden');
