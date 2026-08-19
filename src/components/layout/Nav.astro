@@ -1,5 +1,13 @@
 ---
+// src/components/layout/Nav.astro
+// Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
+// v2 redesign pass: ink/paper/rail palette replaces gray-*/white; the CTA
+// button reuses the ui/ Button primitive instead of hand-rolled markup
+// (per CLAUDE.md Section 2's "always use the primitive" rule); logo dot
+// and active-link accent stay blue-600 (fixed accent, unchanged).
+
 import { Menu, X, ArrowRight } from 'lucide-astro';
+import Button from '../ui/Button.astro';
 
 const navLinks = [
   { label: 'Features', href: '/features' },
@@ -16,12 +24,11 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100/80 transition-all duration-200">
+<header class="sticky top-0 z-50 bg-paper/80 backdrop-blur-md border-b border-rail transition-all duration-200">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
     <!-- Brand -->
-    <a
-      href="/"
-      class="text-xl font-bold tracking-tight text-gray-900 flex items-center gap-2 hover:opacity-90 transition-opacity"
+    <a href="/"
+      class="font-display text-xl font-semibold tracking-tight text-ink flex items-center gap-2 hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
     >
       <span class="inline-block w-2 h-2 rounded-full bg-blue-600" aria-hidden="true"></span>
       Huzlly
@@ -30,12 +37,11 @@ const isActive = (href: string) => {
     <!-- Desktop Nav Links -->
     <nav aria-label="Primary" class="hidden md:flex items-center gap-1">
       {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class={`text-sm font-medium px-3.5 py-2 rounded-lg transition-all duration-200 ${
+        <a href={link.href}
+          class={`text-sm font-medium px-3.5 py-2 rounded-xl transition-all duration-200 ${
             isActive(link.href)
               ? 'text-blue-600 bg-blue-50/60 font-semibold'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
+              : 'text-ink/70 hover:text-ink hover:bg-rail/30'
           }`}
           aria-current={isActive(link.href) ? 'page' : undefined}
         >
@@ -46,20 +52,16 @@ const isActive = (href: string) => {
 
     <!-- Desktop CTA -->
     <div class="hidden md:flex items-center">
-      <a
-        href="/waitlist"
-        class="group inline-flex items-center gap-2 rounded-lg bg-gray-900 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 hover:shadow-md active:bg-gray-950 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-      >
+      <Button href="/waitlist" size="default">
         Join Waitlist
-        <ArrowRight class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" stroke-width="1.75" />
-      </a>
+        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+      </Button>
     </div>
 
     <!-- Mobile Menu Toggle -->
-    <button
-      id="nav-toggle"
+    <button id="nav-toggle"
       type="button"
-      class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-900 hover:bg-gray-50/80 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+      class="md:hidden inline-flex items-center justify-center rounded-xl p-2 text-ink hover:bg-rail/30 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
       aria-controls="mobile-menu"
       aria-expanded="false"
       aria-label="Toggle navigation menu"
@@ -70,31 +72,24 @@ const isActive = (href: string) => {
   </div>
 
   <!-- Mobile Menu Sheet -->
-  <div
-    id="mobile-menu"
-    class="md:hidden hidden border-t border-gray-100/80 bg-white/95 backdrop-blur-md"
-  >
+  <div id="mobile-menu" class="md:hidden hidden border-t border-rail bg-paper/95 backdrop-blur-md">
     <nav aria-label="Mobile primary" class="px-4 sm:px-6 py-4 flex flex-col gap-1">
       {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class={`text-sm font-medium px-3.5 py-2.5 rounded-lg transition-all duration-200 ${
+        <a href={link.href}
+          class={`text-sm font-medium px-3.5 py-2.5 rounded-xl transition-all duration-200 ${
             isActive(link.href)
               ? 'text-blue-600 bg-blue-50/60 font-semibold'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50/80'
+              : 'text-ink/70 hover:text-ink hover:bg-rail/30'
           }`}
           aria-current={isActive(link.href) ? 'page' : undefined}
         >
           {link.label}
         </a>
       ))}
-      <a
-        href="/waitlist"
-        class="group mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 active:bg-gray-950 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
-      >
+      <Button href="/waitlist" size="default" class="mt-2 w-full">
         Join Waitlist
-        <ArrowRight class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" stroke-width="1.75" />
-      </a>
+        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+      </Button>
     </nav>
   </div>
 </header>
