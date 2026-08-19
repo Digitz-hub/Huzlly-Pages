@@ -1,6 +1,6 @@
 ---
 // src/components/ui/Button.astro
-// Primitive button/link per DESIGN_SYSTEM.md Section 3 (Buttons).
+// Primitive button/link per DESIGN_SYSTEM.md v2 Section 3 (Buttons).
 // Renders an <a> when `href` is passed, otherwise a native <button>.
 
 export interface Props {
@@ -10,6 +10,11 @@ export interface Props {
   type?: 'button' | 'submit' | 'reset';
   class?: string;
   ariaLabel?: string;
+  // New in v2 — independent of `variant`. Adds the hover-lift treatment
+  // (translate-y + shadow-md on hover) to high-emphasis CTAs, per
+  // DESIGN_SYSTEM.md Section 3 "Primary CTA — Motion variant". Used as
+  // <Button motion> on hero/high-emphasis primary CTAs only.
+  motion?: boolean;
 }
 
 const {
@@ -19,24 +24,29 @@ const {
   type = 'button',
   class: className,
   ariaLabel,
+  motion = false,
 } = Astro.props;
 
-// Base classes per variant — copied verbatim from DESIGN_SYSTEM.md Section 3.
-// Radius bumped to rounded-xl and neutral fill moved to stone-900 as part of
-// the warm-neutral redesign pass. Padding/text-size split out into
-// `sizeByVariant` below so size can vary independently of variant.
-// Focus-visible ring applied to every variant per the sitewide accessibility
-// requirement in DESIGN_SYSTEM.md Section 5.
+// Base classes per variant — copied verbatim from DESIGN_SYSTEM.md v2 Section 3.
+// Ink/paper/rail palette replaces the superseded stone/amber system.
 const baseByVariant: Record<string, string> = {
   primary:
-    'inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 text-white shadow-sm hover:bg-stone-800 active:bg-stone-950 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
+    'inline-flex items-center justify-center gap-2 rounded-xl bg-ink text-paper shadow-sm hover:bg-ink/90 active:bg-ink transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
   secondary:
-    'inline-flex items-center justify-center gap-2 rounded-xl text-stone-900 hover:bg-stone-100 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
+    'inline-flex items-center justify-center gap-2 rounded-xl text-ink hover:bg-rail/40 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
   outline:
-    'inline-flex items-center justify-center gap-2 rounded-xl border border-stone-300 text-stone-900 bg-white hover:bg-stone-50 hover:border-stone-400 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
+    'inline-flex items-center justify-center gap-2 rounded-xl border border-rail text-ink bg-paper hover:bg-rail/20 hover:border-ink/30 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
   accent:
-    'inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900',
+    'inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink',
 };
+
+// Motion variant of "primary" swaps duration-200 color transition for a
+// duration-200 all-transition so the lift + shadow animate alongside the
+// background shift — DESIGN_SYSTEM.md Section 3 "Motion variant" block.
+const primaryMotion =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-ink text-paper shadow-sm hover:bg-ink/90 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 transition-all duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink';
+
+const base = motion && variant === 'primary' ? primaryMotion : baseByVariant[variant];
 
 // Button Sizing Variants (DESIGN_SYSTEM.md Section 3)
 const sizeByVariant: Record<string, string> = {
@@ -49,7 +59,7 @@ const sizeByVariant: Record<string, string> = {
 // per the design system it carries no px/py, only text sizing.
 const sizeClasses = variant === 'accent' ? 'text-sm font-semibold' : sizeByVariant[size];
 
-const classes = [baseByVariant[variant], sizeClasses, className].filter(Boolean).join(' ');
+const classes = [base, sizeClasses, className].filter(Boolean).join(' ');
 ---
 
 {
