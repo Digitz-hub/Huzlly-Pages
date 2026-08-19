@@ -8,10 +8,12 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
   canonicalPath="/waitlist"
   hideChrome={true}
 >
-  <main class="flex h-[100dvh] flex-col items-center justify-center overflow-hidden">
-    <WaitlistSplitCard />
+  <main class="flex h-[100dvh] flex-col items-center overflow-hidden px-4 py-3 sm:px-6 sm:py-4">
+    <div class="flex w-full flex-1 items-center justify-center overflow-hidden">
+      <WaitlistSplitCard />
+    </div>
 
-    <p class="mt-2 shrink-0 text-center text-sm text-ink/50">
+    <p class="shrink-0 pt-2 text-center text-sm text-ink/50">
       <a href="/privacy" class="rounded hover:text-ink/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Privacy</a>
       <span class="px-2" aria-hidden="true">·</span>
       <a href="/terms" class="rounded hover:text-ink/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Terms</a>
