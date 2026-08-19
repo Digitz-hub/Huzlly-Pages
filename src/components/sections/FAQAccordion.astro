@@ -1,4 +1,8 @@
 ---
+// src/components/sections/FAQAccordion.astro
+// v2 redesign pass: ink/paper/rail palette replaces gray-*; accent icons
+// (Plus/Minus) stay blue-600 (fixed accent, unchanged).
+
 import { Plus, Minus } from 'lucide-astro';
 
 export interface FAQItem {
@@ -15,8 +19,8 @@ const { items } = Astro.props;
 
 <div>
   {items.map((item) => (
-    <details class="group rounded-2xl bg-gray-50/70 hover:bg-gray-100/80 border border-gray-100/80 p-5 sm:p-6 mb-4 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
-      <summary class="flex items-center justify-between text-left font-semibold text-gray-900 text-base sm:text-lg gap-4 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900">
+    <details class="group rounded-2xl bg-rail/10 hover:bg-rail/20 border border-rail p-5 sm:p-6 mb-4 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
+      <summary class="flex items-center justify-between text-left font-semibold text-ink text-base sm:text-lg gap-4 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
         <span>
           {item.question}
         </span>
@@ -25,7 +29,7 @@ const { items } = Astro.props;
           <Minus class="w-5 h-5 text-blue-600 flex-shrink-0 hidden group-open:block" stroke-width="1.75" />
         </span>
       </summary>
-      <div class="mt-3 text-sm sm:text-base text-gray-600 leading-relaxed font-normal [&_a]:text-blue-600 [&_a]:hover:text-blue-700 [&_a]:font-semibold [&_a]:transition-colors [&_a]:duration-200 [&_a]:ease-in-out [&_a]:focus-visible:outline [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-2 [&_a]:focus-visible:outline-gray-900"
+      <div class="mt-3 text-sm sm:text-base text-ink/70 leading-relaxed font-normal [&_a]:text-blue-600 [&_a]:hover:text-blue-700 [&_a]:font-semibold [&_a]:transition-colors [&_a]:duration-200 [&_a]:ease-in-out [&_a]:focus-visible:outline [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-2 [&_a]:focus-visible:outline-ink"
         set:html={item.answer}
       />
     </details>
