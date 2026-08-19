@@ -4,6 +4,12 @@
 // plus a short "why lean, not bloated" strip pulled from the same
 // positioning used in FAQAccordion's Comparisons category. Deep-dive
 // copy stays on /features — this is the summary version.
+//
+// v2 redesign pass: cards move to the ink/paper/rail neutral system, the
+// 4-card step grid uses Card's new `flat-lift` + tick-mark treatment (the
+// design system's "feature/process card" pairing), and section backgrounds
+// invert per Section 4's rhythm — Paper is now the base, White is the
+// occasional crisp break, rather than the old White/warm-50 pairing.
 
 import { FileText, PenTool, Receipt, FolderKanban, Tag, Zap, Feather } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
@@ -53,31 +59,29 @@ const reasons = [
 
 <section id="how-it-works" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <SectionHeader
-      eyebrow="How it works"
+    <SectionHeader eyebrow="How it works"
       title="Four steps. Zero handoffs."
       subtitle="Each step in your client workflow triggers the next one automatically — you only touch what actually needs a human."
     />
 
     <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {steps.map((step, i) => (
-        <Card variant="flat" class="relative">
-          <span class="font-mono text-[11px] text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
-          <span class="mt-3 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+        <Card variant="flat-lift" tick>
+          <span class="font-mono text-xs text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
+          <span class="mt-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
             <step.icon class="w-5 h-5" stroke-width="1.75" />
           </span>
-          <h3 class="mt-4 text-base font-semibold text-gray-900">{step.title}</h3>
-          <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.body}</p>
+          <h3 class="mt-4 text-xl font-semibold text-ink leading-snug">{step.title}</h3>
+          <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.body}</p>
         </Card>
       ))}
     </div>
   </div>
 </section>
 
-<section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<section class="bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <SectionHeader
-      eyebrow="Why lean"
+    <SectionHeader eyebrow="Why lean"
       title="Built for one freelancer, not a whole team"
       subtitle="Bonsai and HoneyBook grew into agency platforms. Huzlly stayed built for the person doing the work."
     />
@@ -85,11 +89,11 @@ const reasons = [
     <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
       {reasons.map((reason) => (
         <Card variant="elevated" class="text-center sm:text-left">
-          <span class="mx-auto sm:mx-0 flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white">
+          <span class="mx-auto sm:mx-0 flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
             <reason.icon class="w-5 h-5" stroke-width="1.75" />
           </span>
-          <h3 class="mt-4 text-base font-semibold text-gray-900">{reason.title}</h3>
-          <p class="mt-2 text-sm text-gray-600 leading-relaxed">{reason.body}</p>
+          <h3 class="mt-4 text-xl font-semibold text-ink leading-snug">{reason.title}</h3>
+          <p class="mt-2 text-sm text-ink/70 leading-relaxed">{reason.body}</p>
         </Card>
       ))}
     </div>
