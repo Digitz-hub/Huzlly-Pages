@@ -1,6 +1,9 @@
 ---
 // src/components/ui/Badge.astro
 // Primitive pill/badge per DESIGN_SYSTEM.md Section 3 (Badges & Pills).
+// Pills stay rounded-full sitewide — already the softest point on the radius
+// scale, so the redesign's radius bump doesn't touch this component.
+// Neutral variant moved from gray-* to stone-* per the palette redesign.
 
 export interface Props {
   variant?: 'beta' | 'success' | 'warning' | 'neutral';
@@ -9,7 +12,6 @@ export interface Props {
 
 const { variant = 'neutral', class: className } = Astro.props;
 
-// Classes copied verbatim from DESIGN_SYSTEM.md Section 3.
 const classesByVariant: Record<string, string> = {
   beta: 'inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10',
   success:
@@ -17,7 +19,7 @@ const classesByVariant: Record<string, string> = {
   warning:
     'inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20',
   neutral:
-    'inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-500/10',
+    'inline-flex items-center rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700 ring-1 ring-inset ring-stone-500/10',
 };
 
 const classes = [classesByVariant[variant], className].filter(Boolean).join(' ');
