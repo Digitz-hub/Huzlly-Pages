@@ -51,16 +51,34 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
     <div class="pointer-events-none absolute -bottom-14 -left-10 -z-10 h-44 w-44 rounded-full bg-violet-400/40 blur-2xl sm:h-60 sm:w-60" aria-hidden="true"></div>
     <div class="pointer-events-none absolute -bottom-10 -right-10 -z-10 h-40 w-40 rounded-full bg-sky-300/50 blur-2xl sm:h-56 sm:w-56" aria-hidden="true"></div>
 
-    <!-- Subtle wavy line motif -->
+    <!-- Ribbon-wave motif: dense, corner-concentrated flowing lines (top-right + bottom-left),
+         echoing the reference's layered wave clusters rather than a single thin pair of lines. -->
     <svg
-      class="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-30"
+      class="pointer-events-none absolute inset-0 -z-10 h-full w-full"
       viewBox="0 0 1440 900"
       preserveAspectRatio="xMidYMid slice"
       fill="none"
       aria-hidden="true"
     >
-      <path d="M-100 120 C 260 20, 520 240, 880 110 S 1500 20, 1600 150" stroke="white" stroke-width="2" stroke-linecap="round" />
-      <path d="M-100 60 C 260 -20, 520 160, 880 50 S 1500 -20, 1600 90" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+      <!-- Top-right cluster -->
+      <g stroke="white" stroke-linecap="round">
+        <path d="M600 -40 C 820 60, 980 -60, 1180 40 S 1560 20, 1700 130" stroke-width="1.5" opacity="0.35" />
+        <path d="M560 20 C 780 120, 940 0, 1140 100 S 1520 80, 1660 190" stroke-width="1.5" opacity="0.28" />
+        <path d="M520 80 C 740 180, 900 60, 1100 160 S 1480 140, 1620 250" stroke-width="1.25" opacity="0.2" />
+        <path d="M480 140 C 700 240, 860 120, 1060 220 S 1440 200, 1580 310" stroke-width="1.25" opacity="0.14" />
+      </g>
+
+      <!-- Bottom-left cluster (mirrored) -->
+      <g stroke="white" stroke-linecap="round">
+        <path d="M-140 780 C 60 680, 220 800, 420 700 S 780 720, 920 610" stroke-width="1.5" opacity="0.32" />
+        <path d="M-180 840 C 20 740, 180 860, 380 760 S 740 780, 880 670" stroke-width="1.5" opacity="0.24" />
+        <path d="M-220 900 C -20 800, 140 920, 340 820 S 700 840, 840 730" stroke-width="1.25" opacity="0.16" />
+      </g>
+
+      <!-- Scattered dot accents -->
+      <circle cx="340" cy="60" r="5" fill="white" opacity="0.55" />
+      <circle cx="1360" cy="360" r="4" fill="white" opacity="0.4" />
+      <circle cx="120" cy="520" r="3.5" fill="white" opacity="0.4" />
     </svg>
 
     <!-- Card stage: everything here is layered so the card reads as physically elevated above a dark floor -->
