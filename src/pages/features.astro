@@ -1,76 +1,92 @@
 ---
 // src/pages/features.astro
-// Deep-dive version of the homepage's FeaturesSummary teaser. Same four
-// steps and same Bonsai/HoneyBook/Dubsado positioning referenced in
-// Hero.astro and FAQAccordion.astro, expanded with the detail the
-// homepage card grid intentionally leaves out.
+// Deep-dive version of the homepage's FeaturesSummary teaser. Walks the
+// real product flow end to end: proposal approval automatically triggers
+// the contract, contract acceptance automatically triggers the invoice
+// and project creation, work gets tracked inside the project via tasks
+// and time entries, and everything can optionally be shared with the
+// client through a permission-controlled portal.
+//
+// NOTE: Hero.astro and FeaturesSummary.astro on the homepage still
+// describe the older Proposal -> Contract -> Payment -> Intake story.
+// This page has intentionally diverged from that pending a homepage
+// update — see conversation notes.
 
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import Card from '../components/ui/Card.astro';
+import Badge from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
 import WaitlistForm from '../components/sections/WaitlistForm.astro';
 import {
   ArrowRight,
   FileText,
-  PenTool,
-  CreditCard,
-  Inbox,
+  Receipt,
+  ListChecks,
+  Users,
   Check,
   X,
   User,
-  Users,
   Layers,
   Settings2,
+  Mail,
+  ShieldCheck,
 } from 'lucide-astro';
 
 const steps = [
   {
     icon: FileText,
-    title: 'Proposal',
+    title: 'Proposal to Contract, Automatically',
+    chips: ['Auto-sends on approval', 'Confirmation email to both sides'],
     trigger:
-      "You send a proposal — built from a saved template or from scratch — straight to your client's inbox.",
-    customize:
-      'Line items, pricing, your branding, and payment terms, set once in a template and reused every time.',
-    clientSees:
-      'A clean, mobile-friendly proposal page. They review and approve online — no login, no PDF, no scanned signature.',
-    next: 'Approval is what starts the contract step. You don’t have to remember to send it yourself.',
+      "Your client approves a proposal — right from the page you sent, no login or account for them to create.",
+    controls:
+      'Attach your contract template to a proposal and switch on automation once. Every proposal that gets approved from then on follows the same rule — you never have to remember to send the contract yourself.',
+    outcome:
+      "You and your client both get an instant confirmation email the moment the proposal is approved. If automation is on, the contract goes out in that same instant, pre-filled with the scope and pricing they just approved.",
+    next: 'A signed contract is what releases the invoice and creates the project.',
   },
   {
-    icon: PenTool,
-    title: 'Contract',
-    trigger: 'The moment your client approves the proposal.',
-    customize:
-      'Your own contract language, set up once — Huzlly pre-fills the scope and pricing the client just approved.',
-    clientSees:
-      'A ready-to-sign contract with their details already in it. No re-typing what they already agreed to, no separate e-sign account to create.',
-    next: 'A signed contract is what releases the invoice.',
+    icon: Receipt,
+    title: 'Contract Acceptance Creates the Invoice and the Project',
+    chips: ['Invoice auto-sent on acceptance', 'Project created automatically'],
+    trigger:
+      'Your client reads the contract and accepts or rejects it — no separate e-signature app to open.',
+    controls:
+      "Set which invoice is linked to a contract ahead of time. Acceptance is what fires it, so you're never stuck manually raising an invoice right after a client signs.",
+    outcome:
+      'Either decision is confirmed by email to both of you. On acceptance, the linked invoice lands in your client\'s inbox immediately, and Huzlly creates a new project for that client at the same time — scoped and ready to work in.',
+    next: "The project is live. You're logging real work in it within the same minute the contract was signed.",
   },
   {
-    icon: CreditCard,
-    title: 'Payment',
-    trigger: 'A signature on the contract.',
-    customize:
-      'How payment is structured — full upfront, deposit plus balance, or milestones — and which methods you accept.',
-    clientSees:
-      'An invoice with a pay-now link, sent the moment they sign. No waiting on a separate email from you.',
-    next: 'A cleared payment is what releases the intake form.',
+    icon: ListChecks,
+    title: 'Tasks and Time Tracking Inside Every Project',
+    chips: ['Per-task timers', 'Auto-rolled project totals'],
+    trigger:
+      'A project exists — created the moment a contract was accepted, or started manually anytime.',
+    controls:
+      "Break the work into tasks as you go, and track time against each task individually while you're actually doing it, not reconstructed from memory at the end of the week.",
+    outcome:
+      "Every task's tracked time rolls up automatically into a single project total — no adding it up yourself. The full breakdown lives in your timesheet, so you always know exactly where a project's hours went.",
+    next: "This is the time you'll bill against — no separate time-tracking app to keep in sync.",
   },
   {
-    icon: Inbox,
-    title: 'Intake',
-    trigger: 'Payment clearing.',
-    customize:
-      'The intake form itself — build one per project type once, and every client gets the right version automatically.',
-    clientSees:
-      'Their intake form, delivered the moment they’ve paid. They land in your project ready to start, not waiting on a welcome email.',
-    next: 'You end up with a paid, signed, briefed client without opening your inbox once.',
+    icon: Users,
+    title: 'A Client Portal You Fully Control',
+    chips: ['Off by default', 'Set per client, not sitewide'],
+    trigger:
+      "You decide to give a specific client portal access — nothing is shared until you turn it on.",
+    controls:
+      'Control access per client rather than sitewide: project visibility, task visibility, and direct communication can each be switched on or off independently for every client.',
+    outcome:
+      "Whatever you've allowed, your client can see: their proposals, contracts, and invoices to view or download, plus live project progress and task status. Where you've enabled communication, they can message you directly from the portal to request a change to a task or project.",
+    next: "The client sees exactly as much as you choose to share, and nothing more.",
   },
 ];
 
 const forYou = [
-  'You’re a solo freelancer, consultant, coach, or designer running your own client pipeline.',
-  'You send proposals, contracts, invoices, and intake forms yourself — no team behind you.',
+  'You\u2019re a solo freelancer, consultant, coach, or designer running your own client pipeline.',
+  'You send proposals, contracts, and invoices yourself, and want project and time tracking in the same place.',
   'You want one flat price instead of a bill that grows with every seat you add.',
   'You want something that works the day you sign up, not after weeks of setup.',
 ];
@@ -86,7 +102,7 @@ const comparisons = [
   {
     icon: Layers,
     title: 'vs. Bonsai',
-    body: 'Bonsai started lean but has grown into a fuller business-management suite — time tracking, expense tracking, and team seats layered on top of the core flow. If proposal-to-intake is all you need, Huzlly stays scoped to just that, at a lower flat price.',
+    body: 'Bonsai started lean but has grown into a fuller business-management suite, with team seats and enterprise-style add-ons layered on top of the core flow. Huzlly keeps proposal-to-project — including task and time tracking — in one connected flow, at a lower flat price, without the extra layers.',
   },
   {
     icon: Users,
@@ -99,26 +115,49 @@ const comparisons = [
     body: 'Dubsado is capable once it’s fully configured — but that configuration is the catch. Workflows, forms, and templates all need building before it does anything for you. Huzlly’s flow already exists, so you’re automating from day one, not week three.',
   },
 ];
+
+// Feature summaries for JSON-LD, written as standalone statements per
+// PAGE_MAP_AND_SEO.md Section 4 (fact-dense, no pronouns referring
+// outside the sentence) so each can be lifted independently.
+const featureList = [
+  'Automated proposal-to-contract handoff: sends a linked contract to the client the moment a proposal is approved, with confirmation emails to both the freelancer and the client.',
+  'Automated contract-to-invoice and project creation: sends the linked invoice to the client and creates a new project automatically the moment a contract is accepted.',
+  'Per-task time tracking with automatic project-level totals and a full timesheet history for every project.',
+  'Permission-controlled client portal where clients can view and download contracts, proposals, and invoices, track project and task progress, and message the freelancer directly.',
+];
+
+const softwareApplicationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Huzlly',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description:
+    'Huzlly automates client onboarding, contracts, and payments for freelancers and solopreneurs in a single lean workflow, replacing bloated enterprise software.',
+  featureList,
+};
 ---
 
 <Layout
   title="Features | Huzlly"
-  description="How Huzlly automates a freelancer's client workflow: proposal approval, contract signing, payment collection, and intake, connected into one flow."
+  description="Explore Huzlly's core features: automated onboarding, contracts, and payments built for freelancers who want less software, not more."
   canonicalPath="/features"
   ogImage="/og/og-features.png"
 >
   <main>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareApplicationSchema)} />
+
     <!-- Hero -->
     <section class="bg-white px-4 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-6xl rounded-3xl bg-blue-50/50 sm:bg-blue-50/40 px-6 py-16 text-center sm:px-12 sm:py-24 mt-6">
         <p class="text-xs font-medium uppercase tracking-wide text-blue-600">Features</p>
         <h1 class="mt-2 text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
-          One flow, four steps, <span class="text-blue-600">zero handoffs.</span>
+          One flow, from proposal to <span class="text-blue-600">a running project.</span>
         </h1>
         <p class="mt-4 text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
-          Proposal approval, contract signing, payment collection, and intake — connected so
-          each step starts the next one on its own. Here's exactly what happens at every stage,
-          and what your client sees along the way.
+          Proposal approval, contract signing, invoicing, and project setup — connected so each
+          step starts the next one on its own. Here's exactly what happens at every stage, who
+          gets notified, and what your client can see along the way.
         </p>
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button href="/waitlist" size="lg">
@@ -184,19 +223,24 @@ const comparisons = [
       <div class="mx-auto max-w-5xl">
         <SectionHeader
           eyebrow="The flow"
-          title="Four steps. Here's exactly what happens."
-          subtitle="Each step triggers the next one automatically. Here's what starts it, what you can customize, and what your client experiences."
+          title="From an approved proposal to a running project."
+          subtitle="Each step triggers the next one automatically. Here's what starts it, what you control, and what happens for you and your client."
         />
 
         <div class="mt-14 flex flex-col gap-6">
           {steps.map((step, i) => (
             <Card variant="elevated" class="p-6 sm:p-8">
-              <div class="flex items-center gap-4">
+              <div class="flex flex-wrap items-center gap-4">
                 <span class="font-mono text-[11px] text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
                 <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-900 text-white shadow-sm">
                   <step.icon class="w-5 h-5" stroke-width="1.75" />
                 </span>
                 <h3 class="text-xl font-semibold text-gray-900">{step.title}</h3>
+                <div class="flex flex-wrap gap-2 sm:ml-auto">
+                  {step.chips.map((chip) => (
+                    <Badge variant="neutral">{chip}</Badge>
+                  ))}
+                </div>
               </div>
 
               <div class="mt-6 grid grid-cols-1 gap-6 border-t border-gray-100 pt-6 sm:grid-cols-3">
@@ -205,12 +249,12 @@ const comparisons = [
                   <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.trigger}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">You customize</p>
-                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.customize}</p>
+                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">You control</p>
+                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.controls}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Client sees</p>
-                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.clientSees}</p>
+                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">What happens</p>
+                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.outcome}</p>
                 </div>
               </div>
 
@@ -224,8 +268,45 @@ const comparisons = [
       </div>
     </section>
 
+    <!-- Confirmation emails + client portal control, called out separately -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <SectionHeader
+          eyebrow="Along the way"
+          title="You're always in the loop. Your client only sees what you allow."
+          subtitle="Two things run underneath every step above — worth calling out on their own."
+        />
+
+        <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <Card variant="elevated" class="p-8">
+            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <Mail class="w-5 h-5" stroke-width="1.75" />
+            </span>
+            <h3 class="mt-4 text-lg font-semibold text-gray-900">Confirmation on every decision</h3>
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+              Every time a client approves a proposal, or accepts or rejects a contract, both of
+              you get an email confirming exactly what happened. You never have to open Huzlly
+              just to check whether a client has responded yet.
+            </p>
+          </Card>
+
+          <Card variant="elevated" class="p-8">
+            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <ShieldCheck class="w-5 h-5" stroke-width="1.75" />
+            </span>
+            <h3 class="mt-4 text-lg font-semibold text-gray-900">Client access, on your terms</h3>
+            <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+              The client portal is off by default and set per client, not sitewide. You choose
+              whether each client can see project and task progress, and whether they can message
+              you directly from the portal — independently, for every client you work with.
+            </p>
+          </Card>
+        </div>
+      </div>
+    </section>
+
     <!-- Comparisons -->
-    <section id="comparisons" class="scroll-mt-20 bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section id="comparisons" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-6xl">
         <SectionHeader
           eyebrow="Comparisons"
@@ -249,7 +330,7 @@ const comparisons = [
 
     <WaitlistForm
       heading="See the flow in action"
-      subheading="Join the waitlist and we'll walk you through how the four steps fit your workflow — no sales calls, no pressure."
+      subheading="Join the waitlist and we'll walk you through how each step fits your workflow — no sales calls, no pressure."
     />
   </main>
 </Layout>
