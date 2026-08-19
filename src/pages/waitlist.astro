@@ -1,24 +1,250 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
+// src/components/sections/WaitlistSplitCard.astro
+// Used only on src/pages/waitlist.astro — replaces the page's former
+// stacked hero-section + WaitlistSignupForm.astro with a single floating
+// split card (brand/value panel + signup form panel).
+//
+// PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
+// Design source: user-supplied reference screenshot of a two-column,
+// rounded, floating signup modal (soft pastel gradient panel on the left
+// with logo/headline/stat-block/benefit rows, clean white form panel on
+// the right with a centered badge, heading, stacked labeled inputs, and a
+// full-width solid CTA). DESIGN_SYSTEM.md v2 tokens (ink/paper/rail as a
+// strict palette, dot-grid/flow-rail motifs) are NOT the source for this
+// component's layout, background treatment, or card shape — see the chat
+// design note for the exact tokens used here.
+//
+// Fixed regardless of the override (Section 4.5's non-negotiable list):
+// blue-600 accent (badge, stat accents, focus rings, headline highlight),
+// all copy/facts from SITE_IDENTITY_AND_AEO.md (proof points carry
+// "designed to" qualifying language since they're pre-launch targets, per
+// Section 3 of that file), full-file delivery / no split tags / no inline
+// styles, and the ui/ Button and Badge primitives (used below rather than
+// hand-rolled markup).
+//
+// Structural note: the ink/paper/rail tokens are still used for text and
+// hairlines where they read naturally (ink for body text, rail for
+// borders) — the override permits deviation, it doesn't forbid reuse.
+//
+// v2 polish pass: elevation shadow + ambient page glow so the card lifts
+// off the flat paper background, text-balance/text-pretty on headline and
+// body copy to fix awkward line wraps, panel divider on desktop, refined
+// input/button states (shadow, focus ring, hover-lift via Button's
+// `motion` prop) — no new layout/color tokens introduced.
+
+import { ArrowRight, Check, Zap, Clock, ShieldCheck } from 'lucide-astro';
+import Badge from '../ui/Badge.astro';
+import Button from '../ui/Button.astro';
+
+const bullets = [
+  { icon: Zap, bold: 'Automatic handoff', rest: 'from proposal to project, no manual step in between.' },
+  { icon: Clock, bold: '5–8 hrs/week', rest: 'is what Huzlly is designed to save on admin work.' },
+  { icon: ShieldCheck, bold: 'Per-client control', rest: "over what's shared in the client portal." },
+];
 ---
 
-<Layout title="Join the Waitlist | Huzlly"
-  description="Join the Huzlly closed beta waitlist. 50 spots this cohort for freelancers who want proposals, contracts, invoicing, and projects running in one automatic flow."
-  canonicalPath="/waitlist"
-  hideChrome={true}
->
-  <main class="flex min-h-[100dvh] flex-col items-center px-6 py-6 sm:px-10 sm:py-8 lg:h-[100dvh] lg:overflow-hidden lg:px-16 lg:py-10">
-    <div class="flex w-full flex-1 items-center justify-center lg:overflow-hidden">
-      <WaitlistSplitCard />
+<section class="relative flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-100 via-teal-50 to-white px-2 py-2 sm:px-4 sm:py-3">
+  <!-- Ambient glow so the card visibly lifts off the flat paper background -->
+  <div class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[70%] w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/40 blur-3xl" aria-hidden="true"></div>
+
+  <div class="split-card mx-auto w-full max-w-[100rem] overflow-x-hidden rounded-3xl border border-rail bg-white lg:grid lg:h-full lg:max-h-full lg:grid-cols-2 lg:divide-x lg:divide-rail lg:overflow-y-auto lg:overflow-hidden">
+    <!-- Left panel: brand + value -->
+    <div class="relative flex flex-col justify-center gap-8 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-8 sm:p-10 lg:p-14">
+      <!-- Ambient pastel accents (decorative, contained within the panel) -->
+      <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-teal-200/40 blur-3xl" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-blue-200/30 blur-3xl" aria-hidden="true"></div>
+
+      <a href="/" class="relative inline-flex items-center gap-2">
+        <span class="h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
+        <span class="font-display text-lg font-semibold text-ink">Huzlly</span>
+      </a>
+
+      <div class="relative">
+        <h1 class="text-balance font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
+          Be first in when a <span class="text-blue-600">spot opens</span>.
+        </h1>
+        <p class="text-pretty mt-5 text-base lg:text-lg text-ink/70 leading-relaxed max-w-md">
+          Huzlly is onboarding freelancers in small cohorts while we get the flow right.
+        </p>
+      </div>
+
+      <div class="relative mt-4 space-y-4">
+        {bullets.map((bullet) => (
+          <div class="flex items-center gap-3">
+            <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-blue-600 shadow-sm ring-1 ring-blue-100">
+              <bullet.icon class="w-4 h-4" stroke-width="1.75" />
+            </span>
+            <p class="text-sm lg:text-base text-ink/80 leading-snug">
+              <strong class="font-semibold text-ink">{bullet.bold}</strong> {bullet.rest}
+            </p>
+          </div>
+        ))}
+      </div>
     </div>
 
-    <p class="shrink-0 pt-2 text-center text-sm text-ink/50">
-      <a href="/" class="rounded hover:text-ink/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Home</a>
-      <span class="px-2" aria-hidden="true">·</span>
-      <a href="/privacy" class="rounded hover:text-ink/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Privacy</a>
-      <span class="px-2" aria-hidden="true">·</span>
-      <a href="/terms" class="rounded hover:text-ink/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Terms</a>
-    </p>
-  </main>
-</Layout>
+    <!-- Right panel: signup form -->
+    <div class="flex flex-col justify-center bg-white p-8 sm:p-10 lg:p-14">
+      <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
+
+      <h2 class="mt-5 text-center font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
+        Get early access
+      </h2>
+      <p class="text-pretty mt-3 text-center text-ink/70 leading-relaxed max-w-sm mx-auto">
+        Tell us who you are and we'll email you the moment a spot opens — no sales calls, no spam, unsubscribe any time.
+      </p>
+
+      <form id="waitlist-form" class="mt-8 flex flex-col gap-5 max-w-md w-full mx-auto" novalidate>
+        <div>
+          <label for="waitlist-name" class="mb-1.5 block text-sm font-medium text-ink/70">Name</label>
+          <input id="waitlist-name"
+            name="name"
+            type="text"
+            required
+            placeholder="Jordan Rivera"
+            autocomplete="name"
+            class="w-full rounded-xl border border-rail bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors focus-visible:border-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
+          />
+        </div>
+
+        <div>
+          <label for="waitlist-email" class="mb-1.5 block text-sm font-medium text-ink/70">Email</label>
+          <input id="waitlist-email"
+            name="email"
+            type="email"
+            required
+            placeholder="you@studio.com"
+            autocomplete="email"
+            class="w-full rounded-xl border border-rail bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors focus-visible:border-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
+          />
+        </div>
+
+        <!-- Honeypot: hidden from real visitors, irresistible to bots that fill every field. -->
+        <div class="sr-only" aria-hidden="true">
+          <label for="waitlist-company">Company</label>
+          <input id="waitlist-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <Button type="submit" size="lg" motion class="group mt-2 w-full disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-sm" ariaLabel="Join waitlist">
+          Join waitlist
+          <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-0.5" stroke-width="1.75" />
+        </Button>
+      </form>
+
+      <p id="waitlist-error" class="mt-3 text-center text-sm text-red-600 hidden"></p>
+
+      <div id="waitlist-success" class="mt-8 hidden flex-col items-center gap-2">
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+          <Check class="w-5 h-5" stroke-width="2" />
+        </span>
+        <p class="text-sm font-semibold text-ink" id="waitlist-success-title">You're on the list.</p>
+        <p class="text-sm text-ink/70">We'll email you when your spot opens up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Single one-shot entrance for the whole card — subtle, not stacked
+     with per-element stagger since the reference is a calm, static layout.
+     Mandatory reduced-motion fallback per DESIGN_SYSTEM.md Section 6. */
+  .split-card {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: split-card-in 0.6s ease-out forwards;
+    transition: transform 0.4s ease;
+    will-change: transform;
+  }
+  @keyframes split-card-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  /* Subtle floating effect once settled — a light continuous hover so the
+     card reads as elevated above the page background rather than flush
+     against it. */
+  @media (min-width: 1024px) {
+    .split-card {
+      animation:
+        split-card-in 0.6s ease-out forwards,
+        split-card-float 6s ease-in-out 0.6s infinite;
+    }
+    @keyframes split-card-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .split-card {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('waitlist-form');
+  const errorEl = document.getElementById('waitlist-error');
+  const successEl = document.getElementById('waitlist-success');
+  const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+  const successTitle = document.getElementById('waitlist-success-title');
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function showError(message) {
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.remove('hidden');
+  }
+
+  function showSuccess(duplicate) {
+    if (successTitle) {
+      successTitle.textContent = duplicate ? "You're already on the list." : "You're on the list.";
+    }
+    form?.classList.add('hidden');
+    successEl?.classList.remove('hidden');
+    successEl?.classList.add('flex');
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    errorEl?.classList.add('hidden');
+
+    const nameInput = document.getElementById('waitlist-name') as HTMLInputElement;
+    const emailInput = document.getElementById('waitlist-email') as HTMLInputElement;
+    const companyInput = document.getElementById('waitlist-company') as HTMLInputElement;
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+
+    if (!name) {
+      showError('Enter your name to join the waitlist.');
+      return;
+    }
+    if (!EMAIL_RE.test(email)) {
+      showError('Enter a valid email address to join the waitlist.');
+      return;
+    }
+
+    submitBtn?.setAttribute('disabled', 'true');
+
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ name, email, company: companyInput ? companyInput.value : '' }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.ok) {
+        showError('Something went wrong on our end — try again in a moment.');
+        submitBtn?.removeAttribute('disabled');
+        return;
+      }
+
+      showSuccess(Boolean(data.duplicate));
+    } catch {
+      showError('Could not reach the server. Check your connection and try again.');
+      submitBtn?.removeAttribute('disabled');
+    }
+  });
+</script>
