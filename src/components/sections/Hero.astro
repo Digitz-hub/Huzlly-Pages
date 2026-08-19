@@ -2,11 +2,16 @@
 // src/components/sections/Hero.astro
 // Homepage hero. Signature element is the "5 apps -> 1 flow" diagram:
 // it makes the core pitch (Huzlly replaces a pile of disconnected tools
-// with one connected pipeline) legible at a glance, using the same four
-// steps referenced in FAQ.astro's "Product Questions" category so the
-// story stays consistent site-wide.
+// with one connected pipeline) legible at a glance. Real product flow is
+// Proposal -> Contract -> Invoice -> Project -> Tasks/Timesheets -> Client
+// Portal; condensed to 4 nodes here (Proposal/Contract/Invoice/Project)
+// with the tasks/time/portal stages folded into the caption below the
+// diagram, since 6 nodes doesn't fit a compact hero diagram legibly.
+// NOTE: FAQ.astro's "Product Questions" category still describes the old
+// Proposal/Contract/Payment/Intake story — needs a matching update, see
+// FLOW_UPDATE_MIGRATION.md.
 
-import { ArrowRight, FileText, PenTool, CreditCard, Inbox, X } from 'lucide-astro';
+import { ArrowRight, FileText, PenTool, Receipt, FolderKanban, X } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 import Badge from '../ui/Badge.astro';
 
@@ -15,8 +20,8 @@ const scatteredTools = ['Proposal tool', 'E-sign app', 'Invoicing tool', 'Paymen
 const flowSteps = [
   { label: 'Proposal', icon: FileText },
   { label: 'Contract', icon: PenTool },
-  { label: 'Payment', icon: CreditCard },
-  { label: 'Intake', icon: Inbox },
+  { label: 'Invoice', icon: Receipt },
+  { label: 'Project', icon: FolderKanban },
 ];
 ---
 
@@ -34,8 +39,8 @@ const flowSteps = [
     </h1>
 
     <p class="reveal mt-6 text-lg sm:text-xl text-gray-600 leading-relaxed max-w-2xl mx-auto">
-      Freelancers stitch proposals, contracts, payments, and intake together across a pile of
-      disconnected tools. Huzlly turns that pile into one lean, automatic flow &mdash; built for
+      Freelancers stitch proposals, contracts, invoicing, and project setup together across a pile
+      of disconnected tools. Huzlly turns that pile into one lean, automatic flow &mdash; built for
       solo freelancers, not agencies paying for seats they don't need.
     </p>
 
@@ -95,6 +100,10 @@ const flowSteps = [
         </div>
       </div>
     </div>
+
+    <p class="reveal mt-6 text-center lg:text-left text-xs font-medium text-gray-400">
+      Tasks, time tracking, and an optional client portal &mdash; all inside the project from here.
+    </p>
   </div>
 </section>
 
