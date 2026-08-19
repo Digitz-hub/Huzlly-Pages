@@ -7,9 +7,13 @@
 // and time entries, and everything can optionally be shared with the
 // client through a permission-controlled portal.
 //
-// Hero.astro and FeaturesSummary.astro on the homepage now match this
-// same flow (Proposal/Contract/Invoice/Project) — see
-// FLOW_UPDATE_MIGRATION.md for the full migration history.
+// v2 redesign pass: rebuilt against DESIGN_SYSTEM.md v2 — ink/paper/rail
+// palette, Space Grotesk display type, JetBrains Mono eyebrows/step
+// markers, dot-grid hero texture, Card `flat-lift` + `tick` on the main
+// 4-step sequence (this page's genuine numbered-sequence content, per
+// Section 4 "Numbered Step Markers"), Card `elevated` elsewhere. Mirrors
+// the ui/ primitives and section conventions already locked in Hero.astro
+// and FeaturesSummary.astro.
 
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
@@ -115,14 +119,17 @@ const comparisons = [
   },
 ];
 
-// Feature summaries for JSON-LD, written as standalone statements per
-// PAGE_MAP_AND_SEO.md Section 4 (fact-dense, no pronouns referring
-// outside the sentence) so each can be lifted independently.
+// Feature summaries for JSON-LD. Reused verbatim from
+// SITE_IDENTITY_AND_AEO.md Section 5's canonical featureList — per that
+// file's usage note, any page needing a SoftwareApplication schema block
+// should reuse these four strings verbatim rather than writing new ones,
+// so the entity's capabilities stay consistent across every schema block
+// sitewide.
 const featureList = [
-  'Automated proposal-to-contract handoff: sends a linked contract to the client the moment a proposal is approved, with confirmation emails to both the freelancer and the client.',
-  'Automated contract-to-invoice and project creation: sends the linked invoice to the client and creates a new project automatically the moment a contract is accepted.',
-  'Per-task time tracking with automatic project-level totals and a full timesheet history for every project.',
-  'Permission-controlled client portal where clients can view and download contracts, proposals, and invoices, track project and task progress, and message the freelancer directly.',
+  'Automated proposal-to-contract handoff with email confirmation to both freelancer and client',
+  'Automated contract-to-invoice and project creation on contract acceptance',
+  'Per-task time tracking with automatic project-level totals and timesheets',
+  'Permission-controlled client portal for documents, project progress, and direct communication',
 ];
 
 const softwareApplicationSchema = {
@@ -137,9 +144,8 @@ const softwareApplicationSchema = {
 };
 ---
 
-<Layout
-  title="Features | Huzlly"
-  description="Explore Huzlly's core features: automated onboarding, contracts, and payments built for freelancers who want less software, not more."
+<Layout title="Features | Huzlly"
+  description="Explore Huzlly's core features: automated contracts, invoicing, projects, and time tracking for freelancers who want less software, not more."
   canonicalPath="/features"
   ogImage="/og/og-features.png"
 >
@@ -147,19 +153,25 @@ const softwareApplicationSchema = {
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareApplicationSchema)} />
 
     <!-- Hero -->
-    <section class="bg-white px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-6xl rounded-3xl bg-blue-50/50 sm:bg-blue-50/40 px-6 py-16 text-center sm:px-12 sm:py-24 mt-6">
-        <p class="text-xs font-medium uppercase tracking-wide text-blue-600">Features</p>
-        <h1 class="mt-2 text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+    <section class="relative overflow-hidden bg-paper px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8">
+      <!-- Dot-grid texture — this hero's one accent, per DESIGN_SYSTEM.md
+           Section 4. Not combined with an ambient glow in the same area. -->
+      <div class="pointer-events-none absolute inset-0 -z-10 opacity-40
+                  [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)]
+                  [background-size:24px_24px]" aria-hidden="true"></div>
+
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="font-mono text-xs uppercase tracking-widest text-blue-600">Features</p>
+        <h1 class="mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
           One flow, from proposal to <span class="text-blue-600">a running project.</span>
         </h1>
-        <p class="mt-4 text-sm sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+        <p class="mt-6 text-lg sm:text-xl text-ink/70 leading-relaxed max-w-2xl mx-auto">
           Proposal approval, contract signing, invoicing, and project setup — connected so each
           step starts the next one on its own. Here's exactly what happens at every stage, who
           gets notified, and what your client can see along the way.
         </p>
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button href="/waitlist" size="lg">
+          <Button href="/waitlist" size="lg" motion>
             Join the waitlist
             <ArrowRight class="w-4 h-4" stroke-width="1.75" />
           </Button>
@@ -171,10 +183,9 @@ const softwareApplicationSchema = {
     </section>
 
     <!-- Is this for you -->
-    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-5xl">
-        <SectionHeader
-          eyebrow="Who it's for"
+        <SectionHeader eyebrow="Who it's for"
           title="Built for the person doing the work, not a team"
           subtitle="Huzlly is intentionally single-user first. That shapes everything below, so it's worth being upfront about it."
         />
@@ -182,16 +193,16 @@ const softwareApplicationSchema = {
         <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card variant="elevated" class="p-8">
             <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                 <User class="w-5 h-5" stroke-width="1.75" />
               </span>
-              <h3 class="text-lg font-semibold text-gray-900">Huzlly is for you if</h3>
+              <h3 class="text-lg font-semibold text-ink">Huzlly is for you if</h3>
             </div>
             <ul class="mt-6 space-y-4">
               {forYou.map((item) => (
                 <li class="flex items-start gap-3">
                   <Check class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" stroke-width="2" />
-                  <span class="text-sm text-gray-600 leading-relaxed">{item}</span>
+                  <span class="text-sm text-ink/70 leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
@@ -199,16 +210,16 @@ const softwareApplicationSchema = {
 
           <Card variant="flat" class="p-8">
             <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-rail/30 text-ink/50">
                 <Users class="w-5 h-5" stroke-width="1.75" />
               </span>
-              <h3 class="text-lg font-semibold text-gray-900">Not built for</h3>
+              <h3 class="text-lg font-semibold text-ink">Not built for</h3>
             </div>
             <ul class="mt-6 space-y-4">
               {notForYou.map((item) => (
                 <li class="flex items-start gap-3">
-                  <X class="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-400" stroke-width="2" />
-                  <span class="text-sm text-gray-600 leading-relaxed">{item}</span>
+                  <X class="mt-0.5 h-4 w-4 flex-shrink-0 text-ink/40" stroke-width="2" />
+                  <span class="text-sm text-ink/70 leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
@@ -218,23 +229,22 @@ const softwareApplicationSchema = {
     </section>
 
     <!-- The flow, in full -->
-    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section class="bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-5xl">
-        <SectionHeader
-          eyebrow="The flow"
+        <SectionHeader eyebrow="The flow"
           title="From an approved proposal to a running project."
           subtitle="Each step triggers the next one automatically. Here's what starts it, what you control, and what happens for you and your client."
         />
 
         <div class="mt-14 flex flex-col gap-6">
           {steps.map((step, i) => (
-            <Card variant="elevated" class="p-6 sm:p-8">
+            <Card variant="flat-lift" tick class="p-6 sm:p-8">
               <div class="flex flex-wrap items-center gap-4">
-                <span class="font-mono text-[11px] text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-gray-900 text-white shadow-sm">
+                <span class="font-mono text-xs text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
+                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-paper shadow-sm">
                   <step.icon class="w-5 h-5" stroke-width="1.75" />
                 </span>
-                <h3 class="text-xl font-semibold text-gray-900">{step.title}</h3>
+                <h3 class="text-xl font-semibold text-ink">{step.title}</h3>
                 <div class="flex flex-wrap gap-2 sm:ml-auto">
                   {step.chips.map((chip) => (
                     <Badge variant="neutral">{chip}</Badge>
@@ -242,22 +252,22 @@ const softwareApplicationSchema = {
                 </div>
               </div>
 
-              <div class="mt-6 grid grid-cols-1 gap-6 border-t border-gray-100 pt-6 sm:grid-cols-3">
+              <div class="mt-6 grid grid-cols-1 gap-6 border-t border-rail pt-6 sm:grid-cols-3">
                 <div>
-                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Triggered by</p>
-                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.trigger}</p>
+                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">Triggered by</p>
+                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.trigger}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">You control</p>
-                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.controls}</p>
+                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">You control</p>
+                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.controls}</p>
                 </div>
                 <div>
-                  <p class="text-xs font-medium uppercase tracking-wide text-gray-400">What happens</p>
-                  <p class="mt-2 text-sm text-gray-600 leading-relaxed">{step.outcome}</p>
+                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">What happens</p>
+                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.outcome}</p>
                 </div>
               </div>
 
-              <p class="mt-6 flex items-start gap-2 border-t border-gray-100 pt-6 text-sm font-medium text-blue-600">
+              <p class="mt-6 flex items-start gap-2 border-t border-rail pt-6 text-sm font-medium text-blue-600">
                 <ArrowRight class="mt-0.5 h-4 w-4 flex-shrink-0" stroke-width="2" />
                 {step.next}
               </p>
@@ -268,21 +278,20 @@ const softwareApplicationSchema = {
     </section>
 
     <!-- Confirmation emails + client portal control, called out separately -->
-    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-5xl">
-        <SectionHeader
-          eyebrow="Along the way"
+        <SectionHeader eyebrow="Along the way"
           title="You're always in the loop. Your client only sees what you allow."
           subtitle="Two things run underneath every step above — worth calling out on their own."
         />
 
         <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
           <Card variant="elevated" class="p-8">
-            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <Mail class="w-5 h-5" stroke-width="1.75" />
             </span>
-            <h3 class="mt-4 text-lg font-semibold text-gray-900">Confirmation on every decision</h3>
-            <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+            <h3 class="mt-4 text-lg font-semibold text-ink">Confirmation on every decision</h3>
+            <p class="mt-2 text-sm text-ink/70 leading-relaxed">
               Every time a client approves a proposal, or accepts or rejects a contract, both of
               you get an email confirming exactly what happened. You never have to open Huzlly
               just to check whether a client has responded yet.
@@ -290,11 +299,11 @@ const softwareApplicationSchema = {
           </Card>
 
           <Card variant="elevated" class="p-8">
-            <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <ShieldCheck class="w-5 h-5" stroke-width="1.75" />
             </span>
-            <h3 class="mt-4 text-lg font-semibold text-gray-900">Client access, on your terms</h3>
-            <p class="mt-2 text-sm text-gray-600 leading-relaxed">
+            <h3 class="mt-4 text-lg font-semibold text-ink">Client access, on your terms</h3>
+            <p class="mt-2 text-sm text-ink/70 leading-relaxed">
               The client portal is off by default and set per client, not sitewide. You choose
               whether each client can see project and task progress, and whether they can message
               you directly from the portal — independently, for every client you work with.
@@ -305,10 +314,9 @@ const softwareApplicationSchema = {
     </section>
 
     <!-- Comparisons -->
-    <section id="comparisons" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section id="comparisons" class="scroll-mt-20 bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-6xl">
-        <SectionHeader
-          eyebrow="Comparisons"
+        <SectionHeader eyebrow="Comparisons"
           title="How Huzlly stacks up"
           subtitle="Bonsai, HoneyBook, and Dubsado all do parts of this. Here's specifically where Huzlly is different."
         />
@@ -316,19 +324,22 @@ const softwareApplicationSchema = {
         <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {comparisons.map((c) => (
             <Card variant="elevated" class="text-left">
-              <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-900 text-white">
+              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
                 <c.icon class="w-5 h-5" stroke-width="1.75" />
               </span>
-              <h3 class="mt-4 text-base font-semibold text-gray-900">{c.title}</h3>
-              <p class="mt-2 text-sm text-gray-600 leading-relaxed">{c.body}</p>
+              <h3 class="mt-4 text-base font-semibold text-ink">{c.title}</h3>
+              <p class="mt-2 text-sm text-ink/70 leading-relaxed">{c.body}</p>
             </Card>
           ))}
         </div>
+
+        <p class="mt-10 text-center text-sm text-ink/70">
+          Curious what it costs? <a href="/pricing" class="font-medium text-blue-600 hover:text-blue-700">See pricing for lean freelance software &rarr;</a>
+        </p>
       </div>
     </section>
 
-    <WaitlistForm
-      heading="See the flow in action"
+    <WaitlistForm heading="See the flow in action"
       subheading="Join the waitlist and we'll walk you through how each step fits your workflow — no sales calls, no pressure."
     />
   </main>
