@@ -1,10 +1,27 @@
 ---
 // src/components/layout/Nav.astro
 // Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
-// v2 redesign pass: ink/paper/rail palette replaces gray-*/white; the CTA
-// button reuses the ui/ Button primitive instead of hand-rolled markup
-// (per CLAUDE.md Section 2's "always use the primitive" rule); logo dot
-// and active-link accent stay blue-600 (fixed accent, unchanged).
+//
+// PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
+// Design source: user-supplied reference screenshot of a floating, centered,
+// glassmorphic "pill" navbar (green-glow site, brand name "augment" in the
+// reference). DESIGN_SYSTEM.md v2 tokens (ink/paper/rail palette, rounded-xl
+// buttons, rounded-2xl cards) are NOT the source for this component's shape,
+// color, or radius — see the design note in the chat response for the exact
+// tokens used here. What stays fixed regardless of the override (per Section
+// 4.5's non-negotiable list): the blue-600 accent color, strict layout
+// ownership (this file still renders only a <header>, still consumed only by
+// Layout.astro), the ui/ Button primitive (used below for the CTA rather than
+// hand-rolled button markup, with a class override for the pill radius), full
+// nav content/routes, and all accessibility/focus-visible requirements.
+//
+// Structural changes from spec vs. the reference screenshot:
+// - No "Login" link — spec explicitly says CTA only, no extra login link.
+// - Four nav items (Features / Pricing / FAQ / About) instead of five, per
+//   Huzlly's actual page map — content always follows PAGE_MAP_AND_SEO.md,
+//   never the inspiration source, even when the inspiration has a different
+//   link count.
+// - No dropdowns, no hide-on-scroll — CTA and pill stay static/persistent.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -24,73 +41,78 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="sticky top-0 z-50 bg-paper/80 backdrop-blur-md border-b border-rail transition-all duration-200">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-    <!-- Brand -->
-    <a href="/"
-      class="font-display text-xl font-semibold tracking-tight text-ink flex items-center gap-2 hover:opacity-90 transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-    >
-      <span class="inline-block w-2 h-2 rounded-full bg-blue-600" aria-hidden="true"></span>
-      Huzlly
-    </a>
+<header class="sticky top-4 z-50 mt-4 px-4 sm:top-6 sm:mt-6 sm:px-6">
+  <div class="relative mx-auto max-w-5xl">
+    <!-- Floating glass pill bar -->
+    <div class="flex h-14 items-center justify-between rounded-full border border-white/60 bg-white/70 pl-5 pr-2 shadow-lg shadow-black/5 backdrop-blur-xl sm:h-16 sm:pl-6 sm:pr-2.5">
+      <!-- Left: Brand -->
+      <a href="/"
+        class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-ink transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
+      >
+        <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
+        Huzlly
+      </a>
 
-    <!-- Desktop Nav Links -->
-    <nav aria-label="Primary" class="hidden md:flex items-center gap-1">
-      {navLinks.map((link) => (
-        <a href={link.href}
-          class={`text-sm font-medium px-3.5 py-2 rounded-xl transition-all duration-200 ${
-            isActive(link.href)
-              ? 'text-blue-600 bg-blue-50/60 font-semibold'
-              : 'text-ink/70 hover:text-ink hover:bg-rail/30'
-          }`}
-          aria-current={isActive(link.href) ? 'page' : undefined}
-        >
-          {link.label}
-        </a>
-      ))}
-    </nav>
+      <!-- Center: Desktop nav links -->
+      <nav aria-label="Primary" class="hidden md:flex md:items-center md:gap-1">
+        {navLinks.map((link) => (
+          <a href={link.href}
+            class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+              isActive(link.href)
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-ink/60 hover:text-ink hover:bg-black/[0.03]'
+            }`}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
 
-    <!-- Desktop CTA -->
-    <div class="hidden md:flex items-center">
-      <Button href="/waitlist" size="default">
-        Join Waitlist
-        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-      </Button>
+      <!-- Right: Desktop CTA -->
+      <div class="hidden md:flex md:items-center">
+        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none">
+          Join Waitlist
+          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        </Button>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button id="nav-toggle"
+        type="button"
+        class="inline-flex items-center justify-center rounded-full p-2.5 text-ink hover:bg-black/[0.04] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 md:hidden"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        aria-label="Toggle navigation menu"
+      >
+        <Menu id="nav-icon-menu" class="w-5 h-5" stroke-width="1.75" />
+        <X id="nav-icon-close" class="w-5 h-5 hidden" stroke-width="1.75" />
+      </button>
     </div>
 
-    <!-- Mobile Menu Toggle -->
-    <button id="nav-toggle"
-      type="button"
-      class="md:hidden inline-flex items-center justify-center rounded-xl p-2 text-ink hover:bg-rail/30 transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-      aria-controls="mobile-menu"
-      aria-expanded="false"
-      aria-label="Toggle navigation menu"
+    <!-- Mobile Menu Sheet — floating glass card below the pill -->
+    <div id="mobile-menu"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/60 bg-white/85 p-3 shadow-lg shadow-black/5 backdrop-blur-xl md:hidden"
     >
-      <Menu id="nav-icon-menu" class="w-6 h-6" stroke-width="1.75" />
-      <X id="nav-icon-close" class="w-6 h-6 hidden" stroke-width="1.75" />
-    </button>
-  </div>
-
-  <!-- Mobile Menu Sheet -->
-  <div id="mobile-menu" class="md:hidden hidden border-t border-rail bg-paper/95 backdrop-blur-md">
-    <nav aria-label="Mobile primary" class="px-4 sm:px-6 py-4 flex flex-col gap-1">
-      {navLinks.map((link) => (
-        <a href={link.href}
-          class={`text-sm font-medium px-3.5 py-2.5 rounded-xl transition-all duration-200 ${
-            isActive(link.href)
-              ? 'text-blue-600 bg-blue-50/60 font-semibold'
-              : 'text-ink/70 hover:text-ink hover:bg-rail/30'
-          }`}
-          aria-current={isActive(link.href) ? 'page' : undefined}
-        >
-          {link.label}
-        </a>
-      ))}
-      <Button href="/waitlist" size="default" class="mt-2 w-full">
-        Join Waitlist
-        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-      </Button>
-    </nav>
+      <nav aria-label="Mobile primary" class="flex flex-col gap-1">
+        {navLinks.map((link) => (
+          <a href={link.href}
+            class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
+              isActive(link.href)
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-ink/70 hover:text-ink hover:bg-black/[0.03]'
+            }`}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        ))}
+        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none mt-1.5 w-full">
+          Join Waitlist
+          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        </Button>
+      </nav>
+    </div>
   </div>
 </header>
 
