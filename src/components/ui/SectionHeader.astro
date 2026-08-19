@@ -1,9 +1,11 @@
 ---
 // src/components/ui/SectionHeader.astro
-// Centered eyebrow + heading + lead paragraph per DESIGN_SYSTEM.md
-// Section 4 ("Section Header Pattern").
-// Redesign pass: heading moves to the Plus Jakarta Sans display face
-// (font-display) and the neutral palette moves to stone-*.
+// Centered eyebrow + heading + lead paragraph per DESIGN_SYSTEM.md v2
+// Section 4 ("Section Header Pattern") and Section 2 (Type Scale).
+// v2 pass: heading moves to Space Grotesk (font-display), capped at
+// font-semibold (v2's ceiling, not font-bold), neutral palette moves to
+// ink/paper/rail, and the eyebrow becomes the formal mono style
+// (font-mono text-xs uppercase tracking-widest) rather than a fallback.
 
 export interface Props {
   eyebrow?: string;
@@ -15,18 +17,19 @@ export interface Props {
 
 const { eyebrow, title, subtitle, as: HeadingTag = 'h2', class: className } = Astro.props;
 
-// Section H2 type scale from DESIGN_SYSTEM.md Section 2. If `as="h1"` is used
-// (e.g. a page's single H1 doubling as a section header), the Hero H1 scale
-// is applied instead so heading level and visual scale stay in sync. Both
-// scales now carry font-display per the type-pairing redesign.
+// Section H2 / Hero H1 type scale from DESIGN_SYSTEM.md v2 Section 2. If
+// `as="h1"` is used (e.g. a page's single H1 doubling as a section header),
+// the Hero H1 scale is applied instead so heading level and visual scale
+// stay in sync. Both scales are capped at font-semibold (600) — v2's
+// ceiling for headings, not font-bold.
 const headingClasses =
   HeadingTag === 'h1'
-    ? 'font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-stone-900 leading-[1.1]'
-    : 'font-display mt-2 text-3xl sm:text-4xl font-bold tracking-tight text-stone-900';
+    ? 'font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]'
+    : 'font-display mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-ink';
 ---
 
 <div class={['mx-auto max-w-2xl text-center', className].filter(Boolean).join(' ')}>
-  {eyebrow && <p class="text-xs font-medium uppercase tracking-wide text-blue-600">{eyebrow}</p>}
+  {eyebrow && <p class="font-mono text-xs uppercase tracking-widest text-blue-600">{eyebrow}</p>}
   <HeadingTag class={headingClasses}>{title}</HeadingTag>
-  {subtitle && <p class="mt-4 text-lg text-stone-600">{subtitle}</p>}
+  {subtitle && <p class="mt-4 text-lg text-ink/70">{subtitle}</p>}
 </div>
