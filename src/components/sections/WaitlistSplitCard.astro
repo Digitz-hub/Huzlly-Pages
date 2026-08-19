@@ -37,10 +37,10 @@ const bullets = [
 ];
 ---
 
-<section class="relative bg-paper px-4 pt-12 pb-4 sm:px-6 sm:pt-16 sm:pb-6 lg:px-8 lg:pt-20 lg:pb-8">
-  <div class="split-card mx-auto max-w-[90rem] min-h-[640px] overflow-hidden rounded-3xl border border-rail bg-white shadow-[0_30px_80px_-20px_rgba(15,23,42,0.35)] lg:grid lg:grid-cols-2 lg:min-h-[720px]">
+<section class="relative w-full bg-paper px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+  <div class="split-card mx-auto max-h-[calc(100dvh-4.5rem)] max-w-[90rem] overflow-y-auto overflow-x-hidden rounded-3xl border border-rail bg-white shadow-[0_30px_80px_-20px_rgba(15,23,42,0.35)] lg:grid lg:grid-cols-2 lg:overflow-hidden">
     <!-- Left panel: brand + value -->
-    <div class="relative flex flex-col gap-10 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-8 sm:p-10 lg:p-12">
+    <div class="relative flex flex-col gap-6 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-6 sm:p-8 lg:p-10">
       <!-- Ambient pastel accents (decorative, contained within the panel) -->
       <div class="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-teal-200/40 blur-3xl" aria-hidden="true"></div>
       <div class="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-blue-200/30 blur-3xl" aria-hidden="true"></div>
@@ -59,7 +59,7 @@ const bullets = [
         </p>
       </div>
 
-      <div class="relative mt-10 space-y-4">
+      <div class="relative mt-4 space-y-3">
         {bullets.map((bullet) => (
           <div class="flex items-center gap-3">
             <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/80 text-blue-600 shadow-sm">
@@ -74,17 +74,17 @@ const bullets = [
     </div>
 
     <!-- Right panel: signup form -->
-    <div class="flex flex-col justify-center bg-white p-8 sm:p-10 lg:p-12">
+    <div class="flex flex-col justify-center bg-white p-6 sm:p-8 lg:p-10">
       <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
 
-      <h2 class="mt-5 text-center font-display text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
+      <h2 class="mt-4 text-center font-display text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
         Get early access
       </h2>
-      <p class="mt-3 text-center text-ink/70 leading-relaxed max-w-sm mx-auto">
+      <p class="mt-2 text-center text-ink/70 leading-relaxed max-w-sm mx-auto">
         Tell us who you are and we'll email you the moment a spot opens — no sales calls, no spam, unsubscribe any time.
       </p>
 
-      <form id="waitlist-form" class="mt-8 flex flex-col gap-4" novalidate>
+      <form id="waitlist-form" class="mt-6 flex flex-col gap-4" novalidate>
         <div>
           <label for="waitlist-name" class="mb-1.5 block text-sm font-medium text-ink/70">Name</label>
           <input id="waitlist-name"
@@ -162,7 +162,7 @@ const bullets = [
     }
     @keyframes split-card-float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      50% { transform: translateY(-4px); }
     }
   }
   @media (prefers-reduced-motion: reduce) {
