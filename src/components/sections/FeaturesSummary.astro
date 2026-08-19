@@ -5,7 +5,7 @@
 // positioning used in FAQAccordion's Comparisons category. Deep-dive
 // copy stays on /features — this is the summary version.
 
-import { FileText, PenTool, CreditCard, Inbox, Tag, Zap, Feather } from 'lucide-astro';
+import { FileText, PenTool, Receipt, FolderKanban, Tag, Zap, Feather } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import Card from '../ui/Card.astro';
 
@@ -21,14 +21,14 @@ const steps = [
     body: 'A contract goes out pre-filled with the approved scope, ready to sign — no re-typing, no separate app.',
   },
   {
-    icon: CreditCard,
-    title: 'Payment',
-    body: 'Signing triggers the invoice. Payment is collected without a follow-up email from you.',
+    icon: Receipt,
+    title: 'Invoice',
+    body: 'Accepting the contract sends the linked invoice straight to your client — no manual step in between.',
   },
   {
-    icon: Inbox,
-    title: 'Intake',
-    body: 'Once paid, the client gets their intake form automatically. You get a client who is ready to start.',
+    icon: FolderKanban,
+    title: 'Project',
+    body: 'The same moment, Huzlly creates the project — scoped and ready for you to start logging work.',
   },
 ];
 
