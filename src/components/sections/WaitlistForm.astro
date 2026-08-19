@@ -4,6 +4,8 @@
 // to the full signup on /waitlist (src/pages/waitlist.astro), where
 // WaitlistSignupForm.astro collects name + email. This component has no
 // form of its own and does not hit functions/api/waitlist.js directly.
+// v2 redesign pass: ink/paper/rail palette; CTA button gets the new
+// `motion` prop since this is a high-emphasis conversion moment.
 
 import { ArrowRight } from 'lucide-astro';
 import Card from '../ui/Card.astro';
@@ -26,15 +28,15 @@ const {
     <Card variant="highlighted" class="p-8 sm:p-12 text-center">
       <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
 
-      <h2 class="mt-5 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+      <h2 class="mt-5 font-display text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
         {heading}
       </h2>
-      <p class="mt-4 text-gray-600 leading-relaxed max-w-md mx-auto">
+      <p class="mt-4 text-ink/70 leading-relaxed max-w-md mx-auto">
         {subheading}
       </p>
 
       <div class="mt-8">
-        <Button href="/waitlist" size="lg">
+        <Button href="/waitlist" size="lg" motion>
           Join the waitlist
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
