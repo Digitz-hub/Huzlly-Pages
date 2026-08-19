@@ -30,11 +30,6 @@ import { ArrowRight, Check, Zap, Clock, ShieldCheck } from 'lucide-astro';
 import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
 
-const stats = [
-  { value: '5+', label: 'apps Huzlly is designed to replace' },
-  { value: '50', label: 'spots this closed beta cohort' },
-];
-
 const bullets = [
   { icon: Zap, bold: 'Automatic handoff', rest: 'from proposal to project, no manual step in between.' },
   { icon: Clock, bold: '5–8 hrs/week', rest: 'is what Huzlly is designed to save on admin work.' },
@@ -62,15 +57,6 @@ const bullets = [
         <p class="mt-4 text-ink/70 leading-relaxed max-w-sm">
           Huzlly is onboarding freelancers in small cohorts while we get the flow right.
         </p>
-
-        <div class="mt-8 flex gap-8 border-t border-ink/10 pt-6">
-          {stats.map((stat) => (
-            <div>
-              <p class="font-display text-3xl font-semibold text-ink">{stat.value}</p>
-              <p class="mt-1 text-sm text-ink/60 max-w-36">{stat.label}</p>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div class="relative space-y-4">
