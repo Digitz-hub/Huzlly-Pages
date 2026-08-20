@@ -19,6 +19,17 @@
 // variation is expressed through Tailwind utility classes and arbitrary
 // bracket values under the decorative-transform exception in CLAUDE.md
 // Section 3.
+//
+// TEXT-COLUMN CLEARANCE (this pass): Hero.astro centers its headline/
+// paragraph content in a `max-w-2xl` (672px) column with no max-width on
+// the `<section>` itself. This layer only renders at `lg:` and up (see
+// Hero.astro's `class="hidden lg:block"` on this component), so the
+// narrowest viewport it ever appears on is 1024px — at that width the
+// centered column already spans from ~17% to ~83% horizontally, and that
+// safe-zone-for-text only gets wider (not narrower) on bigger screens.
+// Every dot below is kept at ≤15% from the left or right edge so none of
+// them can ever land inside the text column at any `lg`+ width, while
+// still landing well outside the four original corner positions.
 
 export interface Props {
   class?: string;
@@ -30,15 +41,18 @@ const { class: className } = Astro.props;
 <div class:list={['pointer-events-none absolute inset-0 -z-[5]', className]}
   aria-hidden="true"
 >
-  <!-- Dots — scattered across the whole hero (corners + center-ish areas),
-       3 sizes, 3 approved accent colors, opacity tuned per-dot for
-       visibility against the gradient at that position -->
+  <!-- Dots — scattered across the whole hero (corners + the open space
+       further down each side), 3 sizes, 3 approved accent colors, opacity
+       tuned per-dot for visibility against the gradient at that position.
+       All 8 sit at ≤15% from the left/right edge (see clearance note
+       above) so none of them ever fall inside the centered max-w-2xl
+       text column. -->
   <span class="absolute left-[18%] top-[14%] h-2 w-2 rounded-full bg-teal-600/70"></span>
   <span class="absolute right-[22%] top-[10%] h-1.5 w-1.5 rounded-full bg-amber-500/70"></span>
   <span class="absolute bottom-[16%] left-[24%] h-2.5 w-2.5 rounded-full bg-blue-600/60"></span>
   <span class="absolute bottom-[10%] right-[18%] h-1.5 w-1.5 rounded-full bg-teal-600/60"></span>
-  <span class="absolute left-[46%] top-[32%] h-1 w-1 rounded-full bg-amber-500/80"></span>
-  <span class="absolute right-[42%] top-[54%] h-2 w-2 rounded-full bg-blue-600/50"></span>
-  <span class="absolute left-[36%] bottom-[34%] h-1.5 w-1.5 rounded-full bg-teal-600/75"></span>
-  <span class="absolute right-[36%] bottom-[8%] h-1 w-1 rounded-full bg-amber-500/65"></span>
+  <span class="absolute left-[9%] top-[42%] h-1 w-1 rounded-full bg-amber-500/80"></span>
+  <span class="absolute right-[9%] top-[60%] h-2 w-2 rounded-full bg-blue-600/50"></span>
+  <span class="absolute left-[13%] bottom-[38%] h-1.5 w-1.5 rounded-full bg-teal-600/75"></span>
+  <span class="absolute right-[13%] bottom-[24%] h-1 w-1 rounded-full bg-amber-500/65"></span>
 </div>
