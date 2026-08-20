@@ -1,92 +1,93 @@
 ---
 // src/components/sections/Hero.astro
-// Homepage hero — v6, simple bold dark-gradient redesign per user-supplied
-// reference screenshot (CLAUDE.md Section 4.5 page-specific inspiration
-// override). Big centered headline on a deep navy gradient, single CTA,
-// small caption below — matches the reference layout closely.
+// Homepage hero — v7, page-specific inspiration override (CLAUDE.md
+// Section 4.5) modeled on a user-supplied reference (Cap.so-style hero):
+// soft cloud-blur glow behind centered content, a small pill badge with
+// an inline accent link + chevron, a tiny eyebrow line above the
+// headline, bold black two-line headline, gray subtext, two CTAs
+// (light/outline first, blue-600 filled second), a small note line,
+// and a bottom underlined secondary link. No nav — Nav.astro handles
+// that separately, this is the hero section only.
 //
-// Fixed constraint honored: blue-600 (#2563EB) stays the accent (CTA fill,
-// glow color) even though the rest of the palette flips to dark for this
-// hero only — CLAUDE.md 4.5 allows overriding DESIGN_SYSTEM.md's default
-// ink/paper/rail palette for one page/section, just not the accent itself.
+// Palette: stays on DESIGN_SYSTEM.md's default light ink/paper tokens
+// (unlike the v6 dark override) — accent blue-600 fixed as always.
 //
-// User explicitly asked for "kuch design insert kr dena" so the background
-// isn't flat — DESIGN_SYSTEM.md Section 7.5 explicitly REJECTS Lottie
-// (new runtime dependency, at odds with the site's zero-animation-library,
-// anti-bloat positioning), so this uses only the already-approved
-// techniques instead: an ambient blur-glow orb (Section 1) + a faint
-// dot-grid texture (Section 4) + lightweight CSS-only floating particles
-// (same category as the approved "curved connector lines" — plain
-// absolutely-positioned elements, no new dependency, no SVG library).
-// All motion is decorative/ambient (slow drift/pulse), not information-
-// bearing, and freezes under prefers-reduced-motion per Section 6.
+// Decorative pattern note: the reference's soft organic cloud-blur is
+// the DESIGN_SYSTEM.md Section 7.5 "Abstract Blend Waves" entry, which
+// is rejected as a *sitewide default* (reads as generic gradient-blob
+// territory). Per CLAUDE.md 4.5, a page-specific inspiration screenshot
+// can override DESIGN_SYSTEM.md content itself (just not the fixed
+// accent color or CLAUDE.md's own governance rules) — so it's used here
+// deliberately, built as layered CSS radial-gradient blurs (no image
+// asset, no new dependency), kept as this hero's one decorative pattern
+// (nothing else stacked — no dot-grid, no separate glow orb).
 
-import { ArrowRight } from 'lucide-astro';
-import Badge from '../ui/Badge.astro';
+import { ChevronRight } from 'lucide-astro';
 ---
 
-<section class="relative overflow-hidden bg-[#0B1330] px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
-  <!-- Base gradient wash — deep navy, diagonal, matches reference -->
-  <div
-    class="pointer-events-none absolute inset-0 -z-30 bg-[radial-gradient(ellipse_120%_80%_at_20%_0%,#1E2A5E_0%,#0B1330_55%,#0A0F26_100%)]"
-    aria-hidden="true"
-  ></div>
-
-  <!-- Ambient glow orb — the one Section-1 "ambient glow" accent for this
-       hero, blue-600 tinted, sitting behind the headline -->
-  <div
-    class="glow-orb pointer-events-none absolute left-1/2 top-1/3 -z-20 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/25 blur-3xl"
-    aria-hidden="true"
-  ></div>
-
-  <!-- Faint dot-grid texture — Section 4 pattern, inverted to a light dot
-       on dark, kept low-opacity so it reads as texture, not noise -->
-  <div
-    class="pointer-events-none absolute inset-0 -z-10 opacity-[0.08]
-           [background-image:radial-gradient(#8FA3E0_1px,transparent_1px)]
-           [background-size:28px_28px]"
-    aria-hidden="true"
-  ></div>
-
-  <!-- Floating particles — small drifting dots for depth, CSS-only,
-       no library. Purely decorative, so all are hidden under
-       prefers-reduced-motion instead of freezing mid-position. -->
-  <div class="particle-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-    <span class="particle" style="left:14%; top:22%; animation-duration:9s; animation-delay:0s;"></span>
-    <span class="particle" style="left:82%; top:18%; animation-duration:11s; animation-delay:1.2s;"></span>
-    <span class="particle" style="left:24%; top:68%; animation-duration:8s; animation-delay:2.1s;"></span>
-    <span class="particle" style="left:74%; top:64%; animation-duration:10s; animation-delay:0.6s;"></span>
-    <span class="particle" style="left:50%; top:12%; animation-duration:12s; animation-delay:1.8s;"></span>
-    <span class="particle" style="left:90%; top:75%; animation-duration:9.5s; animation-delay:3s;"></span>
-    <span class="particle" style="left:8%; top:80%; animation-duration:10.5s; animation-delay:2.6s;"></span>
+<section class="relative overflow-hidden bg-paper px-4 pt-24 pb-28 sm:px-6 sm:pt-32 sm:pb-40 lg:px-8">
+  <!-- Soft cloud-blur backdrop — this hero's one decorative pattern.
+       Big, bold layered blur shapes in blue-200/300/100 tones, sized to
+       actually dominate the hero (not a faint corner tint) — heaviest
+       lower-left like the reference, with lighter drifts across the top
+       and right so the whole section reads as "sky", not just an accent. -->
+  <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="absolute -left-40 bottom-[-200px] h-[700px] w-[700px] rounded-full bg-blue-300/60 blur-[110px]"></div>
+    <div class="absolute -left-10 bottom-[-100px] h-[600px] w-[620px] rounded-full bg-blue-200/70 blur-[100px]"></div>
+    <div class="absolute left-[15%] bottom-0 h-[420px] w-[500px] rounded-full bg-blue-100/80 blur-[90px]"></div>
+    <div class="absolute -top-32 -right-24 h-[560px] w-[560px] rounded-full bg-blue-200/50 blur-[110px]"></div>
+    <div class="absolute top-10 right-[10%] h-[380px] w-[420px] rounded-full bg-blue-50 blur-[90px]"></div>
+    <div class="absolute left-1/3 -top-24 h-[340px] w-[420px] rounded-full bg-white/90 blur-[80px]"></div>
+    <div class="absolute left-[55%] top-1/3 h-[300px] w-[380px] rounded-full bg-blue-100/60 blur-[100px]"></div>
   </div>
 
-  <div class="relative mx-auto max-w-3xl text-center">
-    <Badge variant="beta" class="reveal border-white/10 bg-white/5 !text-blue-300 ring-white/10">
-      Closed beta &middot; 50 spots this cohort
-    </Badge>
+  <div class="relative mx-auto max-w-2xl text-center">
+    <a
+      href="/waitlist"
+      class="reveal inline-flex items-center gap-1.5 rounded-full border border-rail bg-paper px-4 py-1.5
+             text-sm text-ink/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-ink/20"
+    >
+      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-600">50 spots left</span>
+      <ChevronRight class="w-3.5 h-3.5 text-blue-600" stroke-width="2" />
+    </a>
 
-    <h1 class="reveal mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
-      Freelancer Management Tool<br class="hidden sm:block" /> for Modern Freelancers
+    <p class="reveal mt-6 text-sm text-ink/50">Propose. Sign. Get paid.</p>
+
+    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
+      One flow. Not five apps.
     </h1>
 
-    <p class="reveal mt-6 text-lg sm:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
-      Manage clients, projects, tasks, and invoices without juggling multiple tools &mdash;
-      one lean flow, built for freelancers worldwide.
+    <p class="reveal mt-6 text-base sm:text-lg text-ink/60 leading-relaxed max-w-xl mx-auto">
+      Huzlly is the lean alternative to a pile of freelance tools. Proposals, contracts, invoices,
+      and projects &mdash; connected in one automatic flow, built for solo freelancers.
     </p>
 
-    <div class="reveal mt-8 flex flex-col items-center gap-3">
+    <div class="reveal mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a
+        href="#how-it-works"
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-rail bg-paper px-5 py-2.5
+               text-sm font-semibold text-ink shadow-sm transition-colors duration-200 ease-in-out
+               hover:bg-rail/20 hover:border-ink/30
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+      >
+        See how it works
+      </a>
       <a
         href="/waitlist"
-        class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-[0_0_30px_-4px_rgba(37,99,235,0.6)]
-               transition-all duration-200 ease-in-out hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-[0_0_40px_-2px_rgba(37,99,235,0.7)]
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5
+               text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-in-out
+               hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-md
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
       >
         Join the waitlist
-        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
       </a>
-      <p class="text-xs font-medium text-white/40">Early users get 30% off for 2 years</p>
     </div>
+
+    <p class="reveal mt-4 text-xs text-ink/40">Free to join. No credit card required.</p>
+
+    <a href="/features" class="reveal mt-8 inline-block text-xs text-ink/50 underline underline-offset-4 hover:text-ink/70">
+      See what's inside
+    </a>
   </div>
 </section>
 
@@ -101,45 +102,11 @@ import Badge from '../ui/Badge.astro';
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  /* Ambient glow — slow, subtle pulse. Decorative only. */
-  .glow-orb {
-    animation: glow-pulse 6s ease-in-out infinite;
-  }
-  @keyframes glow-pulse {
-    0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
-  }
-
-  /* Floating particles — small dots that drift gently up and fade. */
-  .particle {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    border-radius: 9999px;
-    background: rgba(147, 197, 253, 0.5);
-    animation-name: particle-drift;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-  }
-  @keyframes particle-drift {
-    0%, 100% { transform: translateY(0px); opacity: 0.3; }
-    50% { transform: translateY(-18px); opacity: 0.8; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .reveal {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;
-    }
-    .glow-orb {
-      animation: none !important;
-      opacity: 0.85;
-    }
-    /* Purely decorative ambient motion — omitted entirely rather than
-       frozen mid-drift, per Section 6's "no optional animation" rule. */
-    .particle-field {
-      display: none !important;
     }
   }
 </style>
