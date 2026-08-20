@@ -197,9 +197,9 @@ const nextSteps = [
       Explore features
     </Button>
 
-    <a href="/" class="mt-3 text-xs font-medium text-ink/50 underline-offset-2 hover:text-ink/70 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20 rounded">
-      Home
-    </a>
+    <button type="button" id="waitlist-go-back" class="mt-3 text-xs font-medium text-ink/50 underline-offset-2 hover:text-ink/70 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20 rounded">
+      Go back
+    </button>
   </div>
 </section>
 
@@ -332,6 +332,22 @@ const nextSteps = [
       nextSteps.classList.add('is-entering');
     }
   }
+
+  // "Go back" on the next-steps screen — same inline-style swap as
+  // showSuccess, just reversed. Clearing style.display on splitCard (rather
+  // than setting it to 'grid'/'block') lets the existing responsive classes
+  // ('lg:grid' etc.) take back over instead of hardcoding one layout mode.
+  const goBackBtn = document.getElementById('waitlist-go-back');
+  goBackBtn?.addEventListener('click', () => {
+    if (nextSteps) {
+      nextSteps.style.display = 'none';
+      nextSteps.classList.add('hidden');
+      nextSteps.classList.remove('is-entering');
+    }
+    if (splitCard) {
+      splitCard.style.display = '';
+    }
+  });
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
