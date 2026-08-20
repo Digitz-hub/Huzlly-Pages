@@ -46,6 +46,18 @@
 // position within the hero it always had. Dot content, sizes, colors,
 // opacities, and every individual top/left/right/bottom percentage below
 // are untouched.
+//
+// BOTTOM-EDGE COUNTERPART FIX (this pass): the wrapper's `bottom-0` had
+// the same bug as the old `inset-0` top edge, just on the other side —
+// it stretched to the section's true bottom edge, ignoring the section's
+// own `pb-28 sm:pb-40` bottom padding. That made the box these dots'
+// bottom-[%] values are calculated against taller than intended, pulling
+// bottom-anchored dots down closer to the section's real bottom edge
+// than the top-anchored dots sit from the top — a visible top/bottom
+// asymmetry. Swapped `bottom-0` for `bottom-28 sm:bottom-40`, mirroring
+// the section's own bottom padding exactly like `top-40 sm:top-48
+// lg:top-56` mirrors its top padding. Box is now symmetric on both
+// edges; individual dot percentages untouched.
 
 export interface Props {
   class?: string;
@@ -54,7 +66,7 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-0 absolute -z-[5]', className]}
+<div class:list={['pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-28 sm:bottom-40 absolute -z-[5]', className]}
   aria-hidden="true"
 >
   <!-- Dots — scattered across the whole hero (corners + the open space
