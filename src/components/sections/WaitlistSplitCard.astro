@@ -138,6 +138,13 @@ const nextSteps = [
           </label>
         </div>
       </form>
+
+      <p class="mt-5 text-center text-sm text-ink/60">
+        Already reserved your spot?
+        <button type="button" id="waitlist-already-reserved" class="font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20 rounded">
+          See what happens next
+        </button>
+      </p>
     </div>
   </div>
 
@@ -273,6 +280,14 @@ const nextSteps = [
   emailInput?.addEventListener('input', () => {
     errorEl?.classList.add('hidden');
     setEmailInvalid(false);
+  });
+
+  // "Already reserved your spot?" — bypasses the form/API entirely and
+  // jumps straight to the next-steps screen, same as a real duplicate
+  // response would (title reads "You're already on the list.").
+  const alreadyReservedBtn = document.getElementById('waitlist-already-reserved');
+  alreadyReservedBtn?.addEventListener('click', () => {
+    showSuccess(true);
   });
 
   function showError(message, emailInvalid = false) {
