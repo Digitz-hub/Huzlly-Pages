@@ -112,6 +112,7 @@ const nextSteps = [
             autocomplete="email"
             class="w-full rounded-xl border border-rail bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors focus-visible:border-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
           />
+          <p id="waitlist-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
         </div>
 
         <!-- Honeypot: hidden from real visitors, irresistible to bots that fill every field. -->
@@ -137,8 +138,6 @@ const nextSteps = [
           </label>
         </div>
       </form>
-
-      <p id="waitlist-error" class="mt-3 text-center text-sm text-red-600 hidden"></p>
     </div>
   </div>
 
@@ -241,6 +240,7 @@ const nextSteps = [
   const nextSteps = document.getElementById('waitlist-next-steps');
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
   const termsCheckbox = document.getElementById('waitlist-terms') as HTMLInputElement | null;
+  const emailInput = document.getElementById('waitlist-email') as HTMLInputElement | null;
   const successTitle = document.getElementById('waitlist-success-title');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -254,10 +254,32 @@ const nextSteps = [
     }
   });
 
-  function showError(message) {
+  // Swap `border-rail` <-> `border-red-500` rather than stacking a second
+  // border-color utility on top — two classes setting the same property at
+  // equal specificity is exactly what broke the split-card/next-steps
+  // toggle earlier, so this always removes the one it's not using.
+  function setEmailInvalid(invalid) {
+    if (!emailInput) return;
+    if (invalid) {
+      emailInput.classList.remove('border-rail');
+      emailInput.classList.add('border-red-500');
+    } else {
+      emailInput.classList.remove('border-red-500');
+      emailInput.classList.add('border-rail');
+    }
+  }
+
+  // Clear the error state as soon as the person starts fixing the email.
+  emailInput?.addEventListener('input', () => {
+    errorEl?.classList.add('hidden');
+    setEmailInvalid(false);
+  });
+
+  function showError(message, emailInvalid = false) {
     if (!errorEl) return;
     errorEl.textContent = message;
     errorEl.classList.remove('hidden');
+    setEmailInvalid(emailInvalid);
   }
 
   function showSuccess(duplicate) {
@@ -281,17 +303,17 @@ const nextSteps = [
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     errorEl?.classList.add('hidden');
+    setEmailInvalid(false);
 
-    const emailInput = document.getElementById('waitlist-email') as HTMLInputElement;
     const companyInput = document.getElementById('waitlist-company') as HTMLInputElement;
-    const email = emailInput.value.trim();
+    const email = emailInput ? emailInput.value.trim() : '';
 
     if (!termsCheckbox?.checked) {
       showError('Agree to the Terms and Privacy Policy to join the waitlist.');
       return;
     }
     if (!EMAIL_RE.test(email)) {
-      showError('Enter a valid email address to join the waitlist.');
+      showError('Enter a valid email address to join the waitlist.', true);
       return;
     }
 
