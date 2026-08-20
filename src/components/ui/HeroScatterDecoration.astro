@@ -1,34 +1,24 @@
 ---
 // src/components/ui/HeroScatterDecoration.astro
-// Purely decorative dots + hand-drawn doodle-arrow layer, designed as a
-// companion to the floating AutomationNotificationCard set — not a second
-// competing "background pattern" alongside Hero.astro's cloud-blur glow.
+// Purely decorative scattered-dot layer, designed as a companion to the
+// floating AutomationNotificationCard set — not a second competing
+// "background pattern" alongside Hero.astro's cloud-blur glow.
 // The cloud-blur is atmosphere (sits behind everything); this layer is a
-// foreground prop tied to the cards (dots + arrows point at/around them).
+// foreground prop of small dots scattered across the hero, mixing with the
+// gradient rather than clustering strictly at the corners.
 //
 // DESIGN SYSTEM NOTE (per CLAUDE.md Section 4.5 — Per-Page
-// Inspiration-Driven Design): the hand-drawn doodle style here deliberately
-// departs from DESIGN_SYSTEM.md Section 7.5's approved decorative-pattern
-// list (which favors geometric/technical-schematic linework and explicitly
-// rejects organic/soft treatments). This is allowed because the user's own
-// reference screenshot for this hero section is the authoritative design
-// source for this section specifically — illustration style is one of the
-// properties Section 4.5 says can be freely improvised from inspiration.
-// This override is scoped to this component/hero only; it does not change
-// the sitewide illustration guidance in DESIGN_SYSTEM.md Section 7/7.5.
+// Inspiration-Driven Design): scoped to this component/hero only; does not
+// change the sitewide illustration guidance in DESIGN_SYSTEM.md Section 7/7.5.
 //
 // Colors: dots use the three approved accent/signal tokens (blue-600,
-// teal-600, amber-500) — no new hex values introduced. Doodle strokes use
-// `ink/25` so they read as a faint sketch, not a UI element. (Previously
-// `rail` at low opacity — rail #E4E0D8 against this hero's paper #FCFBF8
-// background has near-zero contrast at any opacity, so the doodles were
-// effectively invisible; ink/25 gives a visible-but-faint sketch line
-// instead. The /25 on the color class supplies the fade, so the doodle
-// paths no longer carry their own redundant per-path opacity="...".)
-//
-// Positioning/rotation use arbitrary bracket values under the
-// decorative-transform exception added to CLAUDE.md Section 3. No inline
-// style="..." attributes anywhere, per the standing zero-tolerance rule.
+// teal-600, amber-500) — no new hex values introduced. Size (small/medium/
+// large) and opacity are varied per-dot so each stays legible against
+// whatever part of the gradient it lands on; nothing here is an inline
+// style="..." attribute, per the standing zero-tolerance rule — all
+// variation is expressed through Tailwind utility classes and arbitrary
+// bracket values under the decorative-transform exception in CLAUDE.md
+// Section 3.
 
 export interface Props {
   class?: string;
@@ -40,49 +30,15 @@ const { class: className } = Astro.props;
 <div class:list={['pointer-events-none absolute inset-0 -z-[5]', className]}
   aria-hidden="true"
 >
-  <!-- Dots — scattered near the card corners, 3 sizes, 3 approved accent colors -->
+  <!-- Dots — scattered across the whole hero (corners + center-ish areas),
+       3 sizes, 3 approved accent colors, opacity tuned per-dot for
+       visibility against the gradient at that position -->
   <span class="absolute left-[18%] top-[14%] h-2 w-2 rounded-full bg-teal-600/70"></span>
   <span class="absolute right-[22%] top-[10%] h-1.5 w-1.5 rounded-full bg-amber-500/70"></span>
   <span class="absolute bottom-[16%] left-[24%] h-2.5 w-2.5 rounded-full bg-blue-600/60"></span>
   <span class="absolute bottom-[10%] right-[18%] h-1.5 w-1.5 rounded-full bg-teal-600/60"></span>
-
-  <!-- Doodle arrow 1 — loose hand-drawn curve, lower-left area, arcing
-       upward toward the "Client signed contract" card -->
-  <svg class="absolute bottom-[22%] left-[30%] h-16 w-24 -rotate-[8deg] text-ink/25"
-    viewBox="0 0 100 60"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M4 50C18 54 34 52 44 40C52 30 46 20 36 22C28 24 30 34 40 34C56 34 70 24 78 10"
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-    />
-    <path d="M68 8L79 9.5L74 20"
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
-
-  <!-- Doodle arrow 2 — short flick, upper-right area, pointing toward the
-       "Payment received" card -->
-  <svg class="absolute right-[26%] top-[18%] h-12 w-16 rotate-[10deg] text-ink/25"
-    viewBox="0 0 80 50"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M6 8C20 6 34 14 40 26C45 36 40 42 32 40"
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-    />
-    <path d="M22 33L31 41L24 47"
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </svg>
+  <span class="absolute left-[46%] top-[32%] h-1 w-1 rounded-full bg-amber-500/80"></span>
+  <span class="absolute right-[42%] top-[54%] h-2 w-2 rounded-full bg-blue-600/50"></span>
+  <span class="absolute left-[36%] bottom-[34%] h-1.5 w-1.5 rounded-full bg-teal-600/75"></span>
+  <span class="absolute right-[36%] bottom-[8%] h-1 w-1 rounded-full bg-amber-500/65"></span>
 </div>
