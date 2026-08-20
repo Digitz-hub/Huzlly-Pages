@@ -19,7 +19,12 @@
 //
 // Colors: dots use the three approved accent/signal tokens (blue-600,
 // teal-600, amber-500) — no new hex values introduced. Doodle strokes use
-// `rail` at low opacity so they read as a faint sketch, not a UI element.
+// `ink/25` so they read as a faint sketch, not a UI element. (Previously
+// `rail` at low opacity — rail #E4E0D8 against this hero's paper #FCFBF8
+// background has near-zero contrast at any opacity, so the doodles were
+// effectively invisible; ink/25 gives a visible-but-faint sketch line
+// instead. The /25 on the color class supplies the fade, so the doodle
+// paths no longer carry their own redundant per-path opacity="...".)
 //
 // Positioning/rotation use arbitrary bracket values under the
 // decorative-transform exception added to CLAUDE.md Section 3. No inline
@@ -32,8 +37,7 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div
-  class:list={['pointer-events-none absolute inset-0 -z-[5]', className]}
+<div class:list={['pointer-events-none absolute inset-0 -z-[5]', className]}
   aria-hidden="true"
 >
   <!-- Dots — scattered near the card corners, 3 sizes, 3 approved accent colors -->
@@ -44,51 +48,41 @@ const { class: className } = Astro.props;
 
   <!-- Doodle arrow 1 — loose hand-drawn curve, lower-left area, arcing
        upward toward the "Client signed contract" card -->
-  <svg
-    class="absolute bottom-[22%] left-[30%] h-16 w-24 -rotate-[8deg] text-rail"
+  <svg class="absolute bottom-[22%] left-[30%] h-16 w-24 -rotate-[8deg] text-ink/25"
     viewBox="0 0 100 60"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M4 50C18 54 34 52 44 40C52 30 46 20 36 22C28 24 30 34 40 34C56 34 70 24 78 10"
+    <path d="M4 50C18 54 34 52 44 40C52 30 46 20 36 22C28 24 30 34 40 34C56 34 70 24 78 10"
       stroke="currentColor"
       stroke-width="1.75"
       stroke-linecap="round"
-      opacity="0.55"
     />
-    <path
-      d="M68 8L79 9.5L74 20"
+    <path d="M68 8L79 9.5L74 20"
       stroke="currentColor"
       stroke-width="1.75"
       stroke-linecap="round"
       stroke-linejoin="round"
-      opacity="0.55"
     />
   </svg>
 
   <!-- Doodle arrow 2 — short flick, upper-right area, pointing toward the
        "Payment received" card -->
-  <svg
-    class="absolute right-[26%] top-[18%] h-12 w-16 rotate-[10deg] text-rail"
+  <svg class="absolute right-[26%] top-[18%] h-12 w-16 rotate-[10deg] text-ink/25"
     viewBox="0 0 80 50"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M6 8C20 6 34 14 40 26C45 36 40 42 32 40"
+    <path d="M6 8C20 6 34 14 40 26C45 36 40 42 32 40"
       stroke="currentColor"
       stroke-width="1.75"
       stroke-linecap="round"
-      opacity="0.5"
     />
-    <path
-      d="M22 33L31 41L24 47"
+    <path d="M22 33L31 41L24 47"
       stroke="currentColor"
       stroke-width="1.75"
       stroke-linecap="round"
       stroke-linejoin="round"
-      opacity="0.5"
     />
   </svg>
 </div>
