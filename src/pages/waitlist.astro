@@ -64,8 +64,10 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
         aria-hidden="true"
       ></div>
 
-      <!-- Card wrapper: normal soft elevation shadow, no dark-floor contact shadow -->
-      <div class="relative w-full [filter:drop-shadow(0_20px_35px_rgba(2,6,23,0.25))_drop-shadow(0_8px_14px_rgba(2,6,23,0.15))]">
+      <!-- Card wrapper: h-full completes the height chain down to WaitlistSplitCard's
+           lg:h-full, so the card actually fills the available vertical space instead
+           of sitting at its natural (shorter) height with extra top/bottom gap -->
+      <div class="relative w-full h-full [filter:drop-shadow(0_20px_35px_rgba(2,6,23,0.25))_drop-shadow(0_8px_14px_rgba(2,6,23,0.15))]">
         <WaitlistSplitCard />
       </div>
     </div>
