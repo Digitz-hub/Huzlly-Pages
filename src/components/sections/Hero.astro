@@ -21,8 +21,50 @@
 // deliberately, built as layered CSS radial-gradient blurs (no image
 // asset, no new dependency), kept as this hero's one decorative pattern
 // (nothing else stacked — no dot-grid, no separate glow orb).
+//
+// Floating automation cards + scatter decoration (added this pass):
+// four AutomationNotificationCard instances scattered at the hero's
+// corners, one per step of the Proposal → Contract → Invoice → Project
+// flow (SITE_IDENTITY_AND_AEO.md Section 3), plus a HeroScatterDecoration
+// layer (dots + doodle arrows) tying the cards together visually. Both
+// components are pre-built/finalized — this file only imports, positions,
+// and feeds them data; no markup inside either component was touched.
+//
+// Stacking order (back to front): cloud-blur backdrop (-z-10, baked into
+// this file) → HeroScatterDecoration (-z-[5], baked into that component)
+// → centered headline/subtext/CTA content (default stacking) → floating
+// cards (z-10, explicit, so they sit above everything else in the hero).
+// Cards + decoration are both hidden below `lg` — at narrower widths
+// there isn't room around the centered content for four 288–320px cards
+// without crowding the headline/CTAs, which the existing hero reserves
+// via its sm:/lg: padding scale.
+//
+// Card data source: SITE_IDENTITY_AND_AEO.md Section 3 end-to-end flow.
+// Rotation values map to the requested rotationClass shorthand
+// (-rotate-6 / rotate-3 / rotate-6 / -rotate-3) via AutomationNotification-
+// Card's numeric `rotation` prop (degrees), which is that component's
+// actual finalized API — no separate rotationClass prop exists on it.
+//
+// ⚠️ Flag (per CLAUDE.md Section 3 "stop and flag" rule): the bottom-right
+// card's `bg-rose-500` iconBg is not one of DESIGN_SYSTEM.md's three
+// approved signal/accent colors (blue-600 / teal-600 / amber-500) or the
+// fixed brand accent. It's used here only because it was specified
+// verbatim in the task and already flagged as unapproved inside
+// AutomationNotificationCard.astro's own header comment — confirm with
+// design before shipping, or swap it for one of the three approved tones.
+//
+// ⚠️ Flag: AutomationNotificationCard.astro applies its rotation via an
+// inline `style="transform: rotate(...)"` attribute in its own template.
+// CLAUDE.md Section 3 forbids inline `style="..."` with zero exceptions,
+// including for the decorative-transform allowance (which only permits
+// arbitrary bracket *classes* like `rotate-[-6deg]`, not `style=`). That
+// component ships pre-built/finalized per this task's brief, so it isn't
+// modified here — flagging so it can be revisited (e.g. converted to a
+// `rotate-[Ndeg]` class) in a follow-up pass.
 
-import { ChevronRight } from 'lucide-astro';
+import { ChevronRight, Check, FileText, DollarSign, FolderOpen } from 'lucide-astro';
+import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
+import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
 <section class="relative overflow-hidden bg-paper px-4 pt-24 pb-28 sm:px-6 sm:pt-32 sm:pb-40 lg:px-8">
@@ -40,6 +82,12 @@ import { ChevronRight } from 'lucide-astro';
     <div class="absolute left-1/3 -top-24 h-[340px] w-[420px] rounded-full bg-white/90 blur-[80px]"></div>
     <div class="absolute left-[55%] top-1/3 h-[300px] w-[380px] rounded-full bg-blue-100/60 blur-[100px]"></div>
   </div>
+
+  <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
+       floating cards below. Sits above the cloud-blur backdrop (-z-10)
+       and below the centered content, per its own -z-[5]. Hidden below
+       `lg` alongside the cards it points at. -->
+  <HeroScatterDecoration class="hidden lg:block" />
 
   <div class="relative mx-auto max-w-2xl text-center">
     <a
@@ -88,6 +136,64 @@ import { ChevronRight } from 'lucide-astro';
     <a href="/features" class="reveal mt-8 inline-block text-xs text-ink/50 underline underline-offset-4 hover:text-ink/70">
       See what's inside
     </a>
+  </div>
+
+  <!-- Floating automation cards — one per corner, one per step of the
+       Proposal → Contract → Invoice/Project flow. Absolutely positioned
+       via the CLAUDE.md Section 3 decorative-transform exception
+       (arbitrary top/left/right/bottom values are allowed here since
+       this placement is purely decorative, not content layout). Hidden
+       below `lg` so they never crowd the centered headline/CTA column
+       on narrower viewports. z-10 keeps them above the cloud-blur
+       backdrop and scatter decoration, and above the centered content
+       stacking context, matching the "cards scattered around/near the
+       content" reference. -->
+  <div class="pointer-events-none absolute inset-0 z-10 hidden lg:block" aria-hidden="false">
+    <!-- Top-left: Proposal accepted (starts expanded) -->
+    <div class="pointer-events-auto absolute left-[2%] top-[6%]">
+      <AutomationNotificationCard iconBg="bg-teal-600"
+        title="Proposal accepted"
+        description="Contract sent to client instantly"
+        rotation={-6}
+        defaultExpanded={true}
+      >
+        <Check slot="icon" class="w-4 h-4" stroke-width="2" />
+      </AutomationNotificationCard>
+    </div>
+
+    <!-- Top-right: Payment received -->
+    <div class="pointer-events-auto absolute right-[2%] top-[6%]">
+      <AutomationNotificationCard iconBg="bg-amber-500"
+        title="Payment received"
+        description="Client paid $1,200 for Website Redesign"
+        rotation={6}
+      >
+        <DollarSign slot="icon" class="w-4 h-4" stroke-width="2" />
+      </AutomationNotificationCard>
+    </div>
+
+    <!-- Bottom-left: Client signed contract -->
+    <div class="pointer-events-auto absolute bottom-[6%] left-[2%]">
+      <AutomationNotificationCard iconBg="bg-blue-600"
+        title="Client signed contract"
+        description="Invoice created and sent to client automatically"
+        rotation={3}
+      >
+        <FileText slot="icon" class="w-4 h-4" stroke-width="2" />
+      </AutomationNotificationCard>
+    </div>
+
+    <!-- Bottom-right: New project created — iconBg flagged above, not
+         yet an approved DESIGN_SYSTEM.md accent color; confirm before shipping. -->
+    <div class="pointer-events-auto absolute bottom-[6%] right-[2%]">
+      <AutomationNotificationCard iconBg="bg-rose-500"
+        title="New project created"
+        description="Time tracking is now live for this client"
+        rotation={-3}
+      >
+        <FolderOpen slot="icon" class="w-4 h-4" stroke-width="2" />
+      </AutomationNotificationCard>
+    </div>
   </div>
 </section>
 
