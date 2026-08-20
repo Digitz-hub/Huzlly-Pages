@@ -205,22 +205,18 @@ const nextSteps = [
 </section>
 
 <style>
-  /* Single one-shot entrance for the whole card — subtle, not stacked
-     with per-element stagger since the reference is a calm, static layout.
-     Mandatory reduced-motion fallback per DESIGN_SYSTEM.md Section 6.
-     IMPORTANT: this rule only ever holds the ONE-SHOT entrance. The
-     persistent floating loop lives in the separate `.is-idle` class
-     below, added by JS only once this entrance finishes. Keeping them
-     apart is what fixes the repeated-toggle bug: previously both were
-     combined in one `animation` shorthand here, so whenever JS removed
-     the transient `.screen-leave`/`.screen-enter` override class, the
-     cascade fell back to *this* rule and restarted split-card-in from
-     opacity:0 every time — that restart, not a failed `animationend`,
-     was the visible "blank flash then snap" on the 2nd+ toggle. */
+  /* Base one-shot entrance + resting styles for the split card. The
+     actual `animation` (entrance vs. idle float vs. leave/enter) is set
+     directly via inline style from the script below, not through
+     competing CSS classes. The earlier class-based approach
+     (`.split-card` + `.is-idle` + `.screen-leave`/`.screen-enter` all
+     fighting over the same `animation` property) kept letting the base
+     `opacity: 0` here show back through whenever control handed between
+     states — driving it from JS instead means exactly one animation is
+     ever active, chosen explicitly, with nothing left to fall back to. */
   .split-card {
     opacity: 0;
     transform: translateY(10px);
-    animation: split-card-in 1.1s ease-out forwards;
     transition: transform 0.4s ease;
     will-change: transform;
   }
@@ -230,32 +226,14 @@ const nextSteps = [
       transform: translateY(0);
     }
   }
-  /* Subtle floating effect once settled — a light continuous hover so the
-     card reads as elevated above the page background rather than flush
-     against it. Deliberately its own class (not merged into `.split-card`)
-     and defined here — BEFORE `.screen-leave`/`.screen-enter` further
-     down — so those transient classes still win the cascade on
-     `animation` while a toggle is in flight, and so removing them
-     afterward falls back to this quiet loop instead of the entrance
-     keyframes above. Toggled on/off by JS (see script below), only on
-     desktop and only once the initial entrance has finished. */
-  @media (min-width: 1024px) {
-    .is-idle {
-      animation: split-card-float 9s ease-in-out infinite;
-    }
-    @keyframes split-card-float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
+  @keyframes split-card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
   }
   @media (prefers-reduced-motion: reduce) {
     .split-card {
       opacity: 1;
       transform: none;
-      animation: none;
-    }
-    .is-idle {
-      animation: none;
     }
   }
 
@@ -274,15 +252,11 @@ const nextSteps = [
     }
   }
 
-  /* Screen-to-screen transition (JS-triggered via switchScreens() below) —
-     used both for split-card → next-steps on submit and the reverse on
-     "Go back". Separate from the one-shot page-load entrances above:
-     these fire every time, not just once, and apply to whichever panel
-     is currently leaving/entering. Single-class selectors, defined after
-     .split-card / .is-idle so they win on the shared `animation` property
-     while active; once JS removes them, the element falls back to
-     `.is-idle`'s quiet loop rather than `.split-card`'s entrance keyframes
-     — see the note above `.is-idle` for why that ordering matters. */
+  /* Screen-to-screen transition (JS-triggered via switchScreens() below).
+     Used for the next-steps panel's leave/enter in both directions. The
+     split card manages its own leave/enter/idle animation via inline
+     style instead (see script) rather than these classes, so there's no
+     competing `animation` declaration left to fall back to on it. */
   .screen-leave {
     animation: screen-leave 0.4s ease-in forwards;
   }
@@ -340,25 +314,54 @@ const nextSteps = [
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isDesktopViewport = () => window.matchMedia('(min-width: 1024px)').matches;
 
-  // Hands the split card off from its one-shot entrance animation to the
-  // persistent `.is-idle` float loop. Called once after the initial
-  // page-load entrance finishes, and again after the card re-enters via
-  // switchScreens() ("Go back") — never by letting the browser's own
-  // cascade fall back to it, which is what used to silently restart the
-  // entrance keyframes instead (see the CSS note on `.is-idle`).
-  function settleSplitCard() {
-    if (!splitCard || prefersReducedMotion) return;
-    if (isDesktopViewport()) {
-      splitCard.classList.add('is-idle');
-    } else {
-      splitCard.classList.remove('is-idle');
+  // The split card's entire animation lifecycle (one-shot entrance on
+  // mount, persistent idle float on desktop, leave/re-enter on toggle) is
+  // driven from here via inline `style.animation`, not CSS classes. Every
+  // one of these phases used to be a separate class fighting the others
+  // over the same `animation` property, and whichever class got removed
+  // last, the card fell back to whatever the cascade resolved to next —
+  // sometimes the base (invisible) state, sometimes a restarted entrance.
+  // Setting `style.animation` directly sidesteps that entirely: inline
+  // style always wins, so there's only ever one animation active at a
+  // time and it's always the one we just chose.
+  function setSplitCardAnimation(phase) {
+    if (!splitCard) return;
+
+    if (prefersReducedMotion) {
+      splitCard.style.animation = 'none';
+      splitCard.style.opacity = '1';
+      splitCard.style.transform = 'none';
+      return;
+    }
+
+    if (phase === 'idle') {
+      splitCard.style.opacity = '1';
+      splitCard.style.transform = 'translateY(0)';
+      splitCard.style.animation = isDesktopViewport()
+        ? 'split-card-float 9s ease-in-out infinite'
+        : 'none';
+      return;
+    }
+
+    if (phase === 'enter') {
+      splitCard.style.animation = 'screen-enter 0.6s ease-out forwards';
+      splitCard.addEventListener('animationend', () => setSplitCardAnimation('idle'), { once: true });
+      return;
+    }
+
+    if (phase === 'leave') {
+      splitCard.style.animation = 'screen-leave 0.4s ease-in forwards';
     }
   }
 
-  if (splitCard && !prefersReducedMotion) {
-    splitCard.addEventListener('animationend', (event) => {
-      if (event.animationName === 'split-card-in') settleSplitCard();
-    }, { once: true });
+  // Initial page-load entrance — the only time `split-card-in` plays.
+  if (splitCard) {
+    if (prefersReducedMotion) {
+      setSplitCardAnimation('idle');
+    } else {
+      splitCard.style.animation = 'split-card-in 1.1s ease-out forwards';
+      splitCard.addEventListener('animationend', () => setSplitCardAnimation('idle'), { once: true });
+    }
   }
 
   // Swap `border-rail` <-> `border-red-500` rather than stacking a second
@@ -454,16 +457,34 @@ const nextSteps = [
       }
 
       if (prefersReducedMotion) return;
+
+      // The split card drives its own enter animation (and the follow-up
+      // hand-off to the idle float) via setSplitCardAnimation — see
+      // above — rather than the shared `.screen-enter` class, since it's
+      // the one panel with a persistent idle state to return to.
+      if (toEl === splitCard) {
+        setSplitCardAnimation('enter');
+        return;
+      }
+
       toEl.classList.add('screen-enter');
       toEl.addEventListener('animationend', () => {
         toEl.classList.remove('screen-enter');
-        if (toEl === splitCard) settleSplitCard();
       }, { once: true });
     };
 
     if (prefersReducedMotion) {
       fromEl.style.display = 'none';
       enterToEl();
+      return;
+    }
+
+    if (fromEl === splitCard) {
+      setSplitCardAnimation('leave');
+      splitCard.addEventListener('animationend', () => {
+        fromEl.style.display = 'none';
+        enterToEl();
+      }, { once: true });
       return;
     }
 
