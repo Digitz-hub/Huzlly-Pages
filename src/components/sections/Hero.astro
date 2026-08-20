@@ -1,48 +1,47 @@
 ---
 // src/components/sections/Hero.astro
-// Homepage hero — v4, page-specific inspiration override (CLAUDE.md
-// Section 4.5). Signature visual is now lifted directly from the
-// user-supplied reference implementation (hero-preview.html — a
-// "Tools AI" style hero): a center glow-node with floating icon cards
-// on either side, connected by a dense fan of soft bezier lines, each
-// card gently bobbing via CSS float animation. No stars/review-count
-// badge (explicitly excluded, per direction).
+// Homepage hero — v5 full redesign. Replaces the prior page-specific
+// "Tools AI" inspiration override (floating icon cards + center glow
+// node) with DESIGN_SYSTEM.md v2's actual sitewide signature element:
+// the flow-rail diagram (Section 3 "Flow-Rail Diagram" spec, Section 6
+// motion "Rail-Dot Travel", Quick Reference "Signature Element").
 //
-// Real third-party app logos (the reference used plain text
-// initials/emoji stand-ins, not actual brand marks) are still not
-// reproduced here — cards use generic lucide icons for each tool
-// category Huzlly replaces (proposal, e-sign, invoicing, payments,
-// forms, time tracking), same reasoning as the previous pass.
+// Why: the floating-card treatment was a one-off inspiration swap; the
+// system's own spec for the hero's signature visual is nodes sitting ON
+// a rail line (blue -> teal -> amber gradient), not floating beside it.
+// This version also makes the visual literal instead of generic —
+// six nodes trace Huzlly's real product flow from SITE_IDENTITY_AND_AEO.md
+// Section 3: Proposal -> Contract -> Invoice -> Project -> Tasks -> Client
+// Portal, each captioned in the mono eyebrow style.
 //
-// Page-level design note (CLAUDE.md 4.5):
-// - Inspiration: hero-preview.html (user-supplied) — center glow node,
-//   floating bordered icon cards, dense converging bezier-line fan,
-//   continuous float animation, dual CTA row, no rating badge.
-// - Fixed accent kept: blue-600 (#2563EB) — replaces the reference's
-//   orange (#FF4B26/#FF3B14) throughout: line gradient, glow shadow,
-//   center node gradient, and the accented icon cards.
-// - Everything else on this page still runs on DESIGN_SYSTEM.md v2
-//   tokens (ink/paper/rail, Space Grotesk/Inter/JetBrains Mono,
-//   existing Button/Badge primitives) — only the signature visual is
-//   rebuilt; headline, subtext, CTAs, and the beta badge are unchanged.
-// - Arbitrary Tailwind values (percentage positions, the glow
-//   box-shadow, fixed pixel heights) are carried over near-verbatim
-//   from the reference — CLAUDE.md Section 3's zero-arbitrary-value
-//   rule is one of the rules Section 4.5 allows an inspiration
-//   override to relax; it is not in the fixed list (accent color,
-//   Sections 1/2/5).
-// - Motion: continuous float keyframes on each card (reference
-//   mechanism, unchanged), plus the sitewide scroll-reveal on mount.
-//   Both degrade to fully static under prefers-reduced-motion.
+// Decorative pattern budget (DESIGN_SYSTEM.md Section 7.5 placement rule,
+// one per page/area): dot-grid texture behind the hero, nothing else
+// stacked in the same area. No ambient glow orb here.
+//
+// Motion: scroll-reveal (unchanged sitewide mechanism) + one-shot
+// rail-dot travel along the gradient rail on first viewport entry
+// (Section 6 "Rail-Dot Travel" — not looping). Both fully degrade
+// under prefers-reduced-motion: dot is omitted rather than shown static,
+// since the rail and captioned nodes stay completely legible without it.
 
-import { ArrowRight, FileText, PenTool, Receipt, CreditCard, ClipboardList, Clock } from 'lucide-astro';
+import { ArrowRight, FileText, PenTool, Receipt, FolderKanban, ListChecks, Users } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 import Badge from '../ui/Badge.astro';
+
+const flow = [
+  { label: 'Proposal', icon: FileText },
+  { label: 'Contract', icon: PenTool },
+  { label: 'Invoice', icon: Receipt },
+  { label: 'Project', icon: FolderKanban },
+  { label: 'Tasks', icon: ListChecks },
+  { label: 'Portal', icon: Users },
+];
 ---
 
 <section class="relative overflow-hidden bg-paper px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8">
-  <!-- Dot-grid texture — this hero's one accent, per DESIGN_SYSTEM.md
-       Section 4. Not combined with an ambient glow in the same area. -->
+  <!-- Dot-grid texture — this hero's one decorative pattern, per
+       DESIGN_SYSTEM.md Section 4 / 7.5. Not combined with an ambient
+       glow in the same area. -->
   <div class="pointer-events-none absolute inset-0 -z-10 opacity-40
               [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)]
               [background-size:24px_24px]" aria-hidden="true"></div>
@@ -71,77 +70,47 @@ import Badge from '../ui/Badge.astro';
     </div>
   </div>
 
-  <!-- Signature: floating tool-icon cards + center Huzlly glow node,
-       connected by a converging line fan. Lifted from hero-preview.html. -->
-  <div class="reveal relative mx-auto mt-10 h-[260px] w-full max-w-5xl sm:mt-14 sm:h-[320px]">
-    <svg viewBox="0 0 1200 300" fill="none" preserveAspectRatio="xMidYMid meet"
-      class="absolute inset-0 h-full w-full opacity-60" aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="huzllyLineGrad" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="#2563EB" stop-opacity="0.05" />
-          <stop offset="50%" stop-color="#2563EB" stop-opacity="0.7" />
-          <stop offset="100%" stop-color="#2563EB" stop-opacity="0.05" />
-        </linearGradient>
-      </defs>
-      <path d="M 0 50 C 250 50, 400 130, 560 142" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 0 110 C 250 110, 400 138, 560 146" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 0 170 C 250 170, 400 144, 560 149" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 0 230 C 250 230, 400 152, 560 152" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 0 290 C 250 290, 400 160, 560 155" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 0 350 C 250 350, 400 170, 560 158" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+  <!-- Signature: flow-rail diagram — six nodes tracing the real Huzlly
+       flow, sitting on a blue -> teal -> amber gradient rail, with a
+       one-shot traveling dot on first entry. DESIGN_SYSTEM.md Section 3
+       "Flow-Rail Diagram (signature element spec)". -->
 
-      <path d="M 1200 50 C 950 50, 800 130, 640 142" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 1200 110 C 950 110, 800 138, 640 146" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 1200 170 C 950 170, 800 144, 640 149" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 1200 230 C 950 230, 800 152, 640 152" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 1200 290 C 950 290, 800 160, 640 155" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-      <path d="M 1200 350 C 950 350, 800 170, 640 158" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
-    </svg>
-
-    <!-- Left floating cards -->
-    <div class="animate-float-1 absolute left-[12%] top-[10%] z-10 flex h-12 w-12 items-center justify-center
-                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
-      <FileText class="w-5 h-5 text-blue-600" stroke-width="1.75" />
+  <!-- Desktop / tablet: horizontal rail -->
+  <div class="hero-visual reveal relative mx-auto mt-14 hidden max-w-4xl sm:block">
+    <div class="relative h-0.5 w-full rounded-full bg-gradient-to-r from-blue-600 via-teal-600 to-amber-500">
+      <span class="rail-dot absolute top-1/2 left-0 h-2 w-2 -translate-y-1/2 rounded-full bg-blue-600 shadow-[0_0_8px_2px_rgba(37,99,235,0.5)]" aria-hidden="true"></span>
     </div>
-    <div class="animate-float-2 absolute left-[28%] top-[45%] z-10 flex h-12 w-12 items-center justify-center
-                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
-      <PenTool class="w-5 h-5 text-ink/70" stroke-width="1.75" />
-    </div>
-    <div class="animate-float-3 absolute bottom-[10%] left-[12%] z-10 flex h-12 w-12 items-center justify-center
-                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
-      <Receipt class="w-5 h-5 text-blue-600" stroke-width="1.75" />
-    </div>
-
-    <!-- Center glow node — Huzlly mark -->
-    <div class="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
-      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-blue-500
-                  shadow-[0_0_40px_10px_rgba(37,99,235,0.35)] sm:h-20 sm:w-20">
-        <svg viewBox="0 0 100 100" class="h-8 w-8 sm:h-9 sm:w-9" aria-hidden="true">
-          <path d="M30 25 V75 M70 25 V75 M30 50 H70"
-            stroke="#FCFBF8" stroke-width="12"
-            stroke-linecap="round" stroke-linejoin="round" fill="none"
-          />
-        </svg>
-      </div>
-    </div>
-
-    <!-- Right floating cards -->
-    <div class="animate-float-2 absolute right-[12%] top-[10%] z-10 flex h-12 w-12 items-center justify-center
-                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
-      <CreditCard class="w-5 h-5 text-ink/70" stroke-width="1.75" />
-    </div>
-    <div class="animate-float-3 absolute right-[28%] top-[45%] z-10 flex h-12 w-12 items-center justify-center
-                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
-      <ClipboardList class="w-5 h-5 text-blue-600" stroke-width="1.75" />
-    </div>
-    <div class="animate-float-1 absolute bottom-[10%] right-[12%] z-10 flex h-12 w-12 items-center justify-center
-                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
-      <Clock class="w-5 h-5 text-ink/70" stroke-width="1.75" />
+    <div class="mt-0 flex justify-between">
+      {flow.map(({ label, icon: Icon }) => (
+        <div class="flex -translate-y-1/2 flex-col items-center gap-3">
+          <div class="flex h-11 w-11 items-center justify-center rounded-full border border-rail bg-paper shadow-sm">
+            <Icon class="h-4 w-4 text-blue-600" stroke-width="1.75" />
+          </div>
+          <span class="font-mono text-[11px] uppercase tracking-widest text-ink/50">{label}</span>
+        </div>
+      ))}
     </div>
   </div>
 
-  <p class="reveal mt-6 text-center text-xs font-medium text-ink/50">
+  <!-- Mobile: vertical rail (same literal "nodes on a line" spec, rotated
+       to fit narrow viewports without cramming six nodes into one row) -->
+  <div class="hero-visual reveal relative mx-auto mt-12 max-w-xs sm:hidden">
+    <div class="relative mx-auto w-0.5 self-stretch rounded-full bg-gradient-to-b from-blue-600 via-teal-600 to-amber-500" style="height: 100%;">
+      <span class="rail-dot-vertical absolute top-0 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-blue-600 shadow-[0_0_8px_2px_rgba(37,99,235,0.5)]" aria-hidden="true"></span>
+    </div>
+    <div class="absolute inset-0 flex flex-col justify-between py-1">
+      {flow.map(({ label, icon: Icon }) => (
+        <div class="flex items-center gap-4">
+          <div class="flex h-10 w-10 shrink-0 -translate-x-1/2 items-center justify-center rounded-full border border-rail bg-paper shadow-sm">
+            <Icon class="h-4 w-4 text-blue-600" stroke-width="1.75" />
+          </div>
+          <span class="font-mono text-[11px] uppercase tracking-widest text-ink/50">{label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <p class="reveal mt-10 text-center text-xs font-medium text-ink/50 sm:mt-8">
     Designed to replace 5+ separate apps &mdash; connected into one automatic flow.
   </p>
 </section>
@@ -159,16 +128,33 @@ import Badge from '../ui/Badge.astro';
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  /* Continuous float — lifted from hero-preview.html, unchanged mechanism.
-     Staggered duration + delay per card so the three on each side don't
-     bob in sync. */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-8px); }
+  /* Mobile vertical rail needs an explicit height since its children are
+     absolutely positioned over it — sized to match the node stack. */
+  .hero-visual.sm\:hidden {
+    height: 300px;
   }
-  .animate-float-1 { animation: float 3.5s ease-in-out infinite; }
-  .animate-float-2 { animation: float 4.2s ease-in-out infinite 0.5s; }
-  .animate-float-3 { animation: float 3.8s ease-in-out infinite 1s; }
+
+  /* Rail-dot travel — one-shot, not looping. Starts hidden; the
+     IntersectionObserver below adds .is-visible to .hero-visual, which
+     triggers this keyframe once via animation-fill-mode: forwards. */
+  .rail-dot,
+  .rail-dot-vertical {
+    opacity: 0;
+  }
+  @keyframes rail-travel-x {
+    0% { left: 0%; opacity: 1; }
+    100% { left: 100%; opacity: 1; }
+  }
+  @keyframes rail-travel-y {
+    0% { top: 0%; opacity: 1; }
+    100% { top: 100%; opacity: 1; }
+  }
+  .hero-visual.is-visible .rail-dot {
+    animation: rail-travel-x 1.4s 0.3s ease-in-out forwards;
+  }
+  .hero-visual.is-visible .rail-dot-vertical {
+    animation: rail-travel-y 1.4s 0.3s ease-in-out forwards;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     .reveal {
@@ -176,20 +162,22 @@ import Badge from '../ui/Badge.astro';
       transform: none !important;
       transition: none !important;
     }
-    .animate-float-1,
-    .animate-float-2,
-    .animate-float-3 {
-      animation: none !important;
+    /* Rail-dot travel is omitted entirely under reduced motion — the
+       rail and captioned nodes stay fully legible without it, per
+       DESIGN_SYSTEM.md Section 6 "Rail-Dot Travel" fallback rule. */
+    .rail-dot,
+    .rail-dot-vertical {
+      display: none !important;
     }
   }
 </style>
 
 <script>
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const targets = document.querySelectorAll('.reveal');
+  const revealTargets = document.querySelectorAll('.reveal');
 
   if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-    targets.forEach((el) => el.classList.add('is-visible'));
+    revealTargets.forEach((el) => el.classList.add('is-visible'));
   } else {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -202,6 +190,6 @@ import Badge from '../ui/Badge.astro';
       },
       { threshold: 0.15 }
     );
-    targets.forEach((el) => observer.observe(el));
+    revealTargets.forEach((el) => observer.observe(el));
   }
 </script>
