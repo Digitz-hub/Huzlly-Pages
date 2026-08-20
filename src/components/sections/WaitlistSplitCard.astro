@@ -264,9 +264,18 @@ const nextSteps = [
     if (successTitle) {
       successTitle.textContent = duplicate ? "You're already on the list." : "You're on the list.";
     }
-    splitCard?.classList.add('hidden');
-    nextSteps?.classList.remove('hidden');
-    nextSteps?.classList.add('flex', 'is-entering');
+    // Inline style, not the `hidden` class: #waitlist-split-card also carries
+    // `lg:grid`, and at lg widths that media-query rule sits later in the
+    // compiled stylesheet than the plain `.hidden` rule — same specificity,
+    // so `lg:grid` was winning and the card never actually disappeared on
+    // desktop. Setting style.display directly always beats class-based
+    // rules, so this is correct at every breakpoint.
+    if (splitCard) splitCard.style.display = 'none';
+    if (nextSteps) {
+      nextSteps.classList.remove('hidden');
+      nextSteps.style.display = 'flex';
+      nextSteps.classList.add('is-entering');
+    }
   }
 
   form?.addEventListener('submit', async (event) => {
