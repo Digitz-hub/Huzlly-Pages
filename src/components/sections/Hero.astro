@@ -40,10 +40,13 @@
 // via its sm:/lg: padding scale.
 //
 // Card data source: SITE_IDENTITY_AND_AEO.md Section 3 end-to-end flow.
-// Rotation values map to the requested rotationClass shorthand
-// (-rotate-6 / rotate-3 / rotate-6 / -rotate-3) via AutomationNotification-
-// Card's numeric `rotation` prop (degrees), which is that component's
-// actual finalized API — no separate rotationClass prop exists on it.
+// Rotation is passed via `rotationClass` (-rotate-6 / rotate-6 / rotate-3 /
+// -rotate-3) — AutomationNotificationCard.astro applies this straight into
+// class:list rather than an inline style, so no `style="transform: ..."`
+// exists anywhere in the rendered markup. (An earlier pass drove rotation
+// through a numeric `rotation` prop + inline style; that was a CLAUDE.md
+// Section 3 zero-tolerance violation and has been fixed at the component
+// level, with this file updated to pass rotationClass accordingly.)
 //
 // ⚠️ Flag (per CLAUDE.md Section 3 "stop and flag" rule): the bottom-right
 // card's `bg-rose-500` iconBg is not one of DESIGN_SYSTEM.md's three
@@ -52,15 +55,6 @@
 // verbatim in the task and already flagged as unapproved inside
 // AutomationNotificationCard.astro's own header comment — confirm with
 // design before shipping, or swap it for one of the three approved tones.
-//
-// ⚠️ Flag: AutomationNotificationCard.astro applies its rotation via an
-// inline `style="transform: rotate(...)"` attribute in its own template.
-// CLAUDE.md Section 3 forbids inline `style="..."` with zero exceptions,
-// including for the decorative-transform allowance (which only permits
-// arbitrary bracket *classes* like `rotate-[-6deg]`, not `style=`). That
-// component ships pre-built/finalized per this task's brief, so it isn't
-// modified here — flagging so it can be revisited (e.g. converted to a
-// `rotate-[Ndeg]` class) in a follow-up pass.
 
 import { ChevronRight, Check, FileText, DollarSign, FolderOpen } from 'lucide-astro';
 import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
@@ -72,15 +66,18 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        Big, bold layered blur shapes in blue-200/300/100 tones, sized to
        actually dominate the hero (not a faint corner tint) — heaviest
        lower-left like the reference, with lighter drifts across the top
-       and right so the whole section reads as "sky", not just an accent. -->
+       and right so the whole section reads as "sky", not just an accent.
+       Opacity modifiers bumped one step per shape (blur radii, sizes, and
+       positions unchanged) so the gradient reads clearly against paper
+       instead of looking flat/faint. -->
   <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-    <div class="absolute -left-40 bottom-[-200px] h-[700px] w-[700px] rounded-full bg-blue-300/60 blur-[110px]"></div>
-    <div class="absolute -left-10 bottom-[-100px] h-[600px] w-[620px] rounded-full bg-blue-200/70 blur-[100px]"></div>
-    <div class="absolute left-[15%] bottom-0 h-[420px] w-[500px] rounded-full bg-blue-100/80 blur-[90px]"></div>
-    <div class="absolute -top-32 -right-24 h-[560px] w-[560px] rounded-full bg-blue-200/50 blur-[110px]"></div>
+    <div class="absolute -left-40 bottom-[-200px] h-[700px] w-[700px] rounded-full bg-blue-300/80 blur-[110px]"></div>
+    <div class="absolute -left-10 bottom-[-100px] h-[600px] w-[620px] rounded-full bg-blue-200/90 blur-[100px]"></div>
+    <div class="absolute left-[15%] bottom-0 h-[420px] w-[500px] rounded-full bg-blue-100 blur-[90px]"></div>
+    <div class="absolute -top-32 -right-24 h-[560px] w-[560px] rounded-full bg-blue-200/70 blur-[110px]"></div>
     <div class="absolute top-10 right-[10%] h-[380px] w-[420px] rounded-full bg-blue-50 blur-[90px]"></div>
-    <div class="absolute left-1/3 -top-24 h-[340px] w-[420px] rounded-full bg-white/90 blur-[80px]"></div>
-    <div class="absolute left-[55%] top-1/3 h-[300px] w-[380px] rounded-full bg-blue-100/60 blur-[100px]"></div>
+    <div class="absolute left-1/3 -top-24 h-[340px] w-[420px] rounded-full bg-white blur-[80px]"></div>
+    <div class="absolute left-[55%] top-1/3 h-[300px] w-[380px] rounded-full bg-blue-100/80 blur-[100px]"></div>
   </div>
 
   <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
@@ -154,7 +151,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
-        rotation={-6}
+        rotationClass="-rotate-6"
         defaultExpanded={true}
       >
         <Check slot="icon" class="w-4 h-4" stroke-width="2" />
@@ -166,7 +163,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       <AutomationNotificationCard iconBg="bg-amber-500"
         title="Payment received"
         description="Client paid $1,200 for Website Redesign"
-        rotation={6}
+        rotationClass="rotate-6"
       >
         <DollarSign slot="icon" class="w-4 h-4" stroke-width="2" />
       </AutomationNotificationCard>
@@ -177,7 +174,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       <AutomationNotificationCard iconBg="bg-blue-600"
         title="Client signed contract"
         description="Invoice created and sent to client automatically"
-        rotation={3}
+        rotationClass="rotate-3"
       >
         <FileText slot="icon" class="w-4 h-4" stroke-width="2" />
       </AutomationNotificationCard>
@@ -189,7 +186,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       <AutomationNotificationCard iconBg="bg-rose-500"
         title="New project created"
         description="Time tracking is now live for this client"
-        rotation={-3}
+        rotationClass="-rotate-3"
       >
         <FolderOpen slot="icon" class="w-4 h-4" stroke-width="2" />
       </AutomationNotificationCard>
