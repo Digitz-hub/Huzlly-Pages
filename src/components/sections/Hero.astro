@@ -209,7 +209,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
          top-40/48/56, not the bottom cards' bottom-[10%]) so they sit
          higher, closer to the wrapper's own top edge, clear of the text
          column, without shifting the bottom two cards at all. -->
-    <div class="pointer-events-auto absolute left-[8%] top-[calc(1%-10px)]">
+    <div class="pointer-events-auto absolute left-[8%] top-0">
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
@@ -221,7 +221,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     </div>
 
     <!-- Top-right: Payment received (same top-clearance fix as top-left) -->
-    <div class="pointer-events-auto absolute right-[8%] top-[calc(1%-10px)]">
+    <div class="pointer-events-auto absolute right-[8%] top-0">
       <AutomationNotificationCard iconBg="bg-amber-500"
         title="Payment received"
         description="Client paid $1,200 for Website Redesign"
@@ -232,7 +232,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     </div>
 
     <!-- Bottom-left: Client signed contract -->
-    <div class="pointer-events-auto absolute bottom-[calc(10%-10px)] left-[8%]">
+    <div class="pointer-events-auto absolute bottom-0 left-[8%]">
       <AutomationNotificationCard iconBg="bg-blue-600"
         title="Client signed contract"
         description="Invoice created and sent to client automatically"
@@ -244,7 +244,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 
     <!-- Bottom-right: New project created — iconBg flagged above, not
          yet an approved DESIGN_SYSTEM.md accent color; confirm before shipping. -->
-    <div class="pointer-events-auto absolute bottom-[calc(10%-10px)] right-[8%]">
+    <div class="pointer-events-auto absolute bottom-0 right-[8%]">
       <AutomationNotificationCard iconBg="bg-rose-500"
         title="New project created"
         description="Time tracking is now live for this client"
