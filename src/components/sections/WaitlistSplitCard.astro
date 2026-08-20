@@ -157,12 +157,6 @@ const nextSteps = [
        successful submit (see script below). Same slot, same footprint,
        centered stepper instead of the two-column form layout. -->
   <div id="waitlist-next-steps" class="next-steps hidden relative mx-auto w-full max-w-3xl flex-col items-center rounded-3xl border border-rail bg-white px-8 py-14 text-center sm:px-14 sm:py-16">
-    <a href="/" class="group absolute left-8 top-8 inline-flex items-center gap-2 sm:left-10 sm:top-10" aria-label="Back to Huzlly home">
-      <ArrowLeft class="w-3.5 h-3.5 text-ink/40 transition-transform group-hover:-translate-x-0.5 group-hover:text-ink/70" stroke-width="2" />
-      <span class="h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
-      <span class="font-display text-base font-semibold text-ink">Huzlly</span>
-    </a>
-
     <span class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
       <Check class="w-6 h-6" stroke-width="2" />
     </span>
@@ -193,6 +187,11 @@ const nextSteps = [
         </>
       ))}
     </div>
+
+    <Button href="/" variant="outline" size="default" class="mt-12 group" ariaLabel="Back to Huzlly home">
+      <ArrowLeft class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" stroke-width="1.75" />
+      Go home
+    </Button>
   </div>
 </section>
 
