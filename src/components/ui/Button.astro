@@ -10,6 +10,7 @@ export interface Props {
   type?: 'button' | 'submit' | 'reset';
   class?: string;
   ariaLabel?: string;
+  disabled?: boolean;
   // New in v2 — independent of `variant`. Adds the hover-lift treatment
   // (translate-y + shadow-md on hover) to high-emphasis CTAs, per
   // DESIGN_SYSTEM.md Section 3 "Primary CTA — Motion variant". Used as
@@ -24,6 +25,7 @@ const {
   type = 'button',
   class: className,
   ariaLabel,
+  disabled = false,
   motion = false,
 } = Astro.props;
 
@@ -68,7 +70,7 @@ const classes = [base, sizeClasses, className].filter(Boolean).join(' ');
       <slot />
     </a>
   ) : (
-    <button type={type} class={classes} aria-label={ariaLabel}>
+    <button type={type} class={classes} aria-label={ariaLabel} disabled={disabled}>
       <slot />
     </button>
   )
