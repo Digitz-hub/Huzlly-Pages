@@ -33,7 +33,6 @@
 // `motion` prop) — no new layout/color tokens introduced.
 
 import { ArrowRight, Check, Zap, Clock, ShieldCheck } from 'lucide-astro';
-import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
 
 const bullets = [
@@ -49,12 +48,13 @@ const bullets = [
 
   <div class="split-card mx-auto w-full max-w-[100rem] overflow-hidden rounded-3xl border border-rail bg-white lg:grid lg:h-full lg:max-h-full lg:grid-cols-2 lg:divide-x lg:divide-rail">
     <!-- Left panel: brand + value -->
-    <div class="relative flex flex-col justify-center gap-8 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-8 sm:p-10 lg:p-14">
+    <div class="relative flex h-full flex-col justify-center gap-8 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-8 sm:p-10 lg:p-14">
       <!-- Ambient pastel accents (decorative, contained within the panel) -->
       <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-teal-200/40 blur-3xl" aria-hidden="true"></div>
       <div class="pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-blue-200/30 blur-3xl" aria-hidden="true"></div>
 
-      <a href="/" class="relative inline-flex items-center gap-2">
+      <!-- Logo pinned to the panel's top-left corner, out of the vertically-centered content flow below -->
+      <a href="/" class="absolute left-8 top-8 inline-flex items-center gap-2 sm:left-10 sm:top-10 lg:left-14 lg:top-14">
         <span class="h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
         <span class="font-display text-lg font-semibold text-ink">Huzlly</span>
       </a>
@@ -63,12 +63,9 @@ const bullets = [
         <h1 class="text-balance font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
           Be first in when a <span class="text-blue-600">spot opens</span>.
         </h1>
-        <p class="text-pretty mt-5 text-base lg:text-lg text-ink/70 leading-relaxed max-w-md">
-          Huzlly is onboarding freelancers in small cohorts while we get the flow right.
-        </p>
       </div>
 
-      <div class="relative mt-4 space-y-4">
+      <div class="relative mt-6 space-y-4">
         {bullets.map((bullet) => (
           <div class="flex items-center gap-3">
             <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-blue-600 shadow-sm ring-1 ring-blue-100">
@@ -84,28 +81,14 @@ const bullets = [
 
     <!-- Right panel: signup form -->
     <div class="flex flex-col justify-center bg-white p-8 sm:p-10 lg:p-14">
-      <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
-
-      <h2 class="mt-5 text-center font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
+      <h2 class="text-center font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
         Get early access
       </h2>
       <p class="text-pretty mt-3 text-center text-ink/70 leading-relaxed max-w-sm mx-auto">
-        Tell us who you are and we'll email you the moment a spot opens — no sales calls, no spam, unsubscribe any time.
+        We'll email you the moment a spot opens — no spam, unsubscribe any time.
       </p>
 
       <form id="waitlist-form" class="mt-8 flex flex-col gap-5 max-w-md w-full mx-auto" novalidate>
-        <div>
-          <label for="waitlist-name" class="mb-1.5 block text-sm font-medium text-ink/70">Name</label>
-          <input id="waitlist-name"
-            name="name"
-            type="text"
-            required
-            placeholder="Jordan Rivera"
-            autocomplete="name"
-            class="w-full rounded-xl border border-rail bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors focus-visible:border-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
-          />
-        </div>
-
         <div>
           <label for="waitlist-email" class="mb-1.5 block text-sm font-medium text-ink/70">Email</label>
           <input id="waitlist-email"
@@ -124,10 +107,22 @@ const bullets = [
           <input id="waitlist-company" name="company" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
-        <Button type="submit" size="lg" motion class="group mt-2 w-full disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-sm" ariaLabel="Join waitlist">
+        <Button type="submit" size="lg" motion disabled class="group mt-2 w-full disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-sm" ariaLabel="Join waitlist">
           Join waitlist
           <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-0.5" stroke-width="1.75" />
         </Button>
+
+        <div class="flex items-start gap-2">
+          <input id="waitlist-terms"
+            name="terms"
+            type="checkbox"
+            required
+            class="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-rail text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
+          />
+          <label for="waitlist-terms" class="text-xs leading-snug text-ink/60">
+            I agree to the <a href="/terms" class="underline underline-offset-2 hover:text-ink">Terms</a> and <a href="/privacy" class="underline underline-offset-2 hover:text-ink">Privacy Policy</a>.
+          </label>
+        </div>
       </form>
 
       <p id="waitlist-error" class="mt-3 text-center text-sm text-red-600 hidden"></p>
@@ -188,8 +183,19 @@ const bullets = [
   const errorEl = document.getElementById('waitlist-error');
   const successEl = document.getElementById('waitlist-success');
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+  const termsCheckbox = document.getElementById('waitlist-terms') as HTMLInputElement | null;
   const successTitle = document.getElementById('waitlist-success-title');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Submit stays disabled until the terms checkbox is checked.
+  termsCheckbox?.addEventListener('change', () => {
+    if (!submitBtn) return;
+    if (termsCheckbox.checked) {
+      submitBtn.removeAttribute('disabled');
+    } else {
+      submitBtn.setAttribute('disabled', 'true');
+    }
+  });
 
   function showError(message) {
     if (!errorEl) return;
@@ -210,14 +216,12 @@ const bullets = [
     event.preventDefault();
     errorEl?.classList.add('hidden');
 
-    const nameInput = document.getElementById('waitlist-name') as HTMLInputElement;
     const emailInput = document.getElementById('waitlist-email') as HTMLInputElement;
     const companyInput = document.getElementById('waitlist-company') as HTMLInputElement;
-    const name = nameInput.value.trim();
     const email = emailInput.value.trim();
 
-    if (!name) {
-      showError('Enter your name to join the waitlist.');
+    if (!termsCheckbox?.checked) {
+      showError('Agree to the Terms and Privacy Policy to join the waitlist.');
       return;
     }
     if (!EMAIL_RE.test(email)) {
@@ -231,7 +235,7 @@ const bullets = [
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ name, email, company: companyInput ? companyInput.value : '' }),
+        body: JSON.stringify({ email, company: companyInput ? companyInput.value : '' }),
       });
       const data = await res.json().catch(() => ({}));
 
