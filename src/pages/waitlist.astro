@@ -16,35 +16,6 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
       style="background-image: radial-gradient(45% 40% at 10% 5%, rgba(196,181,253,0.6), transparent 65%), radial-gradient(40% 38% at 95% 8%, rgba(103,232,249,0.55), transparent 65%);"
     ></div>
 
-    <!-- Curved floor / horizon: deep navy pooling at the bottom, blending up into the vibrant gradient — this is what gives the card something dark to visually "land" on -->
-    <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 -z-20 h-[62%]"
-      aria-hidden="true"
-      style="background-image: linear-gradient(to top, #05060f 0%, rgba(11,19,43,0.92) 22%, rgba(20,22,74,0.55) 55%, transparent 100%);"
-    ></div>
-    <div
-      class="pointer-events-none absolute bottom-[-18%] left-1/2 -z-20 h-[46%] w-[150%] -translate-x-1/2 rounded-[50%] bg-[#03040c]/80 blur-3xl"
-      aria-hidden="true"
-    ></div>
-
-    <!-- Faint horizon curve line — reinforces the sense of a curved 3D surface beneath the card -->
-    <svg
-      class="pointer-events-none absolute inset-x-0 bottom-[8%] -z-10 h-40 w-full opacity-40 sm:bottom-[10%]"
-      viewBox="0 0 1440 200"
-      preserveAspectRatio="none"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path d="M-50 40 Q 720 160 1490 40" stroke="url(#horizonGlow)" stroke-width="1.5" stroke-linecap="round" />
-      <defs>
-        <linearGradient id="horizonGlow" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stop-color="white" stop-opacity="0" />
-          <stop offset="50%" stop-color="#a5f3fc" stop-opacity="0.8" />
-          <stop offset="100%" stop-color="white" stop-opacity="0" />
-        </linearGradient>
-      </defs>
-    </svg>
-
     <!-- Soft ambient blur orbs — smaller + more saturated/contrasting so they read as distinct shapes in the thin visible margin, not just extra gradient -->
     <div class="pointer-events-none absolute -left-10 -top-10 -z-10 h-40 w-40 rounded-full bg-fuchsia-300/50 blur-2xl sm:h-56 sm:w-56" aria-hidden="true"></div>
     <div class="pointer-events-none absolute -right-8 -top-14 -z-10 h-36 w-36 rounded-full bg-cyan-200/60 blur-2xl sm:h-48 sm:w-48" aria-hidden="true"></div>
@@ -83,7 +54,7 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
       <circle cx="60" cy="480" r="4" fill="white" opacity="0.5" />
     </svg>
 
-    <!-- Card stage: everything here is layered so the card reads as physically elevated above a dark floor -->
+    <!-- Card stage -->
     <div class="relative flex w-full flex-1 items-center justify-center lg:overflow-hidden">
 
       <!-- Glassy outer glow ring — sits behind the card, bleeding a soft colored halo into the margin so the white card's edge reads crisp rather than blending into the gradient -->
@@ -92,20 +63,8 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
         aria-hidden="true"
       ></div>
 
-      <!-- Ground contact shadow — a flat, wide, blurred dark ellipse anchored beneath the card to fake a contact point on the "floor" -->
-      <div
-        class="pointer-events-none absolute bottom-[2%] left-1/2 -z-10 h-10 w-[78%] -translate-x-1/2 rounded-[50%] bg-slate-950/70 blur-2xl sm:h-16 sm:w-[62%] lg:bottom-[4%]"
-        aria-hidden="true"
-      ></div>
-
-      <!-- Rim light — a thin bright glow riding just above the contact shadow, giving the bottom edge of the card a lit contour against the dark floor -->
-      <div
-        class="pointer-events-none absolute bottom-[9%] left-1/2 -z-10 h-1.5 w-[45%] -translate-x-1/2 rounded-full bg-sky-200/60 blur-md sm:bottom-[11%] lg:bottom-[13%]"
-        aria-hidden="true"
-      ></div>
-
-      <!-- Card wrapper: a chained drop-shadow filter hugs the card's actual rounded silhouette (unlike a plain box-shadow div, this shapes itself to the card, including its corners) for a realistic, layered elevation shadow -->
-      <div class="relative w-full [filter:drop-shadow(0_45px_70px_rgba(2,6,23,0.55))_drop-shadow(0_18px_28px_rgba(2,6,23,0.4))]">
+      <!-- Card wrapper: normal soft elevation shadow, no dark-floor contact shadow -->
+      <div class="relative w-full [filter:drop-shadow(0_20px_35px_rgba(2,6,23,0.25))_drop-shadow(0_8px_14px_rgba(2,6,23,0.15))]">
         <WaitlistSplitCard />
       </div>
     </div>
