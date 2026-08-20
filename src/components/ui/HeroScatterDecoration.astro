@@ -30,6 +30,22 @@
 // Every dot below is kept at ≤15% from the left or right edge so none of
 // them can ever land inside the text column at any `lg`+ width, while
 // still landing well outside the four original corner positions.
+//
+// FIXED-HEADER CLEARANCE FIX (this pass): this wrapper was `absolute
+// inset-0`, which stretches it to the parent `<section>`'s full box
+// starting at the section's own top edge (y=0 inside the section) —
+// completely ignoring the section's `pt-40/sm:pt-48/lg:pt-56` padding,
+// since padding only affects in-flow children, not `inset-0` absolutely-
+// positioned ones. That let the top-[%] dots calculate their position
+// from a box that started above/behind Nav.astro's fixed header, same
+// root cause as the corner-card wrapper in Hero.astro. Swapped `inset-0`
+// for explicit `top-40 sm:top-48 lg:top-56 inset-x-0 bottom-0` — same
+// clearance values as the section's own top padding — so this layer's
+// box now starts exactly where the section's padded content area starts,
+// and every dot's top-[%]/bottom-[%] value keeps the same relative
+// position within the hero it always had. Dot content, sizes, colors,
+// opacities, and every individual top/left/right/bottom percentage below
+// are untouched.
 
 export interface Props {
   class?: string;
@@ -38,7 +54,7 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['pointer-events-none absolute inset-0 -z-[5]', className]}
+<div class:list={['pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-0 absolute -z-[5]', className]}
   aria-hidden="true"
 >
   <!-- Dots — scattered across the whole hero (corners + the open space
