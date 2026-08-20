@@ -81,3 +81,20 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
     </div>
   </main>
 </Layout>
+
+<style>
+  /* Mobile: clip the decorative blur orbs / SVG that bleed past <main>'s
+     own box edges (right side, and — since main is no longer height-
+     locked with overflow-hidden on mobile — below the bottom edge too).
+     `clip`, not `hidden`: `hidden` establishes an actual (if invisible)
+     scroll container, which is what caused the earlier stuttery,
+     non-native scroll when this was overflow-x-hidden/overflow-y-visible.
+     `clip` never creates a scroll container on either axis, so it clips
+     the overflow with zero effect on the page's native scroll behavior.
+     Overridden at lg by the existing lg:overflow-hidden Tailwind class
+     (class selector beats this bare-element one), which intentionally
+     locks the whole section to exactly one viewport on desktop. */
+  main {
+    overflow: clip;
+  }
+</style>
