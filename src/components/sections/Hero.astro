@@ -208,8 +208,17 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
          top-[1%] on just the two top cards (not the wrapper's own
          top-40/48/56, not the bottom cards' bottom-[10%]) so they sit
          higher, closer to the wrapper's own top edge, clear of the text
-         column, without shifting the bottom two cards at all. -->
-    <div class="pointer-events-auto absolute left-[8%] top-0">
+         column, without shifting the bottom two cards at all.
+
+         EXTRA HEADLINE-GAP PASS (this pass, top cards only): still read
+         as a bit tight against the badge/eyebrow line above the
+         headline, so nudged further up from top-0 to -top-10 (sm:-top-12,
+         lg:-top-14) — i.e. above the wrapper's own top edge (which is
+         itself already offset by the section's top-40/48/56 padding).
+         Purely decorative absolute positioning, so overflowing above the
+         wrapper's box is fine; only the two top cards move, bottom cards
+         and all other values untouched. -->
+    <div class="pointer-events-auto absolute left-[8%] -top-10 sm:-top-12 lg:-top-14">
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
@@ -221,7 +230,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     </div>
 
     <!-- Top-right: Payment received (same top-clearance fix as top-left) -->
-    <div class="pointer-events-auto absolute right-[8%] top-0">
+    <div class="pointer-events-auto absolute right-[8%] -top-10 sm:-top-12 lg:-top-14">
       <AutomationNotificationCard iconBg="bg-amber-500"
         title="Payment received"
         description="Client paid $1,200 for Website Redesign"
