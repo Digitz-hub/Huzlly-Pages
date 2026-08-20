@@ -1,123 +1,96 @@
 ---
 // src/components/sections/Hero.astro
-// Homepage hero — v5 full redesign. Replaces the prior page-specific
-// "Tools AI" inspiration override (floating icon cards + center glow
-// node) with DESIGN_SYSTEM.md v2's actual sitewide signature element:
-// the flow-rail diagram (Section 3 "Flow-Rail Diagram" spec, Section 6
-// motion "Rail-Dot Travel", Quick Reference "Signature Element").
+// Homepage hero — v6, simple bold dark-gradient redesign per user-supplied
+// reference screenshot (CLAUDE.md Section 4.5 page-specific inspiration
+// override). Big centered headline on a deep navy gradient, single CTA,
+// small caption below — matches the reference layout closely.
 //
-// Why: the floating-card treatment was a one-off inspiration swap; the
-// system's own spec for the hero's signature visual is nodes sitting ON
-// a rail line (blue -> teal -> amber gradient), not floating beside it.
-// This version also makes the visual literal instead of generic —
-// six nodes trace Huzlly's real product flow from SITE_IDENTITY_AND_AEO.md
-// Section 3: Proposal -> Contract -> Invoice -> Project -> Tasks -> Client
-// Portal, each captioned in the mono eyebrow style.
+// Fixed constraint honored: blue-600 (#2563EB) stays the accent (CTA fill,
+// glow color) even though the rest of the palette flips to dark for this
+// hero only — CLAUDE.md 4.5 allows overriding DESIGN_SYSTEM.md's default
+// ink/paper/rail palette for one page/section, just not the accent itself.
 //
-// Decorative pattern budget (DESIGN_SYSTEM.md Section 7.5 placement rule,
-// one per page/area): dot-grid texture behind the hero, nothing else
-// stacked in the same area. No ambient glow orb here.
-//
-// Motion: scroll-reveal (unchanged sitewide mechanism) + one-shot
-// rail-dot travel along the gradient rail on first viewport entry
-// (Section 6 "Rail-Dot Travel" — not looping). Both fully degrade
-// under prefers-reduced-motion: dot is omitted rather than shown static,
-// since the rail and captioned nodes stay completely legible without it.
+// User explicitly asked for "kuch design insert kr dena" so the background
+// isn't flat — DESIGN_SYSTEM.md Section 7.5 explicitly REJECTS Lottie
+// (new runtime dependency, at odds with the site's zero-animation-library,
+// anti-bloat positioning), so this uses only the already-approved
+// techniques instead: an ambient blur-glow orb (Section 1) + a faint
+// dot-grid texture (Section 4) + lightweight CSS-only floating particles
+// (same category as the approved "curved connector lines" — plain
+// absolutely-positioned elements, no new dependency, no SVG library).
+// All motion is decorative/ambient (slow drift/pulse), not information-
+// bearing, and freezes under prefers-reduced-motion per Section 6.
 
-import { ArrowRight, FileText, PenTool, Receipt, FolderKanban, ListChecks, Users } from 'lucide-astro';
-import Button from '../ui/Button.astro';
+import { ArrowRight } from 'lucide-astro';
 import Badge from '../ui/Badge.astro';
-
-const flow = [
-  { label: 'Proposal', icon: FileText },
-  { label: 'Contract', icon: PenTool },
-  { label: 'Invoice', icon: Receipt },
-  { label: 'Project', icon: FolderKanban },
-  { label: 'Tasks', icon: ListChecks },
-  { label: 'Portal', icon: Users },
-];
 ---
 
-<section class="relative overflow-hidden bg-paper px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8">
-  <!-- Dot-grid texture — this hero's one decorative pattern, per
-       DESIGN_SYSTEM.md Section 4 / 7.5. Not combined with an ambient
-       glow in the same area. -->
-  <div class="pointer-events-none absolute inset-0 -z-10 opacity-40
-              [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)]
-              [background-size:24px_24px]" aria-hidden="true"></div>
+<section class="relative overflow-hidden bg-[#0B1330] px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
+  <!-- Base gradient wash — deep navy, diagonal, matches reference -->
+  <div
+    class="pointer-events-none absolute inset-0 -z-30 bg-[radial-gradient(ellipse_120%_80%_at_20%_0%,#1E2A5E_0%,#0B1330_55%,#0A0F26_100%)]"
+    aria-hidden="true"
+  ></div>
 
-  <div class="mx-auto max-w-3xl text-center">
-    <Badge variant="beta" class="reveal">Closed beta &middot; 50 spots this cohort</Badge>
+  <!-- Ambient glow orb — the one Section-1 "ambient glow" accent for this
+       hero, blue-600 tinted, sitting behind the headline -->
+  <div
+    class="glow-orb pointer-events-none absolute left-1/2 top-1/3 -z-20 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/25 blur-3xl"
+    aria-hidden="true"
+  ></div>
 
-    <h1 class="reveal mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
-      One flow.<br class="hidden sm:block" /> Not five apps.
+  <!-- Faint dot-grid texture — Section 4 pattern, inverted to a light dot
+       on dark, kept low-opacity so it reads as texture, not noise -->
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 opacity-[0.08]
+           [background-image:radial-gradient(#8FA3E0_1px,transparent_1px)]
+           [background-size:28px_28px]"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Floating particles — small drifting dots for depth, CSS-only,
+       no library. Purely decorative, so all are hidden under
+       prefers-reduced-motion instead of freezing mid-position. -->
+  <div class="particle-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <span class="particle" style="left:14%; top:22%; animation-duration:9s; animation-delay:0s;"></span>
+    <span class="particle" style="left:82%; top:18%; animation-duration:11s; animation-delay:1.2s;"></span>
+    <span class="particle" style="left:24%; top:68%; animation-duration:8s; animation-delay:2.1s;"></span>
+    <span class="particle" style="left:74%; top:64%; animation-duration:10s; animation-delay:0.6s;"></span>
+    <span class="particle" style="left:50%; top:12%; animation-duration:12s; animation-delay:1.8s;"></span>
+    <span class="particle" style="left:90%; top:75%; animation-duration:9.5s; animation-delay:3s;"></span>
+    <span class="particle" style="left:8%; top:80%; animation-duration:10.5s; animation-delay:2.6s;"></span>
+  </div>
+
+  <div class="relative mx-auto max-w-3xl text-center">
+    <Badge variant="beta" class="reveal border-white/10 bg-white/5 !text-blue-300 ring-white/10">
+      Closed beta &middot; 50 spots this cohort
+    </Badge>
+
+    <h1 class="reveal mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
+      Freelancer Management Tool<br class="hidden sm:block" /> for Modern Freelancers
     </h1>
 
-    <p class="reveal mt-6 text-lg sm:text-xl text-ink/70 leading-relaxed max-w-2xl mx-auto">
-      Freelancers stitch proposals, contracts, invoicing, and project setup together across a pile
-      of disconnected tools. Huzlly turns that pile into one lean, automatic flow &mdash; built for
-      solo freelancers, not agencies paying for seats they don't need.
+    <p class="reveal mt-6 text-lg sm:text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
+      Manage clients, projects, tasks, and invoices without juggling multiple tools &mdash;
+      one lean flow, built for freelancers worldwide.
     </p>
 
-    <div class="reveal mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-      <Button href="/waitlist" size="lg" motion>
+    <div class="reveal mt-8 flex flex-col items-center gap-3">
+      <a
+        href="/waitlist"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-[0_0_30px_-4px_rgba(37,99,235,0.6)]
+               transition-all duration-200 ease-in-out hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-[0_0_40px_-2px_rgba(37,99,235,0.7)]
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+      >
         Join the waitlist
         <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-      </Button>
-      <Button href="#how-it-works" variant="outline" size="lg">
-        See how it works
-      </Button>
+      </a>
+      <p class="text-xs font-medium text-white/40">Early users get 30% off for 2 years</p>
     </div>
   </div>
-
-  <!-- Signature: flow-rail diagram — six nodes tracing the real Huzlly
-       flow, sitting on a blue -> teal -> amber gradient rail, with a
-       one-shot traveling dot on first entry. DESIGN_SYSTEM.md Section 3
-       "Flow-Rail Diagram (signature element spec)". -->
-
-  <!-- Desktop / tablet: horizontal rail -->
-  <div class="hero-visual reveal relative mx-auto mt-14 hidden max-w-4xl sm:block">
-    <div class="relative h-0.5 w-full rounded-full bg-gradient-to-r from-blue-600 via-teal-600 to-amber-500">
-      <span class="rail-dot absolute top-1/2 left-0 h-2 w-2 -translate-y-1/2 rounded-full bg-blue-600 shadow-[0_0_8px_2px_rgba(37,99,235,0.5)]" aria-hidden="true"></span>
-    </div>
-    <div class="mt-0 flex justify-between">
-      {flow.map(({ label, icon: Icon }) => (
-        <div class="flex -translate-y-1/2 flex-col items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-full border border-rail bg-paper shadow-sm">
-            <Icon class="h-4 w-4 text-blue-600" stroke-width="1.75" />
-          </div>
-          <span class="font-mono text-[11px] uppercase tracking-widest text-ink/50">{label}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <!-- Mobile: vertical rail (same literal "nodes on a line" spec, rotated
-       to fit narrow viewports without cramming six nodes into one row) -->
-  <div class="hero-visual reveal relative mx-auto mt-12 max-w-xs sm:hidden">
-    <div class="relative mx-auto w-0.5 self-stretch rounded-full bg-gradient-to-b from-blue-600 via-teal-600 to-amber-500" style="height: 100%;">
-      <span class="rail-dot-vertical absolute top-0 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-blue-600 shadow-[0_0_8px_2px_rgba(37,99,235,0.5)]" aria-hidden="true"></span>
-    </div>
-    <div class="absolute inset-0 flex flex-col justify-between py-1">
-      {flow.map(({ label, icon: Icon }) => (
-        <div class="flex items-center gap-4">
-          <div class="flex h-10 w-10 shrink-0 -translate-x-1/2 items-center justify-center rounded-full border border-rail bg-paper shadow-sm">
-            <Icon class="h-4 w-4 text-blue-600" stroke-width="1.75" />
-          </div>
-          <span class="font-mono text-[11px] uppercase tracking-widest text-ink/50">{label}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <p class="reveal mt-10 text-center text-xs font-medium text-ink/50 sm:mt-8">
-    Designed to replace 5+ separate apps &mdash; connected into one automatic flow.
-  </p>
 </section>
 
 <style>
-  /* Scroll-reveal: elements start hidden, .is-visible fades/lifts them in.
-     Falls back to always-visible if JS never runs or motion is reduced. */
   .reveal {
     opacity: 0;
     transform: translateY(14px);
@@ -128,32 +101,29 @@ const flow = [
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  /* Mobile vertical rail needs an explicit height since its children are
-     absolutely positioned over it — sized to match the node stack. */
-  .hero-visual.sm\:hidden {
-    height: 300px;
+  /* Ambient glow — slow, subtle pulse. Decorative only. */
+  .glow-orb {
+    animation: glow-pulse 6s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
   }
 
-  /* Rail-dot travel — one-shot, not looping. Starts hidden; the
-     IntersectionObserver below adds .is-visible to .hero-visual, which
-     triggers this keyframe once via animation-fill-mode: forwards. */
-  .rail-dot,
-  .rail-dot-vertical {
-    opacity: 0;
+  /* Floating particles — small dots that drift gently up and fade. */
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 9999px;
+    background: rgba(147, 197, 253, 0.5);
+    animation-name: particle-drift;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
   }
-  @keyframes rail-travel-x {
-    0% { left: 0%; opacity: 1; }
-    100% { left: 100%; opacity: 1; }
-  }
-  @keyframes rail-travel-y {
-    0% { top: 0%; opacity: 1; }
-    100% { top: 100%; opacity: 1; }
-  }
-  .hero-visual.is-visible .rail-dot {
-    animation: rail-travel-x 1.4s 0.3s ease-in-out forwards;
-  }
-  .hero-visual.is-visible .rail-dot-vertical {
-    animation: rail-travel-y 1.4s 0.3s ease-in-out forwards;
+  @keyframes particle-drift {
+    0%, 100% { transform: translateY(0px); opacity: 0.3; }
+    50% { transform: translateY(-18px); opacity: 0.8; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -162,11 +132,13 @@ const flow = [
       transform: none !important;
       transition: none !important;
     }
-    /* Rail-dot travel is omitted entirely under reduced motion — the
-       rail and captioned nodes stay fully legible without it, per
-       DESIGN_SYSTEM.md Section 6 "Rail-Dot Travel" fallback rule. */
-    .rail-dot,
-    .rail-dot-vertical {
+    .glow-orb {
+      animation: none !important;
+      opacity: 0.85;
+    }
+    /* Purely decorative ambient motion — omitted entirely rather than
+       frozen mid-drift, per Section 6's "no optional animation" rule. */
+    .particle-field {
       display: none !important;
     }
   }
