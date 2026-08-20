@@ -170,8 +170,24 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        on narrower viewports. z-10 keeps them above the cloud-blur
        backdrop and scatter decoration, and above the centered content
        stacking context, matching the "cards scattered around/near the
-       content" reference. -->
-  <div class="pointer-events-none absolute inset-0 z-10 hidden lg:block" aria-hidden="false">
+       content" reference.
+
+       FIXED-HEADER CLEARANCE FIX (this pass): this wrapper was
+       `absolute inset-0`, which stretches it to the <section>'s full box
+       starting at the section's own top edge — ignoring the section's
+       `pt-40/sm:pt-48/lg:pt-56` padding, since padding only pushes
+       in-flow children, not `inset-0` absolutely-positioned ones. That
+       let the top-[10%] cards below calculate their position from a box
+       that started above/behind Nav.astro's fixed header, even though
+       the padding correctly pushed the badge/headline/CTA column down.
+       Swapped `inset-0` for explicit `top-40 sm:top-48 lg:top-56
+       inset-x-0 bottom-0` — the same clearance values as the section's
+       own top padding — so this wrapper's box now starts exactly where
+       the section's padded content area starts, and each card's
+       top-[%]/bottom-[%] position keeps the same relative placement
+       within the hero it always had. Card content, icons, copy, and
+       rotationClass values are untouched. -->
+  <div class="pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-0 absolute z-10 hidden lg:block" aria-hidden="false">
     <!-- Top-left: Proposal accepted (starts expanded) -->
     <div class="pointer-events-auto absolute left-[8%] top-[10%]">
       <AutomationNotificationCard iconBg="bg-teal-600"
