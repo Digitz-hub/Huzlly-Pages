@@ -32,7 +32,7 @@
 // input/button states (shadow, focus ring, hover-lift via Button's
 // `motion` prop) — no new layout/color tokens introduced.
 
-import { ArrowRight, Check, Zap, Clock, ShieldCheck, MailCheck, Users, Rocket } from 'lucide-astro';
+import { ArrowLeft, ArrowRight, Check, Zap, Clock, ShieldCheck, MailCheck, Users, Rocket } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
 const bullets = [
@@ -67,7 +67,8 @@ const nextSteps = [
            so absolute positioning would collide with the heading below it).
            Pinned to the panel's top-left corner only at lg, where the 2-col grid
            gives the panel real spare height to pin against. -->
-      <a href="/" class="relative inline-flex items-center gap-2 lg:absolute lg:left-14 lg:top-14">
+      <a href="/" class="group relative inline-flex items-center gap-2 lg:absolute lg:left-14 lg:top-14" aria-label="Back to Huzlly home">
+        <ArrowLeft class="w-3.5 h-3.5 text-ink/40 transition-transform group-hover:-translate-x-0.5 group-hover:text-ink/70" stroke-width="2" />
         <span class="h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
         <span class="font-display text-lg font-semibold text-ink">Huzlly</span>
       </a>
@@ -155,7 +156,13 @@ const nextSteps = [
   <!-- "What happens now?" panel — swapped in for #waitlist-split-card on
        successful submit (see script below). Same slot, same footprint,
        centered stepper instead of the two-column form layout. -->
-  <div id="waitlist-next-steps" class="next-steps hidden mx-auto w-full max-w-3xl flex-col items-center rounded-3xl border border-rail bg-white px-8 py-14 text-center sm:px-14 sm:py-16">
+  <div id="waitlist-next-steps" class="next-steps hidden relative mx-auto w-full max-w-3xl flex-col items-center rounded-3xl border border-rail bg-white px-8 py-14 text-center sm:px-14 sm:py-16">
+    <a href="/" class="group absolute left-8 top-8 inline-flex items-center gap-2 sm:left-10 sm:top-10" aria-label="Back to Huzlly home">
+      <ArrowLeft class="w-3.5 h-3.5 text-ink/40 transition-transform group-hover:-translate-x-0.5 group-hover:text-ink/70" stroke-width="2" />
+      <span class="h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
+      <span class="font-display text-base font-semibold text-ink">Huzlly</span>
+    </a>
+
     <span class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
       <Check class="w-6 h-6" stroke-width="2" />
     </span>
