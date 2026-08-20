@@ -186,8 +186,21 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        the section's padded content area starts, and each card's
        top-[%]/bottom-[%] position keeps the same relative placement
        within the hero it always had. Card content, icons, copy, and
-       rotationClass values are untouched. -->
-  <div class="pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-0 absolute z-10 hidden lg:block" aria-hidden="false">
+       rotationClass values are untouched.
+
+       BOTTOM-EDGE COUNTERPART FIX (this pass): `bottom-0` had the same
+       bug as the old `inset-0` top edge, just on the other side — it
+       stretched to the section's true bottom edge, ignoring the
+       section's own `pb-28 sm:pb-40` bottom padding. That made the box
+       bottom-[%] cards are calculated against taller than intended,
+       pulling the two bottom cards down closer to the section's real
+       bottom edge than the two top cards sit from the top — the visible
+       "cards are too low" asymmetry. Swapped `bottom-0` for
+       `bottom-28 sm:bottom-40`, mirroring the section's own bottom
+       padding exactly like `top-40 sm:top-48 lg:top-56` mirrors its top
+       padding. Box is now symmetric on both edges; card content,
+       left/right insets, and rotationClass values untouched. -->
+  <div class="pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-28 sm:bottom-40 absolute z-10 hidden lg:block" aria-hidden="false">
     <!-- Top-left: Proposal accepted (starts expanded) -->
     <div class="pointer-events-auto absolute left-[8%] top-[10%]">
       <AutomationNotificationCard iconBg="bg-teal-600"
