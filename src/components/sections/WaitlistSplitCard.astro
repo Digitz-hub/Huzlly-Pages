@@ -333,15 +333,31 @@ const nextSteps = [
   // card) can end up covered by the keyboard. The `overflow-hidden` that
   // used to sit on the page's <main> (mobile) has been removed for this
   // reason — that's what made the page unscrollable in the first place.
-  // The scrollIntoView below is the active nudge on top of that: fired
-  // after a short delay so it runs once the keyboard has actually
-  // finished animating in (firing immediately on 'focus' happens before
-  // the viewport has resized, so the scroll target would be wrong).
-  emailInput?.addEventListener('focus', () => {
-    window.setTimeout(() => {
-      emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
-  });
+  //
+  // Driven off `visualViewport`'s `resize` event rather than the input's
+  // own `focus` event: focus only fires on an actual focus transition,
+  // but Android's back button dismisses the keyboard WITHOUT blurring the
+  // input — so tapping the still-focused input again to reopen the
+  // keyboard fires no `focus` event at all, and a focus-only listener
+  // would silently stop working after that. `visualViewport.resize`
+  // fires on every keyboard open/close regardless of focus state, so it
+  // keeps nudging the input back into view each time the keyboard
+  // reopens. Falls back to the old focus-based nudge on browsers without
+  // `visualViewport` (older Safari).
+  function nudgeEmailIntoView() {
+    if (!emailInput || document.activeElement !== emailInput) return;
+    emailInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      window.setTimeout(nudgeEmailIntoView, 50);
+    });
+  } else {
+    emailInput?.addEventListener('focus', () => {
+      window.setTimeout(nudgeEmailIntoView, 300);
+    });
+  }
 
   // Animated swap between the split-card (screen 1) and next-steps
   // (screen 2) panels — used for both directions (submit → next-steps,
