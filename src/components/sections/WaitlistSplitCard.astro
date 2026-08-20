@@ -131,14 +131,14 @@ const nextSteps = [
           <input id="waitlist-company" name="company" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
-        <div class="flex items-start gap-2.5">
+        <div class="flex items-start gap-2">
           <input id="waitlist-terms"
             name="terms"
             type="checkbox"
             required
-            class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 cursor-pointer rounded border-rail text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
+            class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 cursor-pointer rounded border-rail text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
           />
-          <label for="waitlist-terms" class="cursor-pointer text-sm leading-snug text-ink/70">
+          <label for="waitlist-terms" class="cursor-pointer text-xs leading-snug text-ink/70">
             Agree to terms and conditions
           </label>
         </div>
@@ -153,8 +153,8 @@ const nextSteps = [
         <div class="h-px w-full bg-rail"></div>
       </div>
 
-      <p class="mt-5 text-center text-xs text-ink">
-        Already reserved your spot?
+      <p class="mt-5 text-center text-sm">
+        <span class="font-medium text-ink">Already reserved your spot?</span>
         <button type="button" id="waitlist-already-reserved" class="font-medium text-blue-600 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20 rounded">
           See what happens next
         </button>
