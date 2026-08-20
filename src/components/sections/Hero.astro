@@ -12,15 +12,25 @@
 // Palette: stays on DESIGN_SYSTEM.md's default light ink/paper tokens
 // (unlike the v6 dark override) — accent blue-600 fixed as always.
 //
-// Decorative pattern note: the reference's soft organic cloud-blur is
-// the DESIGN_SYSTEM.md Section 7.5 "Abstract Blend Waves" entry, which
-// is rejected as a *sitewide default* (reads as generic gradient-blob
-// territory). Per CLAUDE.md 4.5, a page-specific inspiration screenshot
-// can override DESIGN_SYSTEM.md content itself (just not the fixed
-// accent color or CLAUDE.md's own governance rules) — so it's used here
-// deliberately, built as layered CSS radial-gradient blurs (no image
-// asset, no new dependency), kept as this hero's one decorative pattern
-// (nothing else stacked — no dot-grid, no separate glow orb).
+// Decorative pattern note: previously a soft organic cloud-blur (layered
+// CSS radial-gradient blur circles in an absolutely-positioned -z-10
+// div), per the DESIGN_SYSTEM.md Section 7.5 "Abstract Blend Waves"
+// entry (page-specific override via CLAUDE.md 4.5, not a sitewide
+// default). Replaced this pass with a flat 2-color linear gradient
+// applied straight to the <section>'s own background (see color choice
+// note below) — no separate decorative div, no blur, no image asset.
+//
+// GRADIENT COLOR CHOICE (this pass): blue-600 → amber-500, diagonal
+// (bg-gradient-to-br), both at low opacity (/10) layered over the base
+// bg-paper color so body text and the pill/CTA elements stay legible.
+// Blue and amber/orange are the palette's complementary pair (opposite
+// warmth, opposite ends of the wheel) — teal-600 sits too close to
+// blue-600 on the wheel to read as a second, contrasting anchor. Ink and
+// paper are neutrals, not gradient-color candidates. All three
+// accent/signal tokens (blue-600, teal-600, amber-500) still appear
+// elsewhere in this hero (badge/CTA, card icon backgrounds), so
+// blue-600/amber-500 in the backdrop reads as reinforcing the existing
+// palette, not introducing new colors.
 //
 // Floating automation cards + scatter decoration (added this pass):
 // four AutomationNotificationCard instances scattered at the hero's
@@ -30,14 +40,29 @@
 // components are pre-built/finalized — this file only imports, positions,
 // and feeds them data; no markup inside either component was touched.
 //
-// Stacking order (back to front): cloud-blur backdrop (-z-10, baked into
-// this file) → HeroScatterDecoration (-z-[5], baked into that component)
-// → centered headline/subtext/CTA content (default stacking) → floating
-// cards (z-10, explicit, so they sit above everything else in the hero).
+// Stacking order (back to front): gradient backdrop (painted directly on
+// the <section>'s own background, no z-index needed) → HeroScatterDecoration
+// (-z-[5], baked into that component) → centered headline/subtext/CTA
+// content (default stacking) → floating cards (z-10, explicit, so they
+// sit above everything else in the hero).
 // Cards + decoration are both hidden below `lg` — at narrower widths
 // there isn't room around the centered content for four 288–320px cards
 // without crowding the headline/CTAs, which the existing hero reserves
 // via its sm:/lg: padding scale.
+//
+// STACKING CONTEXT FIX (earlier pass, still required): the <section>
+// below carries `isolate` in addition to `relative`. `position: relative`
+// alone does NOT create a stacking context (only relative/absolute + an
+// explicit z-index, or `isolate`, does) — so without it, HeroScatterDecoration's
+// `-z-[5]` wrapper would escape past the section into the nearest ancestor
+// stacking context instead of stacking locally, and paint *before* (i.e.
+// underneath) this section's own background — now the gradient described
+// above — since the section itself, with z-index:auto, would otherwise
+// paint at a later step in that outer context. `isolate` forces this
+// section to be its own stacking context, so its background paints first
+// *inside* it and the negative-z scatter decoration correctly paints on
+// top of that background instead of underneath it. No inline styles used
+// — `isolate` is a static Tailwind utility class.
 //
 // Card data source: SITE_IDENTITY_AND_AEO.md Section 3 end-to-end flow.
 // Rotation is passed via `rotationClass` (-rotate-6 / rotate-6 / rotate-3 /
@@ -61,25 +86,7 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative overflow-hidden bg-paper px-4 pt-24 pb-28 sm:px-6 sm:pt-32 sm:pb-40 lg:px-8">
-  <!-- Soft cloud-blur backdrop — this hero's one decorative pattern.
-       Big, bold layered blur shapes in blue-200/300/100 tones, sized to
-       actually dominate the hero (not a faint corner tint) — heaviest
-       lower-left like the reference, with lighter drifts across the top
-       and right so the whole section reads as "sky", not just an accent.
-       Opacity modifiers bumped one step per shape (blur radii, sizes, and
-       positions unchanged) so the gradient reads clearly against paper
-       instead of looking flat/faint. -->
-  <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-    <div class="absolute -left-40 bottom-[-200px] h-[700px] w-[700px] rounded-full bg-blue-300/80 blur-[110px]"></div>
-    <div class="absolute -left-10 bottom-[-100px] h-[600px] w-[620px] rounded-full bg-blue-200/90 blur-[100px]"></div>
-    <div class="absolute left-[15%] bottom-0 h-[420px] w-[500px] rounded-full bg-blue-100 blur-[90px]"></div>
-    <div class="absolute -top-32 -right-24 h-[560px] w-[560px] rounded-full bg-blue-200/70 blur-[110px]"></div>
-    <div class="absolute top-10 right-[10%] h-[380px] w-[420px] rounded-full bg-blue-50 blur-[90px]"></div>
-    <div class="absolute left-1/3 -top-24 h-[340px] w-[420px] rounded-full bg-white blur-[80px]"></div>
-    <div class="absolute left-[55%] top-1/3 h-[300px] w-[380px] rounded-full bg-blue-100/80 blur-[100px]"></div>
-  </div>
-
+<section class="relative isolate overflow-hidden bg-paper bg-gradient-to-br from-blue-600/10 to-amber-500/10 px-4 pt-24 pb-28 sm:px-6 sm:pt-32 sm:pb-40 lg:px-8">
   <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
        floating cards below. Sits above the cloud-blur backdrop (-z-10)
        and below the centered content, per its own -z-[5]. Hidden below
