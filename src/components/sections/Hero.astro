@@ -210,15 +210,24 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
          higher, closer to the wrapper's own top edge, clear of the text
          column, without shifting the bottom two cards at all.
 
-         EXTRA HEADLINE-GAP PASS (this pass, top cards only): still read
-         as a bit tight against the badge/eyebrow line above the
-         headline, so nudged further up from top-0 to -top-10 (sm:-top-12,
-         lg:-top-14) — i.e. above the wrapper's own top edge (which is
-         itself already offset by the section's top-40/48/56 padding).
-         Purely decorative absolute positioning, so overflowing above the
-         wrapper's box is fine; only the two top cards move, bottom cards
-         and all other values untouched. -->
-    <div class="pointer-events-auto absolute left-[8%] -top-10 sm:-top-12 lg:-top-14">
+         EXTRA HEADLINE-GAP PASS (earlier this pass, top cards only):
+         still read as a bit tight against the badge/eyebrow line above
+         the headline, so nudged further up from top-0 to a shared
+         -top-10/-12/-14 — above the wrapper's own top edge (itself
+         already offset by the section's top-40/48/56 padding). Purely
+         decorative absolute positioning, so overflowing above the
+         wrapper's box is fine.
+
+         RANDOM-SCATTER STAGGER (this pass, all four cards): the two top
+         cards previously shared one -top value and the two bottom cards
+         shared one bottom-0 value, so each pair read as a level, aligned
+         row instead of a scattered pile. Gave each of the four cards its
+         own vertical offset instead of sharing one per row — top-left
+         sits highest, top-right lower/closer to the headline; bottom-
+         right sits lowest, bottom-left higher/closer to the CTA row.
+         left-[8%]/right-[8%] horizontal insets, rotationClass values,
+         and card content are all untouched — vertical offsets only. -->
+    <div class="pointer-events-auto absolute left-[8%] -top-14 sm:-top-16 lg:-top-20">
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
@@ -229,8 +238,8 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       </AutomationNotificationCard>
     </div>
 
-    <!-- Top-right: Payment received (same top-clearance fix as top-left) -->
-    <div class="pointer-events-auto absolute right-[8%] -top-10 sm:-top-12 lg:-top-14">
+    <!-- Top-right: Payment received (staggered lower than top-left, see note above) -->
+    <div class="pointer-events-auto absolute right-[8%] -top-6 sm:-top-7 lg:-top-8">
       <AutomationNotificationCard iconBg="bg-amber-500"
         title="Payment received"
         description="Client paid $1,200 for Website Redesign"
@@ -240,8 +249,8 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       </AutomationNotificationCard>
     </div>
 
-    <!-- Bottom-left: Client signed contract -->
-    <div class="pointer-events-auto absolute bottom-0 left-[8%]">
+    <!-- Bottom-left: Client signed contract (staggered higher than bottom-right, see note above) -->
+    <div class="pointer-events-auto absolute bottom-8 sm:bottom-10 lg:bottom-12 left-[8%]">
       <AutomationNotificationCard iconBg="bg-blue-600"
         title="Client signed contract"
         description="Invoice created and sent to client automatically"
@@ -252,7 +261,8 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     </div>
 
     <!-- Bottom-right: New project created — iconBg flagged above, not
-         yet an approved DESIGN_SYSTEM.md accent color; confirm before shipping. -->
+         yet an approved DESIGN_SYSTEM.md accent color; confirm before
+         shipping. Staggered lowest of the four, see note above. -->
     <div class="pointer-events-auto absolute bottom-0 right-[8%]">
       <AutomationNotificationCard iconBg="bg-rose-500"
         title="New project created"
