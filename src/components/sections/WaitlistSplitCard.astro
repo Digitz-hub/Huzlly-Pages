@@ -131,22 +131,14 @@ const nextSteps = [
           <input id="waitlist-company" name="company" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
-        <div class="flex items-center gap-2">
-          <input id="waitlist-terms"
-            name="terms"
-            type="checkbox"
-            required
-            class="h-3 w-3 flex-shrink-0 cursor-pointer rounded-[5px] border-rail/50 text-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
-          />
-          <label for="waitlist-terms" class="cursor-pointer text-xs leading-snug text-ink/70">
-            Agree to terms and conditions
-          </label>
-        </div>
-
-        <Button type="submit" size="lg" motion disabled class="group mt-7 w-full disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-sm" ariaLabel="Join waitlist">
+        <Button type="submit" size="lg" motion class="group mt-7 w-full" ariaLabel="Join waitlist">
           Join waitlist
           <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-0.5" stroke-width="1.75" />
         </Button>
+
+        <p class="mt-1 text-center text-xs leading-snug text-ink/50">
+          By signing up, you agree to our <a href="/terms" class="underline underline-offset-2 hover:text-ink">Terms of Service</a> and <a href="/privacy" class="underline underline-offset-2 hover:text-ink">Privacy Policy</a>.
+        </p>
       </form>
 
       <div class="mx-auto mt-7 w-full max-w-md" aria-hidden="true">
@@ -310,21 +302,10 @@ const nextSteps = [
   const splitCard = document.getElementById('waitlist-split-card');
   const nextSteps = document.getElementById('waitlist-next-steps');
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
-  const termsCheckbox = document.getElementById('waitlist-terms') as HTMLInputElement | null;
   const emailInput = document.getElementById('waitlist-email') as HTMLInputElement | null;
   const successTitle = document.getElementById('waitlist-success-title');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Submit stays disabled until the terms checkbox is checked.
-  termsCheckbox?.addEventListener('change', () => {
-    if (!submitBtn) return;
-    if (termsCheckbox.checked) {
-      submitBtn.removeAttribute('disabled');
-    } else {
-      submitBtn.setAttribute('disabled', 'true');
-    }
-  });
 
   // Swap `border-rail` <-> `border-red-500` rather than stacking a second
   // border-color utility on top — two classes setting the same property at
@@ -419,10 +400,6 @@ const nextSteps = [
     const companyInput = document.getElementById('waitlist-company') as HTMLInputElement;
     const email = emailInput ? emailInput.value.trim() : '';
 
-    if (!termsCheckbox?.checked) {
-      showError('Agree to the Terms and Privacy Policy to join the waitlist.');
-      return;
-    }
     if (!EMAIL_RE.test(email)) {
       showError('Enter a valid email address to join the waitlist.', true);
       return;
