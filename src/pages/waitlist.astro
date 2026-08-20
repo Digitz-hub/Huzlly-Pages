@@ -8,7 +8,7 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
   canonicalPath="/waitlist"
   hideChrome={true}
 >
-  <main class="relative flex min-h-[100dvh] flex-col items-center overflow-hidden bg-gradient-to-tr from-blue-700 via-indigo-600 to-sky-400 px-6 py-6 sm:px-10 sm:py-8 lg:h-[100dvh] lg:overflow-hidden lg:px-16 lg:py-10">
+  <main class="relative flex min-h-[100dvh] flex-col items-center overflow-hidden bg-gradient-to-tr from-blue-700 via-indigo-600 to-sky-400 px-6 pt-6 sm:px-10 sm:pt-8 lg:h-[100dvh] lg:overflow-hidden lg:px-16 lg:pt-10">
     <!-- Layered radial mesh wash for extra depth on top of the base gradient -->
     <div
       class="pointer-events-none absolute inset-0 -z-30"
@@ -72,12 +72,14 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
       </div>
     </div>
 
-    <p class="shrink-0 pt-2 text-center text-sm text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.45)]">
-      <a href="/" class="rounded text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Home</a>
-      <span class="px-2 text-white/50" aria-hidden="true">·</span>
-      <a href="/privacy" class="rounded text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Privacy</a>
-      <span class="px-2 text-white/50" aria-hidden="true">·</span>
-      <a href="/terms" class="rounded text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Terms</a>
-    </p>
+    <div class="flex h-12 w-full shrink-0 items-center justify-center sm:h-16 lg:h-20">
+      <p class="text-center text-sm text-white/80 [text-shadow:0_1px_3px_rgba(0,0,0,0.45)]">
+        <a href="/" class="rounded text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Home</a>
+        <span class="px-2 text-white/50" aria-hidden="true">·</span>
+        <a href="/privacy" class="rounded text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Privacy</a>
+        <span class="px-2 text-white/50" aria-hidden="true">·</span>
+        <a href="/terms" class="rounded text-white/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Terms</a>
+      </p>
+    </div>
   </main>
 </Layout>
