@@ -201,8 +201,15 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        padding. Box is now symmetric on both edges; card content,
        left/right insets, and rotationClass values untouched. -->
   <div class="pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-28 sm:bottom-40 absolute z-10 hidden lg:block" aria-hidden="false">
-    <!-- Top-left: Proposal accepted (starts expanded) -->
-    <div class="pointer-events-auto absolute left-[8%] top-[10%]">
+    <!-- Top-left: Proposal accepted (starts expanded)
+         TOP-CLEARANCE FIX (this pass, top cards only): top-[10%] was too
+         close to the badge/headline text column below it — the two top
+         cards visually overlapped the badge/eyebrow line. Reduced to
+         top-[1%] on just the two top cards (not the wrapper's own
+         top-40/48/56, not the bottom cards' bottom-[10%]) so they sit
+         higher, closer to the wrapper's own top edge, clear of the text
+         column, without shifting the bottom two cards at all. -->
+    <div class="pointer-events-auto absolute left-[8%] top-[1%]">
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
@@ -213,8 +220,8 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       </AutomationNotificationCard>
     </div>
 
-    <!-- Top-right: Payment received -->
-    <div class="pointer-events-auto absolute right-[8%] top-[10%]">
+    <!-- Top-right: Payment received (same top-clearance fix as top-left) -->
+    <div class="pointer-events-auto absolute right-[8%] top-[1%]">
       <AutomationNotificationCard iconBg="bg-amber-500"
         title="Payment received"
         description="Client paid $1,200 for Website Redesign"
