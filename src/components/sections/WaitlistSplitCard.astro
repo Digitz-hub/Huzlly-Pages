@@ -32,8 +32,9 @@
 // input/button states (shadow, focus ring, hover-lift via Button's
 // `motion` prop) — no new layout/color tokens introduced.
 
-import { ArrowLeft, ArrowRight, Check, Zap, Clock, ShieldCheck, MailCheck, Users, Rocket, Compass } from 'lucide-astro';
+import { ArrowLeft, ArrowRight, Check, Zap, Clock, ShieldCheck, MailCheck, Users, Rocket, Compass, Mail } from 'lucide-astro';
 import Button from '../ui/Button.astro';
+import Badge from '../ui/Badge.astro';
 
 const bullets = [
   { icon: Zap, bold: 'Automatic handoff', rest: 'from proposal to project, no manual step in between.' },
@@ -94,7 +95,17 @@ const nextSteps = [
     </div>
 
     <!-- Right panel: signup form -->
-    <div class="flex flex-col justify-center bg-white p-8 sm:p-10 lg:p-14">
+    <div class="relative flex flex-col justify-center overflow-hidden bg-white p-8 sm:p-10 lg:p-14">
+      <!-- Ambient wash so the right panel doesn't read as flat/empty next to
+           the left panel's gradient — same token family (blue-50, low
+           opacity, contained), just a single quiet accent rather than the
+           left panel's fuller teal/blue treatment. -->
+      <div class="pointer-events-none absolute left-1/2 top-0 -z-10 h-72 w-72 -translate-x-1/2 -translate-y-1/3 rounded-full bg-blue-50/80 blur-3xl" aria-hidden="true"></div>
+
+      <div class="mx-auto mb-5">
+        <Badge variant="beta">Closed beta · 50 spots</Badge>
+      </div>
+
       <h2 class="text-center font-display text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
         Get early access
       </h2>
@@ -105,14 +116,17 @@ const nextSteps = [
       <form id="waitlist-form" class="mt-8 flex flex-col gap-5 max-w-md w-full mx-auto" novalidate>
         <div>
           <label for="waitlist-email" class="mb-1.5 block text-sm font-medium text-ink/70">Email</label>
-          <input id="waitlist-email"
-            name="email"
-            type="email"
-            required
-            placeholder="you@studio.com"
-            autocomplete="email"
-            class="w-full rounded-xl border border-rail bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors focus-visible:border-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
-          />
+          <div class="relative">
+            <Mail class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35" stroke-width="1.75" />
+            <input id="waitlist-email"
+              name="email"
+              type="email"
+              required
+              placeholder="you@studio.com"
+              autocomplete="email"
+              class="w-full rounded-xl border border-rail bg-paper/60 pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors hover:border-ink/20 focus-visible:border-blue-600 focus-visible:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
+            />
+          </div>
           <p id="waitlist-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
         </div>
 
