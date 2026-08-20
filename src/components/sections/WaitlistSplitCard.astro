@@ -32,7 +32,7 @@
 // input/button states (shadow, focus ring, hover-lift via Button's
 // `motion` prop) — no new layout/color tokens introduced.
 
-import { ArrowLeft, ArrowRight, Check, Zap, Clock, ShieldCheck, MailCheck, Users, Rocket } from 'lucide-astro';
+import { ArrowLeft, ArrowRight, Check, Zap, Clock, ShieldCheck, MailCheck, Users, Rocket, Compass } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
 const bullets = [
@@ -192,9 +192,9 @@ const nextSteps = [
       <div class="h-px w-full bg-rail"></div>
     </div>
 
-    <Button href="/" variant="accent" class="group mt-6" ariaLabel="Back to Huzlly home">
-      <ArrowLeft class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" stroke-width="1.75" />
-      Go home
+    <Button href="/features" variant="accent" class="group mt-6" ariaLabel="Explore Huzlly features">
+      <Compass class="w-3.5 h-3.5 transition-transform group-hover:rotate-45" stroke-width="1.75" />
+      Explore features
     </Button>
   </div>
 </section>
