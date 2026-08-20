@@ -52,7 +52,7 @@ const nextSteps = [
 ];
 ---
 
-<section class="relative flex h-full w-full items-center justify-center px-2 py-2 sm:px-4 sm:py-3">
+<section class="waitlist-stage relative flex h-full w-full items-center justify-center px-2 py-2 sm:px-4 sm:py-3">
   <!-- Ambient glow so the card visibly lifts off the flat paper background -->
   <div class="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[70%] w-[85%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-100/40 blur-3xl" aria-hidden="true"></div>
 
@@ -207,7 +207,16 @@ const nextSteps = [
 <style>
   /* Single one-shot entrance for the whole card — subtle, not stacked
      with per-element stagger since the reference is a calm, static layout.
-     Mandatory reduced-motion fallback per DESIGN_SYSTEM.md Section 6. */
+     Mandatory reduced-motion fallback per DESIGN_SYSTEM.md Section 6.
+     IMPORTANT: this rule only ever holds the ONE-SHOT entrance. The
+     persistent floating loop lives in the separate `.is-idle` class
+     below, added by JS only once this entrance finishes. Keeping them
+     apart is what fixes the repeated-toggle bug: previously both were
+     combined in one `animation` shorthand here, so whenever JS removed
+     the transient `.screen-leave`/`.screen-enter` override class, the
+     cascade fell back to *this* rule and restarted split-card-in from
+     opacity:0 every time — that restart, not a failed `animationend`,
+     was the visible "blank flash then snap" on the 2nd+ toggle. */
   .split-card {
     opacity: 0;
     transform: translateY(10px);
@@ -223,12 +232,16 @@ const nextSteps = [
   }
   /* Subtle floating effect once settled — a light continuous hover so the
      card reads as elevated above the page background rather than flush
-     against it. */
+     against it. Deliberately its own class (not merged into `.split-card`)
+     and defined here — BEFORE `.screen-leave`/`.screen-enter` further
+     down — so those transient classes still win the cascade on
+     `animation` while a toggle is in flight, and so removing them
+     afterward falls back to this quiet loop instead of the entrance
+     keyframes above. Toggled on/off by JS (see script below), only on
+     desktop and only once the initial entrance has finished. */
   @media (min-width: 1024px) {
-    .split-card {
-      animation:
-        split-card-in 1.1s ease-out forwards,
-        split-card-float 9s ease-in-out 1.1s infinite;
+    .is-idle {
+      animation: split-card-float 9s ease-in-out infinite;
     }
     @keyframes split-card-float {
       0%, 100% { transform: translateY(0); }
@@ -239,6 +252,9 @@ const nextSteps = [
     .split-card {
       opacity: 1;
       transform: none;
+      animation: none;
+    }
+    .is-idle {
       animation: none;
     }
   }
@@ -263,9 +279,10 @@ const nextSteps = [
      "Go back". Separate from the one-shot page-load entrances above:
      these fire every time, not just once, and apply to whichever panel
      is currently leaving/entering. Single-class selectors, defined after
-     .split-card so they win on the shared `animation` property while
-     active, then get removed so .split-card's own persistent float loop
-     (desktop) resumes untouched. */
+     .split-card / .is-idle so they win on the shared `animation` property
+     while active; once JS removes them, the element falls back to
+     `.is-idle`'s quiet loop rather than `.split-card`'s entrance keyframes
+     — see the note above `.is-idle` for why that ordering matters. */
   .screen-leave {
     animation: screen-leave 0.4s ease-in forwards;
   }
@@ -294,6 +311,21 @@ const nextSteps = [
       animation: none;
     }
   }
+
+  /* Stage height crossfade — the form panel and the next-steps panel
+     have different natural heights, so swapping which one is visible
+     used to make this section's box snap instantly to the new height.
+     JS (switchScreens below) locks the stage to its current height right
+     before a swap, then animates it to the incoming panel's height — this
+     transition is what makes that resize glide instead of jump. */
+  .waitlist-stage {
+    transition: min-height 0.35s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .waitlist-stage {
+      transition: none;
+    }
+  }
 </style>
 
 <script>
@@ -306,6 +338,28 @@ const nextSteps = [
   const successTitle = document.getElementById('waitlist-success-title');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isDesktopViewport = () => window.matchMedia('(min-width: 1024px)').matches;
+
+  // Hands the split card off from its one-shot entrance animation to the
+  // persistent `.is-idle` float loop. Called once after the initial
+  // page-load entrance finishes, and again after the card re-enters via
+  // switchScreens() ("Go back") — never by letting the browser's own
+  // cascade fall back to it, which is what used to silently restart the
+  // entrance keyframes instead (see the CSS note on `.is-idle`).
+  function settleSplitCard() {
+    if (!splitCard || prefersReducedMotion) return;
+    if (isDesktopViewport()) {
+      splitCard.classList.add('is-idle');
+    } else {
+      splitCard.classList.remove('is-idle');
+    }
+  }
+
+  if (splitCard && !prefersReducedMotion) {
+    splitCard.addEventListener('animationend', (event) => {
+      if (event.animationName === 'split-card-in') settleSplitCard();
+    }, { once: true });
+  }
 
   // Swap `border-rail` <-> `border-red-500` rather than stacking a second
   // border-color utility on top — two classes setting the same property at
@@ -370,13 +424,40 @@ const nextSteps = [
   function switchScreens(fromEl, toEl, toDisplay) {
     if (!fromEl || !toEl) return;
 
+    // The form panel and the next-steps panel have different natural
+    // heights, so swapping which one is visible used to snap the shared
+    // stage instantly to the new height. Lock the stage at its current
+    // height first, then (once the incoming panel is laid out) animate
+    // toward its height instead — the `.waitlist-stage` CSS transition
+    // above does the actual gliding.
+    const stage = fromEl.closest('section');
+    if (stage) {
+      stage.style.minHeight = `${stage.getBoundingClientRect().height}px`;
+    }
+
     const enterToEl = () => {
       toEl.classList.remove('hidden');
       toEl.style.display = toDisplay;
+
+      if (stage) {
+        if (prefersReducedMotion) {
+          stage.style.minHeight = '';
+        } else {
+          // Wait a frame so toEl has its final layout before measuring.
+          requestAnimationFrame(() => {
+            stage.style.minHeight = `${toEl.getBoundingClientRect().height}px`;
+          });
+          stage.addEventListener('transitionend', () => {
+            stage.style.minHeight = '';
+          }, { once: true });
+        }
+      }
+
       if (prefersReducedMotion) return;
       toEl.classList.add('screen-enter');
       toEl.addEventListener('animationend', () => {
         toEl.classList.remove('screen-enter');
+        if (toEl === splitCard) settleSplitCard();
       }, { once: true });
     };
 
