@@ -256,6 +256,43 @@ const nextSteps = [
       animation: none;
     }
   }
+
+  /* Screen-to-screen transition (JS-triggered via switchScreens() below) —
+     used both for split-card → next-steps on submit and the reverse on
+     "Go back". Separate from the one-shot page-load entrances above:
+     these fire every time, not just once, and apply to whichever panel
+     is currently leaving/entering. Single-class selectors, defined after
+     .split-card so they win on the shared `animation` property while
+     active, then get removed so .split-card's own persistent float loop
+     (desktop) resumes untouched. */
+  .screen-leave {
+    animation: screen-leave 0.2s ease-in forwards;
+  }
+  .screen-enter {
+    animation: screen-enter 0.35s ease-out forwards;
+  }
+  @keyframes screen-leave {
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes screen-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screen-leave,
+    .screen-enter {
+      animation: none;
+    }
+  }
 </style>
 
 <script>
@@ -268,6 +305,7 @@ const nextSteps = [
   const emailInput = document.getElementById('waitlist-email') as HTMLInputElement | null;
   const successTitle = document.getElementById('waitlist-success-title');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Submit stays disabled until the terms checkbox is checked.
   termsCheckbox?.addEventListener('change', () => {
@@ -300,6 +338,41 @@ const nextSteps = [
     setEmailInvalid(false);
   });
 
+  // Animated swap between the split-card (screen 1) and next-steps
+  // (screen 2) panels — used for both directions (submit → next-steps,
+  // "Go back" → split-card). `fromEl` fades/slides out first, then
+  // `toEl` is unhidden and fades/slides in, so the two never render
+  // stacked/overlapping mid-transition. `toDisplay` is the display value
+  // to apply to `toEl` once it's shown ('flex' for next-steps, '' for
+  // split-card so its own responsive `lg:grid` etc. classes take over
+  // instead of a hardcoded value).
+  function switchScreens(fromEl, toEl, toDisplay) {
+    if (!fromEl || !toEl) return;
+
+    const enterToEl = () => {
+      toEl.classList.remove('hidden');
+      toEl.style.display = toDisplay;
+      if (prefersReducedMotion) return;
+      toEl.classList.add('screen-enter');
+      toEl.addEventListener('animationend', () => {
+        toEl.classList.remove('screen-enter');
+      }, { once: true });
+    };
+
+    if (prefersReducedMotion) {
+      fromEl.style.display = 'none';
+      enterToEl();
+      return;
+    }
+
+    fromEl.classList.add('screen-leave');
+    fromEl.addEventListener('animationend', () => {
+      fromEl.style.display = 'none';
+      fromEl.classList.remove('screen-leave');
+      enterToEl();
+    }, { once: true });
+  }
+
   // "Already reserved your spot?" — bypasses the form/API entirely and
   // jumps straight to the next-steps screen, same as a real duplicate
   // response would (title reads "You're already on the list.").
@@ -319,34 +392,14 @@ const nextSteps = [
     if (successTitle) {
       successTitle.textContent = duplicate ? "You're already on the list." : "You're on the list.";
     }
-    // Inline style, not the `hidden` class: #waitlist-split-card also carries
-    // `lg:grid`, and at lg widths that media-query rule sits later in the
-    // compiled stylesheet than the plain `.hidden` rule — same specificity,
-    // so `lg:grid` was winning and the card never actually disappeared on
-    // desktop. Setting style.display directly always beats class-based
-    // rules, so this is correct at every breakpoint.
-    if (splitCard) splitCard.style.display = 'none';
-    if (nextSteps) {
-      nextSteps.classList.remove('hidden');
-      nextSteps.style.display = 'flex';
-      nextSteps.classList.add('is-entering');
-    }
+    switchScreens(splitCard, nextSteps, 'flex');
   }
 
-  // "Go back" on the next-steps screen — same inline-style swap as
-  // showSuccess, just reversed. Clearing style.display on splitCard (rather
-  // than setting it to 'grid'/'block') lets the existing responsive classes
-  // ('lg:grid' etc.) take back over instead of hardcoding one layout mode.
+  // "Go back" on the next-steps screen — same animated swap as
+  // showSuccess, just reversed.
   const goBackBtn = document.getElementById('waitlist-go-back');
   goBackBtn?.addEventListener('click', () => {
-    if (nextSteps) {
-      nextSteps.style.display = 'none';
-      nextSteps.classList.add('hidden');
-      nextSteps.classList.remove('is-entering');
-    }
-    if (splitCard) {
-      splitCard.style.display = '';
-    }
+    switchScreens(nextSteps, splitCard, '');
   });
 
   form?.addEventListener('submit', async (event) => {
