@@ -64,6 +64,25 @@
 // top of that background instead of underneath it. No inline styles used
 // — `isolate` is a static Tailwind utility class.
 //
+// FIXED-HEADER CLEARANCE FIX (this pass, homepage-scoped): Nav.astro's
+// <header> is now `fixed` (top-4/sm:top-6, pill height h-14/sm:h-16) and
+// floats over this section, since this section starts at the true top of
+// the page (see Nav.astro's own pass notes). Fixed elements are removed
+// from flow, so they don't push this section's content down on their
+// own — the section's own top padding is the only thing keeping the
+// badge/eyebrow/headline and the top-[10%] corner cards clear of the
+// pill. Minimum clearance is roughly 72px (mobile: 56px pill + 16px
+// top offset) / 88px (sm: 64px pill + 24px offset), but per the task this
+// pass adds real breathing room on top of that minimum rather than the
+// bare minimum, since content sitting flush against the pill's lower
+// edge still reads as cramped/overlapping even once it's technically
+// clear. Bumped pt-24/pt-32 → pt-40/pt-48/pt-56 (was pt-24 sm:pt-32,
+// no lg step previously) across the three breakpoints already in use
+// elsewhere in this file's className scale. Bottom padding (pb-28/pb-40),
+// the gradient, card content/rotations/percent-based inset positions, and
+// dot/decoration positions are all untouched — only the top padding
+// scale changed.
+//
 // Card data source: SITE_IDENTITY_AND_AEO.md Section 3 end-to-end flow.
 // Rotation is passed via `rotationClass` (-rotate-6 / rotate-6 / rotate-3 /
 // -rotate-3) — AutomationNotificationCard.astro applies this straight into
@@ -86,7 +105,7 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-paper bg-gradient-to-br from-blue-600/10 to-amber-500/10 px-4 pt-24 pb-28 sm:px-6 sm:pt-32 sm:pb-40 lg:px-8">
+<section class="relative isolate overflow-hidden bg-paper bg-gradient-to-br from-blue-600/10 to-amber-500/10 px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
   <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
        floating cards below. Sits above the cloud-blur backdrop (-z-10)
        and below the centered content, per its own -z-[5]. Hidden below
