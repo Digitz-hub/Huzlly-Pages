@@ -1,68 +1,43 @@
 ---
 // src/components/sections/Hero.astro
-// Homepage hero — v3, page-specific inspiration override (CLAUDE.md
-// Section 4.5). Signature element replaces the old two-column
-// "scattered chips -> flow-rail" layout with a single hub-and-spoke
-// "merge" diagram: six tool-category nodes fan into a central Huzlly
-// mark, echoing the reference inspiration (converging lines into a
-// central brand hub). Real third-party app logos (Figma/Notion/Slack
-// etc., as shown in the reference) are intentionally NOT reproduced —
-// those are trademarked assets. Instead each node uses a generic
-// lucide icon representing the *category* of tool it replaces
-// (proposal, e-sign, invoicing, payments, forms, time tracking),
-// consistent with the site's existing "replaces 5+ apps" positioning.
-// No stars/review-count badge from the reference is included, per
-// explicit direction.
+// Homepage hero — v4, page-specific inspiration override (CLAUDE.md
+// Section 4.5). Signature visual is now lifted directly from the
+// user-supplied reference implementation (hero-preview.html — a
+// "Tools AI" style hero): a center glow-node with floating icon cards
+// on either side, connected by a dense fan of soft bezier lines, each
+// card gently bobbing via CSS float animation. No stars/review-count
+// badge (explicitly excluded, per direction).
+//
+// Real third-party app logos (the reference used plain text
+// initials/emoji stand-ins, not actual brand marks) are still not
+// reproduced here — cards use generic lucide icons for each tool
+// category Huzlly replaces (proposal, e-sign, invoicing, payments,
+// forms, time tracking), same reasoning as the previous pass.
 //
 // Page-level design note (CLAUDE.md 4.5):
-// - Inspiration: light-mode SaaS hero with a hub-and-spoke "apps merge
-//   into one tool" visual + dual CTA row + no rating badge.
-// - Fixed accent kept: blue-600 (#2563EB), used for the hub mark and
-//   the tier-1 (nearest) line/icon pair.
+// - Inspiration: hero-preview.html (user-supplied) — center glow node,
+//   floating bordered icon cards, dense converging bezier-line fan,
+//   continuous float animation, dual CTA row, no rating badge.
+// - Fixed accent kept: blue-600 (#2563EB) — replaces the reference's
+//   orange (#FF4B26/#FF3B14) throughout: line gradient, glow shadow,
+//   center node gradient, and the accented icon cards.
 // - Everything else on this page still runs on DESIGN_SYSTEM.md v2
 //   tokens (ink/paper/rail, Space Grotesk/Inter/JetBrains Mono,
 //   existing Button/Badge primitives) — only the signature visual is
 //   rebuilt; headline, subtext, CTAs, and the beta badge are unchanged.
-// - Diagram-only accents: signal teal (#0D9488) and signal amber
-//   (#F59E0B), per DESIGN_SYSTEM.md Section 1 ("diagram/illustration
-//   use only"), color-code the three line tiers so the fan reads as a
-//   real multi-stage system rather than one flat line color.
-// - Motion: lines draw in via stroke-dasharray (approved technique,
-//   DESIGN_SYSTEM.md 7.5 "Curved connector/rail lines"), nodes fade in
-//   staggered; both degrade to a static reduced-motion fallback.
+// - Arbitrary Tailwind values (percentage positions, the glow
+//   box-shadow, fixed pixel heights) are carried over near-verbatim
+//   from the reference — CLAUDE.md Section 3's zero-arbitrary-value
+//   rule is one of the rules Section 4.5 allows an inspiration
+//   override to relax; it is not in the fixed list (accent color,
+//   Sections 1/2/5).
+// - Motion: continuous float keyframes on each card (reference
+//   mechanism, unchanged), plus the sitewide scroll-reveal on mount.
+//   Both degrade to fully static under prefers-reduced-motion.
 
 import { ArrowRight, FileText, PenTool, Receipt, CreditCard, ClipboardList, Clock } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 import Badge from '../ui/Badge.astro';
-
-// Tier -> full, literal Tailwind class strings. Kept as complete static
-// strings (not `text-${tier}-600` interpolation) so Tailwind's scanner
-// can find them in the source text — an interpolated template would be
-// invisible to the scanner and get purged from the build.
-const tierIconClass: Record<string, string> = {
-  blue: 'w-6 h-6 text-blue-600',
-  teal: 'w-6 h-6 text-teal-600',
-  amber: 'w-6 h-6 text-amber-500',
-};
-const tierHex: Record<string, string> = {
-  blue: '#2563EB',
-  teal: '#0D9488',
-  amber: '#F59E0B',
-};
-
-const hub = { x: 400, y: 322 };
-
-const nodesLeft = [
-  { id: 'l1', x: 110, y: 258, icon: FileText, tier: 'blue', label: 'Proposal tool' },
-  { id: 'l2', x: 168, y: 150, icon: PenTool, tier: 'teal', label: 'E-sign app' },
-  { id: 'l3', x: 272, y: 74, icon: Receipt, tier: 'amber', label: 'Invoicing tool' },
-];
-const nodesRight = [
-  { id: 'r1', x: 690, y: 258, icon: CreditCard, tier: 'blue', label: 'Payment processor' },
-  { id: 'r2', x: 632, y: 150, icon: ClipboardList, tier: 'teal', label: 'Form builder' },
-  { id: 'r3', x: 528, y: 74, icon: Clock, tier: 'amber', label: 'Time tracker' },
-];
-const allNodes = [...nodesLeft, ...nodesRight];
 ---
 
 <section class="relative overflow-hidden bg-paper px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:px-8">
@@ -96,64 +71,79 @@ const allNodes = [...nodesLeft, ...nodesRight];
     </div>
   </div>
 
-  <!-- Signature: six tool-category nodes fan into a central Huzlly hub -->
-  <div class="reveal mt-16 sm:mt-20 mx-auto max-w-4xl">
-    <svg viewBox="0 0 800 380" class="w-full h-auto" aria-hidden="true">
+  <!-- Signature: floating tool-icon cards + center Huzlly glow node,
+       connected by a converging line fan. Lifted from hero-preview.html. -->
+  <div class="reveal relative mx-auto mt-10 h-[260px] w-full max-w-5xl sm:mt-14 sm:h-[320px]">
+    <svg viewBox="0 0 1200 300" fill="none" preserveAspectRatio="xMidYMid meet"
+      class="absolute inset-0 h-full w-full opacity-60" aria-hidden="true"
+    >
       <defs>
-        {allNodes.map((node) => (
-          <linearGradient id={`line-${node.id}`}
-            x1={node.x} y1={node.y} x2={hub.x} y2={hub.y}
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0%" stop-color="#E4E0D8" stop-opacity="0.5" />
-            <stop offset="100%" stop-color={tierHex[node.tier]} stop-opacity="0.9" />
-          </linearGradient>
-        ))}
+        <linearGradient id="huzllyLineGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#2563EB" stop-opacity="0.05" />
+          <stop offset="50%" stop-color="#2563EB" stop-opacity="0.7" />
+          <stop offset="100%" stop-color="#2563EB" stop-opacity="0.05" />
+        </linearGradient>
       </defs>
+      <path d="M 0 50 C 250 50, 400 130, 560 142" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 0 110 C 250 110, 400 138, 560 146" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 0 170 C 250 170, 400 144, 560 149" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 0 230 C 250 230, 400 152, 560 152" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 0 290 C 250 290, 400 160, 560 155" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 0 350 C 250 350, 400 170, 560 158" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
 
-      {allNodes.map((node) => (
-        <path class="connector-line"
-          d={`M${node.x},${node.y} L${hub.x},${hub.y}`}
-          stroke={`url(#line-${node.id})`}
-          stroke-width="1.5"
-          fill="none"
-          pathLength="1"
-        />
-      ))}
-
-      <!-- Central Huzlly hub -->
-      <g class="flow-chip">
-        <circle cx={hub.x} cy={hub.y} r="48" fill="#FCFBF8" />
-        <circle cx={hub.x} cy={hub.y} r="40" fill="#14110F" stroke="#E4E0D8" stroke-width="1" />
-        <g transform={`translate(${hub.x - 24}, ${hub.y - 24}) scale(0.48)`}>
-          <path d="M30 25 V75 M70 25 V75 M30 50 H70"
-            stroke="#2563EB" stroke-width="12"
-            stroke-linecap="round" stroke-linejoin="round" fill="none"
-          />
-        </g>
-      </g>
-
-      <!-- Six tool nodes -->
-      {allNodes.map((node) => {
-        const Icon = node.icon;
-        return (
-          <g class="flow-chip">
-            <circle cx={node.x} cy={node.y} r="32" fill="#FCFBF8" />
-            <circle cx={node.x} cy={node.y} r="28" fill="#FCFBF8" stroke="#E4E0D8" stroke-width="1.5" />
-            <foreignObject x={node.x - 28} y={node.y - 28} width="56" height="56">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="flex h-full w-full items-center justify-center">
-                <Icon class={tierIconClass[node.tier]} stroke-width="1.75" />
-              </div>
-            </foreignObject>
-          </g>
-        );
-      })}
+      <path d="M 1200 50 C 950 50, 800 130, 640 142" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 1200 110 C 950 110, 800 138, 640 146" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 1200 170 C 950 170, 800 144, 640 149" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 1200 230 C 950 230, 800 152, 640 152" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 1200 290 C 950 290, 800 160, 640 155" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
+      <path d="M 1200 350 C 950 350, 800 170, 640 158" stroke="url(#huzllyLineGrad)" stroke-width="1.2" />
     </svg>
 
-    <p class="reveal mt-6 text-center text-xs font-medium text-ink/50">
-      Designed to replace 5+ separate apps &mdash; connected into one automatic flow.
-    </p>
+    <!-- Left floating cards -->
+    <div class="animate-float-1 absolute left-[12%] top-[10%] z-10 flex h-12 w-12 items-center justify-center
+                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
+      <FileText class="w-5 h-5 text-blue-600" stroke-width="1.75" />
+    </div>
+    <div class="animate-float-2 absolute left-[28%] top-[45%] z-10 flex h-12 w-12 items-center justify-center
+                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
+      <PenTool class="w-5 h-5 text-ink/70" stroke-width="1.75" />
+    </div>
+    <div class="animate-float-3 absolute bottom-[10%] left-[12%] z-10 flex h-12 w-12 items-center justify-center
+                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
+      <Receipt class="w-5 h-5 text-blue-600" stroke-width="1.75" />
+    </div>
+
+    <!-- Center glow node — Huzlly mark -->
+    <div class="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2">
+      <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-blue-500
+                  shadow-[0_0_40px_10px_rgba(37,99,235,0.35)] sm:h-20 sm:w-20">
+        <svg viewBox="0 0 100 100" class="h-8 w-8 sm:h-9 sm:w-9" aria-hidden="true">
+          <path d="M30 25 V75 M70 25 V75 M30 50 H70"
+            stroke="#FCFBF8" stroke-width="12"
+            stroke-linecap="round" stroke-linejoin="round" fill="none"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Right floating cards -->
+    <div class="animate-float-2 absolute right-[12%] top-[10%] z-10 flex h-12 w-12 items-center justify-center
+                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
+      <CreditCard class="w-5 h-5 text-ink/70" stroke-width="1.75" />
+    </div>
+    <div class="animate-float-3 absolute right-[28%] top-[45%] z-10 flex h-12 w-12 items-center justify-center
+                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
+      <ClipboardList class="w-5 h-5 text-blue-600" stroke-width="1.75" />
+    </div>
+    <div class="animate-float-1 absolute bottom-[10%] right-[12%] z-10 flex h-12 w-12 items-center justify-center
+                rounded-2xl border border-rail bg-paper shadow-md sm:h-14 sm:w-14">
+      <Clock class="w-5 h-5 text-ink/70" stroke-width="1.75" />
+    </div>
   </div>
+
+  <p class="reveal mt-6 text-center text-xs font-medium text-ink/50">
+    Designed to replace 5+ separate apps &mdash; connected into one automatic flow.
+  </p>
 </section>
 
 <style>
@@ -169,59 +159,44 @@ const allNodes = [...nodesLeft, ...nodesRight];
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  /* Node/hub fade-in — opacity only (no scale/transform) since these are
-     SVG <g> elements containing <foreignObject>; avoiding CSS transform
-     here sidesteps fill-box/transform-origin inconsistencies across
-     browsers for foreignObject bounding boxes. */
-  .flow-chip {
-    opacity: 0;
+  /* Continuous float — lifted from hero-preview.html, unchanged mechanism.
+     Staggered duration + delay per card so the three on each side don't
+     bob in sync. */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
   }
-  .flow-chip.is-visible {
-    opacity: 1;
-    transition: opacity 0.4s ease;
-  }
-
-  /* Connector-line draw-in — DESIGN_SYSTEM.md 7.5 approved technique:
-     plain SVG <path> with a pathLength-normalized dasharray/dashoffset
-     draw animation, reusing the existing IntersectionObserver pattern. */
-  .connector-line {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-  }
-  .connector-line.is-visible {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 0.7s ease-out;
-  }
+  .animate-float-1 { animation: float 3.5s ease-in-out infinite; }
+  .animate-float-2 { animation: float 4.2s ease-in-out infinite 0.5s; }
+  .animate-float-3 { animation: float 3.8s ease-in-out infinite 1s; }
 
   @media (prefers-reduced-motion: reduce) {
-    .reveal,
-    .flow-chip,
-    .connector-line {
+    .reveal {
       opacity: 1 !important;
       transform: none !important;
-      stroke-dashoffset: 0 !important;
       transition: none !important;
+    }
+    .animate-float-1,
+    .animate-float-2,
+    .animate-float-3 {
+      animation: none !important;
     }
   }
 </style>
 
 <script>
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const targets = document.querySelectorAll('.reveal, .flow-chip, .connector-line');
+  const targets = document.querySelectorAll('.reveal');
 
   if (prefersReducedMotion || !('IntersectionObserver' in window)) {
     targets.forEach((el) => el.classList.add('is-visible'));
   } else {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry, i) => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const el = entry.target;
-            let delay = 0;
-            if (el.classList.contains('connector-line')) delay = i * 50;
-            if (el.classList.contains('flow-chip')) delay = 300 + i * 60;
-            setTimeout(() => el.classList.add('is-visible'), delay);
-            observer.unobserve(el);
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
           }
         });
       },
