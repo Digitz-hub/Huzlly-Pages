@@ -54,8 +54,9 @@ import WaitlistSplitCard from '../components/sections/WaitlistSplitCard.astro';
       <circle cx="60" cy="480" r="4" fill="white" opacity="0.5" />
     </svg>
 
-    <!-- Card stage -->
-    <div class="relative flex w-full flex-1 items-center justify-center lg:overflow-hidden">
+    <!-- Card stage — no overflow-hidden here, so the card's drop-shadow can
+         spread/fade naturally instead of getting clipped at this wrapper's edge -->
+    <div class="relative flex w-full flex-1 items-center justify-center">
 
       <!-- Glassy outer glow ring — sits behind the card, bleeding a soft colored halo into the margin so the white card's edge reads crisp rather than blending into the gradient -->
       <div
