@@ -236,8 +236,11 @@ const { class: className } = Astro.props;
   // this scroll math from scratch. Scoped to this component's own root via
   // [data-dashboard-preview] so it never touches other reveal setups
   // elsewhere on the page (e.g. Hero.astro's own unrelated `.reveal`
-  // class).
+  // class). `completionFraction: 0.7` finishes each card's reveal once
+  // it's covered 70% of the bottom→center distance, instead of requiring
+  // it to reach viewport-center — so the cards settle into place earlier
+  // while scrolling.
   import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-  initScrollReveal('[data-dashboard-preview] .dp-reveal');
+  initScrollReveal('[data-dashboard-preview] .dp-reveal', { completionFraction: 0.7 });
 </script>
