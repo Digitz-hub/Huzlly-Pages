@@ -1,4 +1,5 @@
 @import './scroll-reveal.css';
+@import './float-animation.css';
 
 @tailwind base;
 @tailwind components;
