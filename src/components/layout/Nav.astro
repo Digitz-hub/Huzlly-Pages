@@ -3,83 +3,100 @@
 // Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
 //
 // PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
-// Design source: user-supplied reference screenshot of a floating, centered,
-// glassmorphic "pill" navbar (green-glow site, brand name "augment" in the
-// reference). DESIGN_SYSTEM.md v2 tokens (ink/paper/rail palette, rounded-xl
-// buttons, rounded-2xl cards) are NOT the source for this component's shape,
-// color, or radius — see the design note in the chat response for the exact
-// tokens used here. What stays fixed regardless of the override (per Section
-// 4.5's non-negotiable list): the blue-600 accent color, strict layout
-// ownership (this file still renders only a <header>, still consumed only by
-// Layout.astro), the ui/ Button primitive (used below for the CTA rather than
-// hand-rolled button markup, with a class override for the pill radius), full
-// nav content/routes, and all accessibility/focus-visible requirements.
+// Design source: user-supplied reference screenshot of a light "Monopol"
+// hero with a dark, near-black, floating, centered, rounded-full pill
+// navbar inset from the viewport edges. DESIGN_SYSTEM.md v2 tokens still
+// supply the actual color value used (`bg-ink` / `#14110F`, the one warm
+// near-black already defined in Section 1) but the SHAPE (floating pill,
+// inset margins, rounded-full) is driven by this inspiration screenshot,
+// not by any v2 shape token. What stays fixed regardless of the override
+// (per Section 4.5's non-negotiable list): the blue-600 accent color,
+// strict layout ownership (this file still renders only a <header>, still
+// consumed only by Layout.astro), the ui/ Button primitive (used below for
+// the CTA rather than hand-rolled button markup, with a class override for
+// the pill radius), full nav content/routes, and all accessibility/focus-
+// visible requirements.
 //
 // Structural changes from spec vs. the reference screenshot:
-// - No "Login" link — spec explicitly says CTA only, no extra login link.
-// - Four nav items (Features / Pricing / FAQ / About) instead of five, per
-//   Huzlly's actual page map — content always follows PAGE_MAP_AND_SEO.md,
-//   never the inspiration source, even when the inspiration has a different
-//   link count.
+// - No "Sign in" link — spec explicitly says CTA only, no extra login link
+//   (the reference has both Sign in + Join Beta; Huzlly's nav keeps just
+//   the single "Join Waitlist" CTA, matching this repo's existing content
+//   contract, not the reference's link count).
+// - Four nav items (Features / Pricing / FAQ / About) instead of the
+//   reference's five (Research / Features / Product / Community / Blog) —
+//   content always follows PAGE_MAP_AND_SEO.md, never the inspiration
+//   source, even when the inspiration has a different link count.
 // - No dropdowns, no hide-on-scroll — CTA and pill stay static/persistent.
 //
 // Note: a scroll/load/hover animation layer (spring reveal, frosted-glass
 // scroll state, sliding tab indicator, CTA hover-scale) was added and then
-// reverted at the user's request — this file is back to the plain static
-// glass pill with no JS-driven motion beyond the mobile menu toggle.
+// reverted at the user's request, prior to any of the shape passes below —
+// this file has never carried JS-driven motion beyond the mobile menu
+// toggle, and that remains true here.
 //
-// PILL → FULL-WIDTH BAR (this pass): per direct request, switched shape
-// from the floating, margin-inset, rounded-full "pill" to an edge-to-edge
-// bar spanning the full viewport width, fixed to the true top (no top/side
-// margin), with a bottom hairline border instead of an all-around pill
-// border. This is a shape/layout change only — the liquid-glass backdrop-
-// filter, dark-theme text/link colors, mobile menu behavior, and Button
-// CTA are all untouched. rounded-full → removed entirely (bar has square
-// corners); the pill's `border` (all sides) → `border-b` (bottom edge
-// only, since top/left/right sit flush against the viewport edge and a
-// border there would look like a stray line, not a bar edge); the pill's
-// own horizontal max-w-5xl constraint moved from the outer wrapper to an
-// inner content row so the glass/border still spans full width while the
-// logo/links/CTA stay centered and readable at wide viewports. Mobile
-// menu sheet's rounded-3xl floating-card look is kept as-is (a bar header
-// naturally opens into a plain dropdown sheet, not a second pill).
+// PILL → FULL-WIDTH BAR (earlier pass, now REVERTED by this pass): a prior
+// pass switched the shape from the floating, margin-inset, rounded-full
+// pill to an edge-to-edge bar spanning the full viewport width, flush to
+// the true top, with a bottom hairline border instead of an all-around
+// pill border. THIS PASS REVERSES THAT CHANGE per new inspiration (the
+// "Monopol" screenshot) explicitly calling for the floating pill shape
+// again — see "PILL SHAPE RESTORED" below for what changed back and why.
+// Keeping this note rather than deleting it per this repo's convention of
+// preserving pass history instead of erasing superseded decisions.
 //
-// LIQUID GLASS DISTORTION (earlier pass): per direct request for an Apple-
-// style "liquid glass" pill — not just blur, but a visible bend/refraction
-// of whatever scrolls behind it, like a real glass lens. This is a
-// browser-native effect achievable with an SVG filter (feTurbulence +
-// feDisplacementMap) referenced from `backdrop-filter`, not a Tailwind
-// utility — Tailwind's `backdrop-blur-*` alone (still kept, layered
-// underneath) only softens what's behind, it can't displace/bend pixels.
+// PILL SHAPE RESTORED (this pass): per the Monopol reference, `<header>`
+// is no longer `inset-x-0 top-0` flush-to-edge — it keeps `inset-x-0
+// top-0` for its own fixed positioning context, but now carries edge
+// padding (`px-4 pt-4 sm:px-6 sm:pt-6`) so the pill sits inset from the
+// viewport on all sides rather than touching them. A new inner wrapper
+// (`relative mx-auto max-w-5xl`) reinstates the horizontal centering/width
+// constraint and gives the mobile sheet a positioning parent that itself
+// respects the same inset margins (so the dropdown lines up under the
+// pill instead of spanning the true viewport edges again). The bar's
+// `border-b` (bottom-only) reverts to `border` (all four sides, standard
+// Tailwind, no arbitrary value) and `rounded-none` implicit square corners
+// revert to `rounded-full` on the bar itself; the mobile sheet keeps its
+// existing `rounded-3xl` floating-card treatment unchanged (it was already
+// a rounded card in both prior passes, so no shape edit needed there).
+// Vertical rhythm (`h-14 sm:h-16`), link/CTA/toggle markup, active/hover/
+// focus-visible states, and the mobile toggle script are byte-for-byte
+// unchanged from the full-width-bar pass — only positioning, radius, and
+// border-side utilities moved. `⚠️ Flag` — the fixed-header height/margin
+// budget consumed by this pill (`h-14`/`h-16` bar + `pt-4`/`pt-6` top
+// margin) is now taller than the previous flush bar's own `h-14`/`h-16`
+// with zero top offset; any sibling component that hard-codes top
+// clearance to the *old* flush-bar height (e.g. `Hero.astro`'s top
+// padding, `HeroScatterDecoration.astro`'s wrapper offset, if either
+// assumes a fixed `pt-14`/`pt-16` equal to the bar height alone) will need
+// a follow-up bump to account for the added `pt-4`/`pt-6` margin — not
+// edited here per this task's scope, flagging only.
 //
-// Structure:
-//   1. An inline, visually hidden `<svg>` right after the opening
-//      <header> tag defines `#liquid-glass-distortion`: feTurbulence
-//      generates a low-frequency fractal noise field, feDisplacementMap
-//      then uses that noise to push each backdrop pixel a few px off its
-//      real position — the "bend" the reference shows. Scoped to this
-//      file only (id is unique in the page), inert/no motion, adds no
-//      network request.
-//   2. The pill and the mobile sheet both get a `.liquid-glass` class
-//      (defined in the <style> block below) that layers
-//      `backdrop-filter: url(#liquid-glass-distortion) blur(...)` — the
-//      SVG reference runs first (bends the backdrop), the blur softens
-//      the now-bent result, matching how the reference's glass reads as
-//      both warped AND soft, not one or the other. `-webkit-backdrop-
-//      filter` mirrors it for Safari (the browser that shipped the
-//      original "liquid glass" look).
-//   3. Tailwind's `backdrop-blur-xl` utility classes were removed from
-//      the pill/sheet markup since the blur now lives inside this same
-//      backdrop-filter value (a second, separate backdrop-filter
-//      declaration would just overwrite the first rather than combine).
-//      Border, transparency, shadow, and every color from the previous
-//      dark-theme pass are untouched.
+// LIQUID GLASS DISTORTION — SIMPLIFIED (this pass): the SVG
+// feTurbulence/feDisplacementMap distortion filter from the full-width-bar
+// pass is dropped for this floating-pill shape. Reasoning: the Monopol
+// reference sits over a very light, pale-gradient hero background, and a
+// visible pixel-bend/refraction effect reads clearly against a dark or
+// busy backdrop (where the earlier passes' greener/darker reference lived)
+// but turns visually murky/noisy against a light one — the displacement
+// would smear the pale background's soft color transitions rather than
+// read as "glass." Replaced with a plain, standard Tailwind
+// `backdrop-blur-xl` plus a solid-ish `bg-ink/90` fill (the design
+// system's one warm near-black, matching the reference's near-opaque
+// dark-pill look) — no SVG filter, no `<style>` block, no vendor-prefixed
+// backdrop-filter needed anymore. This is a simplification, not a
+// polish loss: the reference's pill itself reads as solid/near-opaque
+// dark, not visibly warped, so plain blur + solid fill is the closer
+// match, not a compromise.
 //
-// Graceful degradation: SVG backdrop-filter references aren't supported
-// in every browser (older Firefox in particular). Where unsupported the
-// declaration is simply ignored by the browser, which leaves `bg-
-// transparent` with no blur/distortion at all — acceptable for a
-// decorative nav effect, no layout or content breaks either way.
+// Structure (current):
+//   1. `<header>` — fixed positioning context + edge-inset padding.
+//   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
+//      centering, and the positioning parent for the mobile sheet.
+//   3. The pill itself — `rounded-full`, `bg-ink/90`, `backdrop-blur-xl`,
+//      `border border-white/15`, containing brand / nav links / CTA /
+//      mobile toggle, structurally unchanged from prior passes.
+//   4. Mobile sheet — `rounded-3xl`, positioned `top-full` under the
+//      pill via the shared wrapper, unchanged content/behavior.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -99,21 +116,10 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
-  <!-- Liquid-glass distortion filter def — see file-header comment.
-       Visually hidden (0-size, absolute), referenced by the
-       `.liquid-glass` backdrop-filter below via its #id. -->
-  <svg class="absolute h-0 w-0 overflow-hidden" aria-hidden="true" focusable="false">
-    <filter id="liquid-glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise" />
-      <feGaussianBlur in="noise" stdDeviation="2" result="softNoise" />
-      <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="28" xChannelSelector="R" yChannelSelector="G" />
-    </filter>
-  </svg>
-
-  <!-- Full-width glass bar -->
-  <div class="liquid-glass border-b border-white/15 bg-white/[0.03] shadow-lg shadow-black/20">
-    <div class="relative mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:h-16 sm:px-6">
+<header class="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
+  <div class="relative mx-auto max-w-5xl">
+    <!-- Floating glass pill -->
+    <div class="flex h-14 items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 shadow-lg shadow-black/20 backdrop-blur-xl sm:h-16 sm:px-6">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -159,11 +165,11 @@ const isActive = (href: string) => {
       </button>
     </div>
 
-    <!-- Mobile Menu Sheet — glass dropdown below the bar -->
+    <!-- Mobile Menu Sheet — glass dropdown floating below the pill -->
     <div id="mobile-menu"
-      class="liquid-glass absolute inset-x-0 top-full hidden border-b border-white/15 bg-ink/60 p-3 shadow-lg shadow-black/20 md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-ink/90 p-3 shadow-lg shadow-black/20 backdrop-blur-xl md:hidden"
     >
-      <nav aria-label="Mobile primary" class="mx-auto flex max-w-5xl flex-col gap-1 px-4 sm:px-6">
+      <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
             class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
@@ -184,17 +190,6 @@ const isActive = (href: string) => {
     </div>
   </div>
 </header>
-
-<style>
-  /* Liquid-glass backdrop-filter — see the file-header "LIQUID GLASS
-     DISTORTION" comment for the full rationale. Applied via <style>
-     rather than a Tailwind arbitrary-value class since the value chains
-     an SVG url() reference with blur() and needs vendor prefixing. */
-  .liquid-glass {
-    backdrop-filter: url(#liquid-glass-distortion) blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-  }
-</style>
 
 <script>
   const toggleBtn = document.getElementById('nav-toggle');
