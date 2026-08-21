@@ -1,0 +1,51 @@
+/* src/styles/scroll-reveal.css
+ *
+ * Shared classes for the bottom-to-center scroll-scrub reveal animation —
+ * extracted from HeroDashboardPreview.astro so any component can reuse it.
+ * Pair with `initScrollReveal()` from `src/scripts/scroll-reveal.ts`, which
+ * writes the `--dp-progress` custom property these classes read.
+ *
+ * No CSS transition/duration values here on purpose: the scroll position
+ * itself IS the timeline (see scroll-reveal.ts), so a transition would
+ * fight the per-frame updates and introduce lag/rubber-banding.
+ *
+ * USAGE:
+ *   <div class="dp-reveal dp-reveal-left">...</div>
+ *   <script>
+ *     import { initScrollReveal } from '../../scripts/scroll-reveal';
+ *     initScrollReveal('[data-my-component] .dp-reveal');
+ *   </script>
+ *
+ * Base `.dp-reveal` only wires up opacity — always pair it with exactly
+ * one direction modifier below (or add a new modifier here following the
+ * same `calc((1 - var(--dp-progress)) * <offset>)` pattern).
+ */
+
+.dp-reveal {
+  --dp-progress: 0;
+  opacity: var(--dp-progress);
+  will-change: transform, opacity;
+}
+
+/* Slides in from the left as --dp-progress goes 0 -> 1. */
+.dp-reveal-left {
+  transform: translateX(calc((1 - var(--dp-progress)) * -48px));
+}
+
+/* Slides in from the right as --dp-progress goes 0 -> 1. */
+.dp-reveal-right {
+  transform: translateX(calc((1 - var(--dp-progress)) * 48px));
+}
+
+/* Rises up from below as --dp-progress goes 0 -> 1. Use this for elements
+   that span full-width / don't read well with a sideways slide. */
+.dp-reveal-up {
+  transform: translateY(calc((1 - var(--dp-progress)) * 32px));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
