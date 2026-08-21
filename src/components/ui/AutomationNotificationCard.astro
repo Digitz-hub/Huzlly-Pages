@@ -49,8 +49,8 @@ const {
 ---
 
 <div class:list={[
-    'automation-card w-72 sm:w-80 cursor-pointer select-none rounded-2xl border border-rail bg-paper p-4',
-    'shadow-[0_20px_40px_-12px_rgba(20,17,15,0.18),0_6px_14px_-4px_rgba(20,17,15,0.08)]',
+    'automation-card w-72 sm:w-80 cursor-pointer select-none rounded-2xl border border-ink/10 bg-paper p-4',
+    'shadow-[0_12px_24px_-10px_rgba(20,17,15,0.22),0_3px_8px_-2px_rgba(20,17,15,0.12)]',
     rotationClass,
     className,
   ]}
@@ -91,6 +91,22 @@ const {
 </div>
 
 <style>
+  /* SHARP-EDGE FIX (this pass): rotated elements (rotationClass above)
+     can render with soft/blurred edges in some browsers because the
+     rotated box no longer sits on the pixel grid. `backface-visibility:
+     hidden` + `will-change: transform` hints the browser to composite
+     this card on its own GPU layer, which keeps the rotated border/
+     shadow edges crisp. Deliberately NOT setting `transform` here
+     (e.g. translateZ(0)) since this component's `transform` is already
+     owned by the Tailwind `rotationClass` utility passed in via
+     class:list — adding a second `transform` declaration in this
+     scoped style block would override/conflict with that rotation
+     instead of complementing it. -->
+  .automation-card {
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
   .automation-card .detail-wrap {
     grid-template-rows: 0fr;
   }
