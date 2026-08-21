@@ -178,4 +178,15 @@ const { class: className } = Astro.props;
   <div class="glass-float-b-fast absolute w-28 h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
+
+  <!-- s6 — left-mid thin sliver, no tint. Added to balance the left side
+       (previously 2 shapes: s1, s3) against the right side's 3 (s2, s4,
+       s5) — mirrors s5's right-mid placement/size, flipped to the left
+       edge with rotation/skew signs reversed so it reads as a matching
+       counterpart rather than a duplicate. Reuses `glass-float-b` (the
+       base, non-fast timing) since s5 already claimed `-fast`, keeping
+       every shape's animation speed distinct. -->
+  <div class="glass-float-b absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+    <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
+  </div>
 </div>
