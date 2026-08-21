@@ -125,12 +125,19 @@ const { class: className } = Astro.props;
 //
 // Animation: kept, not simplified or dropped. The preview's three
 // float keyframes (subtle translate + a touch of added rotation at the
-// midpoint, looping) are reproduced as three named animations in the
-// <style> block below, same mechanism the previous starfield file used
-// for its twinkle keyframes. `prefers-reduced-motion: reduce` disables
-// all of them, matching that same file's pattern. Kept because the
-// motion is what sells "glass panels drifting," not just static
-// decoration — dropping it would lose the point of the preview.
+// midpoint, looping) are reproduced as three named animations, same
+// mechanism the previous starfield file used for its twinkle keyframes.
+// `prefers-reduced-motion: reduce` disables all of them, matching that
+// same file's pattern. Kept because the motion is what sells "glass
+// panels drifting," not just static decoration — dropping it would lose
+// the point of the preview.
+// EXTRACTED (later pass): these keyframes/classes (`glass-float-a/b/c`
+// and the `-reverse`/`-fast` variants) originally lived in this file's
+// own inline <style> block. They've since been moved to
+// `src/styles/float-animation.css` (imported globally via global.css) so
+// other components can reuse the same drift animation without
+// redefining it — this file's markup below is unchanged, it just now
+// sources those classes globally instead of locally.
 ---
 
 <div class:list={['pointer-events-none absolute -z-[5] top-24 sm:top-28 lg:top-32 inset-x-0 bottom-28 sm:bottom-40', className]}
@@ -164,39 +171,3 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 </div>
-
-<style>
-  /* Three float variants, matching the approved preview's float1/float2/
-     float3 keyframes (subtle drift + slight added rotation at the
-     midpoint). s4 reuses the float-a keyframe in reverse and s5 reuses
-     float-b at a faster duration, same reuse pattern the preview itself
-     used rather than authoring five one-off keyframes. */
-  @keyframes glass-float-a {
-    0%, 100% { transform: translate(0, 0) rotate(-18deg) skewY(-4deg); }
-    50% { transform: translate(10px, -16px) rotate(-14deg) skewY(-4deg); }
-  }
-  @keyframes glass-float-b {
-    0%, 100% { transform: translate(0, 0) rotate(22deg) skewX(-6deg); }
-    50% { transform: translate(-12px, 14px) rotate(26deg) skewX(-6deg); }
-  }
-  @keyframes glass-float-c {
-    0%, 100% { transform: translate(0, 0) rotate(35deg); }
-    50% { transform: translate(8px, -10px) rotate(30deg); }
-  }
-
-  .glass-float-a { animation: glass-float-a 9s ease-in-out infinite; }
-  .glass-float-b { animation: glass-float-b 11s ease-in-out infinite; }
-  .glass-float-c { animation: glass-float-c 8s ease-in-out infinite; }
-  .glass-float-a-reverse { animation: glass-float-a 10s ease-in-out infinite reverse; }
-  .glass-float-b-fast { animation: glass-float-b 7.5s ease-in-out infinite; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .glass-float-a,
-    .glass-float-b,
-    .glass-float-c,
-    .glass-float-a-reverse,
-    .glass-float-b-fast {
-      animation: none;
-    }
-  }
-</style>
