@@ -28,23 +28,42 @@
 // reverted at the user's request — this file is back to the plain static
 // glass pill with no JS-driven motion beyond the mobile menu toggle.
 //
-// HERO DARK-THEME COLOR FLIP (this pass): Hero.astro's background changed
-// from light bg-paper to a dark bg-ink + blue-600 radial glow in an
-// earlier pass, which broke this header's legibility — every color below
-// was still tuned for a light hero (text-ink, bg-blue-50 active state,
-// bg-white/85 mobile sheet, border-white/60). Against the now-dark hero,
-// dark ink text on a near-transparent glass pill was reading as
-// low-contrast/invisible. This pass keeps the glass MECHANISM exactly as-
-// is (bg-transparent, backdrop-blur-xl, hairline border, shadow — no
-// structural change) and flips only the color values: text-ink → text-
-// paper (and its /60, /70 opacity steps), the active-link bg-blue-50 →
-// bg-blue-500/15 (a translucent tint since a flat pale blue fill would
-// itself be illegible on dark glass), hover bg-black/[0.03] → bg-white/
-// [0.06], border-white/60 → border-white/15 (a light hairline visible
-// enough on dark to read as "glass edge" without turning opaque), and the
-// mobile sheet's bg-white/85 → bg-ink/80 (still translucent + blurred,
-// just dark-glass instead of light-glass, to match the pill above it).
-// Nothing about layout, structure, or the Button component changed.
+// LIQUID GLASS DISTORTION (this pass): per direct request for an Apple-
+// style "liquid glass" pill — not just blur, but a visible bend/refraction
+// of whatever scrolls behind it, like a real glass lens. This is a
+// browser-native effect achievable with an SVG filter (feTurbulence +
+// feDisplacementMap) referenced from `backdrop-filter`, not a Tailwind
+// utility — Tailwind's `backdrop-blur-*` alone (still kept, layered
+// underneath) only softens what's behind, it can't displace/bend pixels.
+//
+// Structure:
+//   1. An inline, visually hidden `<svg>` right after the opening
+//      <header> tag defines `#liquid-glass-distortion`: feTurbulence
+//      generates a low-frequency fractal noise field, feDisplacementMap
+//      then uses that noise to push each backdrop pixel a few px off its
+//      real position — the "bend" the reference shows. Scoped to this
+//      file only (id is unique in the page), inert/no motion, adds no
+//      network request.
+//   2. The pill and the mobile sheet both get a `.liquid-glass` class
+//      (defined in the <style> block below) that layers
+//      `backdrop-filter: url(#liquid-glass-distortion) blur(...)` — the
+//      SVG reference runs first (bends the backdrop), the blur softens
+//      the now-bent result, matching how the reference's glass reads as
+//      both warped AND soft, not one or the other. `-webkit-backdrop-
+//      filter` mirrors it for Safari (the browser that shipped the
+//      original "liquid glass" look).
+//   3. Tailwind's `backdrop-blur-xl` utility classes were removed from
+//      the pill/sheet markup since the blur now lives inside this same
+//      backdrop-filter value (a second, separate backdrop-filter
+//      declaration would just overwrite the first rather than combine).
+//      Border, transparency, shadow, and every color from the previous
+//      dark-theme pass are untouched.
+//
+// Graceful degradation: SVG backdrop-filter references aren't supported
+// in every browser (older Firefox in particular). Where unsupported the
+// declaration is simply ignored by the browser, which leaves `bg-
+// transparent` with no blur/distortion at all — acceptable for a
+// decorative nav effect, no layout or content breaks either way.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -65,9 +84,20 @@ const isActive = (href: string) => {
 ---
 
 <header class="fixed inset-x-0 top-4 z-50 px-4 sm:top-6 sm:px-6">
+  <!-- Liquid-glass distortion filter def — see file-header comment.
+       Visually hidden (0-size, absolute), referenced by the
+       `.liquid-glass` backdrop-filter below via its #id. -->
+  <svg class="absolute h-0 w-0 overflow-hidden" aria-hidden="true" focusable="false">
+    <filter id="liquid-glass-distortion" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="7" result="noise" />
+      <feGaussianBlur in="noise" stdDeviation="2" result="softNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="28" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
   <div class="relative mx-auto max-w-5xl">
     <!-- Floating glass pill bar -->
-    <div class="flex h-14 items-center justify-between rounded-full border border-white/15 bg-transparent pl-5 pr-2 shadow-lg shadow-black/20 backdrop-blur-xl sm:h-16 sm:pl-6 sm:pr-2.5">
+    <div class="liquid-glass flex h-14 items-center justify-between rounded-full border border-white/15 bg-white/[0.03] pl-5 pr-2 shadow-lg shadow-black/20 sm:h-16 sm:pl-6 sm:pr-2.5">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -115,7 +145,7 @@ const isActive = (href: string) => {
 
     <!-- Mobile Menu Sheet — floating glass card below the pill -->
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-ink/80 p-3 shadow-lg shadow-black/20 backdrop-blur-xl md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-ink/60 p-3 shadow-lg shadow-black/20 md:hidden liquid-glass"
     >
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
@@ -138,6 +168,17 @@ const isActive = (href: string) => {
     </div>
   </div>
 </header>
+
+<style>
+  /* Liquid-glass backdrop-filter — see the file-header "LIQUID GLASS
+     DISTORTION" comment for the full rationale. Applied via <style>
+     rather than a Tailwind arbitrary-value class since the value chains
+     an SVG url() reference with blur() and needs vendor prefixing. */
+  .liquid-glass {
+    backdrop-filter: url(#liquid-glass-distortion) blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+</style>
 
 <script>
   const toggleBtn = document.getElementById('nav-toggle');
