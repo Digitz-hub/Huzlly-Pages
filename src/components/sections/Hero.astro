@@ -14,16 +14,30 @@
 // untouched on disk — just no longer imported or used here. No nav —
 // Nav.astro handles that separately, this is the hero section only.
 //
-// BACKGROUND (carried forward from v8, unchanged this pass): light
-// iridescent gradient, sourced from the same approved
-// `hero-scatter-preview.html` light-stage background that
-// HeroScatterDecoration itself targets — confirmed matching, not drifted.
-// ⚠️ Flag (carried forward, still open): the gradient's four hex stops
-// (#EAF0FB/#F3EDF9/#FDEEF2/#EEF6F5) don't exist as DESIGN_SYSTEM.md
-// tokens and aren't registered in `tailwind.config.mjs`. Confirm whether
-// these should be formally registered (e.g. `hero-wash-*`) given they
-// recur across this component and HeroScatterDecoration's own design
-// note, rather than living only as an arbitrary value here.
+// BACKGROUND (updated this pass): the previous v8 gradient was a
+// four-stop, multi-hue "iridescent" wash (pale blue → lavender → pink →
+// teal). Per direct request to match a new reference screenshot (a
+// simple, diagonal white-to-periwinkle-blue wash, no pink/purple/teal),
+// this pass swaps in a three-stop, blue-only gradient:
+// `linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)` — near-
+// white at the top-left corner, through a very pale blue, deepening to a
+// soft periwinkle blue at the bottom-right, matching the reference's
+// tonal range and diagonal direction.
+// ⚠️ Flag (carried forward, still open, now with new hex values): these
+// three stops (#FFFFFF/#EEF3FC/#D3E0F9) still don't exist as
+// DESIGN_SYSTEM.md tokens or in `tailwind.config.mjs`, same as the
+// gradient they replace — confirm whether to formally register these
+// (e.g. `hero-wash-*`) rather than leaving them as an arbitrary
+// `bg-[linear-gradient(...)]` value.
+// ⚠️ Flag (new): `HeroScatterDecoration.astro`'s own background note
+// previously said its glass-shape decoration was "confirmed matching"
+// this section's old iridescent gradient. That file is untouched by this
+// pass — its internal background/glass-tint values still assume the OLD
+// pink/purple/teal wash and were not re-checked against this new
+// blue-only one. Not edited here per this task's scope (background-color
+// change only was requested), but flagging that `HeroScatterDecoration`
+// may now visually mismatch this section's background and could need a
+// follow-up tint adjustment.
 //
 // SCATTER DECORATION (carried forward from v8, unchanged this pass): the
 // glass-shape HeroScatterDecoration renders as a background layer, hidden
@@ -106,7 +120,7 @@ import HeroDashboardPreview from '../ui/HeroDashboardPreview.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#EAF0FB_0%,#F3EDF9_35%,#FDEEF2_65%,#EEF6F5_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
+<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
   <!-- Grain/noise texture overlay — see "GRAIN" note above. Purely
        decorative, inert SVG data-URI, no network request. -z-[9] must
        stay more negative than HeroScatterDecoration's own -z-[5] for
