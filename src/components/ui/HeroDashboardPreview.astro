@@ -26,6 +26,26 @@
 // so the 3x3 grid is fully and intentionally occupied with no dead cell
 // and no invented replacement content.
 //
+// GRID GEOMETRY FIX (bento rebalance — "Lower cost" card): the original
+// `lg:row-span-2` on card 4 relied on the browser's sparse auto-placement
+// dropping it into the middle column at row 2 (col 1 was pinned by card 1's
+// own row-span-2), which left column 3 empty for two full rows — a tall,
+// narrow numeral card floating next to dead space. Fix: card 4 drops
+// `lg:row-span-2` and takes `lg:col-span-2` instead (still a plain
+// standard-scale utility, no arbitrary value). With card 1 occupying
+// column 1 across rows 1–2, sparse auto-placement now naturally slots
+// cards 2 and 3 into columns 2–3 of row 1, and card 4's 2-column span is
+// the *only* opening left in row 2 (columns 2–3) — so it lands there
+// automatically with zero explicit `grid-column`/`grid-row` coordinates
+// needed. Net result: card 4 is now short and wide instead of tall and
+// narrow, every cell in the 3x3 area is filled, and no other card's span
+// had to change — cards 1, 2, 3, and 5 keep their original classes
+// untouched; only card 4's span utilities changed. Confirmed this still
+// degrades cleanly below `lg`: `lg:row-span-2` and `lg:col-span-2` are both
+// breakpoint-gated, so below `lg` every card reverts to the implicit
+// `col-span-1 row-span-1` on the single-column grid and stacks in DOM
+// order (1 → 2 → 3 → 4 → 5) exactly as before.
+//
 // ⚠️ Flag — gradient icon badges: the preview's pipeline/portal icon
 // badges use CSS gradients (`linear-gradient(135deg,#2f6bff,#5a8bff)` and
 // an ink gradient). DESIGN_SYSTEM.md Section 1 reserves gradients for the
@@ -180,8 +200,8 @@ const { class: className } = Astro.props;
     <p class="mt-3 text-sm leading-relaxed text-ink/50">Automatic task-to-project time rollups, built to save your team hours every week.</p>
   </div>
 
-  <!-- Card 4: Lower cost / pricing (tall, right column, spans both top rows) -->
-  <div class="relative flex flex-col overflow-hidden rounded-2xl border border-rail bg-white p-6 shadow-sm lg:row-span-2">
+  <!-- Card 4: Lower cost / pricing (short, wide — spans both middle/right columns, row 2 only) -->
+  <div class="relative flex flex-col overflow-hidden rounded-2xl border border-rail bg-white p-6 shadow-sm lg:col-span-2">
     <div class="pointer-events-none absolute -right-2 -top-2 h-24 w-24 opacity-40 [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)] [background-size:12px_12px] [mask-image:linear-gradient(225deg,black_10%,transparent_65%)]" aria-hidden="true"></div>
     <div class="flex flex-wrap items-baseline gap-3">
       <span class="font-display text-6xl font-semibold text-amber-500">50–70%</span>
