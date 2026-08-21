@@ -1,62 +1,78 @@
 ---
 // src/components/sections/Hero.astro
-// Homepage hero — v7, page-specific inspiration override (CLAUDE.md
-// Section 4.5) modeled on a user-supplied reference (Cap.so-style hero):
-// soft cloud-blur glow behind centered content, a small pill badge with
-// an inline accent link + chevron, a tiny eyebrow line above the
-// headline, bold black two-line headline, gray subtext, two CTAs
-// (light/outline first, blue-600 filled second), a small note line,
-// and a bottom underlined secondary link. No nav — Nav.astro handles
-// that separately, this is the hero section only.
+// Homepage hero — v8, page-specific inspiration override (CLAUDE.md
+// Section 4.5), still modeled on the same underlying reference layout as
+// v7 (Cap.so-style hero: pill badge with inline accent link + chevron,
+// eyebrow line, two-line headline, subtext, two CTAs, note line, bottom
+// underlined link) — this pass swaps only the background/palette
+// direction and re-adds the scatter decoration layer. No nav — Nav.astro
+// handles that separately, this is the hero section only.
 //
-// Palette: DARK override for this section only (rest of site stays on
-// DESIGN_SYSTEM.md's default light ink/paper tokens) — accent blue-600
-// fixed as always, but base/text roles flip since the section background
-// is now dark ink instead of paper.
+// PALETTE SWAP (this pass): v7 was a DARK override (bg-ink + a bold blue
+// radial wash, text flipped to paper/white). Per the redesign plan, this
+// section now uses the LIGHT iridescent gradient approved alongside the
+// new HeroScatterDecoration glass-shape component (same source: the
+// approved `hero-scatter-preview.html`'s light-stage background) instead
+// of reverting all the way to a flat `bg-paper`. This is still a 4.5
+// page-specific override, not the DESIGN_SYSTEM.md v2 default — see the
+// design note in the chat response for the exact tokens, per 4.5's
+// required-output rule.
 //
-// Decorative pattern note: previous pass here was a subtle top-emanating
-// radial glow (`ellipse 75% 55% at 50% -5%, blue-600/35%, transparent
-// 70%`) — direct feedback was that it read as a faint "touch" of color
-// rather than the bold, saturated wash filling most of the hero card in
-// the Astra reference screenshot. This pass keeps the same top-emanating
-// mechanic (ellipse centered above the section's top edge, light falling
-// downward) but goes much bolder to match the reference:
-//   - Ellipse widened to 100% 100% (was 75% 55%) so it's large enough to
-//     wash over most of the hero's height/width, not just a patch behind
-//     the headline.
-//   - THREE color stops instead of two, so the falloff has visible body
-//     instead of one flat tone fading straight to nothing: blue-600/70%
-//     at the source (0%) → blue-900/40% still-saturated midtone (45%) →
-//     bg-ink (75%) so it resolves cleanly into the section's own base
-//     color at the edges instead of an abrupt hard stop.
-//   - Grain overlay opacity bumped 0.05 → 0.08 to hold up against the
-//     now much brighter/larger colored area (reference has visible grain
-//     across its whole gradient, not just in dark corners).
+// ⚠️ Flag (per CLAUDE.md Section 3 "stop and flag" rule, surfaced anyway
+// even though 4.5 doesn't require flagging inspiration-driven color
+// choices): the gradient below uses four new hex stops
+// (#EAF0FB/#F3EDF9/#FDEEF2/#EEF6F5) that don't exist as DESIGN_SYSTEM.md
+// tokens and aren't registered in `tailwind.config.mjs`. This mirrors
+// what the v7 dark radial gradient already did with `theme()`-refs, but
+// v7's stops all resolved to existing tokens (blue-600/900, ink); these
+// four are brand-new raw hex. Confirm before shipping whether these
+// should be formally registered as tokens (e.g. in `tailwind.config.mjs`
+// under a `hero-wash-*` key) given they'll likely recur if this
+// direction sticks, rather than living only as an arbitrary value here.
 //
-// TEXT/SURFACE COLOR FLIP (this pass, required by the dark background):
-// every ink/paper role in this section's markup was flipped so content
-// stays legible against bg-ink: badge/CTA surfaces bg-paper → bg-white/5
-// (translucent, not opaque paper) with border-rail → border-white/10;
-// text-ink (headline) → text-paper; text-ink/70, /60, /50, /40 (subtext,
-// eyebrow, note line, "see what's inside" link) → equivalent text-paper/NN
-// opacities; the outline CTA's hover/focus-outline ink refs → paper
-// equivalents. blue-600 (badge accent, filled CTA) and the floating
-// cards' own internal styling are untouched — they already had sufficient
-// contrast on both light and dark surfaces.
+// TEXT/SURFACE COLOR FLIP (this pass, required by the light background):
+// every paper/white-on-dark role from v7 flips back to ink-on-light:
+// badge/CTA surfaces bg-white/5 + border-white/10 → bg-white/bg-paper +
+// border-rail (opaque again, not translucent — translucency existed only
+// to stay legible over the dark wash); text-paper (headline) → text-ink;
+// text-paper/70,/60,/50,/40 (badge text, subtext, eyebrow, note line,
+// "see what's inside" link) → the nearest DESIGN_SYSTEM.md-named ink
+// opacity role (ink/70 or ink/50 — DESIGN_SYSTEM.md Section 1 only names
+// those two secondary/tertiary steps, so /60 and /40 were mapped to
+// their nearest named neighbor rather than kept as freehand ink/60,
+// ink/40). The badge's "50 spots left" span and its chevron icon were
+// also fixed from `text-blue-400` to the fixed accent `blue-600` — 400
+// was only ever a dark-background contrast tweak and isn't one of
+// DESIGN_SYSTEM.md's approved blue shades (600/700/50). blue-600 (filled
+// CTA) and the floating cards' own internal styling are untouched — both
+// already had sufficient contrast on light backgrounds.
 //
-// Floating automation cards + scatter decoration (added this pass):
-// four AutomationNotificationCard instances scattered at the hero's
-// corners, one per step of the Proposal → Contract → Invoice → Project
-// flow (SITE_IDENTITY_AND_AEO.md Section 3), plus a HeroScatterDecoration
-// layer (dots + doodle arrows) tying the cards together visually. Both
-// components are pre-built/finalized — this file only imports, positions,
-// and feeds them data; no markup inside either component was touched.
+// GRAIN RETUNED (this pass): opacity brought back down from 0.08 to 0.05
+// (see the v7 comment on why it was bumped up — that reasoning was
+// specific to holding up against a large, bold dark wash, which no
+// longer applies over the softer light gradient). Still `mix-blend-mode:
+// overlay`, same "felt, not seen" goal, just tuned down since the same
+// noise density reads more visibly against pale colors than against
+// near-black. Minor tuning call, not a design-system deviation.
+//
+// Floating automation cards + scatter decoration: four
+// AutomationNotificationCard instances scattered at the hero's corners,
+// one per step of the Proposal → Contract → Invoice → Project flow
+// (SITE_IDENTITY_AND_AEO.md Section 3) — untouched this pass. The
+// HeroScatterDecoration layer (glass-shape scatter, not dots — see that
+// component's own header comment for its v-next rebuild) is RE-ADDED
+// this pass; a prior pass had removed it entirely per direct request
+// ("stars/dots layer no longer wanted"). It's a different visual (glass
+// panels, not stars) built specifically for this light background, so
+// re-adding it here isn't reintroducing what was removed — flagging
+// that distinction in case the removal request was meant to stick
+// regardless of the decoration's contents; confirm if unsure.
 //
 // Stacking order (back to front): gradient backdrop (painted directly on
-// the <section>'s own background, no z-index needed) → HeroScatterDecoration
-// (-z-[5], baked into that component) → centered headline/subtext/CTA
-// content (default stacking) → floating cards (z-10, explicit, so they
-// sit above everything else in the hero).
+// the <section>'s own background, no z-index needed) → grain (-z-[9]) →
+// HeroScatterDecoration (-z-[5], baked into that component) → centered
+// headline/subtext/CTA content (default stacking) → floating cards
+// (z-10, explicit, so they sit above everything else in the hero).
 // Cards + decoration are both hidden below `lg` — at narrower widths
 // there isn't room around the centered content for four 288–320px cards
 // without crowding the headline/CTAs, which the existing hero reserves
@@ -133,10 +149,11 @@
 
 import { ChevronRight, Check, FileText, DollarSign, FolderOpen } from 'lucide-astro';
 import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
+import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_90%_85%_at_50%_0%,theme(colors.blue.600/65%),theme(colors.blue.900/35%)_40%,theme(colors.ink)_68%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
-  <!-- Grain/noise texture overlay — see "Decorative pattern note" above.
+<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#EAF0FB_0%,#F3EDF9_35%,#FDEEF2_65%,#EEF6F5_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
+  <!-- Grain/noise texture overlay — see "GRAIN RETUNED" note above.
        Purely decorative, inert SVG data-URI, no network request. Sits
        between the section's own gradient background and
        HeroScatterDecoration (-z-[5]) per the stacking order comment
@@ -144,42 +161,43 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
        for correct paint order inside this section's `isolate` context. -->
   <div class="hero-grain pointer-events-none absolute inset-0 -z-[9]" aria-hidden="true"></div>
 
-  <!-- HeroScatterDecoration removed per direct request (stars/dots
-       layer no longer wanted in the hero). -->
+  <!-- Glass-shape scatter decoration — see "Floating automation cards +
+       scatter decoration" note above for why this was re-added and how
+       it differs from the dots/stars layer that was previously removed.
+       Hidden below `lg`, matching the floating cards below, so it never
+       competes with the centered content on narrower viewports. -->
+  <HeroScatterDecoration class="hidden lg:block" />
 
   <div class="relative mx-auto max-w-2xl text-center">
-    <a
-      href="/waitlist"
-      class="reveal inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5
-             text-sm text-paper/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-white/20"
+    <a href="/waitlist"
+      class="reveal inline-flex items-center gap-1.5 rounded-full border border-rail bg-white px-4 py-1.5
+             text-sm text-ink/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-ink/20"
     >
-      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-400">50 spots left</span>
-      <ChevronRight class="w-3.5 h-3.5 text-blue-400" stroke-width="2" />
+      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-600">50 spots left</span>
+      <ChevronRight class="w-3.5 h-3.5 text-blue-600" stroke-width="2" />
     </a>
 
-    <p class="reveal mt-6 text-sm text-paper/50">Propose. Sign. Get paid.</p>
+    <p class="reveal mt-6 text-sm text-ink/50">Propose. Sign. Get paid.</p>
 
-    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-paper leading-[1.1]">
+    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
       One flow. Not five apps.
     </h1>
 
-    <p class="reveal mt-6 text-base sm:text-lg text-paper/60 leading-relaxed max-w-xl mx-auto">
+    <p class="reveal mt-6 text-base sm:text-lg text-ink/70 leading-relaxed max-w-xl mx-auto">
       Huzlly is the lean alternative to a pile of freelance tools. Proposals, contracts, invoices,
       and projects &mdash; connected in one automatic flow, built for solo freelancers.
     </p>
 
     <div class="reveal mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <a
-        href="#how-it-works"
-        class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5
-               text-sm font-semibold text-paper shadow-sm transition-colors duration-200 ease-in-out
-               hover:bg-white/10 hover:border-white/30
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
+      <a href="#how-it-works"
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-rail bg-paper px-5 py-2.5
+               text-sm font-semibold text-ink shadow-sm transition-colors duration-200 ease-in-out
+               hover:bg-rail/20 hover:border-ink/30
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
       >
         See how it works
       </a>
-      <a
-        href="/waitlist"
+      <a href="/waitlist"
         class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5
                text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-in-out
                hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-md
@@ -189,9 +207,9 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
       </a>
     </div>
 
-    <p class="reveal mt-4 text-xs text-paper/40">Free to join. No credit card required.</p>
+    <p class="reveal mt-4 text-xs text-ink/50">Free to join. No credit card required.</p>
 
-    <a href="/features" class="reveal mt-8 inline-block text-xs text-paper/50 underline underline-offset-4 hover:text-paper/70">
+    <a href="/features" class="reveal mt-8 inline-block text-xs text-ink/50 underline underline-offset-4 hover:text-ink/70">
       See what's inside
     </a>
   </div>
@@ -340,14 +358,15 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 <style>
   /* Grain/noise texture overlay — inline SVG feTurbulence data-URI,
      tiled at 120x120px. opacity 0.05 + mix-blend-mode: overlay keeps it
-     at a "felt, not seen" level (matches the reference screenshot's
-     glass/premium texture) rather than visible static. Purely
-     decorative — see the file-header "Decorative pattern note" and the
-     inline comment on the .hero-grain div above for context. */
+     at a "felt, not seen" level rather than visible static. Purely
+     decorative — see the file-header "GRAIN RETUNED" note and the
+     inline comment on the .hero-grain div above for context (0.08 was a
+     v7-only bump for the bold dark wash; reverted to 0.05 for this
+     pass's softer light gradient). */
   .hero-grain {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-repeat: repeat;
-    opacity: 0.08;
+    opacity: 0.05;
     mix-blend-mode: overlay;
   }
 
