@@ -98,6 +98,14 @@ export function initScrollReveal(
     const viewportHeight = window.innerHeight;
     const viewportCenter = viewportHeight / 2;
 
+    // At literal page-top (scrollY 0), force every element's progress to
+    // 0 — full hidden, no partial fade — even if an element is already
+    // partway into the viewport at that scroll position (e.g. a tall
+    // hero where the dashboard preview peeks in at the bottom edge on
+    // first load). Anything above 0 hands off to the normal bottom→
+    // center formula as usual.
+    const atPageTop = window.scrollY <= 0;
+
     elements.forEach((el) => {
       const rect = el.getBoundingClientRect();
       const elCenter = rect.top + rect.height / 2;
@@ -108,11 +116,13 @@ export function initScrollReveal(
       // denominator so progress hits 1 before elCenter actually reaches
       // viewport-center, if set below 1 (default 1 = original behavior,
       // full journey required).
-      const progress = clamp(
-        (viewportHeight - elCenter) / ((viewportHeight - viewportCenter) * completionFraction),
-        0,
-        1
-      );
+      const progress = atPageTop
+        ? 0
+        : clamp(
+            (viewportHeight - elCenter) / ((viewportHeight - viewportCenter) * completionFraction),
+            0,
+            1
+          );
 
       (el as HTMLElement).style.setProperty(property, progress.toFixed(3));
     });
