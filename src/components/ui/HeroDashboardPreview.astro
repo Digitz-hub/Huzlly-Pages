@@ -225,104 +225,19 @@ const { class: className } = Astro.props;
 
 </div>
 
-<style>
-  /* Scroll-driven entrance animation for the bento cards — self-contained
-     to this component, deliberately separate from Hero.astro's own
-     `.reveal` (binary, unobserve-after-trigger) class so the two don't
-     collide if this component is ever placed inside another
-     `.reveal`-using section.
-
-     Pure function of scroll position, no stored state (see the script
-     below):
-       1. Bottom → center scrub — as a card's center travels from the
-          BOTTOM edge of the viewport up to viewport-center, its
-          `--dp-progress` custom property interpolates 0 → 1 live.
-       2. Exact reverse — scrolling back up so the card moves from center
-          back toward the bottom interpolates `--dp-progress` 1 → 0 in
-          exact reverse, frame for frame.
-       3. Above-center clamp — once the card's center is at or above
-          viewport-center (including fully above/past the top of the
-          viewport), `--dp-progress` is clamped at 1, so it never
-          hides/exit-animates at the top.
-     No CSS transition/duration values here on purpose: the scroll
-     position itself IS the timeline, so a transition would fight the
-     per-frame updates and introduce lag/rubber-banding.
-
-     Card 1 + Card 3 slide in from the left, Card 2 + Card 4 from the
-     right, Card 5 (full-width bottom row) rises from below instead of
-     sideways since a left/right slide reads oddly on a card spanning the
-     entire grid width. */
-  .dp-reveal {
-    --dp-progress: 0;
-    opacity: var(--dp-progress);
-    will-change: transform, opacity;
-  }
-  .dp-reveal-left {
-    transform: translateX(calc((1 - var(--dp-progress)) * -48px));
-  }
-  .dp-reveal-right {
-    transform: translateX(calc((1 - var(--dp-progress)) * 48px));
-  }
-  .dp-reveal-up {
-    transform: translateY(calc((1 - var(--dp-progress)) * 32px));
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .dp-reveal {
-      opacity: 1 !important;
-      transform: none !important;
-    }
-  }
-</style>
-
 <script>
-  // Scoped to this component's own root via [data-dashboard-preview] so it
-  // never touches other `.reveal`/observer setups elsewhere on the page
-  // (e.g. Hero.astro's). Pure function of current scroll position each
-  // frame — no stored/sticky state: bottom→center scrubs 0→1 live,
-  // reverses 1→0 in exact reverse when scrolling back down, and clamps at
-  // 1 once the card's center is at or above viewport-center so it never
-  // hides again just for being above the fold.
-  document.querySelectorAll('[data-dashboard-preview]').forEach((root) => {
-    const cards = Array.from(root.querySelectorAll('.dp-reveal'));
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Scroll-driven entrance animation for the bento cards above — the
+  // `.dp-reveal` / `.dp-reveal-left` / `.dp-reveal-right` / `.dp-reveal-up`
+  // classes are defined globally in `src/styles/scroll-reveal.css`
+  // (imported via global.css), and the actual scroll-scrub math now lives
+  // in `src/scripts/scroll-reveal.ts` — extracted there so any other
+  // component can reuse the exact same bottom→center scrub-with-clamp
+  // behavior via `initScrollReveal(selector)` instead of re-implementing
+  // this scroll math from scratch. Scoped to this component's own root via
+  // [data-dashboard-preview] so it never touches other reveal setups
+  // elsewhere on the page (e.g. Hero.astro's own unrelated `.reveal`
+  // class).
+  import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-    if (prefersReducedMotion || cards.length === 0) {
-      cards.forEach((el) => (el as HTMLElement).style.setProperty('--dp-progress', '1'));
-      return;
-    }
-
-    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-
-    let ticking = false;
-
-    const update = () => {
-      const viewportHeight = window.innerHeight;
-      const viewportCenter = viewportHeight / 2;
-
-      cards.forEach((el) => {
-        const rect = el.getBoundingClientRect();
-        const cardCenter = rect.top + rect.height / 2;
-
-        // Bottom se Center tk live 0 -> 1 aur Center se Bottom tk live 1 -> 0
-        // Center se Upar aane par clamp hokar 1 pe lock rahega
-        const progress = clamp((viewportHeight - cardCenter) / (viewportHeight - viewportCenter), 0, 1);
-
-        (el as HTMLElement).style.setProperty('--dp-progress', progress.toFixed(3));
-      });
-
-      ticking = false;
-    };
-
-    const onScrollOrResize = () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    };
-
-    update();
-    window.addEventListener('scroll', onScrollOrResize, { passive: true });
-    window.addEventListener('resize', onScrollOrResize);
-  });
+  initScrollReveal('[data-dashboard-preview] .dp-reveal');
 </script>
