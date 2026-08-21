@@ -88,6 +88,17 @@
 // dark, not visibly warped, so plain blur + solid fill is the closer
 // match, not a compromise.
 //
+// SLIM + BLUE CTA (this pass): quick follow-up per direct request — pill
+// height `h-14 sm:h-16` → `h-12 sm:h-14` (both standard Tailwind scale
+// steps, no arbitrary value) for a slimmer bar; the "Join Waitlist" CTA
+// (desktop and mobile) overrides `Button.astro`'s default `bg-ink` fill
+// with `!bg-blue-600 hover:!bg-blue-700` (blue-600 is the fixed accent
+// color per Section 4.5/DESIGN_SYSTEM.md Section 1, so this isn't a new
+// color — same `!important`-override convention already used for
+// `!rounded-full !shadow-none`). Text stays whatever `Button.astro`'s
+// default text color is; not touched since spec only said "blue-fill the
+// button."
+//
 // Structure (current):
 //   1. `<header>` — fixed positioning context + edge-inset padding.
 //   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
@@ -119,7 +130,7 @@ const isActive = (href: string) => {
 <header class="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
   <div class="relative mx-auto max-w-5xl">
     <!-- Floating glass pill -->
-    <div class="flex h-14 items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 shadow-lg shadow-black/20 backdrop-blur-xl sm:h-16 sm:px-6">
+    <div class="flex h-12 items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 shadow-lg shadow-black/20 backdrop-blur-xl sm:h-14 sm:px-6">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -146,7 +157,7 @@ const isActive = (href: string) => {
 
       <!-- Right: Desktop CTA -->
       <div class="hidden md:flex md:items-center">
-        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none">
+        <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 !shadow-none hover:!bg-blue-700">
           Join Waitlist
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
@@ -182,7 +193,7 @@ const isActive = (href: string) => {
             {link.label}
           </a>
         ))}
-        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none mt-1.5 w-full">
+        <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 !shadow-none hover:!bg-blue-700 mt-1.5 w-full">
           Join Waitlist
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
