@@ -9,28 +9,33 @@
 // and a bottom underlined secondary link. No nav — Nav.astro handles
 // that separately, this is the hero section only.
 //
-// Palette: stays on DESIGN_SYSTEM.md's default light ink/paper tokens
-// (unlike the v6 dark override) — accent blue-600 fixed as always.
+// Palette: DARK override for this section only (rest of site stays on
+// DESIGN_SYSTEM.md's default light ink/paper tokens) — accent blue-600
+// fixed as always, but base/text roles flip since the section background
+// is now dark ink instead of paper.
 //
-// Decorative pattern note: previously a soft organic cloud-blur (layered
-// CSS radial-gradient blur circles in an absolutely-positioned -z-10
-// div), per the DESIGN_SYSTEM.md Section 7.5 "Abstract Blend Waves"
-// entry (page-specific override via CLAUDE.md 4.5, not a sitewide
-// default). Replaced this pass with a flat 2-color linear gradient
-// applied straight to the <section>'s own background (see color choice
-// note below) — no separate decorative div, no blur, no image asset.
+// Decorative pattern note: previously a flat 2-color diagonal linear
+// gradient (blue-600 → amber-500, both /10, over bg-paper). Replaced this
+// pass with a dark radial glow per direct request: bg-ink base with a
+// single amber-500 radial glow centered behind the headline/subtext
+// column (not in a corner) — `radial-gradient(ellipse ... at 50% 35%,
+// amber-500/20%, transparent)`, painted straight on the <section>'s own
+// background via an arbitrary-value bg-[...] utility. No separate
+// decorative div, no blur, no image asset. 50% 35% (not 50% 50%) sits the
+// glow's center slightly above true vertical center so it lands behind
+// the eyebrow/headline/subtext text block rather than behind the CTA row
+// below it.
 //
-// GRADIENT COLOR CHOICE (this pass): blue-600 → amber-500, diagonal
-// (bg-gradient-to-br), both at low opacity (/10) layered over the base
-// bg-paper color so body text and the pill/CTA elements stay legible.
-// Blue and amber/orange are the palette's complementary pair (opposite
-// warmth, opposite ends of the wheel) — teal-600 sits too close to
-// blue-600 on the wheel to read as a second, contrasting anchor. Ink and
-// paper are neutrals, not gradient-color candidates. All three
-// accent/signal tokens (blue-600, teal-600, amber-500) still appear
-// elsewhere in this hero (badge/CTA, card icon backgrounds), so
-// blue-600/amber-500 in the backdrop reads as reinforcing the existing
-// palette, not introducing new colors.
+// TEXT/SURFACE COLOR FLIP (this pass, required by the dark background):
+// every ink/paper role in this section's markup was flipped so content
+// stays legible against bg-ink: badge/CTA surfaces bg-paper → bg-white/5
+// (translucent, not opaque paper) with border-rail → border-white/10;
+// text-ink (headline) → text-paper; text-ink/70, /60, /50, /40 (subtext,
+// eyebrow, note line, "see what's inside" link) → equivalent text-paper/NN
+// opacities; the outline CTA's hover/focus-outline ink refs → paper
+// equivalents. blue-600 (badge accent, filled CTA) and the floating
+// cards' own internal styling are untouched — they already had sufficient
+// contrast on both light and dark surfaces.
 //
 // Floating automation cards + scatter decoration (added this pass):
 // four AutomationNotificationCard instances scattered at the hero's
@@ -105,7 +110,7 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-paper bg-gradient-to-br from-blue-600/10 to-amber-500/10 px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
+<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_60%_50%_at_50%_35%,theme(colors.amber.500/20%),transparent)] px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
   <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
        floating cards below. Sits above the cloud-blur backdrop (-z-10)
        and below the centered content, per its own -z-[5]. Hidden below
@@ -115,20 +120,20 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
   <div class="relative mx-auto max-w-2xl text-center">
     <a
       href="/waitlist"
-      class="reveal inline-flex items-center gap-1.5 rounded-full border border-rail bg-paper px-4 py-1.5
-             text-sm text-ink/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-ink/20"
+      class="reveal inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5
+             text-sm text-paper/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-white/20"
     >
-      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-600">50 spots left</span>
-      <ChevronRight class="w-3.5 h-3.5 text-blue-600" stroke-width="2" />
+      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-400">50 spots left</span>
+      <ChevronRight class="w-3.5 h-3.5 text-blue-400" stroke-width="2" />
     </a>
 
-    <p class="reveal mt-6 text-sm text-ink/50">Propose. Sign. Get paid.</p>
+    <p class="reveal mt-6 text-sm text-paper/50">Propose. Sign. Get paid.</p>
 
-    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
+    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-paper leading-[1.1]">
       One flow. Not five apps.
     </h1>
 
-    <p class="reveal mt-6 text-base sm:text-lg text-ink/60 leading-relaxed max-w-xl mx-auto">
+    <p class="reveal mt-6 text-base sm:text-lg text-paper/60 leading-relaxed max-w-xl mx-auto">
       Huzlly is the lean alternative to a pile of freelance tools. Proposals, contracts, invoices,
       and projects &mdash; connected in one automatic flow, built for solo freelancers.
     </p>
@@ -136,10 +141,10 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     <div class="reveal mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
       <a
         href="#how-it-works"
-        class="inline-flex items-center justify-center gap-2 rounded-xl border border-rail bg-paper px-5 py-2.5
-               text-sm font-semibold text-ink shadow-sm transition-colors duration-200 ease-in-out
-               hover:bg-rail/20 hover:border-ink/30
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5
+               text-sm font-semibold text-paper shadow-sm transition-colors duration-200 ease-in-out
+               hover:bg-white/10 hover:border-white/30
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
       >
         See how it works
       </a>
@@ -154,9 +159,9 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       </a>
     </div>
 
-    <p class="reveal mt-4 text-xs text-ink/40">Free to join. No credit card required.</p>
+    <p class="reveal mt-4 text-xs text-paper/40">Free to join. No credit card required.</p>
 
-    <a href="/features" class="reveal mt-8 inline-block text-xs text-ink/50 underline underline-offset-4 hover:text-ink/70">
+    <a href="/features" class="reveal mt-8 inline-block text-xs text-paper/50 underline underline-offset-4 hover:text-paper/70">
       See what's inside
     </a>
   </div>
