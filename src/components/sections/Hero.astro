@@ -106,10 +106,11 @@
 // including the bento grid) simply grows the section rather than being
 // clipped; no change needed to this rule for that reason.
 //
-// FIXED-HEADER CLEARANCE (carried forward from v8, unchanged): top
-// padding (`pt-24 sm:pt-28 lg:pt-32`) matches Nav.astro's fixed bar
-// height plus real breathing room; bottom padding (`pb-28 sm:pb-40`)
-// unchanged.
+// FIXED-HEADER CLEARANCE (updated this pass): top padding increased from
+// `pt-24 sm:pt-28 lg:pt-32` to `pt-36 sm:pt-44 lg:pt-52` — the badge/
+// headline block was sitting too close under Nav.astro's fixed bar, so
+// this adds real extra breathing room above the content column (not just
+// bar-height clearance). Bottom padding (`pb-28 sm:pb-40`) unchanged.
 //
 // Icon imports trimmed to just `ChevronRight` (badge chevron) — `Check`,
 // `FileText`, `DollarSign`, `FolderOpen` were only ever consumed by the
@@ -120,7 +121,7 @@ import HeroDashboardPreview from '../ui/HeroDashboardPreview.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
+<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-36 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-44 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-52">
   <!-- Grain/noise texture overlay — see "GRAIN" note above. Purely
        decorative, inert SVG data-URI, no network request. -z-[9] must
        stay more negative than HeroScatterDecoration's own -z-[5] for
