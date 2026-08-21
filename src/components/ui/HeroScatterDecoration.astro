@@ -132,12 +132,20 @@ const { class: className } = Astro.props;
 // panels drifting," not just static decoration — dropping it would lose
 // the point of the preview.
 // EXTRACTED (later pass): these keyframes/classes (`glass-float-a/b/c`
-// and the `-reverse`/`-fast` variants) originally lived in this file's
-// own inline <style> block. They've since been moved to
+// and the mirrored/fast variants) originally lived in this file's own
+// inline <style> block. They've since been moved to
 // `src/styles/float-animation.css` (imported globally via global.css) so
 // other components can reuse the same drift animation without
 // redefining it — this file's markup below is unchanged, it just now
 // sources those classes globally instead of locally.
+//
+// BUG FIX (this pass): s4/s5/s6 were on `-reverse`/`-fast` classes that
+// replayed glass-float-a/b's OWN hardcoded rotate/skew (just reversed or
+// sped up), which silently overrode those three elements' own static
+// rotate-[...]/skew-*-[...] Tailwind classes (a running CSS animation
+// always wins the `transform` property). s4/s5/s6 now use dedicated
+// `-mirror`/`-mirror-fast` classes whose keyframes actually match each
+// element's own angle — see float-animation.css for the fix detail.
 ---
 
 <div class:list={['pointer-events-none absolute -z-[5] top-24 sm:top-28 lg:top-32 inset-x-0 bottom-28 sm:bottom-40', className]}
@@ -165,17 +173,29 @@ const { class: className } = Astro.props;
 
   <!-- s4 — bottom-right large angled block, teal tint. Nudged up 70px
        from its original bottom-[-10%] via a calc() offset (not a
-       translate/transform utility — glass-float-a-reverse's keyframes
+       translate/transform utility — glass-float-a-mirror's keyframes
        already drive `transform` on this element, and a running CSS
        animation always wins that property over a static transform
-       class, so the shift has to happen on `bottom` itself instead). -->
-  <div class="glass-float-a-reverse absolute w-72 h-64 bottom-[calc(-10%+70px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+       class, so the shift has to happen on `bottom` itself instead).
+       BUG FIX: previously used `glass-float-a-reverse`, which replayed
+       glass-float-a's OWN rotate(-18deg→-14deg)/skewY(-4deg) keyframe
+       (just in reverse playback order) — silently overriding this
+       element's rotate-[-12deg]/skew-y-[5deg] classes below, which were
+       therefore dead. `glass-float-a-mirror` carries its own keyframe
+       that actually matches this element's angle; see float-animation.css. -->
+  <div class="glass-float-a-mirror absolute w-72 h-64 bottom-[calc(-10%+70px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s5 — right-mid thin sliver, no tint -->
-  <div class="glass-float-b-fast absolute w-28 h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <!-- s5 — right-mid thin sliver, no tint.
+       BUG FIX: previously used `glass-float-b-fast`, which replayed
+       glass-float-b's OWN rotate(22deg→26deg)/skewX(-6deg) keyframe at
+       a faster speed — silently overriding this element's
+       rotate-[8deg]/skew-x-[10deg] classes below, which were therefore
+       dead. `glass-float-b-mirror-fast` carries its own keyframe that
+       actually matches this element's angle; see float-animation.css. -->
+  <div class="glass-float-b-mirror-fast absolute w-28 h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
@@ -183,10 +203,17 @@ const { class: className } = Astro.props;
        (previously 2 shapes: s1, s3) against the right side's 3 (s2, s4,
        s5) — mirrors s5's right-mid placement/size, flipped to the left
        edge with rotation/skew signs reversed so it reads as a matching
-       counterpart rather than a duplicate. Reuses `glass-float-b` (the
-       base, non-fast timing) since s5 already claimed `-fast`, keeping
-       every shape's animation speed distinct. -->
-  <div class="glass-float-b absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+       counterpart rather than a duplicate.
+       BUG FIX: this used to reuse plain `glass-float-b` (s2's class),
+       which carries glass-float-b's OWN rotate(22deg→26deg)/skewX(-6deg)
+       keyframe — silently overriding this element's rotate-[-8deg]/
+       skew-x-[-10deg] classes below (which were therefore dead) and
+       making s6 visually snap to s2's angle instead of its own mirrored
+       one. Now uses `glass-float-b-mirror`, which carries its own
+       keyframe matching this element's actual angle, at the same 11s
+       base timing as glass-float-b (s5 already claims the faster
+       mirrored timing) — see float-animation.css. -->
+  <div class="glass-float-b-mirror absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 </div>
