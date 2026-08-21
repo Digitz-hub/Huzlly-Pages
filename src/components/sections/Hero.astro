@@ -294,7 +294,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
          smaller -top-6/-7/-8 offset. Only this card's vertical offset
          changed — rotationClass, horizontal inset, and content
          untouched. -->
-    <div class="pointer-events-auto absolute left-[8%] -top-2 sm:-top-4 lg:-top-6">
+    <div class="pointer-events-auto absolute left-[8%] top-4 sm:top-6 lg:top-8">
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
@@ -306,7 +306,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     </div>
 
     <!-- Top-right: Payment received (staggered lower than top-left, see note above) -->
-    <div class="pointer-events-auto absolute right-[8%] -top-2 sm:-top-3 lg:-top-4">
+    <div class="pointer-events-auto absolute right-[8%] top-8 sm:top-10 lg:top-12">
       <AutomationNotificationCard iconBg="bg-amber-500"
         title="Payment received"
         description="Client paid $1,200 for Website Redesign"
