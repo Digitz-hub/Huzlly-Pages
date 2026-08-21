@@ -28,7 +28,23 @@
 // reverted at the user's request — this file is back to the plain static
 // glass pill with no JS-driven motion beyond the mobile menu toggle.
 //
-// LIQUID GLASS DISTORTION (this pass): per direct request for an Apple-
+// PILL → FULL-WIDTH BAR (this pass): per direct request, switched shape
+// from the floating, margin-inset, rounded-full "pill" to an edge-to-edge
+// bar spanning the full viewport width, fixed to the true top (no top/side
+// margin), with a bottom hairline border instead of an all-around pill
+// border. This is a shape/layout change only — the liquid-glass backdrop-
+// filter, dark-theme text/link colors, mobile menu behavior, and Button
+// CTA are all untouched. rounded-full → removed entirely (bar has square
+// corners); the pill's `border` (all sides) → `border-b` (bottom edge
+// only, since top/left/right sit flush against the viewport edge and a
+// border there would look like a stray line, not a bar edge); the pill's
+// own horizontal max-w-5xl constraint moved from the outer wrapper to an
+// inner content row so the glass/border still spans full width while the
+// logo/links/CTA stay centered and readable at wide viewports. Mobile
+// menu sheet's rounded-3xl floating-card look is kept as-is (a bar header
+// naturally opens into a plain dropdown sheet, not a second pill).
+//
+// LIQUID GLASS DISTORTION (earlier pass): per direct request for an Apple-
 // style "liquid glass" pill — not just blur, but a visible bend/refraction
 // of whatever scrolls behind it, like a real glass lens. This is a
 // browser-native effect achievable with an SVG filter (feTurbulence +
@@ -83,7 +99,7 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="fixed inset-x-0 top-4 z-50 px-4 sm:top-6 sm:px-6">
+<header class="fixed inset-x-0 top-0 z-50">
   <!-- Liquid-glass distortion filter def — see file-header comment.
        Visually hidden (0-size, absolute), referenced by the
        `.liquid-glass` backdrop-filter below via its #id. -->
@@ -95,9 +111,9 @@ const isActive = (href: string) => {
     </filter>
   </svg>
 
-  <div class="relative mx-auto max-w-5xl">
-    <!-- Floating glass pill bar -->
-    <div class="liquid-glass flex h-14 items-center justify-between rounded-full border border-white/15 bg-white/[0.03] pl-5 pr-2 shadow-lg shadow-black/20 sm:h-16 sm:pl-6 sm:pr-2.5">
+  <!-- Full-width glass bar -->
+  <div class="liquid-glass border-b border-white/15 bg-white/[0.03] shadow-lg shadow-black/20">
+    <div class="relative mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:h-16 sm:px-6">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -143,11 +159,11 @@ const isActive = (href: string) => {
       </button>
     </div>
 
-    <!-- Mobile Menu Sheet — floating glass card below the pill -->
+    <!-- Mobile Menu Sheet — glass dropdown below the bar -->
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-ink/60 p-3 shadow-lg shadow-black/20 md:hidden liquid-glass"
+      class="liquid-glass absolute inset-x-0 top-full hidden border-b border-white/15 bg-ink/60 p-3 shadow-lg shadow-black/20 md:hidden"
     >
-      <nav aria-label="Mobile primary" class="flex flex-col gap-1">
+      <nav aria-label="Mobile primary" class="mx-auto flex max-w-5xl flex-col gap-1 px-4 sm:px-6">
         {navLinks.map((link) => (
           <a href={link.href}
             class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
