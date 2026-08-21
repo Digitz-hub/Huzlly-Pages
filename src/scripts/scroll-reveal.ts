@@ -7,12 +7,16 @@
 // group of elements.
 //
 // BEHAVIOR (unchanged from the HeroDashboardPreview version this was
-// extracted from):
+// extracted from, plus a new optional `completionFraction` knob — see
+// ScrollRevealOptions below):
 //   - Pure function of current scroll position each frame, no stored/
 //     sticky state.
 //   - Bottom → center: as an element's center travels from the BOTTOM
 //     edge of the viewport up to viewport-center, `--dp-progress`
-//     interpolates 0 → 1 live.
+//     interpolates 0 → 1 live. With `completionFraction` below 1, that
+//     0 → 1 interpolation completes over only that fraction of the
+//     bottom→center distance, so the reveal finishes earlier/lower on
+//     screen instead of requiring the element to reach dead-center.
 //   - Center → bottom (scrolling back up): `--dp-progress` interpolates
 //     1 → 0 in exact reverse, frame for frame.
 //   - Above-center clamp: once an element's center is at or above
@@ -41,6 +45,16 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 export interface ScrollRevealOptions {
   /** CSS custom property written to each element. Defaults to '--dp-progress'. */
   property?: string;
+  /**
+   * How far along the bottom→center journey the element should reach
+   * full progress (1), expressed as a fraction of that journey. Defaults
+   * to 1 (finishes exactly at viewport-center, the original behavior).
+   * e.g. 0.7 finishes the reveal 30% "early" — once the element's center
+   * has covered 70% of the distance from the viewport bottom to
+   * viewport-center — instead of requiring it to reach center itself.
+   * Must be > 0.
+   */
+  completionFraction?: number;
 }
 
 /**
@@ -58,6 +72,7 @@ export function initScrollReveal(
   options: ScrollRevealOptions = {}
 ): () => void {
   const property = options.property ?? '--dp-progress';
+  const completionFraction = options.completionFraction ?? 1;
 
   const elements: Element[] =
     typeof target === 'string'
@@ -89,8 +104,15 @@ export function initScrollReveal(
 
       // Bottom → center live 0 -> 1, center → bottom live 1 -> 0 in exact
       // reverse; clamps at 1 once at/above center so it never hides again
-      // just for being above the fold.
-      const progress = clamp((viewportHeight - elCenter) / (viewportHeight - viewportCenter), 0, 1);
+      // just for being above the fold. `completionFraction` shrinks the
+      // denominator so progress hits 1 before elCenter actually reaches
+      // viewport-center, if set below 1 (default 1 = original behavior,
+      // full journey required).
+      const progress = clamp(
+        (viewportHeight - elCenter) / ((viewportHeight - viewportCenter) * completionFraction),
+        0,
+        1
+      );
 
       (el as HTMLElement).style.setProperty(property, progress.toFixed(3));
     });
