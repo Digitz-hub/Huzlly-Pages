@@ -265,8 +265,11 @@ const { class: className } = Astro.props;
 <script>
   // Scoped to this component's own root via [data-dashboard-preview] so it
   // never touches other `.reveal`/observer setups elsewhere on the page
-  // (e.g. Hero.astro's). Runs once per card — unobserves immediately after
-  // its entrance to avoid re-triggering on scroll-up/scroll-down.
+  // (e.g. Hero.astro's). Bidirectional: toggles the visibility class both
+  // ways as each card crosses the threshold, so scrolling back up reverses
+  // the entrance animation instead of staying stuck visible (unlike
+  // Hero.astro's own one-shot `.reveal`, which unobserves after first
+  // trigger — intentionally different behavior here per this task's ask).
   document.querySelectorAll('[data-dashboard-preview]').forEach((root) => {
     const cards = root.querySelectorAll('.dp-reveal');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -279,10 +282,7 @@ const { class: className } = Astro.props;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('dp-is-visible');
-            observer.unobserve(entry.target);
-          }
+          entry.target.classList.toggle('dp-is-visible', entry.isIntersecting);
         });
       },
       { threshold: 0.2 }
