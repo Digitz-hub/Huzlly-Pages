@@ -1,0 +1,47 @@
+---
+// src/components/sections/how-it-works/GetPaidIllustration.astro
+// Card 03 ("Get Paid") bespoke illustration — invoice card with title
+// bar + 3 line-item rows (label + amount columns) + divider lines +
+// total-amount badge ("$2,450") + "Paid" badge with checkmark, ported
+// from huzlly-how-it-works.html's .card--03 SVG. Extracted verbatim
+// from FeaturesSummary.astro's Step 4 inline version during the Step 6
+// structure-cleanup pass — markup/classes unchanged, just relocated.
+// Reference's raw amber/orange hex is re-expressed as amber-500/
+// amber-100/amber-50; the two <text> labels stay as SVG <text> per the
+// reference but use the site's own font-mono face (JetBrains Mono).
+---
+
+<svg
+  class="absolute inset-0 h-full w-full"
+  viewBox="0 0 400 220"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  {/* Invoice card */}
+  <rect x="128" y="30" width="144" height="164" rx="14" class="fill-white stroke-amber-100" stroke-width="1.5" />
+  <rect x="146" y="48" width="58" height="7" rx="3.5" class="fill-amber-500" opacity="0.85" />
+  <rect x="146" y="62" width="80" height="4.5" rx="2.25" class="fill-amber-50" />
+
+  <line x1="146" y1="80" x2="254" y2="80" class="stroke-amber-100" stroke-width="1.5" />
+
+  {/* Line items — label + amount columns */}
+  <rect x="146" y="92" width="70" height="4.5" rx="2.25" class="fill-amber-100" />
+  <rect x="228" y="92" width="26" height="4.5" rx="2.25" class="fill-amber-100" />
+  <rect x="146" y="106" width="60" height="4.5" rx="2.25" class="fill-amber-100" />
+  <rect x="228" y="106" width="26" height="4.5" rx="2.25" class="fill-amber-100" />
+  <rect x="146" y="120" width="66" height="4.5" rx="2.25" class="fill-amber-100" />
+  <rect x="228" y="120" width="26" height="4.5" rx="2.25" class="fill-amber-100" />
+
+  <line x1="146" y1="138" x2="254" y2="138" class="stroke-amber-100" stroke-width="1.5" />
+
+  {/* Total amount */}
+  <rect x="146" y="150" width="40" height="6" rx="3" class="fill-amber-500" opacity="0.6" />
+  <rect x="200" y="147" width="54" height="12" rx="6" class="fill-amber-50" />
+  <text x="227" y="156" class="font-mono fill-amber-600" font-size="9" text-anchor="middle" font-weight="600">$2,450</text>
+
+  {/* Paid badge */}
+  <rect x="146" y="170" width="58" height="18" rx="9" class="fill-amber-500" />
+  <path d="M156 179 l4 4 l8 -9" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <text x="184" y="182.5" class="font-mono fill-white" font-size="9" text-anchor="middle" font-weight="600">Paid</text>
+</svg>
