@@ -91,39 +91,52 @@ const { class: className } = Astro.props;
 <div class:list={['pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-28 sm:bottom-40 absolute -z-[5]', className]}
   aria-hidden="true"
 >
-  <!-- Bright/near stars (larger, higher opacity, some twinkling) -->
-  <span class="star-twinkle-a absolute left-[18%] top-[14%] h-1.5 w-1.5 rounded-full bg-paper/90"></span>
-  <span class="star-twinkle-b absolute right-[22%] top-[10%] h-1 w-1 rounded-full bg-paper/85"></span>
-  <span class="star-twinkle-c absolute bottom-[16%] left-[24%] h-1.5 w-1.5 rounded-full bg-paper/80"></span>
-  <span class="star-twinkle-a absolute bottom-[10%] right-[18%] h-1 w-1 rounded-full bg-paper/90"></span>
-  <span class="star-twinkle-b absolute left-[9%] top-[42%] h-1 w-1 rounded-full bg-paper/85"></span>
-  <span class="star-twinkle-c absolute right-[9%] top-[60%] h-1.5 w-1.5 rounded-full bg-paper/75"></span>
-  <span class="star-twinkle-a absolute left-[13%] bottom-[38%] h-1 w-1 rounded-full bg-paper/85"></span>
-  <span class="star-twinkle-b absolute right-[13%] bottom-[24%] h-1 w-1 rounded-full bg-paper/80"></span>
-  <span class="star-twinkle-c absolute left-[35%] top-[8%] h-1 w-1 rounded-full bg-paper/70"></span>
-  <span class="star-twinkle-a absolute right-[38%] top-[18%] h-1 w-1 rounded-full bg-paper/75"></span>
+  <!-- Bright/near stars (larger, higher opacity, some twinkling).
+       CONTRAST PASS (this pass): opacities retuned per-star based on
+       proximity to the gradient's brightest zone (top-center, where
+       Hero.astro's radial wash is strongest) vs. the darker ink zone
+       (edges/lower half, widened this same pass — see Hero.astro's own
+       gradient comment). Stars sitting near top-center are dimmed so
+       they don't wash out against the bright blue; stars near edges/
+       bottom are brightened since they now sit against genuinely dark
+       ink and can afford more presence. Positions, sizes, and which
+       stars twinkle are untouched — only bg-paper/NN opacity values
+       changed below. -->
+  <span class="star-twinkle-a absolute left-[18%] top-[14%] h-1.5 w-1.5 rounded-full bg-paper/85"></span>
+  <span class="star-twinkle-b absolute right-[22%] top-[10%] h-1 w-1 rounded-full bg-paper/60"></span>
+  <span class="star-twinkle-c absolute bottom-[16%] left-[24%] h-1.5 w-1.5 rounded-full bg-paper/90"></span>
+  <span class="star-twinkle-a absolute bottom-[10%] right-[18%] h-1 w-1 rounded-full bg-paper/95"></span>
+  <span class="star-twinkle-b absolute left-[9%] top-[42%] h-1 w-1 rounded-full bg-paper/90"></span>
+  <span class="star-twinkle-c absolute right-[9%] top-[60%] h-1.5 w-1.5 rounded-full bg-paper/85"></span>
+  <span class="star-twinkle-a absolute left-[13%] bottom-[38%] h-1 w-1 rounded-full bg-paper/90"></span>
+  <span class="star-twinkle-b absolute right-[13%] bottom-[24%] h-1 w-1 rounded-full bg-paper/85"></span>
+  <span class="star-twinkle-c absolute left-[35%] top-[8%] h-1 w-1 rounded-full bg-paper/35"></span>
+  <span class="star-twinkle-a absolute right-[38%] top-[18%] h-1 w-1 rounded-full bg-paper/45"></span>
 
-  <!-- Small/mid-distance stars, static, moderate opacity -->
-  <span class="absolute left-[28%] top-[24%] h-0.5 w-0.5 rounded-full bg-paper/60"></span>
-  <span class="absolute right-[30%] top-[34%] h-0.5 w-0.5 rounded-full bg-paper/55"></span>
-  <span class="absolute left-[45%] top-[16%] h-0.5 w-0.5 rounded-full bg-paper/45"></span>
-  <span class="absolute right-[44%] top-[8%] h-0.5 w-0.5 rounded-full bg-paper/50"></span>
-  <span class="absolute left-[6%] top-[20%] h-0.5 w-0.5 rounded-full bg-paper/60"></span>
-  <span class="absolute right-[6%] top-[26%] h-0.5 w-0.5 rounded-full bg-paper/55"></span>
-  <span class="absolute left-[20%] bottom-[6%] h-0.5 w-0.5 rounded-full bg-paper/50"></span>
-  <span class="absolute right-[24%] bottom-[8%] h-0.5 w-0.5 rounded-full bg-paper/55"></span>
-  <span class="absolute left-[16%] top-[52%] h-0.5 w-0.5 rounded-full bg-paper/45"></span>
-  <span class="absolute right-[16%] top-[48%] h-0.5 w-0.5 rounded-full bg-paper/50"></span>
-  <span class="absolute left-[38%] bottom-[14%] h-0.5 w-0.5 rounded-full bg-paper/40"></span>
-  <span class="absolute right-[40%] bottom-[18%] h-0.5 w-0.5 rounded-full bg-paper/40"></span>
+  <!-- Small/mid-distance stars, static, opacity retuned this pass on
+       the same bright-zone/dark-zone logic as the twinkling stars
+       above. -->
+  <span class="absolute left-[28%] top-[24%] h-0.5 w-0.5 rounded-full bg-paper/40"></span>
+  <span class="absolute right-[30%] top-[34%] h-0.5 w-0.5 rounded-full bg-paper/50"></span>
+  <span class="absolute left-[45%] top-[16%] h-0.5 w-0.5 rounded-full bg-paper/25"></span>
+  <span class="absolute right-[44%] top-[8%] h-0.5 w-0.5 rounded-full bg-paper/20"></span>
+  <span class="absolute left-[6%] top-[20%] h-0.5 w-0.5 rounded-full bg-paper/70"></span>
+  <span class="absolute right-[6%] top-[26%] h-0.5 w-0.5 rounded-full bg-paper/65"></span>
+  <span class="absolute left-[20%] bottom-[6%] h-0.5 w-0.5 rounded-full bg-paper/65"></span>
+  <span class="absolute right-[24%] bottom-[8%] h-0.5 w-0.5 rounded-full bg-paper/70"></span>
+  <span class="absolute left-[16%] top-[52%] h-0.5 w-0.5 rounded-full bg-paper/60"></span>
+  <span class="absolute right-[16%] top-[48%] h-0.5 w-0.5 rounded-full bg-paper/60"></span>
+  <span class="absolute left-[38%] bottom-[14%] h-0.5 w-0.5 rounded-full bg-paper/45"></span>
+  <span class="absolute right-[40%] bottom-[18%] h-0.5 w-0.5 rounded-full bg-paper/45"></span>
 
-  <!-- Faint/far stars, kept low-opacity across the mid-width band so
-       density behind the headline column stays light and doesn't fight
-       text contrast. -->
-  <span class="absolute left-[48%] top-[30%] h-0.5 w-0.5 rounded-full bg-paper/25"></span>
+  <!-- Faint/far stars — central band stars (closest to the gradient's
+       brightest zone) kept the faintest; the two lower-center stars sit
+       in the now-widened dark zone so were nudged up slightly from the
+       previous pass. -->
+  <span class="absolute left-[48%] top-[30%] h-0.5 w-0.5 rounded-full bg-paper/15"></span>
   <span class="absolute right-[48%] top-[40%] h-0.5 w-0.5 rounded-full bg-paper/20"></span>
-  <span class="absolute left-[42%] bottom-[28%] h-0.5 w-0.5 rounded-full bg-paper/20"></span>
-  <span class="absolute right-[42%] bottom-[32%] h-0.5 w-0.5 rounded-full bg-paper/25"></span>
+  <span class="absolute left-[42%] bottom-[28%] h-0.5 w-0.5 rounded-full bg-paper/30"></span>
+  <span class="absolute right-[42%] bottom-[32%] h-0.5 w-0.5 rounded-full bg-paper/30"></span>
 </div>
 
 <style>
