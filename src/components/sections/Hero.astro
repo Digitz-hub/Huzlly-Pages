@@ -132,8 +132,14 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        periwinkle gradient met FeaturesSummary's solid white background.
        Sits above the grain (-z-[9]) but BELOW HeroScatterDecoration
        (-z-[5]) at -z-[7], so the glass shapes keep painting on top and
-       stay fully visible/unfaded, same as before this change. -->
-  <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[7] h-40 bg-gradient-to-b from-transparent to-white sm:h-56 lg:h-64" aria-hidden="true"></div>
+       stay fully visible/unfaded, same as before this change.
+       Eased multi-stop gradient (not a flat linear one) — a plain
+       transparent→white linear fade whitens too quickly near the top of
+       this band, which was cutting hard across the scatter shapes' own
+       drop shadows there. The extra stops back-load the white into the
+       last ~40% of the band so the shadows sit on gently-graduated blue
+       for longer, avoiding a visible seam against their shadow edge. -->
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[7] h-48 bg-[linear-gradient(180deg,transparent_0%,transparent_35%,rgba(255,255,255,0.35)_60%,rgba(255,255,255,0.8)_80%,#FFFFFF_100%)] sm:h-64 lg:h-72" aria-hidden="true"></div>
 
   <!-- Glass-shape scatter decoration — see "SCATTER DECORATION" note
        above. Hidden below `lg`, matching that component's own documented
