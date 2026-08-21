@@ -1,0 +1,206 @@
+---
+// src/components/ui/HeroDashboardPreview.astro
+// Bento-grid "product dashboard" visual for the homepage hero — converted
+// from the approved hero-dashboard-preview.html mockup. This is a fixed,
+// content-complete, single-purpose component built only for Hero.astro's
+// hero section; it is NOT a general-purpose primitive and isn't meant to
+// be reused elsewhere or extended with props for other content. Renders
+// only the bento grid itself — the "Monopol" eyebrow and headline in the
+// source preview were placeholder text for the standalone mockup and are
+// intentionally dropped here; the real eyebrow/H1 belong to Hero.astro
+// per this task's brief. Not yet wired into Hero.astro — that's a
+// separate stage.
+//
+// AutomationNotificationCard.astro is untouched by this file and is not
+// used here — this component owns its own card markup directly since the
+// preview's cards (fixed layout, no expand/collapse, no icon slot) don't
+// match that component's collapsible-notification contract.
+//
+// GRID RESTRUCTURE (per brief item 1): the preview's 6th filler cell
+// ("20,000+ users already joined" in the bottom-right grid slot) is
+// dropped — that figure doesn't exist anywhere in SITE_IDENTITY_AND_AEO.md
+// (Section 3 gives a 50-person beta cohort, pre-launch) and would ship a
+// fabricated stat. Rather than leave the bottom-right cell empty, the grid
+// is restructured to 5 cells: the Client Portal card (originally 2/3-width
+// in the bottom row) now spans the full width of row 3 (`lg:col-span-3`),
+// so the 3x3 grid is fully and intentionally occupied with no dead cell
+// and no invented replacement content.
+//
+// ⚠️ Flag — gradient icon badges: the preview's pipeline/portal icon
+// badges use CSS gradients (`linear-gradient(135deg,#2f6bff,#5a8bff)` and
+// an ink gradient). DESIGN_SYSTEM.md Section 1 reserves gradients for the
+// flow-rail signature element only ("Reserved — not for general use.").
+// Mapped both badges to solid fills instead: pipeline → `bg-blue-600`
+// (fixed accent), portal → `bg-ink` (matches the Elevated/filled-dark
+// convention already used elsewhere, e.g. AutomationNotificationCard's
+// icon chips). No gradient anywhere in this file outside that convention.
+//
+// ⚠️ Flag — card 4's background wash: the preview gives the pricing card
+// a subtle `linear-gradient(165deg,#ffffff,#f6f8ff)` panel background.
+// DESIGN_SYSTEM.md doesn't approve a general card-background gradient
+// (again, gradients are reserved for the flow-rail only), so this was
+// dropped in favor of flat `bg-white`, matching every other card. Purely
+// a richness/polish loss, not a structural change.
+//
+// ⚠️ Flag — dot-grid placement (card 4 corner texture): the preview's
+// `.price-dots` corner texture is visually identical to DESIGN_SYSTEM.md
+// Section 4's approved Dot-Grid Texture technique (same radial-gradient
+// `rail`-color pattern), so it's implemented here using that same
+// approved bracket-notation pattern with a corner mask rather than an
+// invented texture. BUT Section 4 scopes dot-grid to "hero only, one per
+// page" and Section 7.5 says never stack two decorative patterns in the
+// same area. Since this component is destined for Hero.astro, and I
+// haven't been asked to inspect what background texture Hero.astro
+// itself already uses, this card's corner dot-grid may end up being a
+// second dot-grid instance on the same page/section once wired in —
+// confirm at integration time whether Hero.astro already has one, and
+// drop this card's instance if so.
+//
+// ⚠️ Flag — sub-heading size unification: the preview uses three
+// different ad-hoc h4 sizes (17px / 15px / 17px) for the "Replaces 5+
+// apps," "Project Timesheet," and "Client Portal" card headers. None of
+// these map to a named DESIGN_SYSTEM.md type-scale entry (only Feature H3
+// at text-xl is named for card headings). Unified all three to `text-lg
+// font-semibold text-ink` — the nearest standard Tailwind step below
+// Feature H3 — rather than approximating three separate arbitrary pixel
+// values.
+//
+// ⚠️ Flag — card 3's stat number: "5–8 hrs/week" is a secondary stat, not
+// the page's one allowed oversized Display Numeral (that treatment —
+// `font-display font-semibold text-amber-500` at `text-6xl`–`text-8xl`,
+// one per page max — is spent on card 4's "50–70%" instead, since that's
+// the closer match to the preview's largest/boldest number and to keep
+// only one amber numeral on the page). Card 3's number instead uses
+// `font-display text-2xl font-semibold text-ink` — display font for
+// numeral confidence, but sized and colored down since it isn't the
+// page's one big-numeral moment.
+//
+// ⚠️ Flag — qualifier pill colors (brief item 6): "(beta target)" and
+// "(target)" must stay visible, non-removable text per the brief. Rather
+// than inventing new pill styling, each was mapped to the closest already
+// -approved badge token based on the preview's own color choice: card 3's
+// amber/gold pill → the existing Warning badge
+// (`bg-amber-50 text-amber-700 ring-amber-600/20`, Section 1 functional
+// colors) — read here as "unverified projection, treat with caution."
+// Card 4's neutral grey pill → the Neutral/Category Pill (Section 3)
+// — read as a plain caveat label rather than a warning. Both are literal,
+// non-hidden text content, never a tooltip or title attribute.
+//
+// Body copy sizes: mapped to DESIGN_SYSTEM.md's *named* type-scale roles
+// (Body Paragraph `text-base text-ink/70 leading-relaxed`, Small/Caption
+// `text-sm text-ink/50`) exactly as specified, rather than hand-picking a
+// closer pixel match to the preview's 12.5–15px custom sizes — this
+// keeps every text style traceable to a named token instead of an
+// eyeballed approximation.
+//
+// bg-white vs bg-paper: DESIGN_SYSTEM.md's card specs (Standard Feature
+// Card, Elevated Card) both default to `bg-paper`, but this component
+// uses `bg-white` for every card surface instead. Reasoning: this bento
+// grid is meant to read as a crisp, self-contained "product dashboard"
+// floating over whatever background Hero.astro paints behind it (gradient
+// wash / dot-grid / paper — all warm-toned), the same way Section 4's
+// "Section Background Rhythm" describes `bg-white` as "the occasional
+// crisp break" against the paper baseline. It also matches the preview's
+// own `--card: #ffffff` more precisely than paper's warm off-white would.
+// Confirm this reads correctly once actually placed against Hero.astro's
+// specific background at integration time.
+//
+// The preview's custom toggle-switch (built via a `::after` pseudo-
+// element in the source HTML) is rebuilt here as two plain nested spans
+// using only standard-scale Tailwind position/size utilities
+// (`h-6 w-11`, `right-0.5`, `top-0.5`, `h-5 w-5`) — no pseudo-elements, no
+// inline style. It's decorative only (no real on/off state to convey
+// beyond the "Status: Active" pill's own text), so it's `aria-hidden`.
+//
+// No required props — this is a fixed, content-complete block. `class`
+// is accepted for outer placement/spacing only, matching the passthrough
+// pattern already used on AutomationNotificationCard.
+
+import { Zap, Lock } from 'lucide-astro';
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-3', className]}>
+
+  <!-- Card 1: Automated Pipeline (tall, left column, spans both top rows) -->
+  <div class="flex flex-col rounded-2xl border border-rail bg-white p-6 shadow-sm lg:row-span-2">
+    <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-sm">
+      <Zap class="w-6 h-6 text-white" stroke-width="1.5" aria-hidden="true" />
+    </div>
+    <h3 class="mb-3 text-xl font-semibold leading-snug text-ink">Automated Pipeline</h3>
+    <p class="flex-grow text-base leading-relaxed text-ink/70">Proposal accepted? That instantly triggers the contract, invoice, and project setup — no manual step in between.</p>
+    <div class="mt-6 flex items-center justify-between border-t border-rail pt-5">
+      <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-600" aria-hidden="true"></span>
+        Status: Active
+      </span>
+      <span class="relative inline-block h-6 w-11 flex-shrink-0 rounded-full bg-blue-600" aria-hidden="true">
+        <span class="absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow"></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Card 2: Replaces 5+ apps (middle column, top row) -->
+  <div class="rounded-2xl border border-rail bg-white p-6 shadow-sm">
+    <h4 class="mb-4 text-lg font-semibold text-ink">Replaces 5+ apps</h4>
+    <div class="mb-4 flex flex-wrap gap-2">
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Proposals
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Contracts
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Invoices
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Time Tracker
+      </span>
+    </div>
+    <p class="text-sm text-ink/50">No bloated enterprise features.</p>
+  </div>
+
+  <!-- Card 3: Project Timesheet (middle column, bottom row) -->
+  <div class="rounded-2xl border border-rail bg-white p-6 shadow-sm">
+    <h4 class="text-lg font-semibold text-ink">Project Timesheet</h4>
+    <p class="mb-3 text-sm text-ink/50">Per-task time tracking</p>
+    <div class="flex flex-wrap items-baseline gap-2">
+      <span class="font-display text-2xl font-semibold text-ink">5–8 hrs/week</span>
+      <span class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">(beta target)</span>
+    </div>
+    <p class="mt-3 text-sm leading-relaxed text-ink/50">Automatic task-to-project time rollups, built to save your team hours every week.</p>
+  </div>
+
+  <!-- Card 4: Lower cost / pricing (tall, right column, spans both top rows) -->
+  <div class="relative flex flex-col overflow-hidden rounded-2xl border border-rail bg-white p-6 shadow-sm lg:row-span-2">
+    <div class="pointer-events-none absolute -right-2 -top-2 h-24 w-24 opacity-40 [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)] [background-size:12px_12px] [mask-image:linear-gradient(225deg,black_10%,transparent_65%)]" aria-hidden="true"></div>
+    <div class="flex flex-wrap items-baseline gap-3">
+      <span class="font-display text-6xl font-semibold text-amber-500">50–70%</span>
+    </div>
+    <span class="mt-2 inline-flex w-fit items-center rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">(target)</span>
+    <h3 class="mt-5 text-xl font-semibold leading-snug text-ink">Lower cost</h3>
+    <p class="mt-2 flex-grow text-base leading-relaxed text-ink/70">Flat-rate pricing. No per-seat fees, no enterprise upsells, no surprises on your invoice.</p>
+  </div>
+
+  <!-- Card 5: Client Portal (bottom row, full width — absorbs the dropped 6th cell, see file-header note) -->
+  <div class="flex flex-col items-start gap-4 rounded-2xl border border-rail bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
+    <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-ink shadow-sm">
+      <Lock class="w-6 h-6 text-paper" stroke-width="1.5" aria-hidden="true" />
+    </div>
+    <div class="flex-grow">
+      <h4 class="text-lg font-semibold text-ink">Client Portal</h4>
+      <p class="text-sm text-ink/50">Off by default — decide exactly what each client sees.</p>
+    </div>
+    <span class="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">Client Access: Custom</span>
+  </div>
+
+</div>
