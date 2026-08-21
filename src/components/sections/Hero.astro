@@ -256,8 +256,27 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
          sits highest, top-right lower/closer to the headline; bottom-
          right sits lowest, bottom-left higher/closer to the CTA row.
          left-[8%]/right-[8%] horizontal insets, rotationClass values,
-         and card content are all untouched — vertical offsets only. -->
-    <div class="pointer-events-auto absolute left-[8%] -top-14 sm:-top-16 lg:-top-20">
+         and card content are all untouched — vertical offsets only.
+
+         HEADER-OVERLAP FIX (later pass): -top-14/-16/-20 pushed this
+         card's visual top to roughly wrapper_top minus 56/64/80px. That
+         math was safe against the OLD wrapper top (top-40/48/56 =
+         160/192/224px, ~104-144px clearance below Nav.astro's fixed
+         header). After the wrapper was retuned to top-24/28/32 (see this
+         pass's own comment on the wrapper div above) for the header's
+         pill→bar shape change, the same -top-14/-16/-20 offset put this
+         card's visual top at only ~40-48px from the section's true top —
+         inside the header's own 56-64px height, so the card rendered
+         bleeding up behind/through the header (reported directly:
+         header showing a white blur/glow around the logo). Reduced the
+         offset to -top-6 sm:-top-8 lg:-top-12 (24/32/48px) so the card's
+         visual top now sits comfortably below the header on every
+         breakpoint (~16-32px of clear gap) while still reading as the
+         "highest" of the four staggered cards relative to top-right's
+         smaller -top-6/-7/-8 offset. Only this card's vertical offset
+         changed — rotationClass, horizontal inset, and content
+         untouched. -->
+    <div class="pointer-events-auto absolute left-[8%] -top-6 sm:-top-8 lg:-top-12">
       <AutomationNotificationCard iconBg="bg-teal-600"
         title="Proposal accepted"
         description="Contract sent to client instantly"
