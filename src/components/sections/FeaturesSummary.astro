@@ -1,40 +1,108 @@
 ---
 // src/components/sections/FeaturesSummary.astro
-// Homepage features summary: the four-step flow explained in card form,
-// plus a short "why lean, not bloated" strip pulled from the same
+// Homepage features summary: the four-stage lifecycle explained in card
+// form, plus a short "why lean, not bloated" strip pulled from the same
 // positioning used in FAQAccordion's Comparisons category. Deep-dive
 // copy stays on /features — this is the summary version.
 //
-// v2 redesign pass: cards move to the ink/paper/rail neutral system, the
-// 4-card step grid uses Card's new `flat-lift` + tick-mark treatment (the
-// design system's "feature/process card" pairing), and section backgrounds
-// invert per Section 4's rhythm — Paper is now the base, White is the
-// occasional crisp break, rather than the old White/warm-50 pairing.
+// v2.1 card redesign (per user-supplied inspiration, CLAUDE.md Section 4.5):
+// "how it works" cards move from the plain icon-chip layout to a numbered-
+// badge + headline + floating "chip cluster" illustration + description
+// layout. Structure/composition is from the inspiration reference; palette
+// stays on the sitewide ink/paper/rail + signal-color system so it reads as
+// this site's design language, not a copy-pasted foreign look.
+//
+// Content note: copy moves from the granular automation-trigger framing
+// (Proposal/Contract/Invoice/Project) to a 4-stage lifecycle framing
+// (Get Started/Work/Get Paid/Grow), per explicit user direction — this is
+// a deliberate content decision made with awareness that it diverges from
+// SITE_IDENTITY_AND_AEO.md's canonical flow language; AEO/schema follow-up
+// is being handled separately by the user, not silently reconciled here.
+//
+// Color note: the design system only defines three approved signal colors
+// (blue-600 / teal-600 / amber-500) — see AutomationNotificationCard.astro's
+// comment. With 4 cards, the 4th ("Grow") intentionally uses the neutral
+// ink/rail treatment instead of inventing a new hue. Flagged per CLAUDE.md
+// Section 3 rather than silently picking a new color.
 
-import { FileText, PenTool, Receipt, FolderKanban, Tag, Zap, Feather } from 'lucide-astro';
+import {
+  FileText,
+  PenTool,
+  Rocket,
+  FolderKanban,
+  CheckSquare,
+  Clock,
+  Users,
+  Receipt,
+  CreditCard,
+  Package,
+  Archive,
+  Repeat,
+  Tag,
+  Zap,
+  Feather,
+} from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import Card from '../ui/Card.astro';
 
-const steps = [
+// Full literal class strings per signal (Tailwind JIT needs literal
+// substrings to detect classes — no template-literal color interpolation).
+const signalStyles: Record<string, { glowA: string; glowB: string; icon: string }> = {
+  blue: { glowA: 'bg-blue-50/80', glowB: 'bg-blue-50/40', icon: 'text-blue-600' },
+  teal: { glowA: 'bg-teal-600/10', glowB: 'bg-teal-600/5', icon: 'text-teal-600' },
+  amber: { glowA: 'bg-amber-500/10', glowB: 'bg-amber-500/5', icon: 'text-amber-500' },
+  ink: { glowA: 'bg-rail/60', glowB: 'bg-rail/30', icon: 'text-ink/70' },
+};
+
+const stages = [
   {
-    icon: FileText,
-    title: 'Proposal',
-    body: 'Send a proposal. The moment a client approves it, the rest of the flow kicks off on its own.',
+    number: '01',
+    stage: 'Get Started',
+    headline: 'Turn prospects into projects.',
+    body: 'Create professional proposals, get agreements signed, and set everything up to start working with your client.',
+    signal: 'blue',
+    chips: [
+      { icon: FileText, label: 'Proposal' },
+      { icon: PenTool, label: 'Contract' },
+      { icon: Rocket, label: 'Project Setup' },
+    ],
   },
   {
-    icon: PenTool,
-    title: 'Contract',
-    body: 'A contract goes out pre-filled with the approved scope, ready to sign — no re-typing, no separate app.',
+    number: '02',
+    stage: 'Work',
+    headline: 'Manage every project in one place.',
+    body: 'Organize projects and tasks, track your time, and keep clients updated with their own dedicated portal.',
+    signal: 'teal',
+    chips: [
+      { icon: FolderKanban, label: 'Projects' },
+      { icon: CheckSquare, label: 'Tasks' },
+      { icon: Clock, label: 'Time Tracking' },
+      { icon: Users, label: 'Client Portal' },
+    ],
   },
   {
-    icon: Receipt,
-    title: 'Invoice',
-    body: 'Accepting the contract sends the linked invoice straight to your client — no manual step in between.',
+    number: '03',
+    stage: 'Get Paid',
+    headline: 'Finish the work. Get paid.',
+    body: 'Send invoices, collect payments, and keep your billing organized from project completion to payment.',
+    signal: 'amber',
+    chips: [
+      { icon: Receipt, label: 'Invoice' },
+      { icon: CreditCard, label: 'Payment' },
+      { icon: Package, label: 'Delivery' },
+    ],
   },
   {
-    icon: FolderKanban,
-    title: 'Project',
-    body: 'The same moment, Huzlly creates the project — scoped and ready for you to start logging work.',
+    number: '04',
+    stage: 'Grow',
+    headline: 'Turn great work into repeat business.',
+    body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
+    signal: 'ink',
+    chips: [
+      { icon: Users, label: 'Clients' },
+      { icon: Archive, label: 'Past Projects' },
+      { icon: Repeat, label: 'Repeat Work' },
+    ],
   },
 ];
 
@@ -58,23 +126,51 @@ const reasons = [
 ---
 
 <section id="how-it-works" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-  <div class="mx-auto max-w-6xl">
+  <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="How it works"
-      title="Four steps. Zero handoffs."
-      subtitle="Each step in your client workflow triggers the next one automatically — you only touch what actually needs a human."
+      title="Four stages. Zero handoffs."
+      subtitle="Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human."
     />
 
-    <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {steps.map((step, i) => (
-        <Card variant="flat-lift" tick>
-          <span class="font-mono text-xs text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
-          <span class="mt-3 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-            <step.icon class="w-5 h-5" stroke-width="1.75" />
-          </span>
-          <h3 class="mt-4 text-xl font-semibold text-ink leading-snug">{step.title}</h3>
-          <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.body}</p>
-        </Card>
-      ))}
+    <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
+      {stages.map((step) => {
+        const s = signalStyles[step.signal];
+        return (
+          <Card variant="flat-lift">
+            <div class="flex items-center gap-3">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
+                {step.number}
+              </span>
+              <span class="font-mono text-xs uppercase tracking-widest text-ink/50">{step.stage}</span>
+            </div>
+
+            <h3 class="mt-4 font-display text-xl font-semibold leading-snug text-ink sm:text-2xl">
+              {step.headline}
+            </h3>
+
+            <div class="relative mt-5 h-28 overflow-hidden rounded-xl border border-rail bg-paper sm:h-32">
+              <span class:list={['pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl', s.glowA]} aria-hidden="true"></span>
+              <span class:list={['pointer-events-none absolute -bottom-6 -left-4 h-16 w-16 rounded-full blur-2xl', s.glowB]} aria-hidden="true"></span>
+
+              <div class="relative flex h-full flex-wrap content-center items-center gap-2 p-4">
+                {step.chips.map((chip, ci) => (
+                  <span class:list={[
+                      'inline-flex items-center gap-1.5 rounded-full border border-rail bg-paper px-3 py-1.5 text-xs font-medium text-ink shadow-sm',
+                      ci % 2 === 1 ? '-translate-y-1' : 'translate-y-1',
+                      ci % 3 === 2 ? 'rotate-1' : ci % 3 === 1 ? '-rotate-1' : '',
+                    ]}
+                  >
+                    <chip.icon class:list={['h-3.5 w-3.5', s.icon]} stroke-width="1.75" />
+                    {chip.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
+          </Card>
+        );
+      })}
     </div>
   </div>
 </section>
