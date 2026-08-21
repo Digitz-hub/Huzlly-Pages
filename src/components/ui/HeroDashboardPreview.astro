@@ -226,23 +226,31 @@ const { class: className } = Astro.props;
 </div>
 
 <style>
-  /* Scroll-scrubbed entrance animation for the bento cards — self-
-     contained to this component, deliberately separate from Hero.astro's
-     own `.reveal` (binary, unobserve-after-trigger) class so the two
-     don't collide if this component is ever placed inside another
+  /* Scroll-driven entrance animation for the bento cards — self-contained
+     to this component, deliberately separate from Hero.astro's own
+     `.reveal` (binary, unobserve-after-trigger) class so the two don't
+     collide if this component is ever placed inside another
      `.reveal`-using section.
 
-     Unlike a simple "fade in once" reveal, this is driven continuously by
-     scroll position via the `--dp-progress` custom property (0 → 1),
-     updated every scroll frame in the script below. A card ramps from 0
-     to 1 while it's still below the viewport's vertical center
-     (approaching), then LOCKS at 1 once its center reaches/passes
-     viewport-center — it stays fully revealed as it continues past center
-     and exits above, regardless of further scroll direction, and only
-     starts reverting again if it drops back below center. No transition/
-     duration values here on purpose: the scroll position itself IS the
-     timeline, so adding a CSS transition would fight the per-frame
-     updates and introduce lag/rubber-banding.
+     Direction-aware and "sticky" once revealed (see the script below for
+     the full state machine):
+       1. Scrolling down — a card ramps its `--dp-progress` custom
+          property from 0 to 1 as it enters from the BOTTOM of the
+          viewport, completing the reveal by the time it reaches
+          viewport-center.
+       2. Continuing to scroll past that point — including all the way
+          past the TOP of the viewport — the card stays locked at
+          `--dp-progress: 1` (fully visible, no exit-animation), no matter
+          which direction the user then scrolls.
+       3. Only scrolling back far enough that the card drops entirely
+          below the BOTTOM edge of the viewport again resets it, so it can
+          replay the same enter-from-bottom animation next time it comes
+          back into view.
+     No CSS transition/duration values here on purpose: the scroll
+     position itself IS the timeline during the ramp phase, so a
+     transition would fight the per-frame updates and introduce lag. The
+     "locked" state needs no transition either since it's a hard snap to
+     the fully-revealed value.
 
      Card 1 + Card 3 slide in from the left, Card 2 + Card 4 from the
      right, Card 5 (full-width bottom row) rises from below instead of
@@ -274,13 +282,22 @@ const { class: className } = Astro.props;
 <script>
   // Scoped to this component's own root via [data-dashboard-preview] so it
   // never touches other `.reveal`/observer setups elsewhere on the page
-  // (e.g. Hero.astro's). Computes each card's signed distance from the
-  // viewport's vertical center on every scroll frame (rAF-throttled) and
-  // writes a 0–1 `--dp-progress` value the CSS above reads directly.
-  // Asymmetric on purpose: progress only ramps while the card is still
-  // below center (approaching) and locks at 1 once it reaches/passes
-  // center, so continuing to scroll past it — in either direction —
-  // doesn't un-reveal it; it only reverts if it drops back below center.
+  // (e.g. Hero.astro's).
+  //
+  // Each card carries its own `revealed` boolean (WeakMap-keyed, no DOM
+  // attributes needed) — this is what makes the behavior direction-aware
+  // rather than a pure function of current position:
+  //   - revealed === false: card is in its "entering" phase. Progress is
+  //     computed live from how far its center has travelled from the
+  //     BOTTOM edge of the viewport (progress 0) to viewport-center
+  //     (progress 1). Once it reaches 1, `revealed` flips true.
+  //   - revealed === true: progress is forced to 1 unconditionally, every
+  //     frame, regardless of where the card currently sits — including
+  //     above/past the top of the viewport. It will NOT exit-animate.
+  //   - The only way back to revealed === false is the card's top edge
+  //     dropping to/past the BOTTOM of the viewport (rect.top >= viewport
+  //     height, i.e. fully below the fold again) — at that point it resets
+  //     to progress 0 so the next entrance replays from scratch.
   document.querySelectorAll('[data-dashboard-preview]').forEach((root) => {
     const cards = Array.from(root.querySelectorAll('.dp-reveal'));
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -291,31 +308,42 @@ const { class: className } = Astro.props;
     }
 
     const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+    const revealedState = new WeakMap<Element, boolean>();
 
     let ticking = false;
 
     const update = () => {
-      const viewportCenter = window.innerHeight / 2;
+      const viewportHeight = window.innerHeight;
+      const viewportCenter = viewportHeight / 2;
 
       cards.forEach((el) => {
         const rect = el.getBoundingClientRect();
-        const cardCenter = rect.top + rect.height / 2;
-        // Signed distance: positive while the card is still below
-        // viewport-center (approaching), zero/negative once its center has
-        // reached or passed viewport-center. Progress only ramps while
-        // approaching from below; once the card reaches center it's locked
-        // at 1 and stays fully revealed even as it continues past center
-        // and exits the viewport above — it only starts reverting again if
-        // it drops back below center (e.g. scrolling back down past its
-        // approach zone), not simply by being above center.
-        const distance = cardCenter - viewportCenter;
-        let progress: number;
+        const isRevealed = revealedState.get(el) ?? false;
 
-        if (distance <= 0) {
-          progress = 1;
-        } else {
-          const maxDistance = viewportCenter + rect.height / 2;
-          progress = maxDistance > 0 ? clamp(1 - distance / maxDistance, 0, 1) : 1;
+        // Fully below the fold again — reset so it can re-enter next time.
+        if (rect.top >= viewportHeight) {
+          revealedState.set(el, false);
+          (el as HTMLElement).style.setProperty('--dp-progress', '0');
+          return;
+        }
+
+        // Already locked in from a previous entrance — stay fully visible
+        // no matter where it is now (including past the top edge), and
+        // regardless of scroll direction.
+        if (isRevealed) {
+          (el as HTMLElement).style.setProperty('--dp-progress', '1');
+          return;
+        }
+
+        // Still entering: ramp from 0 (center at the bottom edge) to 1
+        // (center at viewport-center).
+        const cardCenter = rect.top + rect.height / 2;
+        const entryStart = viewportHeight;
+        const entryEnd = viewportCenter;
+        const progress = clamp((entryStart - cardCenter) / (entryStart - entryEnd), 0, 1);
+
+        if (progress >= 1) {
+          revealedState.set(el, true);
         }
 
         (el as HTMLElement).style.setProperty('--dp-progress', progress.toFixed(3));
