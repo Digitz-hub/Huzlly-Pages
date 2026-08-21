@@ -130,9 +130,10 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 
   <!-- Bottom fade-to-white — softens the hard cut where this section's
        periwinkle gradient met FeaturesSummary's solid white background.
-       Sits above the grain/scatter layers (-z-[1] vs their -z-[9]/-z-[5])
-       but still behind the in-flow content, which stacks at z-auto. -->
-  <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[1] h-40 bg-gradient-to-b from-transparent to-white sm:h-56 lg:h-64" aria-hidden="true"></div>
+       Sits above the grain (-z-[9]) but BELOW HeroScatterDecoration
+       (-z-[5]) at -z-[7], so the glass shapes keep painting on top and
+       stay fully visible/unfaded, same as before this change. -->
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[7] h-40 bg-gradient-to-b from-transparent to-white sm:h-56 lg:h-64" aria-hidden="true"></div>
 
   <!-- Glass-shape scatter decoration — see "SCATTER DECORATION" note
        above. Hidden below `lg`, matching that component's own documented
