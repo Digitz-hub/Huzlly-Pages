@@ -1,0 +1,59 @@
+/* src/styles/float-animation.css
+ *
+ * Shared "floating glass panel" drift animation — extracted from
+ * HeroScatterDecoration.astro so any component can reuse it without
+ * redefining the keyframes. Pure CSS, no JS needed (unlike
+ * scroll-reveal.css/scroll-reveal.ts, this isn't scroll-driven — it's a
+ * simple continuous loop).
+ *
+ * USAGE:
+ *   <div class="glass-float-a">...</div>
+ *   <div class="glass-float-b">...</div>
+ *   <div class="glass-float-c">...</div>
+ *   <div class="glass-float-a-reverse">...</div>  (float-a, reverse direction)
+ *   <div class="glass-float-b-fast">...</div>      (float-b, shorter duration)
+ *
+ * Three float variants (subtle drift + a touch of added rotation at the
+ * midpoint, looping). `-a-reverse` and `-b-fast` are just the same
+ * keyframes replayed in reverse / at a different speed rather than
+ * one-off keyframes — reuse the base three (`glass-float-a/b/c`) for new
+ * shapes, or add a fourth keyframe here following the same pattern if a
+ * genuinely new drift path is needed.
+ *
+ * NOTE — don't combine with scroll-reveal.css's `--dp-progress`-driven
+ * transform on the SAME element: both this animation and the scroll-
+ * reveal system set `transform`, and a running CSS `animation` always
+ * wins that property over a plain declared value, so the reveal slide
+ * would get silently overridden. If a shape needs both effects, wrap it
+ * in two nested elements — outer for `.dp-reveal*` (scroll-reveal.css),
+ * inner for `.glass-float-*` (this file).
+ */
+
+@keyframes glass-float-a {
+  0%, 100% { transform: translate(0, 0) rotate(-18deg) skewY(-4deg); }
+  50% { transform: translate(10px, -16px) rotate(-14deg) skewY(-4deg); }
+}
+@keyframes glass-float-b {
+  0%, 100% { transform: translate(0, 0) rotate(22deg) skewX(-6deg); }
+  50% { transform: translate(-12px, 14px) rotate(26deg) skewX(-6deg); }
+}
+@keyframes glass-float-c {
+  0%, 100% { transform: translate(0, 0) rotate(35deg); }
+  50% { transform: translate(8px, -10px) rotate(30deg); }
+}
+
+.glass-float-a { animation: glass-float-a 9s ease-in-out infinite; }
+.glass-float-b { animation: glass-float-b 11s ease-in-out infinite; }
+.glass-float-c { animation: glass-float-c 8s ease-in-out infinite; }
+.glass-float-a-reverse { animation: glass-float-a 10s ease-in-out infinite reverse; }
+.glass-float-b-fast { animation: glass-float-b 7.5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-float-a,
+  .glass-float-b,
+  .glass-float-c,
+  .glass-float-a-reverse,
+  .glass-float-b-fast {
+    animation: none;
+  }
+}
