@@ -7,10 +7,15 @@
 //
 // v2.1 card redesign (per user-supplied inspiration, CLAUDE.md Section 4.5):
 // "how it works" cards move from the plain icon-chip layout to a numbered-
-// badge + headline + floating "chip cluster" illustration + description
-// layout. Structure/composition is from the inspiration reference; palette
-// stays on the sitewide ink/paper/rail + signal-color system so it reads as
-// this site's design language, not a copy-pasted foreign look.
+// badge + headline + bespoke per-card SVG illustration + floating chip
+// layout. Structure/composition is from the inspiration reference
+// (huzlly-how-it-works.html); palette stays on the sitewide ink/paper/rail
+// + signal-color system so it reads as this site's design language, not a
+// copy-pasted foreign look. Each card's illustration lives in its own
+// component under ./how-it-works/ (GetStartedIllustration.astro,
+// WorkIllustration.astro, GetPaidIllustration.astro, GrowIllustration.astro)
+// — the shared Card/badge/headline/glow/chip/description markup below is
+// written once and driven by the `stages` data array.
 //
 // Content note: copy moves from the granular automation-trigger framing
 // (Proposal/Contract/Invoice/Project) to a 4-stage lifecycle framing
@@ -44,15 +49,33 @@ import {
 } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import Card from '../ui/Card.astro';
+import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
+import WorkIllustration from './how-it-works/WorkIllustration.astro';
+import GetPaidIllustration from './how-it-works/GetPaidIllustration.astro';
+import GrowIllustration from './how-it-works/GrowIllustration.astro';
 
 // Full literal class strings per signal (Tailwind JIT needs literal
 // substrings to detect classes — no template-literal color interpolation).
-const signalStyles: Record<string, { glowA: string; glowB: string; icon: string }> = {
-  blue: { glowA: 'bg-blue-50/80', glowB: 'bg-blue-50/40', icon: 'text-blue-600' },
-  teal: { glowA: 'bg-teal-600/10', glowB: 'bg-teal-600/5', icon: 'text-teal-600' },
-  amber: { glowA: 'bg-amber-500/10', glowB: 'bg-amber-500/5', icon: 'text-amber-500' },
-  ink: { glowA: 'bg-rail/60', glowB: 'bg-rail/30', icon: 'text-ink/70' },
+// chipBg pairs with `icon` to color each card's floating chip badges
+// (e.g. blue chips = bg-blue-50 + text-blue-600).
+const signalStyles: Record<string, { glowA: string; glowB: string; icon: string; chipBg: string }> = {
+  blue: { glowA: 'bg-blue-50/80', glowB: 'bg-blue-50/40', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
+  teal: { glowA: 'bg-teal-600/10', glowB: 'bg-teal-600/5', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
+  amber: { glowA: 'bg-amber-500/10', glowB: 'bg-amber-500/5', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
+  ink: { glowA: 'bg-rail/60', glowB: 'bg-rail/30', icon: 'text-ink/70', chipBg: 'bg-rail/40' },
 };
+
+// Common chip-pill classes, shared by every card. Sizing is intentionally
+// mobile-first and compacts below the `sm:` breakpoint (Step 6 responsive
+// pass) — at `sm:` and above every value matches the pre-refactor markup
+// exactly (px-3 py-1.5 text-xs, h-5 w-5 icon circle, h-3 w-3 icon glyph,
+// gap-1.5), so tablet/desktop look is unchanged. Below `sm:`, padding/
+// gap/font/icon size step down one notch so chips don't crowd each other
+// or the illustration on narrow phones (<400px).
+const chipClasses =
+  'chip-float-el pointer-events-none absolute inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-medium text-ink shadow-sm backdrop-blur-sm';
+const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
+const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
 
 const stages = [
   {
@@ -61,10 +84,11 @@ const stages = [
     headline: 'Turn prospects into projects.',
     body: 'Create professional proposals, get agreements signed, and set everything up to start working with your client.',
     signal: 'blue',
+    illustration: GetStartedIllustration,
     chips: [
-      { icon: FileText, label: 'Proposal' },
-      { icon: PenTool, label: 'Contract' },
-      { icon: Rocket, label: 'Project Setup' },
+      { icon: FileText, label: 'Proposal', position: 'left-3.5 top-3.5', delay: '0s' },
+      { icon: PenTool, label: 'Contract', position: 'right-4 top-16', delay: '0.6s' },
+      { icon: Rocket, label: 'Project Setup', position: 'bottom-4 left-10', delay: '1.2s' },
     ],
   },
   {
@@ -73,11 +97,12 @@ const stages = [
     headline: 'Manage every project in one place.',
     body: 'Organize projects and tasks, track your time, and keep clients updated with their own dedicated portal.',
     signal: 'teal',
+    illustration: WorkIllustration,
     chips: [
-      { icon: FolderKanban, label: 'Projects' },
-      { icon: CheckSquare, label: 'Tasks' },
-      { icon: Clock, label: 'Time Tracking' },
-      { icon: Users, label: 'Client Portal' },
+      { icon: FolderKanban, label: 'Projects', position: 'left-3.5 top-3.5', delay: '0s' },
+      { icon: CheckSquare, label: 'Tasks', position: 'right-4 top-12', delay: '0.4s' },
+      { icon: Clock, label: 'Time Tracking', position: 'bottom-14 left-3', delay: '0.9s' },
+      { icon: Users, label: 'Client Portal', position: 'bottom-4 right-8', delay: '1.3s' },
     ],
   },
   {
@@ -86,10 +111,11 @@ const stages = [
     headline: 'Finish the work. Get paid.',
     body: 'Send invoices, collect payments, and keep your billing organized from project completion to payment.',
     signal: 'amber',
+    illustration: GetPaidIllustration,
     chips: [
-      { icon: Receipt, label: 'Invoice' },
-      { icon: CreditCard, label: 'Payment' },
-      { icon: Package, label: 'Delivery' },
+      { icon: Receipt, label: 'Invoice', position: 'right-4 top-3.5', delay: '0s' },
+      { icon: CreditCard, label: 'Payment', position: 'bottom-14 right-3.5', delay: '0.5s' },
+      { icon: Package, label: 'Delivery', position: 'bottom-4 left-4', delay: '1s' },
     ],
   },
   {
@@ -98,10 +124,11 @@ const stages = [
     headline: 'Turn great work into repeat business.',
     body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
     signal: 'ink',
+    illustration: GrowIllustration,
     chips: [
-      { icon: Users, label: 'Clients' },
-      { icon: Archive, label: 'Past Projects' },
-      { icon: Repeat, label: 'Repeat Work' },
+      { icon: Users, label: 'Clients', position: 'left-4 top-3.5', delay: '0s' },
+      { icon: Archive, label: 'Past Projects', position: 'right-5 top-4', delay: '0.5s' },
+      { icon: Repeat, label: 'Repeat Work', position: 'bottom-4 left-1/2 -translate-x-1/2', delay: '1s' },
     ],
   },
 ];
@@ -135,6 +162,8 @@ const reasons = [
     <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
       {stages.map((step) => {
         const s = signalStyles[step.signal];
+        const Illustration = step.illustration;
+
         return (
           <Card variant="flat-lift">
             <div class="flex items-center gap-3">
@@ -148,23 +177,30 @@ const reasons = [
               {step.headline}
             </h3>
 
-            <div class="relative mt-5 h-28 overflow-hidden rounded-xl border border-rail bg-paper sm:h-32">
-              <span class:list={['pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl', s.glowA]} aria-hidden="true"></span>
-              <span class:list={['pointer-events-none absolute -bottom-6 -left-4 h-16 w-16 rounded-full blur-2xl', s.glowB]} aria-hidden="true"></span>
+            <div class="relative mt-5 h-48 overflow-hidden rounded-xl border border-rail bg-gradient-to-b from-paper to-white sm:h-56">
+              <span
+                class:list={['glow-pulse-el pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full blur-3xl', s.glowA]}
+                aria-hidden="true"
+              ></span>
+              <span
+                class:list={['glow-pulse-el pointer-events-none absolute -bottom-8 -left-6 h-24 w-24 rounded-full blur-3xl', s.glowB]}
+                aria-hidden="true"
+                style="animation-delay: 1.5s"
+              ></span>
 
-              <div class="relative flex h-full flex-wrap content-center items-center gap-2 p-4">
-                {step.chips.map((chip, ci) => (
-                  <span class:list={[
-                      'inline-flex items-center gap-1.5 rounded-full border border-rail bg-paper px-3 py-1.5 text-xs font-medium text-ink shadow-sm',
-                      ci % 2 === 1 ? '-translate-y-1' : 'translate-y-1',
-                      ci % 3 === 2 ? 'rotate-1' : ci % 3 === 1 ? '-rotate-1' : '',
-                    ]}
-                  >
-                    <chip.icon class:list={['h-3.5 w-3.5', s.icon]} stroke-width="1.75" />
-                    {chip.label}
+              <Illustration />
+
+              {step.chips.map((chip) => (
+                <div
+                  class:list={[chipClasses, chip.position]}
+                  style={`animation-delay: ${chip.delay}`}
+                >
+                  <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
+                    <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
                   </span>
-                ))}
-              </div>
+                  {chip.label}
+                </div>
+              ))}
             </div>
 
             <p class="mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
