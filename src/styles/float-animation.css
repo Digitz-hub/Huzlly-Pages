@@ -10,15 +10,30 @@
  *   <div class="glass-float-a">...</div>
  *   <div class="glass-float-b">...</div>
  *   <div class="glass-float-c">...</div>
- *   <div class="glass-float-a-reverse">...</div>  (float-a, reverse direction)
- *   <div class="glass-float-b-fast">...</div>      (float-b, shorter duration)
+ *   <div class="glass-float-a-mirror">...</div>       (float-a, mirrored to the opposite rotate/skew sign)
+ *   <div class="glass-float-b-mirror">...</div>       (float-b, mirrored to the opposite rotate/skew sign)
+ *   <div class="glass-float-b-mirror-fast">...</div>  (float-b-mirror, shorter duration)
  *
- * Three float variants (subtle drift + a touch of added rotation at the
- * midpoint, looping). `-a-reverse` and `-b-fast` are just the same
- * keyframes replayed in reverse / at a different speed rather than
- * one-off keyframes — reuse the base three (`glass-float-a/b/c`) for new
- * shapes, or add a fourth keyframe here following the same pattern if a
- * genuinely new drift path is needed.
+ * BUG FIX (this pass): `-a-reverse` and `-b-fast` used to just replay
+ * glass-float-a/b's OWN keyframes (reverse direction / faster timing)
+ * while the shape's static Tailwind rotate-[...]/skew-*-[...] classes
+ * claimed a different angle entirely. Because a running CSS `animation`
+ * always wins the `transform` property over a plain utility class, those
+ * static angles were dead — the shapes silently snapped to float-a/b's
+ * own hardcoded rotate/skew instead of the angle written in the markup.
+ * Fixed by giving each mirrored shape its own keyframe that actually
+ * matches its markup's starting rotate/skew (`-a-mirror`,
+ * `-b-mirror`, `-b-mirror-fast` below) instead of reusing float-a/b's
+ * values under a misleading name. Same drift amplitude/duration as
+ * before, just centered on the correct angle.
+ *
+ * Reuse the base three (`glass-float-a/b/c`) or the mirrored variants
+ * for new shapes; add a further keyframe here following the same
+ * pattern if a genuinely new drift path (not a mirror of an existing
+ * one) is needed. Whenever a new variant is added, its keyframe's own
+ * rotate/skew values MUST match the static Tailwind rotate-[...]/
+ * skew-*-[...] classes on the element it's applied to — see the bug
+ * above for what goes wrong otherwise.
  *
  * NOTE — don't combine with scroll-reveal.css's `--dp-progress`-driven
  * transform on the SAME element: both this animation and the scroll-
@@ -42,18 +57,36 @@
   50% { transform: translate(8px, -10px) rotate(30deg); }
 }
 
+/* Mirrored variants — same drift shape/amplitude as glass-float-a/b,
+   but centered on the mirrored shape's own static rotate/skew instead
+   of reusing a/b's values (see BUG FIX note above). */
+@keyframes glass-float-a-mirror {
+  0%, 100% { transform: translate(0, 0) rotate(-12deg) skewY(5deg); }
+  50% { transform: translate(-10px, 16px) rotate(-8deg) skewY(5deg); }
+}
+@keyframes glass-float-b-mirror {
+  0%, 100% { transform: translate(0, 0) rotate(-8deg) skewX(-10deg); }
+  50% { transform: translate(-12px, 14px) rotate(-4deg) skewX(-10deg); }
+}
+@keyframes glass-float-b-mirror-fast {
+  0%, 100% { transform: translate(0, 0) rotate(8deg) skewX(10deg); }
+  50% { transform: translate(12px, -14px) rotate(4deg) skewX(10deg); }
+}
+
 .glass-float-a { animation: glass-float-a 9s ease-in-out infinite; }
 .glass-float-b { animation: glass-float-b 11s ease-in-out infinite; }
 .glass-float-c { animation: glass-float-c 8s ease-in-out infinite; }
-.glass-float-a-reverse { animation: glass-float-a 10s ease-in-out infinite reverse; }
-.glass-float-b-fast { animation: glass-float-b 7.5s ease-in-out infinite; }
+.glass-float-a-mirror { animation: glass-float-a-mirror 10s ease-in-out infinite; }
+.glass-float-b-mirror { animation: glass-float-b-mirror 11s ease-in-out infinite; }
+.glass-float-b-mirror-fast { animation: glass-float-b-mirror-fast 7.5s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .glass-float-a,
   .glass-float-b,
   .glass-float-c,
-  .glass-float-a-reverse,
-  .glass-float-b-fast {
+  .glass-float-a-mirror,
+  .glass-float-b-mirror,
+  .glass-float-b-mirror-fast {
     animation: none;
   }
 }
