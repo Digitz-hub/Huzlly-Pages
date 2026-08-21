@@ -28,21 +28,23 @@
 // reverted at the user's request — this file is back to the plain static
 // glass pill with no JS-driven motion beyond the mobile menu toggle.
 //
-// HOMEPAGE HERO-OVERLAY FIX (this pass, homepage-scoped per the task, but
-// Nav.astro is a sitewide layout partial so the effect applies everywhere
-// it's rendered): switched the outer <header> from `sticky` to `fixed`.
-// `sticky` still reserves its own box in normal document flow — it occupies
-// real height at the top of the page, which pushed Hero.astro's <section>
-// down and left a visible seam between the header's own space (bg-paper,
-// no gradient) and the hero's gradient starting only below it. `fixed`
-// removes the header from flow entirely, so whatever section is first in
-// the page (Hero.astro on the homepage) now starts at y=0 and the header
-// floats on top of its gradient instead of sitting above it. The pill
-// itself was already `bg-transparent` with `backdrop-blur-xl` and a
-// `border-white/60` hairline (a frosted-glass treatment, not a solid/opaque
-// fill), so no background change was needed to satisfy "transparent /
-// semi-blurred instead of opaque" — only the positioning was the actual
-// cause of the seam. No content, links, or nav-item styling touched.
+// HERO DARK-THEME COLOR FLIP (this pass): Hero.astro's background changed
+// from light bg-paper to a dark bg-ink + blue-600 radial glow in an
+// earlier pass, which broke this header's legibility — every color below
+// was still tuned for a light hero (text-ink, bg-blue-50 active state,
+// bg-white/85 mobile sheet, border-white/60). Against the now-dark hero,
+// dark ink text on a near-transparent glass pill was reading as
+// low-contrast/invisible. This pass keeps the glass MECHANISM exactly as-
+// is (bg-transparent, backdrop-blur-xl, hairline border, shadow — no
+// structural change) and flips only the color values: text-ink → text-
+// paper (and its /60, /70 opacity steps), the active-link bg-blue-50 →
+// bg-blue-500/15 (a translucent tint since a flat pale blue fill would
+// itself be illegible on dark glass), hover bg-black/[0.03] → bg-white/
+// [0.06], border-white/60 → border-white/15 (a light hairline visible
+// enough on dark to read as "glass edge" without turning opaque), and the
+// mobile sheet's bg-white/85 → bg-ink/80 (still translucent + blurred,
+// just dark-glass instead of light-glass, to match the pill above it).
+// Nothing about layout, structure, or the Button component changed.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -65,10 +67,10 @@ const isActive = (href: string) => {
 <header class="fixed inset-x-0 top-4 z-50 px-4 sm:top-6 sm:px-6">
   <div class="relative mx-auto max-w-5xl">
     <!-- Floating glass pill bar -->
-    <div class="flex h-14 items-center justify-between rounded-full border border-white/60 bg-transparent pl-5 pr-2 shadow-lg shadow-black/5 backdrop-blur-xl sm:h-16 sm:pl-6 sm:pr-2.5">
+    <div class="flex h-14 items-center justify-between rounded-full border border-white/15 bg-transparent pl-5 pr-2 shadow-lg shadow-black/20 backdrop-blur-xl sm:h-16 sm:pl-6 sm:pr-2.5">
       <!-- Left: Brand -->
       <a href="/"
-        class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-ink transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
+        class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
       >
         <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
         Huzlly
@@ -80,8 +82,8 @@ const isActive = (href: string) => {
           <a href={link.href}
             class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-50 text-blue-600'
-                : 'text-ink/60 hover:text-ink hover:bg-black/[0.03]'
+                ? 'bg-blue-500/15 text-blue-400'
+                : 'text-paper/60 hover:text-paper hover:bg-white/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
@@ -101,7 +103,7 @@ const isActive = (href: string) => {
       <!-- Mobile Menu Toggle -->
       <button id="nav-toggle"
         type="button"
-        class="inline-flex items-center justify-center rounded-full p-2.5 text-ink hover:bg-black/[0.04] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 md:hidden"
+        class="inline-flex items-center justify-center rounded-full p-2.5 text-paper hover:bg-white/[0.08] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 md:hidden"
         aria-controls="mobile-menu"
         aria-expanded="false"
         aria-label="Toggle navigation menu"
@@ -113,15 +115,15 @@ const isActive = (href: string) => {
 
     <!-- Mobile Menu Sheet — floating glass card below the pill -->
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/60 bg-white/85 p-3 shadow-lg shadow-black/5 backdrop-blur-xl md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-ink/80 p-3 shadow-lg shadow-black/20 backdrop-blur-xl md:hidden"
     >
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
             class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-50 text-blue-600'
-                : 'text-ink/70 hover:text-ink hover:bg-black/[0.03]'
+                ? 'bg-blue-500/15 text-blue-400'
+                : 'text-paper/70 hover:text-paper hover:bg-white/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
