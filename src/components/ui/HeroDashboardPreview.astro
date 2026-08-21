@@ -145,10 +145,10 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-3', className]}>
+<div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-3', className]} data-dashboard-preview>
 
   <!-- Card 1: Automated Pipeline (tall, left column, spans both top rows) -->
-  <div class="flex flex-col rounded-2xl border border-rail bg-white p-6 shadow-sm lg:row-span-2">
+  <div class="dp-reveal dp-reveal-left flex flex-col rounded-2xl border border-rail bg-white p-6 shadow-sm lg:row-span-2">
     <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-sm">
       <Zap class="w-6 h-6 text-white" stroke-width="1.5" aria-hidden="true" />
     </div>
@@ -166,7 +166,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 2: Replaces 5+ apps (middle column, top row) -->
-  <div class="rounded-2xl border border-rail bg-white p-6 shadow-sm">
+  <div class="dp-reveal dp-reveal-right rounded-2xl border border-rail bg-white p-6 shadow-sm">
     <h4 class="mb-4 text-lg font-semibold text-ink">Replaces 5+ apps</h4>
     <div class="mb-4 flex flex-wrap gap-2">
       <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
@@ -190,7 +190,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 3: Project Timesheet (middle column, bottom row) -->
-  <div class="rounded-2xl border border-rail bg-white p-6 shadow-sm">
+  <div class="dp-reveal dp-reveal-left rounded-2xl border border-rail bg-white p-6 shadow-sm">
     <h4 class="text-lg font-semibold text-ink">Project Timesheet</h4>
     <p class="mb-3 text-sm text-ink/50">Per-task time tracking</p>
     <div class="flex flex-wrap items-baseline gap-2">
@@ -201,7 +201,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 4: Lower cost / pricing (short, wide — spans both middle/right columns, row 2 only) -->
-  <div class="relative flex flex-col overflow-hidden rounded-2xl border border-rail bg-white p-6 shadow-sm lg:col-span-2">
+  <div class="dp-reveal dp-reveal-right relative flex flex-col overflow-hidden rounded-2xl border border-rail bg-white p-6 shadow-sm lg:col-span-2">
     <div class="pointer-events-none absolute -right-2 -top-2 h-24 w-24 opacity-40 [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)] [background-size:12px_12px] [mask-image:linear-gradient(225deg,black_10%,transparent_65%)]" aria-hidden="true"></div>
     <div class="flex flex-wrap items-baseline gap-3">
       <span class="font-display text-6xl font-semibold text-amber-500">50–70%</span>
@@ -212,7 +212,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 5: Client Portal (bottom row, full width — absorbs the dropped 6th cell, see file-header note) -->
-  <div class="flex flex-col items-start gap-4 rounded-2xl border border-rail bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
+  <div class="dp-reveal dp-reveal-up flex flex-col items-start gap-4 rounded-2xl border border-rail bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
     <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-ink shadow-sm">
       <Lock class="w-6 h-6 text-paper" stroke-width="1.5" aria-hidden="true" />
     </div>
@@ -224,3 +224,70 @@ const { class: className } = Astro.props;
   </div>
 
 </div>
+
+<style>
+  /* Scroll-in entrance animation for the bento cards — self-contained to
+     this component, deliberately separate from Hero.astro's own `.reveal`
+     (top-only, translateY) class so the two don't collide if this
+     component is ever placed inside another `.reveal`-using section.
+     Card 1 + Card 3 slide in from the left, Card 2 + Card 4 from the
+     right, Card 5 (full-width bottom row) fades up instead of sideways
+     since a left/right slide reads oddly on a card spanning the entire
+     grid width. */
+  .dp-reveal {
+    opacity: 0;
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    will-change: transform, opacity;
+  }
+  .dp-reveal-left {
+    transform: translateX(-48px);
+  }
+  .dp-reveal-right {
+    transform: translateX(48px);
+  }
+  .dp-reveal-up {
+    transform: translateY(32px);
+  }
+  .dp-reveal.dp-is-visible {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dp-reveal {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Scoped to this component's own root via [data-dashboard-preview] so it
+  // never touches other `.reveal`/observer setups elsewhere on the page
+  // (e.g. Hero.astro's). Runs once per card — unobserves immediately after
+  // its entrance to avoid re-triggering on scroll-up/scroll-down.
+  document.querySelectorAll('[data-dashboard-preview]').forEach((root) => {
+    const cards = root.querySelectorAll('.dp-reveal');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      cards.forEach((el) => el.classList.add('dp-is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('dp-is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    cards.forEach((el) => observer.observe(el));
+  });
+</script>
