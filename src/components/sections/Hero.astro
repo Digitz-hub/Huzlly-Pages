@@ -113,12 +113,30 @@
 // AutomationNotificationCard.astro's own header comment — confirm with
 // design before shipping, or swap it for one of the three approved tones.
 
+// SIZE INCREASE (this pass): per direct request, the hero read as too
+// short — content sat near the top with a large, empty dark gap below it
+// before the next section started. Made the section genuinely taller and
+// vertically centered its content within that height, rather than just
+// padding the bottom further (which would've pushed content down without
+// centering it): added `min-h-[85vh] sm:min-h-[90vh] lg:min-h-screen` so
+// the section always reserves a large, viewport-proportional height
+// regardless of content length, plus `flex flex-col items-center
+// justify-center` so the in-flow content column (badge → headline →
+// CTAs) centers vertically inside that reserved height instead of
+// sitting flush against the top padding. The absolutely-positioned decor
+// (grain, scatter, floating cards) is unaffected by this — flex/justify
+// only apply to in-flow children, and all three of those are `absolute`.
+// Existing top/bottom padding (pt-24/28/32, pb-28/40) is kept as-is on
+// top of the new min-height — it still does its original job of keeping
+// content clear of the fixed header and giving the floating cards their
+// anchor box, just inside a taller overall section now.
+
 import { ChevronRight, Check, FileText, DollarSign, FolderOpen } from 'lucide-astro';
 import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_100%_100%_at_50%_0%,theme(colors.blue.600/70%),theme(colors.blue.900/40%)_45%,theme(colors.ink)_75%)] px-4 pt-24 pb-28 sm:px-6 sm:pt-28 sm:pb-40 lg:px-8 lg:pt-32">
+<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_100%_100%_at_50%_0%,theme(colors.blue.600/70%),theme(colors.blue.900/40%)_45%,theme(colors.ink)_75%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
   <!-- Grain/noise texture overlay — see "Decorative pattern note" above.
        Purely decorative, inert SVG data-URI, no network request. Sits
        between the section's own gradient background and
