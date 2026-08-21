@@ -133,7 +133,6 @@
 
 import { ChevronRight, Check, FileText, DollarSign, FolderOpen } from 'lucide-astro';
 import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
-import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
 <section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_90%_85%_at_50%_0%,theme(colors.blue.600/65%),theme(colors.blue.900/35%)_40%,theme(colors.ink)_68%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-24 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-28 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-32">
@@ -145,11 +144,8 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        for correct paint order inside this section's `isolate` context. -->
   <div class="hero-grain pointer-events-none absolute inset-0 -z-[9]" aria-hidden="true"></div>
 
-  <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
-       floating cards below. Sits above the cloud-blur backdrop (-z-10)
-       and below the centered content, per its own -z-[5]. Hidden below
-       `lg` alongside the cards it points at. -->
-  <HeroScatterDecoration class="hidden lg:block" />
+  <!-- HeroScatterDecoration removed per direct request (stars/dots
+       layer no longer wanted in the hero). -->
 
   <div class="relative mx-auto max-w-2xl text-center">
     <a
