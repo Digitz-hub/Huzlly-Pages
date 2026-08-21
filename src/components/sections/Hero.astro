@@ -14,17 +14,32 @@
 // fixed as always, but base/text roles flip since the section background
 // is now dark ink instead of paper.
 //
-// Decorative pattern note: previously a flat 2-color diagonal linear
-// gradient (blue-600 → amber-500, both /10, over bg-paper). Replaced this
-// pass with a dark radial glow per direct request: bg-ink base with a
-// single amber-500 radial glow centered behind the headline/subtext
-// column (not in a corner) — `radial-gradient(ellipse ... at 50% 35%,
-// amber-500/20%, transparent)`, painted straight on the <section>'s own
-// background via an arbitrary-value bg-[...] utility. No separate
-// decorative div, no blur, no image asset. 50% 35% (not 50% 50%) sits the
-// glow's center slightly above true vertical center so it lands behind
-// the eyebrow/headline/subtext text block rather than behind the CTA row
-// below it.
+// Decorative pattern note: previous pass here was a center-radial amber
+// glow (`radial-gradient(ellipse 60% 50% at 50% 35%, amber-500/20%,
+// transparent)`) behind the headline. Replaced this pass per a
+// user-supplied reference screenshot (Astra SaaS template hero): a
+// TOP-EMANATING glow — light appears to originate above the section and
+// fall downward, rather than sitting centered behind the text — plus a
+// subtle film-grain/noise texture layered over it for depth (the
+// reference reads as "glass/premium," not a flat gradient). Color swapped
+// from the reference's green to this site's own blue-600 accent (already
+// used sitewide for the badge/CTA), per direct request — same glow
+// shape/mechanics, different hue.
+//
+// Implementation: two layers, both painted behind the content, in this
+// order (back to front):
+//   1. `bg-ink` + `bg-[radial-gradient(...)]` on the <section> itself —
+//      an ellipse centered at 50% -5% (i.e. its center sits just ABOVE
+//      the section's top edge) so only the glow's lower half is visible,
+//      reading as light falling from above rather than radiating from a
+//      point inside the hero. blue-600/35% fading to transparent by 70%
+//      of the ellipse's radius.
+//   2. `.hero-grain` — an absolutely-positioned, full-inset div using an
+//      inline SVG feTurbulence data-URI as its background-image, very
+//      low opacity (0.05) with `mix-blend-mode: overlay` so it reads as
+//      texture, not visible noise. Given `-z-[9]` (see stacking note
+//      below) so it sits between the section's own background and
+//      HeroScatterDecoration's `-z-[5]` layer.
 //
 // TEXT/SURFACE COLOR FLIP (this pass, required by the dark background):
 // every ink/paper role in this section's markup was flipped so content
@@ -110,7 +125,15 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_60%_50%_at_50%_35%,theme(colors.amber.500/20%),transparent)] px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
+<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_75%_55%_at_50%_-5%,theme(colors.blue.600/35%),transparent_70%)] px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
+  <!-- Grain/noise texture overlay — see "Decorative pattern note" above.
+       Purely decorative, inert SVG data-URI, no network request. Sits
+       between the section's own gradient background and
+       HeroScatterDecoration (-z-[5]) per the stacking order comment
+       above; -z-[9] is arbitrary but must stay more negative than -z-[5]
+       for correct paint order inside this section's `isolate` context. -->
+  <div class="hero-grain pointer-events-none absolute inset-0 -z-[9]" aria-hidden="true"></div>
+
   <!-- Scatter decoration — dots + hand-drawn doodle arrows tied to the
        floating cards below. Sits above the cloud-blur backdrop (-z-10)
        and below the centered content, per its own -z-[5]. Hidden below
@@ -281,6 +304,19 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 </section>
 
 <style>
+  /* Grain/noise texture overlay — inline SVG feTurbulence data-URI,
+     tiled at 120x120px. opacity 0.05 + mix-blend-mode: overlay keeps it
+     at a "felt, not seen" level (matches the reference screenshot's
+     glass/premium texture) rather than visible static. Purely
+     decorative — see the file-header "Decorative pattern note" and the
+     inline comment on the .hero-grain div above for context. */
+  .hero-grain {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+  }
+
   .reveal {
     opacity: 0;
     transform: translateY(14px);
