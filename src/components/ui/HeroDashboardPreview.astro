@@ -226,38 +226,46 @@ const { class: className } = Astro.props;
 </div>
 
 <style>
-  /* Scroll-in entrance animation for the bento cards — self-contained to
-     this component, deliberately separate from Hero.astro's own `.reveal`
-     (top-only, translateY) class so the two don't collide if this
-     component is ever placed inside another `.reveal`-using section.
+  /* Scroll-scrubbed entrance animation for the bento cards — self-
+     contained to this component, deliberately separate from Hero.astro's
+     own `.reveal` (binary, unobserve-after-trigger) class so the two
+     don't collide if this component is ever placed inside another
+     `.reveal`-using section.
+
+     Unlike a simple "fade in once" reveal, this is driven continuously by
+     scroll position via the `--dp-progress` custom property (0 → 1),
+     updated every scroll frame in the script below. Progress is 0 when a
+     card is at the edge of the viewport and reaches 1 when the card's own
+     center aligns with the viewport's vertical center — so each card's
+     animation is exactly as complete as it is close to screen-center,
+     and scrolling back down un-completes it at the same rate, in either
+     direction. No transition/duration values here on purpose: the scroll
+     position itself IS the timeline, so adding a CSS transition would
+     fight the per-frame updates and introduce lag/rubber-banding.
+
      Card 1 + Card 3 slide in from the left, Card 2 + Card 4 from the
-     right, Card 5 (full-width bottom row) fades up instead of sideways
-     since a left/right slide reads oddly on a card spanning the entire
-     grid width. */
+     right, Card 5 (full-width bottom row) rises from below instead of
+     sideways since a left/right slide reads oddly on a card spanning the
+     entire grid width. */
   .dp-reveal {
-    opacity: 0;
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    --dp-progress: 0;
+    opacity: var(--dp-progress);
     will-change: transform, opacity;
   }
   .dp-reveal-left {
-    transform: translateX(-48px);
+    transform: translateX(calc((1 - var(--dp-progress)) * -48px));
   }
   .dp-reveal-right {
-    transform: translateX(48px);
+    transform: translateX(calc((1 - var(--dp-progress)) * 48px));
   }
   .dp-reveal-up {
-    transform: translateY(32px);
-  }
-  .dp-reveal.dp-is-visible {
-    opacity: 1;
-    transform: translate(0, 0);
+    transform: translateY(calc((1 - var(--dp-progress)) * 32px));
   }
 
   @media (prefers-reduced-motion: reduce) {
     .dp-reveal {
       opacity: 1 !important;
       transform: none !important;
-      transition: none !important;
     }
   }
 </style>
@@ -265,29 +273,54 @@ const { class: className } = Astro.props;
 <script>
   // Scoped to this component's own root via [data-dashboard-preview] so it
   // never touches other `.reveal`/observer setups elsewhere on the page
-  // (e.g. Hero.astro's). Bidirectional: toggles the visibility class both
-  // ways as each card crosses the threshold, so scrolling back up reverses
-  // the entrance animation instead of staying stuck visible (unlike
-  // Hero.astro's own one-shot `.reveal`, which unobserves after first
-  // trigger — intentionally different behavior here per this task's ask).
+  // (e.g. Hero.astro's). Computes each card's distance from the viewport's
+  // vertical center on every scroll frame (rAF-throttled) and writes that
+  // as a 0–1 `--dp-progress` value the CSS above reads directly — a true
+  // scroll-scrubbed animation rather than a one-shot IntersectionObserver
+  // toggle, so it plays forward AND backward smoothly as the card moves
+  // toward/away from screen-center in either scroll direction.
   document.querySelectorAll('[data-dashboard-preview]').forEach((root) => {
-    const cards = root.querySelectorAll('.dp-reveal');
+    const cards = Array.from(root.querySelectorAll('.dp-reveal'));
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-      cards.forEach((el) => el.classList.add('dp-is-visible'));
+    if (prefersReducedMotion || cards.length === 0) {
+      cards.forEach((el) => (el as HTMLElement).style.setProperty('--dp-progress', '1'));
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          entry.target.classList.toggle('dp-is-visible', entry.isIntersecting);
-        });
-      },
-      { threshold: 0.2 }
-    );
+    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-    cards.forEach((el) => observer.observe(el));
+    let ticking = false;
+
+    const update = () => {
+      const viewportCenter = window.innerHeight / 2;
+
+      cards.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height / 2;
+        // Distance from card-center to viewport-center, normalized against
+        // the max possible distance (viewport half-height + half the
+        // card's own height) so progress hits exactly 0 right as the card
+        // fully enters/exits the viewport and exactly 1 at dead-center —
+        // symmetric for scrolling toward center from either above or below.
+        const maxDistance = viewportCenter + rect.height / 2;
+        const distance = Math.abs(cardCenter - viewportCenter);
+        const progress = maxDistance > 0 ? clamp(1 - distance / maxDistance, 0, 1) : 1;
+        (el as HTMLElement).style.setProperty('--dp-progress', progress.toFixed(3));
+      });
+
+      ticking = false;
+    };
+
+    const onScrollOrResize = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize);
   });
 </script>
