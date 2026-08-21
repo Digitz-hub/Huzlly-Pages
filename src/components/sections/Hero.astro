@@ -14,32 +14,24 @@
 // fixed as always, but base/text roles flip since the section background
 // is now dark ink instead of paper.
 //
-// Decorative pattern note: previous pass here was a center-radial amber
-// glow (`radial-gradient(ellipse 60% 50% at 50% 35%, amber-500/20%,
-// transparent)`) behind the headline. Replaced this pass per a
-// user-supplied reference screenshot (Astra SaaS template hero): a
-// TOP-EMANATING glow — light appears to originate above the section and
-// fall downward, rather than sitting centered behind the text — plus a
-// subtle film-grain/noise texture layered over it for depth (the
-// reference reads as "glass/premium," not a flat gradient). Color swapped
-// from the reference's green to this site's own blue-600 accent (already
-// used sitewide for the badge/CTA), per direct request — same glow
-// shape/mechanics, different hue.
-//
-// Implementation: two layers, both painted behind the content, in this
-// order (back to front):
-//   1. `bg-ink` + `bg-[radial-gradient(...)]` on the <section> itself —
-//      an ellipse centered at 50% -5% (i.e. its center sits just ABOVE
-//      the section's top edge) so only the glow's lower half is visible,
-//      reading as light falling from above rather than radiating from a
-//      point inside the hero. blue-600/35% fading to transparent by 70%
-//      of the ellipse's radius.
-//   2. `.hero-grain` — an absolutely-positioned, full-inset div using an
-//      inline SVG feTurbulence data-URI as its background-image, very
-//      low opacity (0.05) with `mix-blend-mode: overlay` so it reads as
-//      texture, not visible noise. Given `-z-[9]` (see stacking note
-//      below) so it sits between the section's own background and
-//      HeroScatterDecoration's `-z-[5]` layer.
+// Decorative pattern note: previous pass here was a subtle top-emanating
+// radial glow (`ellipse 75% 55% at 50% -5%, blue-600/35%, transparent
+// 70%`) — direct feedback was that it read as a faint "touch" of color
+// rather than the bold, saturated wash filling most of the hero card in
+// the Astra reference screenshot. This pass keeps the same top-emanating
+// mechanic (ellipse centered above the section's top edge, light falling
+// downward) but goes much bolder to match the reference:
+//   - Ellipse widened to 100% 100% (was 75% 55%) so it's large enough to
+//     wash over most of the hero's height/width, not just a patch behind
+//     the headline.
+//   - THREE color stops instead of two, so the falloff has visible body
+//     instead of one flat tone fading straight to nothing: blue-600/70%
+//     at the source (0%) → blue-900/40% still-saturated midtone (45%) →
+//     bg-ink (75%) so it resolves cleanly into the section's own base
+//     color at the edges instead of an abrupt hard stop.
+//   - Grain overlay opacity bumped 0.05 → 0.08 to hold up against the
+//     now much brighter/larger colored area (reference has visible grain
+//     across its whole gradient, not just in dark corners).
 //
 // TEXT/SURFACE COLOR FLIP (this pass, required by the dark background):
 // every ink/paper role in this section's markup was flipped so content
@@ -125,7 +117,7 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_75%_55%_at_50%_-5%,theme(colors.blue.600/35%),transparent_70%)] px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
+<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_100%_100%_at_50%_0%,theme(colors.blue.600/70%),theme(colors.blue.900/40%)_45%,theme(colors.ink)_75%)] px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
   <!-- Grain/noise texture overlay — see "Decorative pattern note" above.
        Purely decorative, inert SVG data-URI, no network request. Sits
        between the section's own gradient background and
@@ -313,7 +305,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
   .hero-grain {
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-repeat: repeat;
-    opacity: 0.05;
+    opacity: 0.08;
     mix-blend-mode: overlay;
   }
 
