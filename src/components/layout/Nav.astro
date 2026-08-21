@@ -99,6 +99,26 @@
 // default text color is; not touched since spec only said "blue-fill the
 // button."
 //
+// CTA SHIFT + SHINY GRADIENT (this pass): two more quick follow-ups per
+// direct request. (1) The pill's inner padding split from symmetric
+// `px-4 sm:px-6` to `pl-4 pr-2 sm:pl-6 sm:pr-3` — the brand/logo side keeps
+// its original left padding, but the CTA side's right padding was tightened
+// so the button sits closer to the pill's right edge, roughly matching the
+// vertical breathing room already sitting above/below it (both still
+// standard Tailwind spacing steps, no arbitrary value). (2) The pill and
+// mobile sheet's flat `bg-ink/90` fill is replaced with a diagonal-feeling
+// `bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95` — a
+// lighter warm-gray top fading through near-black to true black, giving
+// the bar a "shiny/glossy" dimensional read instead of one flat matte
+// color, while staying just barely translucent (`/95`) so `backdrop-blur-
+// xl` still contributes a hint of glass underneath. This is a Nav-only
+// color/gradient choice, not a DESIGN_SYSTEM.md Section 1 violation —
+// this file is still under the Section 4.5 per-page inspiration override
+// (see file-header note above), which explicitly frees this component's
+// colors/gradient from the v2 "gradient reserved for flow-rail only" rule.
+// All values are standard Tailwind color-scale + opacity-modifier syntax
+// (`zinc-700/95`, `zinc-900/95`, `black/95`) — no hex, no bracket notation.
+//
 // Structure (current):
 //   1. `<header>` — fixed positioning context + edge-inset padding.
 //   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
@@ -130,7 +150,7 @@ const isActive = (href: string) => {
 <header class="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
   <div class="relative mx-auto max-w-5xl">
     <!-- Floating glass pill -->
-    <div class="flex h-12 items-center justify-between rounded-full border border-white/15 bg-ink/90 px-4 shadow-lg shadow-black/20 backdrop-blur-xl sm:h-14 sm:px-6">
+    <div class="flex h-12 items-center justify-between rounded-full border border-white/15 bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95 pl-4 pr-2 shadow-xl shadow-black/40 backdrop-blur-xl sm:h-14 sm:pl-6 sm:pr-3">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -178,7 +198,7 @@ const isActive = (href: string) => {
 
     <!-- Mobile Menu Sheet — glass dropdown floating below the pill -->
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-ink/90 p-3 shadow-lg shadow-black/20 backdrop-blur-xl md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95 p-3 shadow-xl shadow-black/40 backdrop-blur-xl md:hidden"
     >
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
