@@ -76,22 +76,23 @@
 // top of that background instead of underneath it. No inline styles used
 // — `isolate` is a static Tailwind utility class.
 //
-// FIXED-HEADER CLEARANCE FIX (this pass, homepage-scoped): Nav.astro's
-// <header> is now `fixed` (top-4/sm:top-6, pill height h-14/sm:h-16) and
-// floats over this section, since this section starts at the true top of
-// the page (see Nav.astro's own pass notes). Fixed elements are removed
-// from flow, so they don't push this section's content down on their
-// own — the section's own top padding is the only thing keeping the
-// badge/eyebrow/headline and the top-[10%] corner cards clear of the
-// pill. Minimum clearance is roughly 72px (mobile: 56px pill + 16px
-// top offset) / 88px (sm: 64px pill + 24px offset), but per the task this
-// pass adds real breathing room on top of that minimum rather than the
-// bare minimum, since content sitting flush against the pill's lower
-// edge still reads as cramped/overlapping even once it's technically
-// clear. Bumped pt-24/pt-32 → pt-40/pt-48/pt-56 (was pt-24 sm:pt-32,
-// no lg step previously) across the three breakpoints already in use
-// elsewhere in this file's className scale. Bottom padding (pb-28/pb-40),
-// the gradient, card content/rotations/percent-based inset positions, and
+// FIXED-HEADER CLEARANCE FIX (updated this pass): Nav.astro's <header>
+// changed from a floating pill (top-4/sm:top-6 offset + h-14/sm:h-16
+// pill) to an edge-to-edge bar flush against the true top (top-0,
+// h-14/sm:h-16, no offset) — see Nav.astro's own "PILL → FULL-WIDTH BAR"
+// pass note. The header is still `fixed` (removed from flow), so this
+// section's own top padding is still the only thing keeping the
+// badge/eyebrow/headline and the top-[10%] corner cards clear of it, but
+// the actual clearance needed dropped from ~72px/88px (pill + its top
+// offset) to just the bar's own height: 56px (mobile) / 64px (sm+).
+// The previous pt-40/pt-48/pt-56 (160px/192px/224px) was tuned for the
+// old, taller offset and was now leaving a large, unintentional-looking
+// gap under the bar — reported as the header "keeping a bottom margin."
+// Tightened to pt-24/pt-28/pt-32 (96px/112px/128px): still real breathing
+// room above the bare 56px/64px minimum (not flush against the bar's
+// lower edge), just proportional to the bar's actual height instead of
+// the old pill's larger footprint. Bottom padding (pb-28/pb-40), the
+// gradient, card content/rotations/percent-based inset positions, and
 // dot/decoration positions are all untouched — only the top padding
 // scale changed.
 //
@@ -117,7 +118,7 @@ import AutomationNotificationCard from '../ui/AutomationNotificationCard.astro';
 import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_100%_100%_at_50%_0%,theme(colors.blue.600/70%),theme(colors.blue.900/40%)_45%,theme(colors.ink)_75%)] px-4 pt-40 pb-28 sm:px-6 sm:pt-48 sm:pb-40 lg:px-8 lg:pt-56">
+<section class="relative isolate overflow-hidden bg-ink bg-[radial-gradient(ellipse_100%_100%_at_50%_0%,theme(colors.blue.600/70%),theme(colors.blue.900/40%)_45%,theme(colors.ink)_75%)] px-4 pt-24 pb-28 sm:px-6 sm:pt-28 sm:pb-40 lg:px-8 lg:pt-32">
   <!-- Grain/noise texture overlay — see "Decorative pattern note" above.
        Purely decorative, inert SVG data-URI, no network request. Sits
        between the section's own gradient background and
@@ -219,8 +220,17 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        `bottom-28 sm:bottom-40`, mirroring the section's own bottom
        padding exactly like `top-40 sm:top-48 lg:top-56` mirrors its top
        padding. Box is now symmetric on both edges; card content,
-       left/right insets, and rotationClass values untouched. -->
-  <div class="pointer-events-none top-40 sm:top-48 lg:top-56 inset-x-0 bottom-28 sm:bottom-40 absolute z-10 hidden lg:block" aria-hidden="false">
+       left/right insets, and rotationClass values untouched.
+
+       TOP-VALUE UPDATE (later pass): the wrapper's top offset was
+       retuned from top-40/sm:top-48/lg:top-56 to top-24/sm:top-28/
+       lg:top-32 to match Hero.astro's own top padding after Nav.astro's
+       header shape changed from a floating pill to a shorter flush bar
+       (see the section's own "FIXED-HEADER CLEARANCE FIX" comment
+       above) — every "top-40/48/56" reference below this point in the
+       comments is historical (describes the fix's original mechanism,
+       still accurate) and not the current literal value. -->
+  <div class="pointer-events-none top-24 sm:top-28 lg:top-32 inset-x-0 bottom-28 sm:bottom-40 absolute z-10 hidden lg:block" aria-hidden="false">
     <!-- Top-left: Proposal accepted (starts expanded)
          TOP-CLEARANCE FIX (this pass, top cards only): top-[10%] was too
          close to the badge/headline text column below it — the two top
