@@ -160,13 +160,13 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s4 — bottom-right large angled block, teal tint. Nudged up ~35px
+  <!-- s4 — bottom-right large angled block, teal tint. Nudged up ~40px
        from its original bottom-[-10%] via a calc() offset (not a
        translate/transform utility — glass-float-a-reverse's keyframes
        already drive `transform` on this element, and a running CSS
        animation always wins that property over a static transform
        class, so the shift has to happen on `bottom` itself instead). -->
-  <div class="glass-float-a-reverse absolute w-72 h-64 bottom-[calc(-10%+35px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-a-reverse absolute w-72 h-64 bottom-[calc(-10%+40px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
