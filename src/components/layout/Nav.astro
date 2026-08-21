@@ -119,6 +119,21 @@
 // All values are standard Tailwind color-scale + opacity-modifier syntax
 // (`zinc-700/95`, `zinc-900/95`, `black/95`) — no hex, no bracket notation.
 //
+// LINK COLOR + ACTIVE UNDERLINE (this pass): another follow-up per direct
+// request. Inactive nav links (desktop and mobile) drop their `/60` and
+// `/70` dimmed-opacity variants and go to plain `text-paper` (the design
+// system's near-white text color, full opacity) — "white" links, not
+// muted ones. The active link (current page) keeps its existing
+// `bg-blue-500/15 text-blue-400` pill highlight and gains `underline
+// decoration-blue-400` (blue text + blue underline together) plus
+// `hover:decoration-white` so hovering the active link swaps just the
+// underline color to white while the text stays blue — matches the
+// requested "feature ko blue color and blue underline, hover mai white
+// underline" behavior exactly. `underline-offset-4` is shared across both
+// states so inactive links don't visually shift if a future pass adds a
+// hover underline to them too. All standard Tailwind utilities
+// (`decoration-{color}`, `underline-offset-4`) — no arbitrary values.
+//
 // Structure (current):
 //   1. `<header>` — fixed positioning context + edge-inset padding.
 //   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
@@ -163,10 +178,10 @@ const isActive = (href: string) => {
       <nav aria-label="Primary" class="hidden md:flex md:items-center md:gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
-            class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+            class={`rounded-full px-4 py-2 text-sm font-medium underline-offset-4 transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-500/15 text-blue-400'
-                : 'text-paper/60 hover:text-paper hover:bg-white/[0.06]'
+                ? 'bg-blue-500/15 text-blue-400 underline decoration-blue-400 hover:decoration-white'
+                : 'text-paper hover:bg-white/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
@@ -203,10 +218,10 @@ const isActive = (href: string) => {
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
-            class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
+            class={`rounded-2xl px-4 py-3 text-sm font-medium underline-offset-4 transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-500/15 text-blue-400'
-                : 'text-paper/70 hover:text-paper hover:bg-white/[0.06]'
+                ? 'bg-blue-500/15 text-blue-400 underline decoration-blue-400 hover:decoration-white'
+                : 'text-paper hover:bg-white/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
