@@ -213,7 +213,11 @@ const { class: className } = Astro.props;
        keyframe matching this element's actual angle, at the same 11s
        base timing as glass-float-b (s5 already claims the faster
        mirrored timing) — see float-animation.css. -->
+  <!-- s6 — left-mid thin sliver, teal tint (added this pass — was
+       previously untinted, reading as a plain white/frosted panel with
+       no color accent, unlike every other shape in this composition). -->
   <div class="glass-float-b-mirror absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 </div>
