@@ -199,18 +199,17 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s6 — left-mid wide/short panel, teal tint. Repositioned this pass
-       per feedback (circled reference on live preview): was hugging the
-       left edge at the vertical-mid slot (top-[40%] left-[-3%]), now
-       pulled inward and lower — top-[58%] left-[5%] — to sit closer to
-       center instead of edge-hugging. Direction (rotate-[-12deg]/
-       skew-x-[-6deg]) and width (w-56) from the last pass are unchanged;
-       only the anchor position moved.
+  <!-- s6 — left-mid wide/short panel, teal tint. Horizontal position
+       pulled inward this pass (per feedback) — left-[-3%] → left-[5%],
+       less edge-hugging. Top kept at [40%] per follow-up feedback (the
+       58% drop from the previous pass was reverted; only left moved).
+       Direction (rotate-[-12deg]/skew-x-[-6deg]) and width (w-56)
+       unchanged.
        Uses the `glass-float-d` keyframe (float-animation.css) — its
        rotate/skew values still match this element's static classes
        (only top/left changed here, not rotate/skew), so no keyframe
        update was needed this pass. -->
-  <div class="glass-float-d absolute w-56 h-32 top-[58%] left-[5%] rotate-[-12deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-d absolute w-56 h-32 top-[40%] left-[5%] rotate-[-12deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[10%] top-[14%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
