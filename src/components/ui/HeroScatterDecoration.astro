@@ -146,14 +146,6 @@ const { class: className } = Astro.props;
 // always wins the `transform` property). s4/s5/s6 now use dedicated
 // `-mirror`/`-mirror-fast` classes whose keyframes actually match each
 // element's own angle — see float-animation.css for the fix detail.
-//
-// REPOSITIONED (later pass, per approved mockup): s3 moved from a small
-// chip buried at the bottom edge to a middle-left diamond/isometric panel
-// (see s3's own comment below for the position/rotate/skew rationale).
-// Its `glass-float-c` keyframe in float-animation.css was updated in the
-// same pass to match the new static rotate-[42deg]/skew-y-[-6deg] —
-// same "keyframe must match the element's static angle" rule that
-// s4/s5/s6's bug fix above depends on.
 ---
 
 <div class:list={['pointer-events-none absolute -z-[5] top-24 sm:top-28 lg:top-32 inset-x-0 bottom-28 sm:bottom-40', className]}
@@ -170,32 +162,11 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-12 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s3 — middle-left diamond panel, amber tint. REPOSITIONED (this
-       pass, per approved mockup): previously a small chip buried at the
-       bottom edge (`bottom-[calc(-8%+70px)] left-[4%] rotate-[35deg]`,
-       no skew). Moved up into the middle-left area and pushed closer to
-       a full diamond/isometric angle so it reads as tilted diagonally
-       upward toward center/right, per the mockup's arrow. Position now
-       uses a plain `top-[...]` percentage instead of the old
-       `bottom-[calc(-8%+70px)]` hack — that calc() only existed because
-       an earlier pass needed to nudge a `bottom`-anchored shape upward
-       by a fixed px amount without touching a `transform` the looping
-       animation already owned (see s4's comment below for why that
-       constraint exists); now that this shape lives in the middle of
-       the wrapper instead of hugging the bottom edge, a single
-       `top-[...]` value expresses the same position directly, so the
-       calc() nudge is gone, not carried forward. `rotate-[42deg]` (was
-       35deg) and the new `skew-y-[-6deg]` are both STATIC Tailwind
-       classes on this element and must stay in sync with
-       `glass-float-c`'s own 0%/100% keyframe values in
-       float-animation.css — a running CSS animation always wins the
-       `transform` property over a static utility class, so if this
-       shape's rotate/skew here ever drifts out of sync with
-       glass-float-c's base keyframe, the animation will silently snap
-       the shape back to whatever angle IS baked into the keyframe the
-       instant it starts looping (the exact bug already fixed once for
-       s4/s5/s6 — see the file-level BUG FIX note above). -->
-  <div class="glass-float-c absolute w-40 h-40 top-[48%] left-[2%] rotate-[42deg] skew-y-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <!-- s3 — bottom-left small chip, amber tint. Nudged up 70px from its
+       original bottom-[-8%] via a calc() offset (not translate — see s4's
+       comment below for why: glass-float-c's keyframes drive `transform`
+       on a loop, which would override a static translate class). -->
+  <div class="glass-float-c absolute w-40 h-40 bottom-[calc(-8%+70px)] left-[4%] rotate-[35deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
