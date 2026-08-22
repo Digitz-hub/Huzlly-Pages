@@ -1,258 +1,246 @@
 ---
-// src/components/sections/Hero.astro
-// Homepage hero — v9, page-specific inspiration override (CLAUDE.md
-// Section 4.5). This pass swaps the four scattered
-// AutomationNotificationCard instances for the in-flow HeroDashboardPreview
-// bento grid, reorders/restyles the two CTAs, and updates the eyebrow
-// line. It inherits v8's light iridescent background, glass-shape
-// HeroScatterDecoration, and ink-on-light text flip unchanged — those are
-// condensed below rather than re-narrated in full; the extensive v7→v8
-// dark-to-light migration commentary and the corner-card positioning-math
-// history have been removed along with the code they described, per this
-// pass's own cleanup instruction (stale comments describing removed code
-// don't get left behind). AutomationNotificationCard.astro itself is
-// untouched on disk — just no longer imported or used here. No nav —
-// Nav.astro handles that separately, this is the hero section only.
+// src/components/ui/HeroDashboardPreview.astro
+// Bento-grid "product dashboard" visual for the homepage hero — converted
+// from the approved hero-dashboard-preview.html mockup. This is a fixed,
+// content-complete, single-purpose component built only for Hero.astro's
+// hero section; it is NOT a general-purpose primitive and isn't meant to
+// be reused elsewhere or extended with props for other content. Renders
+// only the bento grid itself — the "Monopol" eyebrow and headline in the
+// source preview were placeholder text for the standalone mockup and are
+// intentionally dropped here; the real eyebrow/H1 belong to Hero.astro
+// per this task's brief. Not yet wired into Hero.astro — that's a
+// separate stage.
 //
-// BACKGROUND (updated this pass): the previous v8 gradient was a
-// four-stop, multi-hue "iridescent" wash (pale blue → lavender → pink →
-// teal). Per direct request to match a new reference screenshot (a
-// simple, diagonal white-to-periwinkle-blue wash, no pink/purple/teal),
-// this pass swaps in a three-stop, blue-only gradient:
-// `linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)` — near-
-// white at the top-left corner, through a very pale blue, deepening to a
-// soft periwinkle blue at the bottom-right, matching the reference's
-// tonal range and diagonal direction.
-// ⚠️ Flag (carried forward, still open, now with new hex values): these
-// three stops (#FFFFFF/#EEF3FC/#D3E0F9) still don't exist as
-// DESIGN_SYSTEM.md tokens or in `tailwind.config.mjs`, same as the
-// gradient they replace — confirm whether to formally register these
-// (e.g. `hero-wash-*`) rather than leaving them as an arbitrary
-// `bg-[linear-gradient(...)]` value.
-// ⚠️ Flag (new): `HeroScatterDecoration.astro`'s own background note
-// previously said its glass-shape decoration was "confirmed matching"
-// this section's old iridescent gradient. That file is untouched by this
-// pass — its internal background/glass-tint values still assume the OLD
-// pink/purple/teal wash and were not re-checked against this new
-// blue-only one. Not edited here per this task's scope (background-color
-// change only was requested), but flagging that `HeroScatterDecoration`
-// may now visually mismatch this section's background and could need a
-// follow-up tint adjustment.
+// AutomationNotificationCard.astro is untouched by this file and is not
+// used here — this component owns its own card markup directly since the
+// preview's cards (fixed layout, no expand/collapse, no icon slot) don't
+// match that component's collapsible-notification contract.
 //
-// SCATTER DECORATION (carried forward from v8, unchanged this pass): the
-// glass-shape HeroScatterDecoration renders as a background layer, hidden
-// below `lg` (matches that component's own documented viewport floor —
-// see its header comment), sitting behind the in-flow content by DOM
-// order and its own internal `-z-[5]`.
+// GRID RESTRUCTURE (per brief item 1): the preview's 6th filler cell
+// ("20,000+ users already joined" in the bottom-right grid slot) is
+// dropped — that figure doesn't exist anywhere in SITE_IDENTITY_AND_AEO.md
+// (Section 3 gives a 50-person beta cohort, pre-launch) and would ship a
+// fabricated stat. Rather than leave the bottom-right cell empty, the grid
+// is restructured to 5 cells: the Client Portal card (originally 2/3-width
+// in the bottom row) now spans the full width of row 3 (`lg:col-span-3`),
+// so the 3x3 grid is fully and intentionally occupied with no dead cell
+// and no invented replacement content.
 //
-// STACKING CONTEXT (carried forward from v8, unchanged): the <section>
-// carries `isolate` so its own gradient background paints first inside
-// its own stacking context, ahead of the negative-z grain (-z-[9]) and
-// scatter decoration (-z-[5]) layers — required for `position: relative`
-// + negative z-index children to stack locally instead of escaping to
-// the nearest ancestor context.
+// GRID GEOMETRY FIX (bento rebalance — "Lower cost" card): the original
+// `lg:row-span-2` on card 4 relied on the browser's sparse auto-placement
+// dropping it into the middle column at row 2 (col 1 was pinned by card 1's
+// own row-span-2), which left column 3 empty for two full rows — a tall,
+// narrow numeral card floating next to dead space. Fix: card 4 drops
+// `lg:row-span-2` and takes `lg:col-span-2` instead (still a plain
+// standard-scale utility, no arbitrary value). With card 1 occupying
+// column 1 across rows 1–2, sparse auto-placement now naturally slots
+// cards 2 and 3 into columns 2–3 of row 1, and card 4's 2-column span is
+// the *only* opening left in row 2 (columns 2–3) — so it lands there
+// automatically with zero explicit `grid-column`/`grid-row` coordinates
+// needed. Net result: card 4 is now short and wide instead of tall and
+// narrow, every cell in the 3x3 area is filled, and no other card's span
+// had to change — cards 1, 2, 3, and 5 keep their original classes
+// untouched; only card 4's span utilities changed. Confirmed this still
+// degrades cleanly below `lg`: `lg:row-span-2` and `lg:col-span-2` are both
+// breakpoint-gated, so below `lg` every card reverts to the implicit
+// `col-span-1 row-span-1` on the single-column grid and stacks in DOM
+// order (1 → 2 → 3 → 4 → 5) exactly as before.
 //
-// GRAIN (carried forward from v8, unchanged): opacity 0.05,
-// `mix-blend-mode: overlay` — tuned for legibility against this pale
-// gradient (a bolder 0.08 was only needed for the old dark wash).
+// ⚠️ Flag — gradient icon badges: the preview's pipeline/portal icon
+// badges use CSS gradients (`linear-gradient(135deg,#2f6bff,#5a8bff)` and
+// an ink gradient). DESIGN_SYSTEM.md Section 1 reserves gradients for the
+// flow-rail signature element only ("Reserved — not for general use.").
+// Mapped both badges to solid fills instead: pipeline → `bg-blue-600`
+// (fixed accent), portal → `bg-ink` (matches the Elevated/filled-dark
+// convention already used elsewhere, e.g. AutomationNotificationCard's
+// icon chips). No gradient anywhere in this file outside that convention.
 //
-// DASHBOARD PREVIEW SWAP-IN (new, this pass): the old corner-card wrapper
-// (absolutely positioned, `hidden lg:block`, four staggered
-// AutomationNotificationCard instances with per-breakpoint rotation/
-// position math) is removed entirely. HeroDashboardPreview now renders
-// in-flow, as a normal block sibling directly below the badge/headline/
-// CTA column — not absolutely positioned, and NOT wrapped in a `hidden`
-// class, so it's visible at every breakpoint per the brief (the old
-// cards were `lg:`-only because there was no room for four
-// 288-320px floating cards around the centered text column at narrower
-// widths; the bento grid doesn't have that problem since it's in-flow
-// and stacks to a single column itself below `lg`). Confirmed no
-// internal changes were needed to HeroDashboardPreview.astro — its own
-// root grid is already `grid-cols-1` by default and only assembles into
-// the 3-column bento at `lg:grid-cols-3`, so it degrades to a plain
-// vertical stack on its own at every smaller breakpoint. Wrapped in
-// `max-w-5xl` (comfortably narrower than the section's own `max-w-7xl`-
-// equivalent padded box) so it doesn't stretch edge-to-edge on wide
-// viewports, with `mt-12 sm:mt-16 lg:mt-20` above it for breathing room
-// below the CTA row — standard Tailwind scale values, no arbitrary
-// spacing. Given the `reveal` class like every other in-flow content
-// piece in this section, for a consistent scroll-in entrance.
+// ⚠️ Flag — card 4's background wash: the preview gives the pricing card
+// a subtle `linear-gradient(165deg,#ffffff,#f6f8ff)` panel background.
+// DESIGN_SYSTEM.md doesn't approve a general card-background gradient
+// (again, gradients are reserved for the flow-rail only), so this was
+// dropped in favor of flat `bg-white`, matching every other card. Purely
+// a richness/polish loss, not a structural change.
 //
-// CTA REORDER/RESTYLE (new, this pass): per the brief, "Join the
-// waitlist" is now the primary CTA and renders first (both in DOM order
-// and therefore first/left in the `sm:flex-row` layout), restyled from
-// the previous blue-600 fill to DESIGN_SYSTEM.md's Primary CTA — Motion
-// variant (`bg-ink`/`text-paper`, hover lift) — the exact class string
-// from DESIGN_SYSTEM.md Section 3, not approximated. "See how it works"
-// keeps its existing Outline-style treatment (`bg-paper`/`border-rail`)
-// unchanged and now renders second. blue-600 stays visible in the
-// section via the badge's "50 spots left" text and chevron icon, so the
-// fixed accent isn't lost just because the primary CTA fill changed.
+// ⚠️ Flag — dot-grid placement (card 4 corner texture): the preview's
+// `.price-dots` corner texture is visually identical to DESIGN_SYSTEM.md
+// Section 4's approved Dot-Grid Texture technique (same radial-gradient
+// `rail`-color pattern), so it's implemented here using that same
+// approved bracket-notation pattern with a corner mask rather than an
+// invented texture. BUT Section 4 scopes dot-grid to "hero only, one per
+// page" and Section 7.5 says never stack two decorative patterns in the
+// same area. Since this component is destined for Hero.astro, and I
+// haven't been asked to inspect what background texture Hero.astro
+// itself already uses, this card's corner dot-grid may end up being a
+// second dot-grid instance on the same page/section once wired in —
+// confirm at integration time whether Hero.astro already has one, and
+// drop this card's instance if so.
 //
-// COPY (new, this pass): eyebrow line changed from "Propose. Sign. Get
-// paid." to "One workflow. Less admin." per the brief. Headline, subtext,
-// note line, and "See what's inside" link are unchanged — none of them
-// reference the old scattered-card layout or otherwise conflict with the
-// light background/new in-flow layout, so nothing else needed rewording
-// (flagging that explicitly, per the brief's "flag rather than silently
-// change" instruction — there's nothing further to flag here).
+// ⚠️ Flag — sub-heading size unification: the preview uses three
+// different ad-hoc h4 sizes (17px / 15px / 17px) for the "Replaces 5+
+// apps," "Project Timesheet," and "Client Portal" card headers. None of
+// these map to a named DESIGN_SYSTEM.md type-scale entry (only Feature H3
+// at text-xl is named for card headings). Unified all three to `text-lg
+// font-semibold text-ink` — the nearest standard Tailwind step below
+// Feature H3 — rather than approximating three separate arbitrary pixel
+// values.
 //
-// MIN-HEIGHT / VERTICAL CENTERING (carried forward from v8, still
-// applies): `min-h-[85vh] sm:min-h-[90vh] lg:min-h-screen` plus `flex
-// flex-col items-center justify-center` centers the in-flow content
-// column inside that reserved height. The dashboard preview is now a
-// second in-flow flex child alongside the badge/headline/CTA block —
-// `min-h` is a floor, not a cap, so a taller combined content stack (now
-// including the bento grid) simply grows the section rather than being
-// clipped; no change needed to this rule for that reason.
+// ⚠️ Flag — card 3's stat number: "5–8 hrs/week" is a secondary stat, not
+// the page's one allowed oversized Display Numeral (that treatment —
+// `font-display font-semibold text-amber-500` at `text-6xl`–`text-8xl`,
+// one per page max — is spent on card 4's "50–70%" instead, since that's
+// the closer match to the preview's largest/boldest number and to keep
+// only one amber numeral on the page). Card 3's number instead uses
+// `font-display text-2xl font-semibold text-ink` — display font for
+// numeral confidence, but sized and colored down since it isn't the
+// page's one big-numeral moment.
 //
-// FIXED-HEADER CLEARANCE (updated this pass): top padding increased from
-// `pt-24 sm:pt-28 lg:pt-32` to `pt-36 sm:pt-44 lg:pt-52` — the badge/
-// headline block was sitting too close under Nav.astro's fixed bar, so
-// this adds real extra breathing room above the content column (not just
-// bar-height clearance). Bottom padding (`pb-28 sm:pb-40`) unchanged.
+// ⚠️ Flag — qualifier pill colors (brief item 6): "(beta target)" and
+// "(target)" must stay visible, non-removable text per the brief. Rather
+// than inventing new pill styling, each was mapped to the closest already
+// -approved badge token based on the preview's own color choice: card 3's
+// amber/gold pill → the existing Warning badge
+// (`bg-amber-50 text-amber-700 ring-amber-600/20`, Section 1 functional
+// colors) — read here as "unverified projection, treat with caution."
+// Card 4's neutral grey pill → the Neutral/Category Pill (Section 3)
+// — read as a plain caveat label rather than a warning. Both are literal,
+// non-hidden text content, never a tooltip or title attribute.
 //
-// Icon imports trimmed to just `ChevronRight` (badge chevron) — `Check`,
-// `FileText`, `DollarSign`, `FolderOpen` were only ever consumed by the
-// four removed AutomationNotificationCard instances.
+// Body copy sizes: mapped to DESIGN_SYSTEM.md's *named* type-scale roles
+// (Body Paragraph `text-base text-ink/70 leading-relaxed`, Small/Caption
+// `text-sm text-ink/50`) exactly as specified, rather than hand-picking a
+// closer pixel match to the preview's 12.5–15px custom sizes — this
+// keeps every text style traceable to a named token instead of an
+// eyeballed approximation.
+//
+// bg-white vs bg-paper: DESIGN_SYSTEM.md's card specs (Standard Feature
+// Card, Elevated Card) both default to `bg-paper`, but this component
+// uses `bg-white` for every card surface instead. Reasoning: this bento
+// grid is meant to read as a crisp, self-contained "product dashboard"
+// floating over whatever background Hero.astro paints behind it (gradient
+// wash / dot-grid / paper — all warm-toned), the same way Section 4's
+// "Section Background Rhythm" describes `bg-white` as "the occasional
+// crisp break" against the paper baseline. It also matches the preview's
+// own `--card: #ffffff` more precisely than paper's warm off-white would.
+// Confirm this reads correctly once actually placed against Hero.astro's
+// specific background at integration time.
+//
+// The preview's custom toggle-switch (built via a `::after` pseudo-
+// element in the source HTML) is rebuilt here as two plain nested spans
+// using only standard-scale Tailwind position/size utilities
+// (`h-6 w-11`, `right-0.5`, `top-0.5`, `h-5 w-5`) — no pseudo-elements, no
+// inline style. It's decorative only (no real on/off state to convey
+// beyond the "Status: Active" pill's own text), so it's `aria-hidden`.
+//
+// No required props — this is a fixed, content-complete block. `class`
+// is accepted for outer placement/spacing only, matching the passthrough
+// pattern already used on AutomationNotificationCard.
 
-import { ChevronRight } from 'lucide-astro';
-import HeroDashboardPreview from '../ui/HeroDashboardPreview.astro';
-import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
+import { Zap, Lock } from 'lucide-astro';
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
 ---
 
-<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-36 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-44 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-52">
-  <!-- Grain/noise texture overlay — see "GRAIN" note above. Purely
-       decorative, inert SVG data-URI, no network request. -z-[9] must
-       stay more negative than HeroScatterDecoration's own -z-[5] for
-       correct paint order inside this section's `isolate` context. -->
-  <div class="hero-grain pointer-events-none absolute inset-0 -z-[9]" aria-hidden="true"></div>
+<div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-3', className]} data-dashboard-preview>
 
-  <!-- Bottom fade-to-white — softens the hard cut where this section's
-       periwinkle gradient met FeaturesSummary's solid white background.
-       Sits above the grain (-z-[9]) but BELOW HeroScatterDecoration
-       (-z-[5]) at -z-[7], so the glass shapes keep painting on top and
-       stay fully visible/unfaded, same as before this change.
-       Eased multi-stop gradient (not a flat linear one) — a plain
-       transparent→white linear fade whitens too quickly near the top of
-       this band, which was cutting hard across the scatter shapes' own
-       drop shadows there. The extra stops back-load the white into the
-       last ~40% of the band so the shadows sit on gently-graduated blue
-       for longer, avoiding a visible seam against their shadow edge. -->
-  <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[7] h-48 bg-[linear-gradient(180deg,transparent_0%,transparent_35%,rgba(255,255,255,0.35)_60%,rgba(255,255,255,0.8)_80%,#FFFFFF_100%)] sm:h-64 lg:h-72" aria-hidden="true"></div>
-
-  <!-- Glass-shape scatter decoration — see "SCATTER DECORATION" note
-       above. Hidden below `lg`, matching that component's own documented
-       viewport floor, so it never competes with the centered content on
-       narrower viewports. -->
-  <HeroScatterDecoration class="hidden lg:block" />
-
-  <div class="relative mx-auto max-w-2xl text-center">
-    <a href="/waitlist"
-      class="reveal inline-flex items-center gap-1.5 rounded-full border border-rail bg-white px-4 py-1.5
-             text-sm text-ink/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-ink/20"
-    >
-      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-600">50 spots left</span>
-      <ChevronRight class="w-3.5 h-3.5 text-blue-600" stroke-width="2" />
-    </a>
-
-    <p class="reveal mt-6 text-sm text-ink/50">One workflow. Less admin.</p>
-
-    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
-      One flow. Not five apps.
-    </h1>
-
-    <p class="reveal mt-6 text-base sm:text-lg text-ink/70 leading-relaxed max-w-xl mx-auto">
-      Huzlly is the lean alternative to a pile of freelance tools. Proposals, contracts, invoices,
-      and projects &mdash; connected in one automatic flow, built for solo freelancers.
-    </p>
-
-    <!-- CTA order/style — see "CTA REORDER/RESTYLE" note above: primary
-         (dark-filled) first, outline second. -->
-    <div class="reveal mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-      <a href="/waitlist"
-        class="inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-5 py-2.5
-               text-sm font-semibold text-paper shadow-sm transition-all duration-200 ease-in-out
-               hover:bg-ink/90 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-      >
-        Join the waitlist
-      </a>
-      <a href="#how-it-works"
-        class="inline-flex items-center justify-center gap-2 rounded-xl border border-rail bg-paper px-5 py-2.5
-               text-sm font-semibold text-ink shadow-sm transition-colors duration-200 ease-in-out
-               hover:bg-rail/20 hover:border-ink/30
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-      >
-        See how it works
-      </a>
+  <!-- Card 1: Automated Pipeline (tall, left column, spans both top rows) -->
+  <div class="dp-reveal dp-reveal-left flex flex-col rounded-2xl bg-white p-6 shadow-sm lg:row-span-2">
+    <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-sm">
+      <Zap class="w-6 h-6 text-white" stroke-width="1.5" aria-hidden="true" />
     </div>
-
-    <p class="reveal mt-4 text-xs text-ink/50">Free to join. No credit card required.</p>
-
-    <a href="/features" class="reveal mt-8 inline-block text-xs text-ink/50 underline underline-offset-4 hover:text-ink/70">
-      See what's inside
-    </a>
+    <h3 class="mb-3 text-xl font-semibold leading-snug text-ink">Automated Pipeline</h3>
+    <p class="flex-grow text-base leading-relaxed text-ink/70">Proposal accepted? That instantly triggers the contract, invoice, and project setup — no manual step in between.</p>
+    <div class="mt-6 flex items-center justify-between border-t border-rail pt-5">
+      <span class="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-600" aria-hidden="true"></span>
+        Status: Active
+      </span>
+      <span class="relative inline-block h-6 w-11 flex-shrink-0 rounded-full bg-blue-600" aria-hidden="true">
+        <span class="absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow"></span>
+      </span>
+    </div>
   </div>
 
-  <!-- Dashboard preview — see "DASHBOARD PREVIEW SWAP-IN" note above.
-       In-flow (not absolutely positioned), visible at every breakpoint,
-       capped at max-w-5xl so it doesn't stretch edge-to-edge on wide
-       viewports. -->
-  <div class="reveal relative mt-12 w-full max-w-5xl sm:mt-16 lg:mt-20">
-    <HeroDashboardPreview />
+  <!-- Card 2: Replaces 5+ apps (middle column, top row) -->
+  <div class="dp-reveal dp-reveal-left rounded-2xl bg-white p-6 shadow-sm">
+    <h4 class="mb-4 text-lg font-semibold text-ink">Replaces 5+ apps</h4>
+    <div class="mb-4 flex flex-wrap gap-2">
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Proposals
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Contracts
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Invoices
+      </span>
+      <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
+        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        Time Tracker
+      </span>
+    </div>
+    <p class="text-sm text-ink/50">No bloated enterprise features.</p>
   </div>
-</section>
 
-<style>
-  /* Grain/noise texture overlay — inline SVG feTurbulence data-URI,
-     tiled at 120x120px. opacity 0.05 + mix-blend-mode: overlay keeps it
-     at a "felt, not seen" level rather than visible static. Purely
-     decorative — see the "GRAIN" note above for context. */
-  .hero-grain {
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    opacity: 0.05;
-    mix-blend-mode: overlay;
-  }
+  <!-- Card 3: Project Timesheet (middle column, bottom row) -->
+  <div class="dp-reveal dp-reveal-right rounded-2xl bg-white p-6 shadow-sm">
+    <h4 class="text-lg font-semibold text-ink">Project Timesheet</h4>
+    <p class="mb-3 text-sm text-ink/50">Per-task time tracking</p>
+    <div class="flex flex-wrap items-baseline gap-2">
+      <span class="font-display text-2xl font-semibold text-ink">5–8 hrs/week</span>
+      <span class="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">(beta target)</span>
+    </div>
+    <p class="mt-3 text-sm leading-relaxed text-ink/50">Automatic task-to-project time rollups, built to save your team hours every week.</p>
+  </div>
 
-  .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
+  <!-- Card 4: Lower cost / pricing (short, wide — spans both middle/right columns, row 2 only) -->
+  <div class="dp-reveal dp-reveal-right relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 shadow-sm lg:col-span-2">
+    <div class="pointer-events-none absolute -right-2 -top-2 h-24 w-24 opacity-40 [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)] [background-size:12px_12px] [mask-image:linear-gradient(225deg,black_10%,transparent_65%)]" aria-hidden="true"></div>
+    <div class="flex flex-wrap items-baseline gap-3">
+      <span class="font-display text-6xl font-semibold text-amber-500">50–70%</span>
+    </div>
+    <span class="mt-2 inline-flex w-fit items-center rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">(target)</span>
+    <h3 class="mt-5 text-xl font-semibold leading-snug text-ink">Lower cost</h3>
+    <p class="mt-2 flex-grow text-base leading-relaxed text-ink/70">Flat-rate pricing. No per-seat fees, no enterprise upsells, no surprises on your invoice.</p>
+  </div>
 
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      opacity: 1 !important;
-      transform: none !important;
-      transition: none !important;
-    }
-  }
-</style>
+  <!-- Card 5: Client Portal (bottom row, full width — absorbs the dropped 6th cell, see file-header note) -->
+  <div class="dp-reveal dp-reveal-up flex flex-col items-start gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
+    <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-ink shadow-sm">
+      <Lock class="w-6 h-6 text-paper" stroke-width="1.5" aria-hidden="true" />
+    </div>
+    <div class="flex-grow">
+      <h4 class="text-lg font-semibold text-ink">Client Portal</h4>
+      <p class="text-sm text-ink/50">Off by default — decide exactly what each client sees.</p>
+    </div>
+    <span class="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">Client Access: Custom</span>
+  </div>
+
+</div>
 
 <script>
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const revealTargets = document.querySelectorAll('.reveal');
+  // Scroll-driven entrance animation for the bento cards above — the
+  // `.dp-reveal` / `.dp-reveal-left` / `.dp-reveal-right` / `.dp-reveal-up`
+  // classes are defined globally in `src/styles/scroll-reveal.css`
+  // (imported via global.css), and the actual scroll-scrub math now lives
+  // in `src/scripts/scroll-reveal.ts` — extracted there so any other
+  // component can reuse the exact same bottom→center scrub-with-clamp
+  // behavior via `initScrollReveal(selector)` instead of re-implementing
+  // this scroll math from scratch. Scoped to this component's own root via
+  // [data-dashboard-preview] so it never touches other reveal setups
+  // elsewhere on the page (e.g. Hero.astro's own unrelated `.reveal`
+  // class). `completionFraction: 0.7` finishes each card's reveal once
+  // it's covered 70% of the bottom→center distance, instead of requiring
+  // it to reach viewport-center — so the cards settle into place earlier
+  // while scrolling.
+  import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
-    revealTargets.forEach((el) => el.classList.add('is-visible'));
-  } else {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    revealTargets.forEach((el) => observer.observe(el));
-  }
+  initScrollReveal('[data-dashboard-preview] .dp-reveal', { completionFraction: 0.7 });
 </script>
