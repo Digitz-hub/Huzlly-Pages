@@ -51,35 +51,56 @@
 /* Slides in from the left as --dp-progress goes 0 -> 1, composed with
    whatever tilt is currently applied (see TILT COMPOSITION above). */
 .dp-reveal-left {
+  /* `!important` here is load-bearing, not decorative: Card.astro's
+     `flat-lift` variant (used by FeaturesSummary's stage cards) ships its
+     own `hover:-translate-y-1` Tailwind utility. That compiles to
+     `.hover\:-translate-y-1:hover { transform: ... }`, which has
+     specificity (0,2,0) — one class + one pseudo-class — beating this
+     single-class `.dp-reveal-left` rule's (0,1,0) outright, regardless of
+     stylesheet order. Result: the moment the cursor is over a flat-lift
+     card, that hover rule silently wins the `transform` property and
+     stomps this rule's composed reveal+tilt transform back down to a flat
+     `translateY(-0.25rem)` — reveal still "works" because opacity is a
+     separate, uncontested property, but the tilt (which lives entirely
+     inside this rule's `--tilt-rx/-ry/-scale` composition) visibly stops
+     dead exactly on hover. `!important` beats that regardless of
+     specificity, without touching Card.astro (shared by other
+     non-tilt pages) or trying to out-specificity a Tailwind utility. */
   transform:
     translateX(calc((1 - var(--dp-progress)) * -48px))
     perspective(var(--tilt-perspective, 800px))
     rotateX(var(--tilt-rx, 0deg))
     rotateY(var(--tilt-ry, 0deg))
-    scale(var(--tilt-scale, 1));
+    scale(var(--tilt-scale, 1)) !important;
 }
 
 /* Slides in from the right as --dp-progress goes 0 -> 1, composed with
    whatever tilt is currently applied (see TILT COMPOSITION above). */
 .dp-reveal-right {
+  /* See the `!important` note on `.dp-reveal-left` above — same
+     Card.astro `flat-lift` `hover:-translate-y-1` specificity conflict
+     applies here identically. */
   transform:
     translateX(calc((1 - var(--dp-progress)) * 48px))
     perspective(var(--tilt-perspective, 800px))
     rotateX(var(--tilt-rx, 0deg))
     rotateY(var(--tilt-ry, 0deg))
-    scale(var(--tilt-scale, 1));
+    scale(var(--tilt-scale, 1)) !important;
 }
 
 /* Rises up from below as --dp-progress goes 0 -> 1. Use this for elements
    that span full-width / don't read well with a sideways slide. Composed
    with whatever tilt is currently applied (see TILT COMPOSITION above). */
 .dp-reveal-up {
+  /* See the `!important` note on `.dp-reveal-left` above — same
+     Card.astro `flat-lift` `hover:-translate-y-1` specificity conflict
+     applies here identically. */
   transform:
     translateY(calc((1 - var(--dp-progress)) * 32px))
     perspective(var(--tilt-perspective, 800px))
     rotateX(var(--tilt-rx, 0deg))
     rotateY(var(--tilt-ry, 0deg))
-    scale(var(--tilt-scale, 1));
+    scale(var(--tilt-scale, 1)) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
