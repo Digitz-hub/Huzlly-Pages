@@ -232,9 +232,21 @@ const reasons = [
           // fine without needing `!`. Existing `transition-all duration-200
           // ease-in-out` from the variant already covers animating the
           // scale smoothly, so nothing extra needed there.
+          // `js-tilt-card`: hooks up the mouse-follow 3D tilt effect (see
+          // <script> at the bottom of this file). Previously this hover
+          // feel was a static `hover:scale-[1.02] hover:!translate-y-0`
+          // pair — that's now removed because the tilt script sets
+          // `transform` directly via JS on every mousemove (rotateX +
+          // rotateY + a slight scale), and a competing Tailwind
+          // hover:transform utility would just get overwritten/fight with
+          // that inline style. `transition-all duration-200 ease-in-out`
+          // stays from the flat-lift variant — the tilt script only
+          // removes it transiently during active mouse movement (for
+          // instant, non-laggy tracking) and restores it on mouseleave so
+          // the return-to-flat snap is still smoothed.
           <Card
             variant="flat-lift"
-            class="relative isolate overflow-hidden !bg-white !border-0 hover:scale-[1.02] hover:!translate-y-0"
+            class="js-tilt-card relative isolate overflow-hidden !bg-white !border-0"
           >
             <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
@@ -290,6 +302,76 @@ const reasons = [
     </div>
   </div>
 </section>
+
+<!-- Mouse-follow 3D tilt — see the `js-tilt-card` note on the stage Card
+     above. Scoped to just those 4 cards (`.js-tilt-card`), not the 3
+     "why lean" reason cards below, which keep their existing plain
+     elevated-card hover.
+
+     How it works: on every mousemove over a card, the cursor's position
+     relative to the card's own center is mapped to a small rotateX/
+     rotateY (max ±MAX_TILT degrees) — cursor near the top tilts the card
+     "away" at the top (so it visually leans toward the viewer from that
+     edge), giving the "looking down at it" perspective effect from the
+     reference. `perspective(800px)` is applied inline in the same
+     transform (not on a parent) so no extra wrapper div is needed around
+     Card's own root element. A slight `scale(1.03)` is layered in so the
+     card also lifts, replacing the old static hover:scale.
+
+     Transition is turned OFF during active mousemove tracking (instant,
+     1:1 cursor response — a CSS transition here would make it visibly lag
+     behind the cursor) and turned back ON only for the mouseenter "ease
+     in" and mouseleave "snap back to flat" moments, matching how this
+     kind of tilt effect reads elsewhere.
+
+     Guards: respects `prefers-reduced-motion`, and checks for a real
+     mouse (`matchMedia('(pointer: fine)')`) so touch devices — which
+     fire synthetic/awkward mouse events on tap — don't get a stuck or
+     jittery tilt; they keep the plain flat-lift shadow hover instead. -->
+<script>
+  const MAX_TILT = 10; // degrees, matches this file's existing subtle/restrained motion (Hero's own reveal transform is similarly small, e.g. 14px)
+  const SCALE = 1.03;
+  const EASE_MS = 200; // matches the flat-lift variant's own `duration-200`, so enter/leave feels consistent with the rest of the card's transitions
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+  if (!prefersReducedMotion && hasFinePointer) {
+    const cards = document.querySelectorAll<HTMLElement>('.js-tilt-card');
+
+    cards.forEach((card) => {
+      card.style.willChange = 'transform';
+
+      card.addEventListener('mouseenter', () => {
+        card.style.transition = `transform ${EASE_MS}ms ease-out`;
+      });
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Normalize to -0.5..0.5 across each axis, then to a ±MAX_TILT
+        // degree range. Y drives rotateX (cursor near top → top edge
+        // tilts toward viewer) and X drives rotateY, inverted (- ) so
+        // the card tilts toward the cursor's side rather than away from
+        // it — matches the natural "leaning toward your finger" feel.
+        const px = x / rect.width - 0.5;
+        const py = y / rect.height - 0.5;
+        const rotateX = (-py * MAX_TILT * 2).toFixed(2);
+        const rotateY = (px * MAX_TILT * 2).toFixed(2);
+
+        card.style.transition = 'none'; // instant tracking, no lag behind the cursor
+        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${SCALE})`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = `transform ${EASE_MS}ms ease-out`;
+        card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+      });
+    });
+  }
+</script>
 
 <section class="bg-[linear-gradient(135deg,#FBFBF9_0%,#F7F5F1_50%,#F2EFEA_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
