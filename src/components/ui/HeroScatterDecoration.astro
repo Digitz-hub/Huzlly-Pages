@@ -199,25 +199,22 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s6 — left-mid thin sliver, no tint. Added to balance the left side
-       (previously 2 shapes: s1, s3) against the right side's 3 (s2, s4,
-       s5) — mirrors s5's right-mid placement/size, flipped to the left
-       edge with rotation/skew signs reversed so it reads as a matching
-       counterpart rather than a duplicate.
-       BUG FIX: this used to reuse plain `glass-float-b` (s2's class),
-       which carries glass-float-b's OWN rotate(22deg→26deg)/skewX(-6deg)
-       keyframe — silently overriding this element's rotate-[-8deg]/
-       skew-x-[-10deg] classes below (which were therefore dead) and
-       making s6 visually snap to s2's angle instead of its own mirrored
-       one. Now uses `glass-float-b-mirror`, which carries its own
-       keyframe matching this element's actual angle, at the same 11s
-       base timing as glass-float-b (s5 already claims the faster
-       mirrored timing) — see float-animation.css. -->
-  <!-- s6 — left-mid thin sliver, teal tint (added this pass — was
-       previously untinted, reading as a plain white/frosted panel with
-       no color accent, unlike every other shape in this composition). -->
-  <div class="glass-float-b-mirror absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <!-- s6 — left-mid wide/short panel, teal tint. Reshaped this pass per
+       reference sketch: was a thin tall sliver (w-28 h-56) mirroring
+       s5's right-mid proportions; now a short, wide panel tilted toward
+       the top-right (positive rotate/skew, vs. the old negative pair)
+       instead of mirroring s5. Position anchor (top-[40%] left-[-3%])
+       unchanged — same left-center slot, new shape/direction on top of it.
+       Uses the new `glass-float-d` keyframe (float-animation.css) rather
+       than reusing any existing class: reusing one whose keyframe
+       rotate/skew doesn't match this element's own static rotate-[12deg]/
+       skew-x-[6deg] would silently override that angle once the
+       animation kicks in (a running CSS animation always wins `transform`
+       over a static utility class) — same failure mode this file's other
+       shapes were already fixed for. glass-float-d's keyframe matches
+       this element's angle exactly, so no such override. -->
+  <div class="glass-float-d absolute w-64 h-32 top-[40%] left-[-3%] rotate-[12deg] skew-x-[6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
-    <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
+    <div class="absolute left-[10%] top-[14%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 </div>
