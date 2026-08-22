@@ -190,9 +190,14 @@ const reasons = [
     />
 
     <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
-      {stages.map((step) => {
+      {stages.map((step, index) => {
         const s = signalStyles[step.signal];
         const Illustration = step.illustration;
+        // Alternate reveal direction by grid column (2-col grid: even index
+        // = left column, odd = right column), same left/right-per-column
+        // convention HeroDashboardPreview's bento grid uses for its own
+        // `.dp-reveal-left`/`.dp-reveal-right` cards.
+        const revealDirection = index % 2 === 0 ? 'dp-reveal-left' : 'dp-reveal-right';
 
         return (
           // `relative isolate overflow-hidden` on Card is kept (harmless)
@@ -244,9 +249,22 @@ const reasons = [
           // removes it transiently during active mouse movement (for
           // instant, non-laggy tracking) and restores it on mouseleave so
           // the return-to-flat snap is still smoothed.
+          // `dp-reveal dp-reveal-left/-right`: wires up the same bottom→
+          // center scroll-scrub reveal HeroDashboardPreview's bento cards
+          // use (`src/scripts/scroll-reveal.ts` + `scroll-reveal.css`).
+          // Direction alternates per grid column via `revealDirection`
+          // above. Composes cleanly with `js-tilt-card` already on this
+          // element — `tilt-card.ts` detects the `dp-reveal` class and
+          // automatically switches to writing `--tilt-rx/-ry/-scale`
+          // custom properties instead of setting `transform` directly, so
+          // scroll-reveal.css's `.dp-reveal-left/-right` rules can compose
+          // both the slide-in translate AND the live tilt into one
+          // `transform` — see the TILT COMPOSITION note in
+          // scroll-reveal.css for why that has to happen in one place
+          // rather than two scripts fighting over the same property.
           <Card
             variant="flat-lift"
-            class="js-tilt-card relative isolate overflow-hidden !bg-white"
+            class={`dp-reveal ${revealDirection} js-tilt-card relative isolate overflow-hidden !bg-white`}
           >
             <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
@@ -303,23 +321,28 @@ const reasons = [
   </div>
 </section>
 
-<!-- Mouse-follow 3D tilt — see the `js-tilt-card` note on the stage Card
-     above. Scoped to just those 4 cards (`.js-tilt-card`), not the 3
-     "why lean" reason cards below, which keep their existing plain
-     elevated-card hover. The actual mousemove/rotation math now lives in
-     `src/scripts/tilt-card.ts` — extracted there (same pattern as
-     `initScrollReveal` in `src/scripts/scroll-reveal.ts`, used by
-     HeroDashboardPreview) so any other component can reuse the exact same
-     tilt behavior via `initTiltCard(selector)` instead of re-implementing
-     this from scratch. Defaults (10deg max tilt, 1.03 scale, 150ms track /
-     600ms leave easing — leave slowed down from an earlier 350ms per
-     feedback that the snap-back-to-flat felt too quick) match what this
-     file already had, so no visual change from this extraction — just no
-     longer duplicated inline. -->
+<!-- Mouse-follow 3D tilt + scroll-scrub reveal — see the `js-tilt-card`
+     and `dp-reveal`/`dp-reveal-left`/`dp-reveal-right` notes on the stage
+     Card above. Both scoped to just those 4 cards (`#how-it-works
+     .dp-reveal` / `.js-tilt-card`), not the 3 "why lean" reason cards
+     below, which keep their existing plain elevated-card hover with no
+     reveal. The actual mousemove/rotation math and scroll math live in
+     `src/scripts/tilt-card.ts` and `src/scripts/scroll-reveal.ts`
+     respectively — same extraction pattern, both reused as-is from
+     HeroDashboardPreview rather than reimplemented here. Tilt defaults
+     (10deg max tilt, 1.03 scale, 150ms track / 600ms leave easing) match
+     what this file already had, so no visual change there — just no
+     longer duplicated inline. Reveal uses `initScrollReveal`'s own
+     default `completionFraction` (1, i.e. the original full bottom→
+     center journey) rather than HeroDashboardPreview's 0.7 — that
+     early-finish tuning was specific to the dashboard preview's taller
+     hero-scroll distance, not needed here. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
+  import { initScrollReveal } from '../../scripts/scroll-reveal';
 
   initTiltCard('.js-tilt-card');
+  initScrollReveal('#how-it-works .dp-reveal');
 </script>
 
 <section class="bg-[linear-gradient(135deg,#FBFBF9_0%,#F7F5F1_50%,#F2EFEA_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
