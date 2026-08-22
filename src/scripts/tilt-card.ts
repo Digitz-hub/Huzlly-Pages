@@ -115,22 +115,20 @@ export function initTiltCard(
     return () => {};
   }
 
-  const flatTransform = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale(1)`;
-  // Cards that also carry a `[data-scroll-reveal-in-progress]`-style
-  // system (currently `initScrollReveal` from `scroll-reveal.ts`, e.g.
-  // HeroDashboardPreview's `.dp-reveal-*` cards) drive their own inline
-  // `--dp-progress` custom property and let `.dp-reveal-left/-right/-up`'s
-  // CSS `transform` (a translateX/Y slide) read it. That CSS transform and
-  // this script's inline `transform` are the same element property, and
-  // inline JS-set `transform` always wins over a stylesheet rule — so
-  // without this guard, tilting a card while it's still scrolling into
-  // view (mouse resting over it, page scrolling) would silently cancel
-  // its slide-in animation every frame the tilt is active. Priority goes
-  // to the reveal: SCROLL_REVEAL_DONE_THRESHOLD gates tilt until the
-  // card's own `--dp-progress` (if any) has reached ~1, i.e. the reveal's
-  // translate offset is already 0 and there's nothing left for tilt to
-  // clobber. Cards with no reveal system at all (no `--dp-progress` set,
-  // e.g. FeaturesSummary's stage cards) read as progress 1 and tilt
+  // Cards that also carry a scroll-reveal system (currently
+  // `initScrollReveal` from `scroll-reveal.ts`, e.g. HeroDashboardPreview's
+  // `.dp-reveal-*` cards) drive their own inline `--dp-progress` custom
+  // property and let `.dp-reveal-left/-right/-up`'s CSS `transform` (a
+  // translateX/Y slide) read it. That CSS transform and this script's
+  // transform are the same element property, and an inline JS-set
+  // `transform` always wins over a stylesheet rule — so without the guard
+  // below, tilting a card while it's still scrolling into view would
+  // silently cancel its slide-in animation every frame the tilt is active.
+  // Priority goes to the reveal: SCROLL_REVEAL_DONE_THRESHOLD gates tilt
+  // until the card's own `--dp-progress` (if any) has reached ~1, i.e. the
+  // reveal's translate offset is already 0 and there's nothing left for
+  // tilt to clobber. Cards with no reveal system at all (no `--dp-progress`
+  // set, e.g. FeaturesSummary's stage cards) read as progress 1 and tilt
   // exactly as before — zero behavior change there.
   const SCROLL_REVEAL_DONE_THRESHOLD = 0.98;
   const cleanups: Array<() => void> = [];
@@ -143,10 +141,10 @@ export function initTiltCard(
     card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
 
     // Tracks whether tilt has actually taken control of `transform` for
-    // this card yet (see the reveal-priority note above). Only reset on
-    // mouseleave if tilt was the one holding the transform — otherwise a
-    // stray mouseleave while the reveal is still mid-animation would
-    // itself stomp the reveal's translate via `flatTransform`.
+    // this card yet (see the reveal-priority note above). Only clear the
+    // inline transform on mouseleave if tilt was the one holding it —
+    // otherwise a stray mouseleave while the reveal is still mid-animation
+    // would have nothing to clear and should just leave the reveal alone.
     let isTilting = false;
 
     const onMouseMove = (e: MouseEvent) => {
@@ -188,7 +186,29 @@ export function initTiltCard(
       }
       isTilting = false;
       card.style.transition = `transform ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
-      card.style.transform = flatTransform;
+      // Clear the inline `transform` entirely (never set it back to a
+      // flat/identity inline value) so control genuinely returns to
+      // whatever CSS would otherwise apply — the `.dp-reveal-*` class's
+      // live `--dp-progress`-driven transform for reveal cards, or no
+      // transform at all for cards without a reveal system. Setting an
+      // inline "flat" transform here instead (e.g.
+      // `perspective(...) rotateX(0) rotateY(0) scale(1)`) LOOKS
+      // equivalent at the instant of mouseleave (progress is ~1, so the
+      // reveal's own translate is 0 too) but permanently shadows the CSS
+      // class from then on: once any inline `transform` is set, it never
+      // stops overriding the stylesheet, even after being reset to a
+      // "neutral" value — so the very next time the user scrolls back up
+      // and `--dp-progress` drops again, `.dp-reveal-left/-right/-up`'s
+      // translate recalculates correctly but has no effect, because the
+      // inline value is still there taking precedence. That was the
+      // actual bug: scroll-reveal appearing dead on any card ever
+      // hovered, with no refresh needed to reproduce it. Clearing to ''
+      // (rather than assigning a value) removes the inline override
+      // altogether, so the CSS rule resumes driving `transform` normally
+      // — still smooth, since the already-set `transition` on this
+      // element applies to the resulting computed-value change either
+      // way, inline-to-stylesheet included.
+      card.style.transform = '';
       card.style.boxShadow = 'none';
     };
 
