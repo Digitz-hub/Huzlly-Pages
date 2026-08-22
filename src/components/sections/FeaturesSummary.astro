@@ -207,7 +207,28 @@ const reasons = [
           // not by where `class="..."` puts them), and `bg-paper` is a
           // custom theme color so its rule position isn't guaranteed to
           // come first. `!bg-white` sidesteps that entirely and always wins.
-          <Card variant="flat-lift" class="relative isolate overflow-hidden !bg-white">
+          //
+          // `hover:scale-[1.02] hover:!translate-y-0`: scoped to just these
+          // 4 stage cards, not Card.astro's shared flat-lift variant —
+          // `flat-lift` is also used by features.astro's step-list cards
+          // (`Card variant="flat-lift" tick class="p-6 sm:p-8"`), and per
+          // explicit decision only these "how it works" cards get the
+          // grow/scale hover feel; the step-list keeps its existing
+          // slide/lift hover untouched. `hover:!translate-y-0` needs the
+          // `!` important-modifier (not just being later in the class
+          // string) to reliably cancel out the variant's
+          // `hover:-translate-y-1` — both utilities target the same
+          // `--tw-translate-y` custom property, and same reasoning as the
+          // `!bg-white` note above: which one wins is decided by stylesheet
+          // rule order, not HTML class-attribute order. `scale-[1.02]` is a
+          // different transform property (`--tw-scale-x/y`) so it composes
+          // fine without needing `!`. Existing `transition-all duration-200
+          // ease-in-out` from the variant already covers animating the
+          // scale smoothly, so nothing extra needed there.
+          <Card
+            variant="flat-lift"
+            class="relative isolate overflow-hidden !bg-white hover:scale-[1.02] hover:!translate-y-0"
+          >
             <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
                 {step.number}
