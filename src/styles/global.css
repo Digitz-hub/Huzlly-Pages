@@ -1,5 +1,6 @@
 @import './scroll-reveal.css';
 @import './float-animation.css';
+@import './card-illustration.css';
 
 @tailwind base;
 @tailwind components;
