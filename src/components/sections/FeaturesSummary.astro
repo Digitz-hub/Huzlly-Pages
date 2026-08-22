@@ -175,17 +175,11 @@ const reasons = [
 ];
 ---
 
-<!-- BACKGROUND (updated this pass): holds pure #FFFFFF through the first
-     ~22% of the gradient (not just as a 0% start-stop) so this section's
-     top matches Hero.astro's bottom fade-to-white band exactly — that band
-     also ends at solid #FFFFFF, so the seam between the two sections is
-     white-to-white with no visible tint kicking in right at the join. The
-     subtle blue tint (from Hero's own family, #F0F4FC) only starts easing
-     in after that white hold, staying faint through to 100% — still a
-     faint diagonal wash so the section doesn't read dead-flat, just pushed
-     further down so it doesn't compete with the Hero seam. Second section
-     below (paper-toned) is unchanged from the previous pass. -->
-<section id="how-it-works" class="scroll-mt-20 bg-[linear-gradient(135deg,#FFFFFF_0%,#FFFFFF_22%,#F8FAFE_60%,#F0F4FC_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- BACKGROUND (updated this pass): white hold shortened to ~10% (was 22%,
+     per feedback that was stretching the white too far down) — still just
+     enough to match Hero.astro's bottom fade-to-white seam cleanly, then
+     eases into the faint blue tint sooner. -->
+<section id="how-it-works" class="scroll-mt-20 bg-[linear-gradient(135deg,#FFFFFF_0%,#FFFFFF_10%,#F8FAFE_50%,#F0F4FC_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="How it works"
       title="Four stages. Zero handoffs."
