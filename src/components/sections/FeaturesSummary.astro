@@ -189,10 +189,23 @@ const reasons = [
         const Illustration = step.illustration;
 
         return (
-          // `relative overflow-hidden isolate` on Card still clips the
+          // `relative isolate overflow-hidden` on Card still clips the
           // glow's final spread to the card's own rounded corners and keeps
           // its own stacking context (both unchanged from before).
-          <Card variant="flat-lift" class="relative isolate overflow-hidden">
+          //
+          // `!bg-white`: these 4 stage cards need pure white behind the
+          // glow instead of the flat-lift variant's default bg-paper (cream/
+          // off-white) — glow color reads muddier over a cream tint. Note
+          // this uses Tailwind's `!` important-modifier rather than relying
+          // on class-string order: Card.astro appends this `class` prop
+          // after `classesByVariant[variant]` in the HTML class attribute,
+          // but HTML attribute order does NOT guarantee which utility wins
+          // in Tailwind — that's decided by the order rules land in the
+          // generated stylesheet (driven by Tailwind's theme/plugin order,
+          // not by where `class="..."` puts them), and `bg-paper` is a
+          // custom theme color so its rule position isn't guaranteed to
+          // come first. `!bg-white` sidesteps that entirely and always wins.
+          <Card variant="flat-lift" class="relative isolate overflow-hidden !bg-white">
             <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
                 {step.number}
