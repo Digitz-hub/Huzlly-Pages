@@ -1,111 +1,148 @@
-/* src/styles/scroll-reveal.css
+// src/scripts/scroll-reveal.ts
+//
+// Shared scroll-scrub reveal engine — extracted from HeroDashboardPreview's
+// original inline <script> so any component can opt into the same
+// animation without copy-pasting the scroll math into its own <script>
+// block every time. One import + one function call wires up an entire
+// group of elements.
+//
+// BEHAVIOR (unchanged from the HeroDashboardPreview version this was
+// extracted from, plus a new optional `completionFraction` knob — see
+// ScrollRevealOptions below):
+//   - Pure function of current scroll position each frame, no stored/
+//     sticky state.
+//   - Bottom → center: as an element's center travels from the BOTTOM
+//     edge of the viewport up to viewport-center, `--dp-progress`
+//     interpolates 0 → 1 live. With `completionFraction` below 1, that
+//     0 → 1 interpolation completes over only that fraction of the
+//     bottom→center distance, so the reveal finishes earlier/lower on
+//     screen instead of requiring the element to reach dead-center.
+//   - Center → bottom (scrolling back up): `--dp-progress` interpolates
+//     1 → 0 in exact reverse, frame for frame.
+//   - Above-center clamp: once an element's center is at or above
+//     viewport-center — including fully above/past the top of the
+//     viewport — `--dp-progress` clamps at 1, so it never hides/
+//     exit-animates at the top.
+//
+// USAGE:
+//   Pair with the `.dp-reveal` / `.dp-reveal-left` / `.dp-reveal-right` /
+//   `.dp-reveal-up` classes in `src/styles/scroll-reveal.css` (imported
+//   globally), then call `initScrollReveal('[data-my-component]')` from
+//   any component's own <script> tag, passing a selector scoped to that
+//   component's root (matches the existing `[data-dashboard-preview]`
+//   pattern) — or pass an Element/NodeList directly if you already have
+//   a reference. Safe to call multiple times across different components
+//   on the same page; each call only touches the elements it's given.
+//
+// `.dp-reveal` itself intentionally carries NO direction — it just wires
+// up `opacity: var(--dp-progress)`. Pick a direction modifier
+// (`-left` / `-right` / `-up`) per element, same as HeroDashboardPreview's
+// cards, or add your own modifier class in scroll-reveal.css following the
+// same `calc((1 - var(--dp-progress)) * <offset>)` pattern.
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+export interface ScrollRevealOptions {
+  /** CSS custom property written to each element. Defaults to '--dp-progress'. */
+  property?: string;
+  /**
+   * How far along the bottom→center journey the element should reach
+   * full progress (1), expressed as a fraction of that journey. Defaults
+   * to 1 (finishes exactly at viewport-center, the original behavior).
+   * e.g. 0.7 finishes the reveal 30% "early" — once the element's center
+   * has covered 70% of the distance from the viewport bottom to
+   * viewport-center — instead of requiring it to reach center itself.
+   * Must be > 0.
+   */
+  completionFraction?: number;
+}
+
+/**
+ * Wires up the bottom→center scroll-scrub reveal for a set of elements.
  *
- * Shared classes for the bottom-to-center scroll-scrub reveal animation —
- * extracted from HeroDashboardPreview.astro so any component can reuse it.
- * Pair with `initScrollReveal()` from `src/scripts/scroll-reveal.ts`, which
- * writes the `--dp-progress` custom property these classes read.
- *
- * No CSS transition/duration values on `--dp-progress` itself, on purpose:
- * the scroll position IS the timeline (see scroll-reveal.ts), so easing
- * that value would fight the per-frame updates and introduce lag/
- * rubber-banding. (The `--tilt-*` vars composed in below DO transition —
- * see tilt-card.css — but that's a separate, independently-registered
- * custom property, not this one.)
- *
- * USAGE:
- *   <div class="dp-reveal dp-reveal-left">...</div>
- *   <script>
- *     import { initScrollReveal } from '../../scripts/scroll-reveal';
- *     initScrollReveal('[data-my-component] .dp-reveal');
- *   </script>
- *
- * Base `.dp-reveal` only wires up opacity — always pair it with exactly
- * one direction modifier below (or add a new modifier here following the
- * same `calc((1 - var(--dp-progress)) * <offset>)` pattern).
- *
- * TILT COMPOSITION: each direction modifier's `transform` also includes
- * `var(--tilt-perspective/-rx/-ry/-scale)` — the same custom properties
- * `initTiltCard()` in `src/scripts/tilt-card.ts` writes for any card that
- * ALSO has `.js-tilt-card` (e.g. HeroDashboardPreview's bento cards use
- * both systems together). This is deliberate: `transform` can only ever
- * be driven by ONE source at a time (an element has exactly one computed
- * transform), so if reveal and tilt each tried to set it independently —
- * one via this stylesheet, one via inline JS — whichever wrote last would
- * silently overwrite the other, and once JS ever wrote an inline
- * `transform` it would permanently shadow this rule even after being
- * "reset", since inline style always outranks a stylesheet regardless of
- * what value it holds. Composing both into ONE transform, computed here,
- * is what lets a card slide in via scroll AND tilt via mouse hover at the
- * same time, mid-scroll, with neither effect ever stepping on the other.
- * `var(..., <default>)` fallbacks mean a card using `.dp-reveal-*` WITHOUT
- * `.js-tilt-card` behaves exactly as before (tilt vars just never get
- * set, so they resolve to their defaults — a no-op).
+ * @param target A CSS selector (scoped to a root container, e.g.
+ *   '[data-my-section] .reveal-item'), a single Element, or a NodeList/
+ *   array of Elements.
+ * @returns A cleanup function that removes the scroll/resize listeners,
+ *   for components that need to tear down (e.g. view transitions/SPA
+ *   navigation). Safe to ignore for static pages.
  */
+export function initScrollReveal(
+  target: string | Element | NodeListOf<Element> | Element[],
+  options: ScrollRevealOptions = {}
+): () => void {
+  const property = options.property ?? '--dp-progress';
+  const completionFraction = options.completionFraction ?? 1;
 
-.dp-reveal {
-  --dp-progress: 0;
-  opacity: var(--dp-progress);
-  will-change: transform, opacity;
-}
+  const elements: Element[] =
+    typeof target === 'string'
+      ? Array.from(document.querySelectorAll(target))
+      : target instanceof Element
+        ? [target]
+        : Array.from(target);
 
-/* Slides in from the left as --dp-progress goes 0 -> 1, composed with
-   whatever tilt is currently applied (see TILT COMPOSITION above). */
-.dp-reveal-left {
-  /* `!important` here is load-bearing, not decorative: Card.astro's
-     `flat-lift` variant (used by FeaturesSummary's stage cards) ships its
-     own `hover:-translate-y-1` Tailwind utility. That compiles to
-     `.hover\:-translate-y-1:hover { transform: ... }`, which has
-     specificity (0,2,0) — one class + one pseudo-class — beating this
-     single-class `.dp-reveal-left` rule's (0,1,0) outright, regardless of
-     stylesheet order. Result: the moment the cursor is over a flat-lift
-     card, that hover rule silently wins the `transform` property and
-     stomps this rule's composed reveal+tilt transform back down to a flat
-     `translateY(-0.25rem)` — reveal still "works" because opacity is a
-     separate, uncontested property, but the tilt (which lives entirely
-     inside this rule's `--tilt-rx/-ry/-scale` composition) visibly stops
-     dead exactly on hover. `!important` beats that regardless of
-     specificity, without touching Card.astro (shared by other
-     non-tilt pages) or trying to out-specificity a Tailwind utility. */
-  transform:
-    translateX(calc((1 - var(--dp-progress)) * -48px))
-    perspective(var(--tilt-perspective, 800px))
-    rotateX(var(--tilt-rx, 0deg))
-    rotateY(var(--tilt-ry, 0deg))
-    scale(var(--tilt-scale, 1)) !important;
-}
-
-/* Slides in from the right as --dp-progress goes 0 -> 1, composed with
-   whatever tilt is currently applied (see TILT COMPOSITION above). */
-.dp-reveal-right {
-  /* See the `!important` note on `.dp-reveal-left` above — same
-     Card.astro `flat-lift` `hover:-translate-y-1` specificity conflict
-     applies here identically. */
-  transform:
-    translateX(calc((1 - var(--dp-progress)) * 48px))
-    perspective(var(--tilt-perspective, 800px))
-    rotateX(var(--tilt-rx, 0deg))
-    rotateY(var(--tilt-ry, 0deg))
-    scale(var(--tilt-scale, 1)) !important;
-}
-
-/* Rises up from below as --dp-progress goes 0 -> 1. Use this for elements
-   that span full-width / don't read well with a sideways slide. Composed
-   with whatever tilt is currently applied (see TILT COMPOSITION above). */
-.dp-reveal-up {
-  /* See the `!important` note on `.dp-reveal-left` above — same
-     Card.astro `flat-lift` `hover:-translate-y-1` specificity conflict
-     applies here identically. */
-  transform:
-    translateY(calc((1 - var(--dp-progress)) * 32px))
-    perspective(var(--tilt-perspective, 800px))
-    rotateX(var(--tilt-rx, 0deg))
-    rotateY(var(--tilt-ry, 0deg))
-    scale(var(--tilt-scale, 1)) !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dp-reveal {
-    opacity: 1 !important;
-    transform: none !important;
+  if (elements.length === 0) {
+    return () => {};
   }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReducedMotion) {
+    elements.forEach((el) => (el as HTMLElement).style.setProperty(property, '1'));
+    return () => {};
+  }
+
+  let ticking = false;
+
+  const update = () => {
+    const viewportHeight = window.innerHeight;
+    const viewportCenter = viewportHeight / 2;
+
+    // At literal page-top (scrollY 0), force every element's progress to
+    // 0 — full hidden, no partial fade — even if an element is already
+    // partway into the viewport at that scroll position (e.g. a tall
+    // hero where the dashboard preview peeks in at the bottom edge on
+    // first load). Anything above 0 hands off to the normal bottom→
+    // center formula as usual.
+    const atPageTop = window.scrollY <= 0;
+
+    elements.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const elCenter = rect.top + rect.height / 2;
+
+      // Bottom → center live 0 -> 1, center → bottom live 1 -> 0 in exact
+      // reverse; clamps at 1 once at/above center so it never hides again
+      // just for being above the fold. `completionFraction` shrinks the
+      // denominator so progress hits 1 before elCenter actually reaches
+      // viewport-center, if set below 1 (default 1 = original behavior,
+      // full journey required).
+      const progress = atPageTop
+        ? 0
+        : clamp(
+            (viewportHeight - elCenter) / ((viewportHeight - viewportCenter) * completionFraction),
+            0,
+            1
+          );
+
+      (el as HTMLElement).style.setProperty(property, progress.toFixed(3));
+    });
+
+    ticking = false;
+  };
+
+  const onScrollOrResize = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+
+  update();
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize);
+
+  return () => {
+    window.removeEventListener('scroll', onScrollOrResize);
+    window.removeEventListener('resize', onScrollOrResize);
+  };
 }
