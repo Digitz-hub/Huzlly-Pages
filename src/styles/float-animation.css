@@ -33,7 +33,13 @@
  * one) is needed. Whenever a new variant is added, its keyframe's own
  * rotate/skew values MUST match the static Tailwind rotate-[...]/
  * skew-*-[...] classes on the element it's applied to — see the bug
- * above for what goes wrong otherwise.
+ * above for what goes wrong otherwise. (glass-float-c below is itself an
+ * example: it originally had no skew term, matching s3's original
+ * skew-less rotate-[35deg]; when s3 was repositioned to a middle-left
+ * diamond angle and picked up a static skew-y-[-6deg], glass-float-c's
+ * keyframe was updated in the same pass to carry that skewY(-6deg) too —
+ * skipping that update would have reproduced the exact bug described
+ * above the moment the animation started looping.)
  *
  * NOTE — don't combine with scroll-reveal.css's `--dp-progress`-driven
  * transform on the SAME element: both this animation and the scroll-
@@ -53,8 +59,8 @@
   50% { transform: translate(-12px, 14px) rotate(26deg) skewX(-6deg); }
 }
 @keyframes glass-float-c {
-  0%, 100% { transform: translate(0, 0) rotate(35deg); }
-  50% { transform: translate(8px, -10px) rotate(30deg); }
+  0%, 100% { transform: translate(0, 0) rotate(42deg) skewY(-6deg); }
+  50% { transform: translate(8px, -10px) rotate(37deg) skewY(-6deg); }
 }
 
 /* Mirrored variants — same drift shape/amplitude as glass-float-a/b,
