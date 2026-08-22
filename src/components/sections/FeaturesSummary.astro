@@ -175,16 +175,14 @@ const reasons = [
 ];
 ---
 
-<!-- BACKGROUND (updated this pass): switched from a 135deg diagonal to a
-     180deg (vertical) gradient. The diagonal version put pure #FFFFFF only
-     at the exact top-left corner — by the top-right corner, the diagonal
-     had already advanced partway into the tint, so against Hero's uniform
-     180deg fade-to-white (same white across the full width), the right
-     edge showed a visible seam/line where tinted met solid white. A
-     vertical gradient keeps the top row uniformly #FFFFFF across the whole
-     width, matching Hero's seam edge-to-edge, and only eases into the
-     faint blue tint further down the section. -->
-<section id="how-it-works" class="scroll-mt-20 bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFFFF_10%,#F8FAFE_50%,#F0F4FC_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- BACKGROUND (updated this pass): blue tint now starts easing in earlier
+     (white hold trimmed from 10% to 5%) and reaches a denser/more
+     saturated tint than before (#EAF1FC vs previous #F0F4FC end-stop,
+     with the mid-stop #F2F7FE also bumped closer to that end tone) — per
+     feedback that the tint should start higher up and read a bit stronger,
+     while still holding a short pure-white band at the very top for the
+     Hero seam. -->
+<section id="how-it-works" class="scroll-mt-20 bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFFFF_5%,#F2F7FE_40%,#EAF1FC_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="How it works"
       title="Four stages. Zero handoffs."
