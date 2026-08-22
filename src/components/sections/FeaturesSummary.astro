@@ -50,6 +50,7 @@ import {
   Tag,
   Zap,
   Feather,
+  Layers,
 } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import Card from '../ui/Card.astro';
@@ -172,6 +173,23 @@ const reasons = [
     title: 'One flat price',
     body: 'No per-seat fees, no usage tiers to track. What you see is what you pay.',
   },
+];
+
+// Bottom quick-wins strip (v2.2 "Why lean" redesign, per user-supplied
+// inspiration reference — asymmetric persona-card layout + a compact
+// bottom strip of one-line wins). Per explicit user direction, this strip
+// is the 3 `reasons` above restated as short scannable one-liners (same
+// icon + title, description dropped) PLUS one net-new 4th item —
+// "Everything in one place" — added specifically to cover the
+// no-tool-switching / all-in-one angle that isn't covered by the existing
+// 3 (which cover cost/speed/simplicity, not consolidation). Deliberately
+// NOT four brand-new items: user confirmed "4th item" (singular addition),
+// not a fully distinct second content set.
+const quickWins = [
+  { icon: Feather, label: 'Nothing you don\u2019t use' },
+  { icon: Zap, label: 'Live in minutes' },
+  { icon: Tag, label: 'One flat price' },
+  { icon: Layers, label: 'Everything in one place' },
 ];
 ---
 
@@ -346,22 +364,82 @@ const reasons = [
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
 </script>
 
+<!--
+  v2.2 "Why lean" redesign (per user-supplied inspiration, discussed and
+  confirmed before build): moves from the centered SectionHeader + flat
+  3-up grid to a left copy / right asymmetric-card layout (1 wide card on
+  top, 2 half-width cards below), plus a new full-width 4-item quick-wins
+  strip beneath. Structure/composition borrowed from the inspiration
+  reference (persona-card layout with a top visual block + text below,
+  bottom icon+label strip) — palette stays entirely on the sitewide
+  ink/paper/rail + blue-600 signal color, no imported gradient hues, so it
+  reads as this site's design language rather than a copy-pasted look.
+
+  Left column is NOT built with the shared SectionHeader component this
+  time — SectionHeader is a centered-only pattern (see its own
+  `mx-auto ... text-center` wrapper) and this layout needs a left-aligned
+  eyebrow/heading/subtitle stacked beside the cards, not above them. Markup
+  below intentionally mirrors SectionHeader's type scale/eyebrow styling by
+  hand so it still reads as the same header pattern, just left-aligned.
+-->
 <section class="bg-[linear-gradient(135deg,#FBFBF9_0%,#F7F5F1_50%,#F2EFEA_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <SectionHeader eyebrow="Why lean"
-      title="Built for one freelancer, not a whole team"
-      subtitle="Bonsai and HoneyBook grew into agency platforms. Huzlly stayed built for the person doing the work."
-    />
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-5 lg:gap-12">
+      <div class="lg:col-span-2">
+        <span class="inline-flex items-center rounded-full border border-rail bg-paper px-3 py-1 font-mono text-xs uppercase tracking-widest text-blue-600">
+          Why lean
+        </span>
+        <h2 class="font-display mt-4 text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+          Built for one freelancer, not a whole team
+        </h2>
+        <p class="mt-4 max-w-md text-lg leading-relaxed text-ink/70">
+          Bonsai and HoneyBook grew into agency platforms. Huzlly stayed built for the person doing the work.
+        </p>
+      </div>
 
-    <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-      {reasons.map((reason) => (
-        <Card variant="elevated" class="text-center sm:text-left">
-          <span class="mx-auto sm:mx-0 flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
-            <reason.icon class="w-5 h-5" stroke-width="1.75" />
+      <div class="lg:col-span-3">
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          {reasons.map((reason, index) => (
+            <Card variant="elevated" class={index === 0 ? 'sm:col-span-2' : ''}>
+              {/*
+                Visual block: same containment technique as the
+                "how it works" illustration boxes above (overflow-hidden
+                rounded-xl + a radial-gradient glow via inline `style`,
+                Tailwind can't express an arbitrary-position radial
+                gradient as a class) — but deliberately a single fixed
+                blue-600 glow across all 3 cards here, not per-card signal
+                colors, per explicit user direction (this section reads as
+                one consistent group, not 3 differently-themed stages like
+                "how it works").
+              */}
+              <div class="relative h-32 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-40">
+                <span
+                  class="pointer-events-none absolute inset-[-10%] rounded-full blur-[46px]"
+                  style="background: radial-gradient(circle at 50% 50%, #2563eb 0%, transparent 55%); opacity: 0.18;"
+                  aria-hidden="true"
+                ></span>
+                <span class="relative z-10 flex h-full items-center justify-center">
+                  <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-paper">
+                    <reason.icon class="h-6 w-6" stroke-width="1.75" />
+                  </span>
+                </span>
+              </div>
+              <h3 class="mt-5 text-xl font-semibold leading-snug text-ink">{reason.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink/70">{reason.body}</p>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:mt-12">
+      {quickWins.map((item) => (
+        <div class="flex flex-col items-start gap-3 rounded-2xl border border-rail bg-paper p-5">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
+            <item.icon class="h-5 w-5" stroke-width="1.75" />
           </span>
-          <h3 class="mt-4 text-xl font-semibold text-ink leading-snug">{reason.title}</h3>
-          <p class="mt-2 text-sm text-ink/70 leading-relaxed">{reason.body}</p>
-        </Card>
+          <p class="text-sm font-medium leading-snug text-ink">{item.label}</p>
+        </div>
       ))}
     </div>
   </div>
