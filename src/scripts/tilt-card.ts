@@ -48,7 +48,7 @@ export interface TiltCardOptions {
   scale?: number;
   /** Transition duration (ms) used while actively tracking the cursor. Defaults to 150. */
   trackMs?: number;
-  /** Transition duration (ms) used when the cursor leaves, easing back to flat. Defaults to 350. */
+  /** Transition duration (ms) used when the cursor leaves, easing back to flat. Defaults to 600. */
   leaveMs?: number;
   /** CSS perspective distance in px. Defaults to 800. */
   perspective?: number;
@@ -71,7 +71,7 @@ export function initTiltCard(
   const maxTilt = options.maxTilt ?? 10;
   const scale = options.scale ?? 1.03;
   const trackMs = options.trackMs ?? 150;
-  const leaveMs = options.leaveMs ?? 350;
+  const leaveMs = options.leaveMs ?? 600;
   const perspective = options.perspective ?? 800;
 
   const elements: HTMLElement[] =
