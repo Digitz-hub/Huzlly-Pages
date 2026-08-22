@@ -61,22 +61,30 @@ import GrowIllustration from './how-it-works/GrowIllustration.astro';
 //
 // `glow` / `glowPos` drive the single ambient illustration-glow blob (see
 // reference huzlly-how-it-works.html .illustration-glow rules) — one big
-// radial-gradient covering the whole illustration box, saturated color
-// fading to transparent, positioned differently per card. Tailwind's
-// class:list can't express an arbitrary radial-gradient with a dynamic
-// center + color, so this is applied via inline `style` instead of a class.
-// `glow` is the actual saturated signal hex (blue-600/teal-600/amber-500,
-// matching tailwind.config.mjs), NOT the light -50 tints used for chipBg —
-// light tints are what made the old corner blobs disappear under blur.
-// The `ink` glow hex is a saturated dark-neutral stand-in (Tailwind's
-// rgb()-tuple custom-color format can't be dropped straight into a gradient
-// stop) — double-check it against the real ink hex in tailwind.config.mjs
-// and adjust if it doesn't match exactly.
-const signalStyles: Record<string, { glow: string; glowPos: string; icon: string; chipBg: string }> = {
-  blue: { glow: '#2563eb', glowPos: '34% 38%', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
-  teal: { glow: '#0d9488', glowPos: '66% 30%', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
-  amber: { glow: '#f59e0b', glowPos: '34% 66%', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
-  ink: { glow: '#33312e', glowPos: '50% 50%', icon: 'text-ink/70', chipBg: 'bg-rail/40' },
+// radial-gradient spanning the whole Card (not just the illustration box —
+// it now lives as a direct sibling inside <Card>, see markup below), a
+// saturated color fading to transparent, positioned differently per card.
+// Tailwind's class:list can't express an arbitrary radial-gradient with a
+// dynamic center + color, so this is applied via inline `style` instead of
+// a class. `glow` is the actual saturated signal hex (blue-600/teal-600/
+// amber-500, matching tailwind.config.mjs), NOT the light -50 tints used
+// for chipBg — light tints are what made the old corner blobs disappear
+// under blur. The `ink` glow hex is a saturated dark-neutral stand-in
+// (Tailwind's rgb()-tuple custom-color format can't be dropped straight
+// into a gradient stop) — double-check it against the real ink hex in
+// tailwind.config.mjs and adjust if it doesn't match exactly.
+//
+// `glowOpacity` is per-signal (not a shared Tailwind opacity-[…] class
+// anymore) because the ink glow at the same 0.28 opacity as the color
+// signals read as a dark smoky smudge instead of a subtle wash — a dark
+// near-black color needs noticeably less opacity than blue/teal/amber to
+// feel equally subtle, so ink is dialed down to 0.16 while the others stay
+// at the reference's 0.28.
+const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity: string; icon: string; chipBg: string }> = {
+  blue: { glow: '#2563eb', glowPos: '34% 38%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
+  teal: { glow: '#0d9488', glowPos: '66% 30%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
+  amber: { glow: '#f59e0b', glowPos: '34% 66%', glowOpacity: '0.28', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
+  ink: { glow: '#33312e', glowPos: '50% 50%', glowOpacity: '0.16', icon: 'text-ink/70', chipBg: 'bg-rail/40' },
 };
 
 // Common chip-pill classes, shared by every card. Sizing is intentionally
@@ -179,25 +187,42 @@ const reasons = [
         const Illustration = step.illustration;
 
         return (
-          <Card variant="flat-lift">
-            <div class="flex items-center gap-3">
+          // `relative isolate overflow-hidden` on Card is new here: `relative`
+          // makes Card (not the small illustration box) the containing block
+          // the glow's `absolute inset-[-10%]` resolves against, so it bleeds
+          // across the whole card into the padding area instead of being
+          // boxed in; `overflow-hidden` clips that bleed to Card's own
+          // rounded corners; `isolate` gives the card its own stacking
+          // context so the glow's z-0 vs. the rest of the card's z-10 only
+          // ever gets compared against each other, never against sibling
+          // cards or the page.
+          <Card variant="flat-lift" class="relative isolate overflow-hidden">
+            <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
                 {step.number}
               </span>
               <span class="font-mono text-xs uppercase tracking-widest text-ink/50">{step.stage}</span>
             </div>
 
-            <h3 class="mt-4 font-display text-xl font-semibold leading-snug text-ink sm:text-2xl">
+            <h3 class="relative z-10 mt-4 font-display text-xl font-semibold leading-snug text-ink sm:text-2xl">
               {step.headline}
             </h3>
 
-            <div class="relative mt-5 h-48 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-56">
-              <span
-                class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px] opacity-[0.28]"
-                style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%);`}
-                aria-hidden="true"
-              ></span>
+            {/*
+              Glow is now a direct child of Card (sibling of the illustration
+              wrapper below), not nested inside it — that's what lets it
+              span/bleed across the whole card. It's `position: relative`
+              (via Card) + `z-0`, while every other direct child in this card
+              is `relative z-10`, so it always paints behind them regardless
+              of DOM order.
+            */}
+            <span
+              class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
+              style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
+              aria-hidden="true"
+            ></span>
 
+            <div class="relative z-10 mt-5 h-48 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-56">
               <Illustration />
 
               {step.chips.map((chip) => (
@@ -213,7 +238,7 @@ const reasons = [
               ))}
             </div>
 
-            <p class="mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
+            <p class="relative z-10 mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
           </Card>
         );
       })}
