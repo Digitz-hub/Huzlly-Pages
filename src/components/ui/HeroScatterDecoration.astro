@@ -199,21 +199,22 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s6 — left-mid wide/short panel, teal tint. Reshaped this pass per
-       reference sketch: was a thin tall sliver (w-28 h-56) mirroring
-       s5's right-mid proportions; now a short, wide panel tilted toward
-       the top-right (positive rotate/skew, vs. the old negative pair)
-       instead of mirroring s5. Position anchor (top-[40%] left-[-3%])
-       unchanged — same left-center slot, new shape/direction on top of it.
-       Uses the new `glass-float-d` keyframe (float-animation.css) rather
-       than reusing any existing class: reusing one whose keyframe
-       rotate/skew doesn't match this element's own static rotate-[12deg]/
-       skew-x-[6deg] would silently override that angle once the
-       animation kicks in (a running CSS animation always wins `transform`
-       over a static utility class) — same failure mode this file's other
-       shapes were already fixed for. glass-float-d's keyframe matches
-       this element's angle exactly, so no such override. -->
-  <div class="glass-float-d absolute w-64 h-32 top-[40%] left-[-3%] rotate-[12deg] skew-x-[6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <!-- s6 — left-mid wide/short panel, teal tint. Direction flipped +
+       width trimmed this pass (per live-preview feedback: the previous
+       positive rotate-[12deg]/skew-x-[6deg] read as sloping DOWN toward
+       the right, opposite of the intended top-right tilt). Now negative
+       rotate/skew so the right end reads higher/upward instead. Width
+       trimmed w-64→w-56 (slightly narrower); height/position anchor
+       (h-32, top-[40%] left-[-3%]) unchanged.
+       Uses the `glass-float-d` keyframe (float-animation.css), updated
+       in this same pass to the new negative rotate/skew — reusing the
+       OLD glass-float-d values (which matched the old positive angle)
+       would silently override this element's new rotate-[-12deg]/
+       skew-x-[-6deg] once the animation kicks in (a running CSS
+       animation always wins `transform` over a static utility class) —
+       same failure mode this file's other shapes were already fixed
+       for. Keyframe now matches this element's new angle exactly. -->
+  <div class="glass-float-d absolute w-56 h-32 top-[40%] left-[-3%] rotate-[-12deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[10%] top-[14%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
