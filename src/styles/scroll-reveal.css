@@ -5,9 +5,12 @@
  * Pair with `initScrollReveal()` from `src/scripts/scroll-reveal.ts`, which
  * writes the `--dp-progress` custom property these classes read.
  *
- * No CSS transition/duration values here on purpose: the scroll position
- * itself IS the timeline (see scroll-reveal.ts), so a transition would
- * fight the per-frame updates and introduce lag/rubber-banding.
+ * No CSS transition/duration values on `--dp-progress` itself, on purpose:
+ * the scroll position IS the timeline (see scroll-reveal.ts), so easing
+ * that value would fight the per-frame updates and introduce lag/
+ * rubber-banding. (The `--tilt-*` vars composed in below DO transition —
+ * see tilt-card.css — but that's a separate, independently-registered
+ * custom property, not this one.)
  *
  * USAGE:
  *   <div class="dp-reveal dp-reveal-left">...</div>
@@ -19,6 +22,24 @@
  * Base `.dp-reveal` only wires up opacity — always pair it with exactly
  * one direction modifier below (or add a new modifier here following the
  * same `calc((1 - var(--dp-progress)) * <offset>)` pattern).
+ *
+ * TILT COMPOSITION: each direction modifier's `transform` also includes
+ * `var(--tilt-perspective/-rx/-ry/-scale)` — the same custom properties
+ * `initTiltCard()` in `src/scripts/tilt-card.ts` writes for any card that
+ * ALSO has `.js-tilt-card` (e.g. HeroDashboardPreview's bento cards use
+ * both systems together). This is deliberate: `transform` can only ever
+ * be driven by ONE source at a time (an element has exactly one computed
+ * transform), so if reveal and tilt each tried to set it independently —
+ * one via this stylesheet, one via inline JS — whichever wrote last would
+ * silently overwrite the other, and once JS ever wrote an inline
+ * `transform` it would permanently shadow this rule even after being
+ * "reset", since inline style always outranks a stylesheet regardless of
+ * what value it holds. Composing both into ONE transform, computed here,
+ * is what lets a card slide in via scroll AND tilt via mouse hover at the
+ * same time, mid-scroll, with neither effect ever stepping on the other.
+ * `var(..., <default>)` fallbacks mean a card using `.dp-reveal-*` WITHOUT
+ * `.js-tilt-card` behaves exactly as before (tilt vars just never get
+ * set, so they resolve to their defaults — a no-op).
  */
 
 .dp-reveal {
@@ -27,20 +48,38 @@
   will-change: transform, opacity;
 }
 
-/* Slides in from the left as --dp-progress goes 0 -> 1. */
+/* Slides in from the left as --dp-progress goes 0 -> 1, composed with
+   whatever tilt is currently applied (see TILT COMPOSITION above). */
 .dp-reveal-left {
-  transform: translateX(calc((1 - var(--dp-progress)) * -48px));
+  transform:
+    translateX(calc((1 - var(--dp-progress)) * -48px))
+    perspective(var(--tilt-perspective, 800px))
+    rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg))
+    scale(var(--tilt-scale, 1));
 }
 
-/* Slides in from the right as --dp-progress goes 0 -> 1. */
+/* Slides in from the right as --dp-progress goes 0 -> 1, composed with
+   whatever tilt is currently applied (see TILT COMPOSITION above). */
 .dp-reveal-right {
-  transform: translateX(calc((1 - var(--dp-progress)) * 48px));
+  transform:
+    translateX(calc((1 - var(--dp-progress)) * 48px))
+    perspective(var(--tilt-perspective, 800px))
+    rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg))
+    scale(var(--tilt-scale, 1));
 }
 
 /* Rises up from below as --dp-progress goes 0 -> 1. Use this for elements
-   that span full-width / don't read well with a sideways slide. */
+   that span full-width / don't read well with a sideways slide. Composed
+   with whatever tilt is currently applied (see TILT COMPOSITION above). */
 .dp-reveal-up {
-  transform: translateY(calc((1 - var(--dp-progress)) * 32px));
+  transform:
+    translateY(calc((1 - var(--dp-progress)) * 32px))
+    perspective(var(--tilt-perspective, 800px))
+    rotateX(var(--tilt-rx, 0deg))
+    rotateY(var(--tilt-ry, 0deg))
+    scale(var(--tilt-scale, 1));
 }
 
 @media (prefers-reduced-motion: reduce) {
