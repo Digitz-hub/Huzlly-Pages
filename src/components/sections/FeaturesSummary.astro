@@ -331,7 +331,8 @@ const reasons = [
 <script>
   const MAX_TILT = 10; // degrees, matches this file's existing subtle/restrained motion (Hero's own reveal transform is similarly small, e.g. 14px)
   const SCALE = 1.03;
-  const EASE_MS = 200; // matches the flat-lift variant's own `duration-200`, so enter/leave feels consistent with the rest of the card's transitions
+  const TRACK_MS = 150; // eases each mousemove step instead of snapping instantly — this is what was causing the jhatka on enter/first move
+  const LEAVE_MS = 350; // slightly longer + gentler than tracking, for a soft snap-back to flat on mouseleave
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
@@ -341,10 +342,14 @@ const reasons = [
 
     cards.forEach((card) => {
       card.style.willChange = 'transform';
-
-      card.addEventListener('mouseenter', () => {
-        card.style.transition = `transform ${EASE_MS}ms ease-out`;
-      });
+      // Applied once, up front, and left alone — no more toggling between
+      // 'none' (during move) and an eased value (enter/leave). Toggling
+      // to 'none' was the actual cause of the jhatka: it meant the very
+      // first mousemove after entering jumped straight to its target
+      // rotation with zero easing. A single always-on short transition
+      // smooths every step, including that first one, while still
+      // feeling responsive since mousemove fires many times a second.
+      card.style.transition = `transform ${TRACK_MS}ms ease-out`;
 
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
@@ -361,12 +366,12 @@ const reasons = [
         const rotateX = (-py * MAX_TILT * 2).toFixed(2);
         const rotateY = (px * MAX_TILT * 2).toFixed(2);
 
-        card.style.transition = 'none'; // instant tracking, no lag behind the cursor
+        card.style.transition = `transform ${TRACK_MS}ms ease-out`;
         card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${SCALE})`;
       });
 
       card.addEventListener('mouseleave', () => {
-        card.style.transition = `transform ${EASE_MS}ms ease-out`;
+        card.style.transition = `transform ${LEAVE_MS}ms ease-out`;
         card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
       });
     });
