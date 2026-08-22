@@ -1,0 +1,55 @@
+/* src/styles/card-illustration.css
+ *
+ * Shared animation primitives for the "how it works" cards
+ * (FeaturesSummary.astro, Step 1 of the reference-HTML → site-design-system
+ * conversion — see CLAUDE.md Section 4.5). Each card gets a custom inline
+ * SVG illustration + floating chip cluster; these four keyframes are the
+ * reusable motion vocabulary shared across all four cards, kept separate
+ * from float-animation.css's glass-float-a/b/c set since those are a
+ * different, larger-amplitude drift meant for decorative hero blobs, not
+ * this section's small chip bob / glow pulse / SVG accents.
+ *
+ * USAGE (applied per-element in FeaturesSummary.astro from Step 2 onward):
+ *   .chip-float-el   — floating chip pills (subtle vertical bob)
+ *   .glow-pulse-el   — the illustration's background glow blob(s)
+ *   .dash-move-el    — Card 04's looping stroke-dasharray path
+ *   .soft-pulse-el   — Card 01's approval-badge circle (opacity pulse)
+ *
+ * Each class both assigns the keyframe AND sets its default timing, so a
+ * card only needs to add the class name — no separate `animation` utility
+ * needed. Stagger per-chip via an inline `animation-delay` style (matches
+ * the reference HTML's per-chip delay approach) rather than more classes.
+ */
+
+@keyframes chip-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.06); }
+}
+
+@keyframes dash-move {
+  to { stroke-dashoffset: -40; }
+}
+
+@keyframes soft-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.chip-float-el { animation: chip-float 5s ease-in-out infinite; }
+.glow-pulse-el { animation: glow-pulse 6s ease-in-out infinite; }
+.dash-move-el { animation: dash-move 6s linear infinite; }
+.soft-pulse-el { animation: soft-pulse 3.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chip-float-el,
+  .glow-pulse-el,
+  .dash-move-el,
+  .soft-pulse-el {
+    animation: none !important;
+  }
+}
