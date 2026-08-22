@@ -311,9 +311,11 @@ const reasons = [
      `initScrollReveal` in `src/scripts/scroll-reveal.ts`, used by
      HeroDashboardPreview) so any other component can reuse the exact same
      tilt behavior via `initTiltCard(selector)` instead of re-implementing
-     this from scratch. Defaults (10deg max tilt, 1.03 scale, 150ms/350ms
-     track/leave easing) match what this file already had, so no visual
-     change from this extraction — just no longer duplicated inline. -->
+     this from scratch. Defaults (10deg max tilt, 1.03 scale, 150ms track /
+     600ms leave easing — leave slowed down from an earlier 350ms per
+     feedback that the snap-back-to-flat felt too quick) match what this
+     file already had, so no visual change from this extraction — just no
+     longer duplicated inline. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
 
