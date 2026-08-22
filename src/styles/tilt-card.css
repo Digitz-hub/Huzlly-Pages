@@ -1,0 +1,50 @@
+/* src/styles/tilt-card.css
+ *
+ * Typed custom-property registrations for the mouse-follow 3D tilt effect
+ * (`initTiltCard()` in `src/scripts/tilt-card.ts`). Pure registration file
+ * — no selectors/rules of its own; `.js-tilt-card` cards that also use
+ * scroll-reveal read these vars via `.dp-reveal-left/-right/-up` in
+ * scroll-reveal.css (see the TILT COMPOSITION note there). Cards using
+ * tilt WITHOUT scroll-reveal (e.g. FeaturesSummary's stage cards) don't
+ * need these at all — tilt-card.ts sets `transform` directly on them,
+ * inline, exactly as before; only reveal+tilt cards go through vars.
+ *
+ * WHY @property: a plain (unregistered) CSS custom property is just an
+ * untyped string as far as the CSS Custom Properties spec is concerned —
+ * the browser has no idea `--tilt-rx` means "an angle" or how to
+ * interpolate between two values of it, so a `transition` on a property
+ * that merely *reads* one via var() (like `.dp-reveal-left`'s `transform`
+ * above) won't animate smoothly when only the custom property changes;
+ * it jumps. `@property` (CSS Houdini) gives each var an explicit
+ * <syntax>, which is what makes it animatable — from there, transitioning
+ * these custom properties directly (`transition: --tilt-rx 150ms
+ * ease-out, ...`, set by tilt-card.ts) produces a smoothly-eased
+ * `transform`, exactly like the effect already had before tilt/reveal
+ * needed to share one property. Older browsers without @property support
+ * (rare at this point) simply snap instead of easing — the tilt itself
+ * still works, just without the smoothing.
+ */
+
+@property --tilt-perspective {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 800px;
+}
+
+@property --tilt-rx {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --tilt-ry {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --tilt-scale {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
