@@ -148,7 +148,7 @@ const { class: className } = Astro.props;
 <div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-3', className]} data-dashboard-preview>
 
   <!-- Card 1: Automated Pipeline (tall, left column, spans both top rows) -->
-  <div class="dp-reveal dp-reveal-left js-tilt-card flex flex-col rounded-2xl border border-rail bg-white p-6 shadow-sm lg:row-span-2">
+  <div class="dp-reveal dp-reveal-left js-tilt-card flex flex-col rounded-2xl bg-white p-6 shadow-sm lg:row-span-2">
     <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-sm">
       <Zap class="w-6 h-6 text-white" stroke-width="1.5" aria-hidden="true" />
     </div>
@@ -166,7 +166,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 2: Replaces 5+ apps (middle column, top row) -->
-  <div class="dp-reveal dp-reveal-left js-tilt-card rounded-2xl border border-rail bg-white p-6 shadow-sm">
+  <div class="dp-reveal dp-reveal-left js-tilt-card rounded-2xl bg-white p-6 shadow-sm">
     <h4 class="mb-4 text-lg font-semibold text-ink">Replaces 5+ apps</h4>
     <div class="mb-4 flex flex-wrap gap-2">
       <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
@@ -190,7 +190,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 3: Project Timesheet (middle column, bottom row) -->
-  <div class="dp-reveal dp-reveal-right js-tilt-card rounded-2xl border border-rail bg-white p-6 shadow-sm">
+  <div class="dp-reveal dp-reveal-right js-tilt-card rounded-2xl bg-white p-6 shadow-sm">
     <h4 class="text-lg font-semibold text-ink">Project Timesheet</h4>
     <p class="mb-3 text-sm text-ink/50">Per-task time tracking</p>
     <div class="flex flex-wrap items-baseline gap-2">
@@ -201,7 +201,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 4: Lower cost / pricing (short, wide — spans both middle/right columns, row 2 only) -->
-  <div class="dp-reveal dp-reveal-right js-tilt-card relative flex flex-col overflow-hidden rounded-2xl border border-rail bg-white p-6 shadow-sm lg:col-span-2">
+  <div class="dp-reveal dp-reveal-right js-tilt-card relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 shadow-sm lg:col-span-2">
     <div class="pointer-events-none absolute -right-2 -top-2 h-24 w-24 opacity-40 [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)] [background-size:12px_12px] [mask-image:linear-gradient(225deg,black_10%,transparent_65%)]" aria-hidden="true"></div>
     <div class="flex flex-wrap items-baseline gap-3">
       <span class="font-display text-6xl font-semibold text-amber-500">50–70%</span>
@@ -212,7 +212,7 @@ const { class: className } = Astro.props;
   </div>
 
   <!-- Card 5: Client Portal (bottom row, full width — absorbs the dropped 6th cell, see file-header note) -->
-  <div class="dp-reveal dp-reveal-up js-tilt-card flex flex-col items-start gap-4 rounded-2xl border border-rail bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
+  <div class="dp-reveal dp-reveal-up js-tilt-card flex flex-col items-start gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
     <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-ink shadow-sm">
       <Lock class="w-6 h-6 text-paper" stroke-width="1.5" aria-hidden="true" />
     </div>
@@ -250,10 +250,19 @@ const { class: className } = Astro.props;
   // `[data-dashboard-preview] .js-tilt-card` (this component's own root)
   // so it never touches FeaturesSummary's separate `.js-tilt-card` group
   // elsewhere on the page — `initTiltCard` is safe to call multiple times
-  // across different selectors. Defaults (10deg max tilt, 1.03 scale,
-  // 150ms track / 600ms leave) left untouched — no brief for a different
-  // feel here.
+  // across different selectors. Tilt/scale/timing defaults (10deg max
+  // tilt, 1.03 scale, 150ms track / 600ms leave) left untouched. Shadow
+  // toned down from the shared defaults (0.22 alpha / 36px blur / 22px
+  // offset) to a lighter 0.12 alpha / 24px blur / 14px offset — these
+  // cards already sit on `shadow-sm` + a bordered white surface, so the
+  // shared engine's default shadow read too heavy here; passed as
+  // call-site options rather than changing tilt-card.ts's defaults, so
+  // FeaturesSummary's stage cards keep their original shadow untouched.
   import { initTiltCard } from '../../scripts/tilt-card';
 
-  initTiltCard('[data-dashboard-preview] .js-tilt-card');
+  initTiltCard('[data-dashboard-preview] .js-tilt-card', {
+    shadowColor: 'rgba(20, 17, 15, 0.12)',
+    shadowBlur: 24,
+    shadowMaxOffset: 14,
+  });
 </script>
