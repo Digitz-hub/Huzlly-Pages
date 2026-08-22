@@ -65,15 +65,14 @@ import GrowIllustration from './how-it-works/GrowIllustration.astro';
 //
 // `glow` / `glowPos` drive the single ambient illustration-glow blob (see
 // reference huzlly-how-it-works.html .illustration-glow rules) — one big
-// radial-gradient whose origin sits behind the illustration/SVG box (glow
-// lives inside the illustration wrapper, see markup below, so glowPos is
-// relative to that box's own dimensions — not the whole Card) but is free
-// to bleed out across the rest of the card, clipped only by Card's own
-// overflow-hidden. Color fades from saturated to transparent, positioned
-// differently per card. Tailwind's class:list can't express an arbitrary
-// radial-gradient with a dynamic center + color, so this is applied via
-// inline `style` instead of a class. `glow` is the actual saturated signal
-// hex (blue-600/teal-600/amber-500/green-600, matching Tailwind's default
+// radial-gradient contained to the illustration box (glowPos/inset resolve
+// against that box's own dimensions, and its overflow-hidden clips the
+// glow to its bounds — it does not spread across the rest of the card).
+// Color fades from saturated to transparent, positioned differently per
+// card. Tailwind's class:list can't express an arbitrary radial-gradient
+// with a dynamic center + color, so this is applied via inline `style`
+// instead of a class. `glow` is the actual saturated signal hex
+// (blue-600/teal-600/amber-500/green-600, matching Tailwind's default
 // palette — see tailwind.config.mjs), NOT the light -50 tints used for
 // chipBg — light tints are what made the old corner blobs disappear under
 // blur.
@@ -189,9 +188,12 @@ const reasons = [
         const Illustration = step.illustration;
 
         return (
-          // `relative isolate overflow-hidden` on Card still clips the
-          // glow's final spread to the card's own rounded corners and keeps
-          // its own stacking context (both unchanged from before).
+          // `relative isolate overflow-hidden` on Card is kept (harmless)
+          // even though the glow is now contained to the illustration box
+          // again, not spread across the whole card — so this overflow-
+          // hidden isn't doing the glow-clipping work anymore (the
+          // illustration wrapper's own overflow-hidden does that), but
+          // there's no reason to remove it.
           //
           // `!bg-white`: these 4 stage cards need pure white behind the
           // glow instead of the flat-lift variant's default bg-paper (cream/
@@ -218,47 +220,39 @@ const reasons = [
             </h3>
 
             {/*
-              Illustration wrapper: `relative`, no `overflow-hidden` here —
-              this is the glow's containing block now, so inset-[-N%] and
-              `circle at ${glowPos}` resolve against the illustration box's
-              own dimensions (origin sits right behind the SVG, matching the
-              reference), while still being free to bleed past this div's
-              edges. `z-10` keeps this whole wrapper (and everything in it)
-              above the glow, same as the other direct children of Card.
+              Illustration wrapper: back to a single box (previous pass had
+              split this into an outer `relative` wrapper + a separate inner
+              overflow-hidden box so the glow could live outside the clip and
+              bleed across the whole card). Reverted per direct instruction:
+              glow is now contained to this box again, not spread over the
+              card, so there's no need for two nested divs — one wrapper
+              with `overflow-hidden rounded-xl` + its `bg-gradient-to-b
+              from-paper to-white` background back, and `relative` for the
+              glow's positioning context. `glowPos`/`inset-[-10%]` now
+              resolve against this box's own dimensions again, and
+              `overflow-hidden` here clips the glow to the box bounds
+              instead of Card's overflow-hidden doing that job.
             */}
-            <div class="relative z-10 mt-5 h-48 sm:h-56">
+            <div class="relative z-10 mt-5 h-48 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-56">
               <span
                 class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
                 style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
                 aria-hidden="true"
               ></span>
 
-              {/*
-                SVG + chips move into their own clipped inner box (what used
-                to be the single illustration wrapper) — this is the div that
-                actually crops the SVG to crisp edges; the glow sits outside
-                it (sibling above) so this overflow-hidden no longer clips it.
-                No background here (was bg-gradient-to-b from-paper to-white)
-                — this box must stay transparent so the glow (z-0, behind it)
-                actually shows through instead of being covered by an opaque
-                fill; z-10 here is only for stacking above the glow, not for
-                painting a surface.
-              */}
-              <div class="relative z-10 h-full overflow-hidden rounded-xl">
-                <Illustration />
+              <Illustration />
 
-                {step.chips.map((chip) => (
-                  <div
-                    class:list={[chipClasses, chip.position]}
-                    style={`animation-delay: ${chip.delay}`}
-                  >
-                    <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
-                      <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
-                    </span>
-                    {chip.label}
-                  </div>
-                ))}
-              </div>
+              {step.chips.map((chip) => (
+                <div
+                  class:list={[chipClasses, chip.position]}
+                  style={`animation-delay: ${chip.delay}`}
+                >
+                  <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
+                    <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
+                  </span>
+                  {chip.label}
+                </div>
+              ))}
             </div>
 
             <p class="relative z-10 mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
