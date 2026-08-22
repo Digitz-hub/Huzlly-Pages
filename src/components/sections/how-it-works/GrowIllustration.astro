@@ -1,291 +1,66 @@
 ---
-// src/components/sections/FeaturesSummary.astro
-// Homepage features summary: the four-stage lifecycle explained in card
-// form, plus a short "why lean, not bloated" strip pulled from the same
-// positioning used in FAQAccordion's Comparisons category. Deep-dive
-// copy stays on /features — this is the summary version.
-//
-// v2.1 card redesign (per user-supplied inspiration, CLAUDE.md Section 4.5):
-// "how it works" cards move from the plain icon-chip layout to a numbered-
-// badge + headline + bespoke per-card SVG illustration + floating chip
-// layout. Structure/composition is from the inspiration reference
-// (huzlly-how-it-works.html); palette stays on the sitewide ink/paper/rail
-// + signal-color system so it reads as this site's design language, not a
-// copy-pasted foreign look. Each card's illustration lives in its own
-// component under ./how-it-works/ (GetStartedIllustration.astro,
-// WorkIllustration.astro, GetPaidIllustration.astro, GrowIllustration.astro)
-// — the shared Card/badge/headline/glow/chip/description markup below is
-// written once and driven by the `stages` data array.
-//
-// Content note: copy moves from the granular automation-trigger framing
-// (Proposal/Contract/Invoice/Project) to a 4-stage lifecycle framing
-// (Get Started/Work/Get Paid/Grow), per explicit user direction — this is
-// a deliberate content decision made with awareness that it diverges from
-// SITE_IDENTITY_AND_AEO.md's canonical flow language; AEO/schema follow-up
-// is being handled separately by the user, not silently reconciled here.
-//
-// Color note: the design system only defines three approved signal colors
-// (blue-600 / teal-600 / amber-500) — see AutomationNotificationCard.astro's
-// comment. Card 04 ("Grow") originally used the neutral ink/rail treatment
-// instead of inventing a new hue, flagged per CLAUDE.md Section 3.
-// User then explicitly requested Card 04 use a distinct color (green-600,
-// from Tailwind's default palette) instead of the neutral ink treatment —
-// this does deviate from AutomationNotificationCard.astro's 3-signal-color
-// convention, per the user's direct instruction, not silently reconciled
-// here. If that convention gets revisited, this card is the one to check.
-
-import {
-  FileText,
-  PenTool,
-  Rocket,
-  FolderKanban,
-  CheckSquare,
-  Clock,
-  Users,
-  Receipt,
-  CreditCard,
-  Package,
-  Archive,
-  Repeat,
-  Tag,
-  Zap,
-  Feather,
-} from 'lucide-astro';
-import SectionHeader from '../ui/SectionHeader.astro';
-import Card from '../ui/Card.astro';
-import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
-import WorkIllustration from './how-it-works/WorkIllustration.astro';
-import GetPaidIllustration from './how-it-works/GetPaidIllustration.astro';
-import GrowIllustration from './how-it-works/GrowIllustration.astro';
-
-// Full literal class strings per signal (Tailwind JIT needs literal
-// substrings to detect classes — no template-literal color interpolation).
-// chipBg pairs with `icon` to color each card's floating chip badges
-// (e.g. blue chips = bg-blue-50 + text-blue-600).
-//
-// `glow` / `glowPos` drive the single ambient illustration-glow blob (see
-// reference huzlly-how-it-works.html .illustration-glow rules) — one big
-// radial-gradient whose origin sits behind the illustration/SVG box (glow
-// lives inside the illustration wrapper, see markup below, so glowPos is
-// relative to that box's own dimensions — not the whole Card) but is free
-// to bleed out across the rest of the card, clipped only by Card's own
-// overflow-hidden. Color fades from saturated to transparent, positioned
-// differently per card. Tailwind's class:list can't express an arbitrary
-// radial-gradient with a dynamic center + color, so this is applied via
-// inline `style` instead of a class. `glow` is the actual saturated signal
-// hex (blue-600/teal-600/amber-500/green-600, matching Tailwind's default
-// palette — see tailwind.config.mjs), NOT the light -50 tints used for
-// chipBg — light tints are what made the old corner blobs disappear under
-// blur.
-//
-// `glowOpacity` is per-signal (not a shared Tailwind opacity-[…] class
-// anymore). All four signals now sit at the reference's 0.28 — green-600 is
-// a proper saturated color like blue/teal/amber, so it doesn't need the
-// dialed-down opacity the old neutral-ink treatment needed.
-const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity: string; icon: string; chipBg: string }> = {
-  blue: { glow: '#2563eb', glowPos: '34% 38%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
-  teal: { glow: '#0d9488', glowPos: '66% 30%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
-  amber: { glow: '#f59e0b', glowPos: '34% 66%', glowOpacity: '0.28', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
-  green: { glow: '#16a34a', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-green-600', chipBg: 'bg-green-50' },
-};
-
-// Common chip-pill classes, shared by every card. Sizing is intentionally
-// mobile-first and compacts below the `sm:` breakpoint (Step 6 responsive
-// pass) — at `sm:` and above every value matches the pre-refactor markup
-// exactly (px-3 py-1.5 text-xs, h-5 w-5 icon circle, h-3 w-3 icon glyph,
-// gap-1.5), so tablet/desktop look is unchanged. Below `sm:`, padding/
-// gap/font/icon size step down one notch so chips don't crowd each other
-// or the illustration on narrow phones (<400px).
-const chipClasses =
-  'chip-float-el pointer-events-none absolute inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-medium text-ink shadow-sm backdrop-blur-sm';
-const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
-const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
-
-const stages = [
-  {
-    number: '01',
-    stage: 'Get Started',
-    headline: 'Turn prospects into projects.',
-    body: 'Create professional proposals, get agreements signed, and set everything up to start working with your client.',
-    signal: 'blue',
-    illustration: GetStartedIllustration,
-    chips: [
-      { icon: FileText, label: 'Proposal', position: 'left-3.5 top-3.5', delay: '0s' },
-      { icon: PenTool, label: 'Contract', position: 'right-4 top-16', delay: '0.6s' },
-      { icon: Rocket, label: 'Project Setup', position: 'bottom-4 left-10', delay: '1.2s' },
-    ],
-  },
-  {
-    number: '02',
-    stage: 'Work',
-    headline: 'Manage every project in one place.',
-    body: 'Organize projects and tasks, track your time, and keep clients updated with their own dedicated portal.',
-    signal: 'teal',
-    illustration: WorkIllustration,
-    chips: [
-      { icon: FolderKanban, label: 'Projects', position: 'left-3.5 top-3.5', delay: '0s' },
-      { icon: CheckSquare, label: 'Tasks', position: 'right-4 top-12', delay: '0.4s' },
-      { icon: Clock, label: 'Time Tracking', position: 'bottom-14 left-3', delay: '0.9s' },
-      { icon: Users, label: 'Client Portal', position: 'bottom-4 right-8', delay: '1.3s' },
-    ],
-  },
-  {
-    number: '03',
-    stage: 'Get Paid',
-    headline: 'Finish the work. Get paid.',
-    body: 'Send invoices, collect payments, and keep your billing organized from project completion to payment.',
-    signal: 'amber',
-    illustration: GetPaidIllustration,
-    chips: [
-      { icon: Receipt, label: 'Invoice', position: 'right-4 top-3.5', delay: '0s' },
-      { icon: CreditCard, label: 'Payment', position: 'bottom-14 right-3.5', delay: '0.5s' },
-      { icon: Package, label: 'Delivery', position: 'bottom-4 left-4', delay: '1s' },
-    ],
-  },
-  {
-    number: '04',
-    stage: 'Grow',
-    headline: 'Turn great work into repeat business.',
-    body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
-    signal: 'green',
-    illustration: GrowIllustration,
-    chips: [
-      { icon: Users, label: 'Clients', position: 'left-4 top-3.5', delay: '0s' },
-      { icon: Archive, label: 'Past Projects', position: 'right-5 top-4', delay: '0.5s' },
-      { icon: Repeat, label: 'Repeat Work', position: 'bottom-4 left-1/2 -translate-x-1/2', delay: '1s' },
-    ],
-  },
-];
-
-const reasons = [
-  {
-    icon: Feather,
-    title: 'Nothing you don\u2019t use',
-    body: 'Built for one freelancer running one flow, not a scaled-down version of enterprise software.',
-  },
-  {
-    icon: Zap,
-    title: 'Live in minutes',
-    body: 'No consultant, no onboarding call. Connect your flow and it runs the same day.',
-  },
-  {
-    icon: Tag,
-    title: 'One flat price',
-    body: 'No per-seat fees, no usage tiers to track. What you see is what you pay.',
-  },
-];
+// src/components/sections/how-it-works/GrowIllustration.astro
+// Card 04 ("Grow") bespoke illustration — a circular "lifecycle loop"
+// (static base ring + animated dashed ring on top) with 4 nodes spaced
+// around it (client/user, past-projects/folder, checkmark, filled
+// repeat/refresh), ported from huzlly-how-it-works.html's .card--04
+// SVG. Extracted verbatim from FeaturesSummary.astro's Step 5 inline
+// version during the Step 6 structure-cleanup pass — markup/classes
+// unchanged, just relocated. Per FeaturesSummary.astro's file-header
+// note, this card's signal was originally 'ink' (neutral ink/rail values
+// instead of a 4th signal color) — the user then explicitly asked for a
+// distinct green (Tailwind default green-600 family), so the ink/rail
+// classes below were swapped for a green-200/400/600 ramp to match; this
+// deviates from the "only 3 signal colors" convention per that direct
+// instruction (see FeaturesSummary.astro's Color note).
 ---
 
-<section id="how-it-works" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-  <div class="mx-auto max-w-5xl">
-    <SectionHeader eyebrow="How it works"
-      title="Four stages. Zero handoffs."
-      subtitle="Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human."
-    />
+<svg
+  class="absolute inset-0 h-full w-full"
+  viewBox="0 0 400 220"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  {/* Loop path — static base ring */}
+  <path d="M200 60a50 50 0 1 1 -0.1 0z" class="stroke-green-200" stroke-width="2" fill="none" />
+  {/* Loop path — animated dashed ring */}
+  <path
+    d="M200 60a50 50 0 1 1 -0.1 0z"
+    class="dash-move-el stroke-green-400"
+    stroke-width="2.4"
+    fill="none"
+    stroke-dasharray="10 10"
+    stroke-linecap="round"
+  />
 
-    <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
-      {stages.map((step) => {
-        const s = signalStyles[step.signal];
-        const Illustration = step.illustration;
+  {/* Node — client/user */}
+  <g>
+    <circle cx="200" cy="60" r="15" class="fill-white stroke-green-600" stroke-width="1.8" />
+    <path d="M195 63a5 5 0 0 1 10 0" class="stroke-green-600" stroke-width="1.6" fill="none" stroke-linecap="round" />
+    <circle cx="200" cy="56" r="2.6" class="fill-green-600" />
+  </g>
 
-        return (
-          // `relative isolate overflow-hidden` on Card still clips the
-          // glow's final spread to the card's own rounded corners and keeps
-          // its own stacking context (both unchanged from before).
-          //
-          // `!bg-white`: these 4 stage cards need pure white behind the
-          // glow instead of the flat-lift variant's default bg-paper (cream/
-          // off-white) — glow color reads muddier over a cream tint. Note
-          // this uses Tailwind's `!` important-modifier rather than relying
-          // on class-string order: Card.astro appends this `class` prop
-          // after `classesByVariant[variant]` in the HTML class attribute,
-          // but HTML attribute order does NOT guarantee which utility wins
-          // in Tailwind — that's decided by the order rules land in the
-          // generated stylesheet (driven by Tailwind's theme/plugin order,
-          // not by where `class="..."` puts them), and `bg-paper` is a
-          // custom theme color so its rule position isn't guaranteed to
-          // come first. `!bg-white` sidesteps that entirely and always wins.
-          <Card variant="flat-lift" class="relative isolate overflow-hidden !bg-white">
-            <div class="relative z-10 flex items-center gap-3">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
-                {step.number}
-              </span>
-              <span class="font-mono text-xs uppercase tracking-widest text-ink/50">{step.stage}</span>
-            </div>
+  {/* Node — past projects / folder */}
+  <g>
+    <circle cx="250" cy="110" r="15" class="fill-white stroke-green-600" stroke-width="1.8" />
+    <rect x="244" y="104" width="12" height="11" rx="2.4" fill="none" class="stroke-green-600" stroke-width="1.6" />
+    <line x1="246.5" y1="102" x2="246.5" y2="106" class="stroke-green-600" stroke-width="1.4" stroke-linecap="round" />
+    <line x1="253.5" y1="102" x2="253.5" y2="106" class="stroke-green-600" stroke-width="1.4" stroke-linecap="round" />
+  </g>
 
-            <h3 class="relative z-10 mt-4 font-display text-xl font-semibold leading-snug text-ink sm:text-2xl">
-              {step.headline}
-            </h3>
+  {/* Node — checkmark */}
+  <g>
+    <circle cx="200" cy="160" r="15" class="fill-white stroke-green-600" stroke-width="1.8" />
+    <path d="M194 160.5 l4 4 l8 -9" class="stroke-green-600" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  </g>
 
-            {/*
-              Illustration wrapper: `relative`, no `overflow-hidden` here —
-              this is the glow's containing block now, so inset-[-N%] and
-              `circle at ${glowPos}` resolve against the illustration box's
-              own dimensions (origin sits right behind the SVG, matching the
-              reference), while still being free to bleed past this div's
-              edges. `z-10` keeps this whole wrapper (and everything in it)
-              above the glow, same as the other direct children of Card.
-            */}
-            <div class="relative z-10 mt-5 h-48 sm:h-56">
-              <span
-                class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
-                style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
-                aria-hidden="true"
-              ></span>
-
-              {/*
-                SVG + chips move into their own clipped inner box (what used
-                to be the single illustration wrapper) — this is the div that
-                actually crops the SVG to crisp edges; the glow sits outside
-                it (sibling above) so this overflow-hidden no longer clips it.
-                No background here (was bg-gradient-to-b from-paper to-white)
-                — this box must stay transparent so the glow (z-0, behind it)
-                actually shows through instead of being covered by an opaque
-                fill; z-10 here is only for stacking above the glow, not for
-                painting a surface.
-              */}
-              <div class="relative z-10 h-full overflow-hidden rounded-xl">
-                <Illustration />
-
-                {step.chips.map((chip) => (
-                  <div
-                    class:list={[chipClasses, chip.position]}
-                    style={`animation-delay: ${chip.delay}`}
-                  >
-                    <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
-                      <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
-                    </span>
-                    {chip.label}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <p class="relative z-10 mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
-          </Card>
-        );
-      })}
-    </div>
-  </div>
-</section>
-
-<section class="bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-  <div class="mx-auto max-w-6xl">
-    <SectionHeader eyebrow="Why lean"
-      title="Built for one freelancer, not a whole team"
-      subtitle="Bonsai and HoneyBook grew into agency platforms. Huzlly stayed built for the person doing the work."
-    />
-
-    <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-      {reasons.map((reason) => (
-        <Card variant="elevated" class="text-center sm:text-left">
-          <span class="mx-auto sm:mx-0 flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
-            <reason.icon class="w-5 h-5" stroke-width="1.75" />
-          </span>
-          <h3 class="mt-4 text-xl font-semibold text-ink leading-snug">{reason.title}</h3>
-          <p class="mt-2 text-sm text-ink/70 leading-relaxed">{reason.body}</p>
-        </Card>
-      ))}
-    </div>
-  </div>
-</section>
+  {/* Node — repeat/refresh, filled */}
+  <g>
+    <circle cx="150" cy="110" r="15" class="fill-green-600" />
+    <path d="M144.5 105.5a7.5 7.5 0 0 1 10.5 -1.6" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <path d="M155 100.5l1 4.4l-4.4 -0.8" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M155.5 114.5a7.5 7.5 0 0 1 -10.5 1.6" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" />
+    <path d="M145 119.5l-1 -4.4l4.4 0.8" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
