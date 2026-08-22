@@ -175,7 +175,17 @@ const reasons = [
 ];
 ---
 
-<section id="how-it-works" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- BACKGROUND (new this pass): both sections below get a faint diagonal
+     wash instead of a flat single color, so the page doesn't go dead-flat
+     right after Hero.astro's much stronger gradient. Same 135deg direction
+     as Hero, same "near-white → subtle tint" idea, but dialed way down —
+     the tint stops are only a few % off white/paper, not the noticeably
+     saturated periwinkle Hero ends on. First section tints toward Hero's
+     own blue family (#F0F4FC) since it sits directly under Hero; second
+     section tints toward `paper` (#FCFBF8 per tailwind.config.mjs) since
+     it's the cream-toned section, so each gradient stays in its own
+     section's existing color family rather than introducing a new hue. -->
+<section id="how-it-works" class="scroll-mt-20 bg-[linear-gradient(135deg,#FFFFFF_0%,#F8FAFE_40%,#F0F4FC_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="How it works"
       title="Four stages. Zero handoffs."
@@ -284,7 +294,7 @@ const reasons = [
   </div>
 </section>
 
-<section class="bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<section class="bg-[linear-gradient(135deg,#FBFBF9_0%,#F7F5F1_50%,#F2EFEA_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
     <SectionHeader eyebrow="Why lean"
       title="Built for one freelancer, not a whole team"
