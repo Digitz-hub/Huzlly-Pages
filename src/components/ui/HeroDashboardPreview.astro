@@ -225,6 +225,31 @@ const { class: className } = Astro.props;
 
 </div>
 
+<style>
+  /* Hover "grow" on the bento cards — pure CSS, no JS. Reuses the same
+     `--tilt-scale` custom property that `.dp-reveal-left/-right/-up`
+     (scroll-reveal.css) already composes into their transform via
+     `scale(var(--tilt-scale, 1))`, and that tilt-card.css already
+     registers via `@property` as an animatable `<number>` (initial 1).
+     That's why a plain Tailwind `hover:scale-[1.03]` on these cards
+     would NOT work: scroll-reveal.css's `.dp-reveal-*` rules mark their
+     `transform` `!important` (see the comment there), which silently
+     beats a Tailwind hover utility's `transform` regardless of
+     specificity — the same conflict documented for Card.astro's
+     `flat-lift` variant. Setting `--tilt-scale` here instead sidesteps
+     that entirely, since we're feeding the *same* property the
+     `!important` rule already reads, rather than fighting it on
+     `transform` directly. Scoped to [data-dashboard-preview] so this
+     never touches FeaturesSummary's separate tilt cards, which still
+     drive --tilt-scale from their own mousemove JS. */
+  [data-dashboard-preview] .dp-reveal {
+    transition: --tilt-scale 200ms ease-out;
+  }
+  [data-dashboard-preview] .dp-reveal:hover {
+    --tilt-scale: 1.03;
+  }
+</style>
+
 <script>
   // Scroll-driven entrance animation for the bento cards above — the
   // `.dp-reveal` / `.dp-reveal-left` / `.dp-reveal-right` / `.dp-reveal-up`
