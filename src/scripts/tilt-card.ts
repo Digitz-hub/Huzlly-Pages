@@ -116,6 +116,23 @@ export function initTiltCard(
   }
 
   const flatTransform = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale(1)`;
+  // Cards that also carry a `[data-scroll-reveal-in-progress]`-style
+  // system (currently `initScrollReveal` from `scroll-reveal.ts`, e.g.
+  // HeroDashboardPreview's `.dp-reveal-*` cards) drive their own inline
+  // `--dp-progress` custom property and let `.dp-reveal-left/-right/-up`'s
+  // CSS `transform` (a translateX/Y slide) read it. That CSS transform and
+  // this script's inline `transform` are the same element property, and
+  // inline JS-set `transform` always wins over a stylesheet rule — so
+  // without this guard, tilting a card while it's still scrolling into
+  // view (mouse resting over it, page scrolling) would silently cancel
+  // its slide-in animation every frame the tilt is active. Priority goes
+  // to the reveal: SCROLL_REVEAL_DONE_THRESHOLD gates tilt until the
+  // card's own `--dp-progress` (if any) has reached ~1, i.e. the reveal's
+  // translate offset is already 0 and there's nothing left for tilt to
+  // clobber. Cards with no reveal system at all (no `--dp-progress` set,
+  // e.g. FeaturesSummary's stage cards) read as progress 1 and tilt
+  // exactly as before — zero behavior change there.
+  const SCROLL_REVEAL_DONE_THRESHOLD = 0.98;
   const cleanups: Array<() => void> = [];
 
   elements.forEach((card) => {
@@ -125,7 +142,21 @@ export function initTiltCard(
     // 'none' during tracking.
     card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
 
+    // Tracks whether tilt has actually taken control of `transform` for
+    // this card yet (see the reveal-priority note above). Only reset on
+    // mouseleave if tilt was the one holding the transform — otherwise a
+    // stray mouseleave while the reveal is still mid-animation would
+    // itself stomp the reveal's translate via `flatTransform`.
+    let isTilting = false;
+
     const onMouseMove = (e: MouseEvent) => {
+      const revealProgressRaw = card.style.getPropertyValue('--dp-progress');
+      const revealProgress = revealProgressRaw === '' ? 1 : parseFloat(revealProgressRaw);
+      if (revealProgress < SCROLL_REVEAL_DONE_THRESHOLD) {
+        // Scroll-reveal still owns this card's transform — let it finish.
+        return;
+      }
+
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
@@ -142,12 +173,20 @@ export function initTiltCard(
       const shadowX = (px * shadowMaxOffset).toFixed(1);
       const shadowY = (py * shadowMaxOffset).toFixed(1);
 
+      isTilting = true;
       card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
       card.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
       card.style.boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowColor}`;
     };
 
     const onMouseLeave = () => {
+      if (!isTilting) {
+        // Tilt never actually engaged (reveal was still in progress the
+        // whole hover) — nothing of ours to reset, and resetting here
+        // would wipe out whatever transform the reveal is mid-animating.
+        return;
+      }
+      isTilting = false;
       card.style.transition = `transform ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
       card.style.transform = flatTransform;
       card.style.boxShadow = 'none';
