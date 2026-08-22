@@ -24,6 +24,19 @@
 //     instantly (a `transition: none` during tracking was the original
 //     jhatka/snap bug in the first version of this effect). Leave gets a
 //     slightly longer, gentler ease back to flat.
+//   - NEW: a directional box-shadow now follows the tilt instead of using
+//     Card.astro's static `hover:shadow-lg` (which always sits in the same
+//     fixed direction no matter which way the card is actually tilting).
+//     The shadow offset is driven by the exact same cursor-relative px/py
+//     values used for rotateX/rotateY, so it tracks whichever side the
+//     card is currently tilting/lifting toward — same cursor position that
+//     drives the tilt, just re-used for a second purpose. This is set via
+//     inline `box-shadow`, which naturally overrides Card.astro's
+//     class-based `hover:shadow-lg` (inline style wins over an external
+//     stylesheet rule for the same property, no `!important` needed) for
+//     as long as the tilt script is actively driving it; on mouseleave it's
+//     cleared back to `''`, handing shadow control back to whatever
+//     Card.astro/CSS would otherwise show at rest.
 //
 // USAGE:
 //   Add a class (e.g. `js-tilt-card`) to each card's root element, then call
@@ -52,17 +65,24 @@ export interface TiltCardOptions {
   leaveMs?: number;
   /** CSS perspective distance in px. Defaults to 800. */
   perspective?: number;
+  /** Max shadow offset in px on each axis, at full tilt. Defaults to 22. */
+  shadowMaxOffset?: number;
+  /** Shadow blur radius in px. Defaults to 36. */
+  shadowBlur?: number;
+  /** Shadow color, any valid CSS color (include alpha here, e.g. rgba). Defaults to a soft ink-tinted shadow matching the site's ink color (#14110F). */
+  shadowColor?: string;
 }
 
 /**
- * Wires up the mouse-follow 3D tilt effect for a set of card elements.
+ * Wires up the mouse-follow 3D tilt effect (rotation + directional shadow)
+ * for a set of card elements.
  *
  * @param target A CSS selector, a single Element, or a NodeList/array of
  *   Elements — same flexible-target convention as `initScrollReveal`.
  * @returns A cleanup function that removes the listeners and resets each
- *   card's inline transform/transition, for components that need to tear
- *   down (e.g. view transitions/SPA navigation). Safe to ignore for static
- *   pages.
+ *   card's inline transform/transition/box-shadow, for components that need
+ *   to tear down (e.g. view transitions/SPA navigation). Safe to ignore for
+ *   static pages.
  */
 export function initTiltCard(
   target: string | Element | NodeListOf<Element> | Element[],
@@ -73,6 +93,9 @@ export function initTiltCard(
   const trackMs = options.trackMs ?? 150;
   const leaveMs = options.leaveMs ?? 600;
   const perspective = options.perspective ?? 800;
+  const shadowMaxOffset = options.shadowMaxOffset ?? 22;
+  const shadowBlur = options.shadowBlur ?? 36;
+  const shadowColor = options.shadowColor ?? 'rgba(20, 17, 15, 0.22)';
 
   const elements: HTMLElement[] =
     typeof target === 'string'
@@ -96,10 +119,11 @@ export function initTiltCard(
   const cleanups: Array<() => void> = [];
 
   elements.forEach((card) => {
-    card.style.willChange = 'transform';
-    // Always-on short transition — see the BEHAVIOR note above on why this
-    // must never be toggled to 'none' during tracking.
-    card.style.transition = `transform ${trackMs}ms ease-out`;
+    card.style.willChange = 'transform, box-shadow';
+    // Always-on short transition, covering both transform and box-shadow —
+    // see the BEHAVIOR note above on why this must never be toggled to
+    // 'none' during tracking.
+    card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = card.getBoundingClientRect();
@@ -111,13 +135,22 @@ export function initTiltCard(
       const rotateX = (-py * maxTilt * 2).toFixed(2);
       const rotateY = (px * maxTilt * 2).toFixed(2);
 
-      card.style.transition = `transform ${trackMs}ms ease-out`;
+      // Shadow offset reuses the exact same px/py the rotation above is
+      // built from, so it always points toward whichever side the card is
+      // currently tilting/lifting toward (the cursor's side) rather than
+      // sitting in one fixed direction like a plain CSS hover:shadow does.
+      const shadowX = (px * shadowMaxOffset).toFixed(1);
+      const shadowY = (py * shadowMaxOffset).toFixed(1);
+
+      card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
       card.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+      card.style.boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowColor}`;
     };
 
     const onMouseLeave = () => {
-      card.style.transition = `transform ${leaveMs}ms ease-out`;
+      card.style.transition = `transform ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
       card.style.transform = flatTransform;
+      card.style.boxShadow = 'none';
     };
 
     card.addEventListener('mousemove', onMouseMove);
@@ -128,6 +161,7 @@ export function initTiltCard(
       card.removeEventListener('mouseleave', onMouseLeave);
       card.style.transition = '';
       card.style.transform = '';
+      card.style.boxShadow = '';
       card.style.willChange = '';
     });
   });
