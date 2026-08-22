@@ -56,6 +56,17 @@ const organizationSchema = {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Disable the browser's default scroll-restoration-on-reload behavior.
+         Without this, Chrome/Firefox/Safari all remember scrollY across a
+         refresh and silently jump back to it once the page repaints —
+         reload should always land at the top like a fresh navigation.
+         Must be set synchronously, this early in <head>, before the
+         browser gets a chance to restore/repaint with the old position. -->
+    <script>
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
