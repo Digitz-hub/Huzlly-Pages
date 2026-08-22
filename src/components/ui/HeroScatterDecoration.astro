@@ -188,28 +188,33 @@ const { class: className } = Astro.props;
     <div class="absolute left-[12%] top-[10%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s5 — right-mid thin sliver, no tint.
-       BUG FIX: previously used `glass-float-b-fast`, which replayed
-       glass-float-b's OWN rotate(22deg→26deg)/skewX(-6deg) keyframe at
-       a faster speed — silently overriding this element's
-       rotate-[8deg]/skew-x-[10deg] classes below, which were therefore
-       dead. `glass-float-b-mirror-fast` carries its own keyframe that
-       actually matches this element's angle; see float-animation.css. -->
-  <div class="glass-float-b-mirror-fast absolute w-28 h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <!-- s5 — now left-mid thin sliver, no tint. Position swapped with s6
+       this pass (per feedback: "switch the left and right center
+       decorations") — was right-[-3%] top-[40%], now takes s6's old
+       left-[5%] top-[45%] anchor. Shape itself (w-28 h-56, no tint,
+       rotate-[8deg]/skew-x-[10deg]) is unchanged — only which side it
+       sits on moved.
+       BUG FIX (earlier pass, still applies): previously used
+       `glass-float-b-fast`, which replayed glass-float-b's OWN
+       rotate(22deg→26deg)/skewX(-6deg) keyframe at a faster speed —
+       silently overriding this element's rotate-[8deg]/skew-x-[10deg]
+       classes, which were therefore dead. `glass-float-b-mirror-fast`
+       carries its own keyframe that actually matches this element's
+       angle; see float-animation.css. -->
+  <div class="glass-float-b-mirror-fast absolute w-28 h-56 top-[45%] left-[5%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
-  <!-- s6 — left-mid wide/short panel, teal tint. Horizontal position
-       pulled inward a couple passes ago (per feedback) — left-[-3%] →
-       left-[5%], less edge-hugging. Top nudged 40%→45% this pass per
-       follow-up feedback (small downward tweak, not the earlier 58%
-       drop that was reverted). Direction (rotate-[-12deg]/
-       skew-x-[-6deg]) and width (w-56) unchanged.
+  <!-- s6 — now right-mid wide/short panel, teal tint. Position swapped
+       with s5 this pass (per feedback) — was left-[5%] top-[45%], now
+       takes s5's old right-[-3%] top-[40%] anchor. Shape itself
+       (w-56 h-32, teal tint, rotate-[-12deg]/skew-x-[-6deg]) is
+       unchanged — only which side it sits on moved.
        Uses the `glass-float-d` keyframe (float-animation.css) — its
        rotate/skew values still match this element's static classes
-       (only top/left changed here, not rotate/skew), so no keyframe
-       update was needed this pass. -->
-  <div class="glass-float-d absolute w-56 h-32 top-[45%] left-[5%] rotate-[-12deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+       (only the side/position changed here, not rotate/skew), so no
+       keyframe update was needed this pass. -->
+  <div class="glass-float-d absolute w-56 h-32 top-[40%] right-[-3%] rotate-[-12deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[10%] top-[14%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
