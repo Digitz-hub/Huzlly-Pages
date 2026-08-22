@@ -7,9 +7,12 @@
 // SVG. Extracted verbatim from FeaturesSummary.astro's Step 5 inline
 // version during the Step 6 structure-cleanup pass — markup/classes
 // unchanged, just relocated. Per FeaturesSummary.astro's file-header
-// note, this card's signal is 'ink', not a new hue — the reference's
-// raw teal/green accent is deliberately re-expressed as neutral
-// ink/rail values instead of a 4th signal color.
+// note, this card's signal was originally 'ink' (neutral ink/rail values
+// instead of a 4th signal color) — the user then explicitly asked for a
+// distinct green (Tailwind default green-600 family), so the ink/rail
+// classes below were swapped for a green-200/400/600 ramp to match; this
+// deviates from the "only 3 signal colors" convention per that direct
+// instruction (see FeaturesSummary.astro's Color note).
 ---
 
 <svg
@@ -20,11 +23,11 @@
   aria-hidden="true"
 >
   {/* Loop path — static base ring */}
-  <path d="M200 60a50 50 0 1 1 -0.1 0z" class="stroke-rail" stroke-width="2" fill="none" />
+  <path d="M200 60a50 50 0 1 1 -0.1 0z" class="stroke-green-200" stroke-width="2" fill="none" />
   {/* Loop path — animated dashed ring */}
   <path
     d="M200 60a50 50 0 1 1 -0.1 0z"
-    class="dash-move-el stroke-ink/40"
+    class="dash-move-el stroke-green-400"
     stroke-width="2.4"
     fill="none"
     stroke-dasharray="10 10"
@@ -33,28 +36,28 @@
 
   {/* Node — client/user */}
   <g>
-    <circle cx="200" cy="60" r="15" class="fill-white stroke-ink/70" stroke-width="1.8" />
-    <path d="M195 63a5 5 0 0 1 10 0" class="stroke-ink/70" stroke-width="1.6" fill="none" stroke-linecap="round" />
-    <circle cx="200" cy="56" r="2.6" class="fill-ink/70" />
+    <circle cx="200" cy="60" r="15" class="fill-white stroke-green-600" stroke-width="1.8" />
+    <path d="M195 63a5 5 0 0 1 10 0" class="stroke-green-600" stroke-width="1.6" fill="none" stroke-linecap="round" />
+    <circle cx="200" cy="56" r="2.6" class="fill-green-600" />
   </g>
 
   {/* Node — past projects / folder */}
   <g>
-    <circle cx="250" cy="110" r="15" class="fill-white stroke-ink/70" stroke-width="1.8" />
-    <rect x="244" y="104" width="12" height="11" rx="2.4" fill="none" class="stroke-ink/70" stroke-width="1.6" />
-    <line x1="246.5" y1="102" x2="246.5" y2="106" class="stroke-ink/70" stroke-width="1.4" stroke-linecap="round" />
-    <line x1="253.5" y1="102" x2="253.5" y2="106" class="stroke-ink/70" stroke-width="1.4" stroke-linecap="round" />
+    <circle cx="250" cy="110" r="15" class="fill-white stroke-green-600" stroke-width="1.8" />
+    <rect x="244" y="104" width="12" height="11" rx="2.4" fill="none" class="stroke-green-600" stroke-width="1.6" />
+    <line x1="246.5" y1="102" x2="246.5" y2="106" class="stroke-green-600" stroke-width="1.4" stroke-linecap="round" />
+    <line x1="253.5" y1="102" x2="253.5" y2="106" class="stroke-green-600" stroke-width="1.4" stroke-linecap="round" />
   </g>
 
   {/* Node — checkmark */}
   <g>
-    <circle cx="200" cy="160" r="15" class="fill-white stroke-ink/70" stroke-width="1.8" />
-    <path d="M194 160.5 l4 4 l8 -9" class="stroke-ink/70" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <circle cx="200" cy="160" r="15" class="fill-white stroke-green-600" stroke-width="1.8" />
+    <path d="M194 160.5 l4 4 l8 -9" class="stroke-green-600" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
   </g>
 
   {/* Node — repeat/refresh, filled */}
   <g>
-    <circle cx="150" cy="110" r="15" class="fill-ink" />
+    <circle cx="150" cy="110" r="15" class="fill-green-600" />
     <path d="M144.5 105.5a7.5 7.5 0 0 1 10.5 -1.6" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" />
     <path d="M155 100.5l1 4.4l-4.4 -0.8" stroke="white" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />
     <path d="M155.5 114.5a7.5 7.5 0 0 1 -10.5 1.6" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" />
