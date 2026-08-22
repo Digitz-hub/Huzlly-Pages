@@ -39,6 +39,24 @@
 // (`-left` / `-right` / `-up`) per element, same as HeroDashboardPreview's
 // cards, or add your own modifier class in scroll-reveal.css following the
 // same `calc((1 - var(--dp-progress)) * <offset>)` pattern.
+//
+// ⚠️ GOTCHA — wiring `.dp-reveal-*` (or `tilt-card.ts`'s `js-tilt-card`)
+// onto a NEW element: the `.dp-reveal-left/-right/-up` rules in
+// scroll-reveal.css drive that element's `transform` property. If the
+// element ALSO carries a Tailwind `hover:-translate-y-*` / `hover:scale-*`
+// / `hover:rotate-*` utility (e.g. from a shared card component), that
+// utility compiles to `.hover\:-translate-y-1:hover { transform: ... }` —
+// specificity (0,2,0), class + pseudo-class — which SILENTLY WINS over the
+// single-class `.dp-reveal-*` rule's (0,1,0), regardless of stylesheet
+// order. Symptom: the reveal (opacity) looks totally fine, but any
+// transform-based effect (reveal's slide/rise, or tilt-card.ts's tilt)
+// visibly stops the instant the cursor is over the element. This bit
+// FeaturesSummary's stage cards (via Card.astro's `flat-lift` variant's
+// `hover:-translate-y-1`) — fixed there by adding `!important` to the
+// `.dp-reveal-*` rules in scroll-reveal.css. Before wiring either script
+// onto a new element: either don't put a Tailwind `hover:` transform
+// utility on it, or if it's unavoidable (shared base component), add
+// `!important` to that direction's `transform` rule in scroll-reveal.css.
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
