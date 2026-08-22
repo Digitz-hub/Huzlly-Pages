@@ -53,6 +53,18 @@
 //     synthetic/awkward mouse events on tap and would otherwise get a stuck
 //     or jittery tilt instead of a real hover gesture. Those elements keep
 //     whatever plain CSS hover (shadow, etc.) they already have.
+//
+// FIX — scroll-under-stationary-cursor (see this file's changelog):
+//   `mousemove`/`mouseleave` only fire when the CURSOR moves relative to
+//   the viewport. During a scroll, the cursor doesn't move at all — the
+//   page (and the card) slides underneath it — so a card that scrolls
+//   into/out of the stationary cursor's position never got a mousemove or
+//   mouseleave and just sat flat/stuck until the mouse was nudged. Fixed
+//   by tracking the last known pointer position (one shared window-level
+//   `mousemove` listener) and, on every scroll (rAF-throttled), checking
+//   each card's current `getBoundingClientRect()` against that last
+//   position to synthesize the same apply/reset the real mouse events
+//   would have triggered.
 
 export interface TiltCardOptions {
   /** Max tilt angle in degrees on each axis. Defaults to 10. */
@@ -138,8 +150,30 @@ export function initTiltCard(
   // as before — there's no conflict to avoid there.
   const cleanups: Array<() => void> = [];
 
+  // --- Scroll-under-stationary-cursor fix: shared pointer tracking ---
+  // One window-level `mousemove` listener (shared across every card this
+  // call handles) keeps the last known pointer position up to date. This
+  // is what lets the scroll handler below know where the cursor "is" even
+  // though scroll events themselves carry no coordinates.
+  let lastClientX = 0;
+  let lastClientY = 0;
+  let hasPointer = false;
+
+  const onWindowMouseMove = (e: MouseEvent) => {
+    lastClientX = e.clientX;
+    lastClientY = e.clientY;
+    hasPointer = true;
+  };
+  window.addEventListener('mousemove', onWindowMouseMove, { passive: true });
+  cleanups.push(() => window.removeEventListener('mousemove', onWindowMouseMove));
+
+  // Each card registers a "recheck" callback here; the shared scroll
+  // listener below calls all of them, rAF-throttled, on every scroll.
+  const scrollRechecks: Array<() => void> = [];
+
   elements.forEach((card) => {
     const hasScrollReveal = card.classList.contains('dp-reveal');
+    let isHovering = false;
 
     card.style.willChange = 'transform, box-shadow';
 
@@ -147,70 +181,17 @@ export function initTiltCard(
       // Perspective is fixed config, not something that changes per
       // mousemove — set once, no transition needed on it.
       card.style.setProperty('--tilt-perspective', `${perspective}px`);
-      // Transition the tilt custom properties themselves (requires the
-      // `@property` typed registration in tilt-card.css — untyped custom
-      // properties can't be interpolated). `--dp-progress` is deliberately
-      // NOT listed here — it stays instant/scroll-locked, exactly as
-      // scroll-reveal.ts intends; only the tilt vars ease.
-      card.style.transition = `--tilt-rx ${trackMs}ms ease-out, --tilt-ry ${trackMs}ms ease-out, --tilt-scale ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
-
-      const onMouseMove = (e: MouseEvent) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const px = x / rect.width - 0.5;
-        const py = y / rect.height - 0.5;
-        const rotateX = (-py * maxTilt * 2).toFixed(2);
-        const rotateY = (px * maxTilt * 2).toFixed(2);
-
-        const shadowX = (px * shadowMaxOffset).toFixed(1);
-        const shadowY = (py * shadowMaxOffset).toFixed(1);
-
-        card.style.transition = `--tilt-rx ${trackMs}ms ease-out, --tilt-ry ${trackMs}ms ease-out, --tilt-scale ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
-        card.style.setProperty('--tilt-rx', `${rotateX}deg`);
-        card.style.setProperty('--tilt-ry', `${rotateY}deg`);
-        card.style.setProperty('--tilt-scale', `${scale}`);
-        card.style.boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowColor}`;
-      };
-
-      const onMouseLeave = () => {
-        card.style.transition = `--tilt-rx ${leaveMs}ms ease-out, --tilt-ry ${leaveMs}ms ease-out, --tilt-scale ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
-        card.style.setProperty('--tilt-rx', '0deg');
-        card.style.setProperty('--tilt-ry', '0deg');
-        card.style.setProperty('--tilt-scale', '1');
-        card.style.boxShadow = 'none';
-      };
-
-      card.addEventListener('mousemove', onMouseMove);
-      card.addEventListener('mouseleave', onMouseLeave);
-
-      cleanups.push(() => {
-        card.removeEventListener('mousemove', onMouseMove);
-        card.removeEventListener('mouseleave', onMouseLeave);
-        card.style.transition = '';
-        card.style.removeProperty('--tilt-perspective');
-        card.style.removeProperty('--tilt-rx');
-        card.style.removeProperty('--tilt-ry');
-        card.style.removeProperty('--tilt-scale');
-        card.style.boxShadow = '';
-        card.style.willChange = '';
-      });
-
-      return;
     }
 
-    // Original approach — no reveal system on this card, so a direct
-    // inline `transform` is safe (nothing else claims that property here).
-    // Always-on short transition, covering both transform and box-shadow —
-    // see the BEHAVIOR note above on why this must never be toggled to
-    // 'none' during tracking.
-    card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
-
-    const onMouseMove = (e: MouseEvent) => {
+    // Applies tilt/shadow for a given cursor position, at a given
+    // transition speed (trackMs while actively hovering/tracking, leaveMs
+    // is only ever used by resetTilt below). Shared by the real mousemove
+    // handler AND the scroll-recheck handler, so both paths behave
+    // identically.
+    const applyTilt = (clientX: number, clientY: number) => {
       const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
 
       const px = x / rect.width - 0.5;
       const py = y / rect.height - 0.5;
@@ -224,29 +205,97 @@ export function initTiltCard(
       const shadowX = (px * shadowMaxOffset).toFixed(1);
       const shadowY = (py * shadowMaxOffset).toFixed(1);
 
-      card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
-      card.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+      if (hasScrollReveal) {
+        card.style.transition = `--tilt-rx ${trackMs}ms ease-out, --tilt-ry ${trackMs}ms ease-out, --tilt-scale ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
+        card.style.setProperty('--tilt-rx', `${rotateX}deg`);
+        card.style.setProperty('--tilt-ry', `${rotateY}deg`);
+        card.style.setProperty('--tilt-scale', `${scale}`);
+      } else {
+        card.style.transition = `transform ${trackMs}ms ease-out, box-shadow ${trackMs}ms ease-out`;
+        card.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+      }
       card.style.boxShadow = `${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowColor}`;
     };
 
-    const onMouseLeave = () => {
-      card.style.transition = `transform ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
-      card.style.transform = flatTransform;
+    const resetTilt = () => {
+      if (hasScrollReveal) {
+        card.style.transition = `--tilt-rx ${leaveMs}ms ease-out, --tilt-ry ${leaveMs}ms ease-out, --tilt-scale ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
+        card.style.setProperty('--tilt-rx', '0deg');
+        card.style.setProperty('--tilt-ry', '0deg');
+        card.style.setProperty('--tilt-scale', '1');
+      } else {
+        card.style.transition = `transform ${leaveMs}ms ease-out, box-shadow ${leaveMs}ms ease-out`;
+        card.style.transform = flatTransform;
+      }
       card.style.boxShadow = 'none';
+    };
+
+    const onMouseMove = (e: MouseEvent) => {
+      isHovering = true;
+      applyTilt(e.clientX, e.clientY);
+    };
+
+    const onMouseLeave = () => {
+      isHovering = false;
+      resetTilt();
     };
 
     card.addEventListener('mousemove', onMouseMove);
     card.addEventListener('mouseleave', onMouseLeave);
 
+    // Scroll recheck: with the cursor held still, figure out from the
+    // last known pointer position whether this card is now under it (or
+    // no longer is) and synthesize whatever a real mousemove/mouseleave
+    // would have done.
+    scrollRechecks.push(() => {
+      if (!hasPointer) return;
+
+      const rect = card.getBoundingClientRect();
+      const inside =
+        lastClientX >= rect.left &&
+        lastClientX <= rect.right &&
+        lastClientY >= rect.top &&
+        lastClientY <= rect.bottom;
+
+      if (inside) {
+        isHovering = true;
+        applyTilt(lastClientX, lastClientY);
+      } else if (isHovering) {
+        isHovering = false;
+        resetTilt();
+      }
+    });
+
     cleanups.push(() => {
       card.removeEventListener('mousemove', onMouseMove);
       card.removeEventListener('mouseleave', onMouseLeave);
       card.style.transition = '';
-      card.style.transform = '';
+      if (hasScrollReveal) {
+        card.style.removeProperty('--tilt-perspective');
+        card.style.removeProperty('--tilt-rx');
+        card.style.removeProperty('--tilt-ry');
+        card.style.removeProperty('--tilt-scale');
+      } else {
+        card.style.transform = '';
+      }
       card.style.boxShadow = '';
       card.style.willChange = '';
     });
   });
+
+  // Single rAF-throttled scroll listener shared by every card this call
+  // handles — avoids stacking N raw scroll listeners for N cards.
+  let scrollScheduled = false;
+  const onScroll = () => {
+    if (scrollScheduled) return;
+    scrollScheduled = true;
+    requestAnimationFrame(() => {
+      scrollScheduled = false;
+      scrollRechecks.forEach((recheck) => recheck());
+    });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  cleanups.push(() => window.removeEventListener('scroll', onScroll));
 
   return () => cleanups.forEach((fn) => fn());
 }
