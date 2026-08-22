@@ -26,9 +26,13 @@
 //
 // Color note: the design system only defines three approved signal colors
 // (blue-600 / teal-600 / amber-500) — see AutomationNotificationCard.astro's
-// comment. With 4 cards, the 4th ("Grow") intentionally uses the neutral
-// ink/rail treatment instead of inventing a new hue. Flagged per CLAUDE.md
-// Section 3 rather than silently picking a new color.
+// comment. Card 04 ("Grow") originally used the neutral ink/rail treatment
+// instead of inventing a new hue, flagged per CLAUDE.md Section 3.
+// User then explicitly requested Card 04 use a distinct color (green-600,
+// from Tailwind's default palette) instead of the neutral ink treatment —
+// this does deviate from AutomationNotificationCard.astro's 3-signal-color
+// convention, per the user's direct instruction, not silently reconciled
+// here. If that convention gets revisited, this card is the one to check.
 
 import {
   FileText,
@@ -69,25 +73,20 @@ import GrowIllustration from './how-it-works/GrowIllustration.astro';
 // differently per card. Tailwind's class:list can't express an arbitrary
 // radial-gradient with a dynamic center + color, so this is applied via
 // inline `style` instead of a class. `glow` is the actual saturated signal
-// hex (blue-600/teal-600/amber-500, matching tailwind.config.mjs), NOT the
-// light -50 tints used for chipBg — light tints are what made the old
-// corner blobs disappear under blur. The `ink` glow hex is a saturated
-// dark-neutral stand-in (Tailwind's rgb()-tuple custom-color format can't
-// be dropped straight into a gradient stop) — double-check it against the
-// real ink hex in tailwind.config.mjs and adjust if it doesn't match
-// exactly.
+// hex (blue-600/teal-600/amber-500/green-600, matching Tailwind's default
+// palette — see tailwind.config.mjs), NOT the light -50 tints used for
+// chipBg — light tints are what made the old corner blobs disappear under
+// blur.
 //
 // `glowOpacity` is per-signal (not a shared Tailwind opacity-[…] class
-// anymore) because the ink glow at the same 0.28 opacity as the color
-// signals read as a dark smoky smudge instead of a subtle wash — a dark
-// near-black color needs noticeably less opacity than blue/teal/amber to
-// feel equally subtle, so ink is dialed down to 0.16 while the others stay
-// at the reference's 0.28.
+// anymore). All four signals now sit at the reference's 0.28 — green-600 is
+// a proper saturated color like blue/teal/amber, so it doesn't need the
+// dialed-down opacity the old neutral-ink treatment needed.
 const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity: string; icon: string; chipBg: string }> = {
   blue: { glow: '#2563eb', glowPos: '34% 38%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
   teal: { glow: '#0d9488', glowPos: '66% 30%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
   amber: { glow: '#f59e0b', glowPos: '34% 66%', glowOpacity: '0.28', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
-  ink: { glow: '#33312e', glowPos: '50% 50%', glowOpacity: '0.16', icon: 'text-ink/70', chipBg: 'bg-rail/40' },
+  green: { glow: '#16a34a', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-green-600', chipBg: 'bg-green-50' },
 };
 
 // Common chip-pill classes, shared by every card. Sizing is intentionally
@@ -148,7 +147,7 @@ const stages = [
     stage: 'Grow',
     headline: 'Turn great work into repeat business.',
     body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
-    signal: 'ink',
+    signal: 'green',
     illustration: GrowIllustration,
     chips: [
       { icon: Users, label: 'Clients', position: 'left-4 top-3.5', delay: '0s' },
