@@ -47,6 +47,29 @@
 //   the same page with different settings. Safe to call multiple times
 //   across different components/selectors on the same page.
 //
+// ⚠️ GOTCHA — wiring this (or scroll-reveal.ts) onto a NEW element:
+//   Both `applyTilt`'s `--tilt-rx/-ry/-scale` path AND scroll-reveal.css's
+//   `.dp-reveal-left/-right/-up` rules ultimately drive the element's
+//   `transform` property. If that element ALSO carries a Tailwind
+//   `hover:-translate-y-*` / `hover:scale-*` / `hover:rotate-*` /
+//   `hover:transform-*` utility — e.g. Card.astro's `flat-lift` variant
+//   ships `hover:-translate-y-1` — that utility compiles to
+//   `.hover\:-translate-y-1:hover { transform: ... }`, which has
+//   specificity (0,2,0) (class + pseudo-class) and SILENTLY WINS over the
+//   single-class `.dp-reveal-*` rule's (0,1,0), regardless of CSS source
+//   order. Symptom: scroll-reveal (opacity) looks fine, but tilt visibly
+//   dies the instant the cursor is over the card — exactly the
+//   FeaturesSummary/Card.astro bug this comment documents. `--tw-*`-driven
+//   transforms are invisible in devtools' "computed transform" too, so
+//   this is easy to miss — check the Styles panel for a competing
+//   `hover:...` transform rule specifically.
+//   FIX when adding a new tilt/reveal element: either (a) don't put any
+//   Tailwind `hover:` transform utility on it, or (b) if the base
+//   component (like Card.astro) already ships one you can't remove, add
+//   `!important` to that direction's `transform` in scroll-reveal.css
+//   (see the note on `.dp-reveal-left` there) so the composed reveal+tilt
+//   transform can't be silently overridden by cascade order/specificity.
+//
 // Guards (baked in, not opt-out — see rationale on each below):
 //   - `prefers-reduced-motion`: skips the effect entirely.
 //   - `matchMedia('(pointer: fine)')`: skips on touch devices, which fire
