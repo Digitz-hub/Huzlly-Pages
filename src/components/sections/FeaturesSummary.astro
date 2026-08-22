@@ -61,18 +61,21 @@ import GrowIllustration from './how-it-works/GrowIllustration.astro';
 //
 // `glow` / `glowPos` drive the single ambient illustration-glow blob (see
 // reference huzlly-how-it-works.html .illustration-glow rules) — one big
-// radial-gradient spanning the whole Card (not just the illustration box —
-// it now lives as a direct sibling inside <Card>, see markup below), a
-// saturated color fading to transparent, positioned differently per card.
-// Tailwind's class:list can't express an arbitrary radial-gradient with a
-// dynamic center + color, so this is applied via inline `style` instead of
-// a class. `glow` is the actual saturated signal hex (blue-600/teal-600/
-// amber-500, matching tailwind.config.mjs), NOT the light -50 tints used
-// for chipBg — light tints are what made the old corner blobs disappear
-// under blur. The `ink` glow hex is a saturated dark-neutral stand-in
-// (Tailwind's rgb()-tuple custom-color format can't be dropped straight
-// into a gradient stop) — double-check it against the real ink hex in
-// tailwind.config.mjs and adjust if it doesn't match exactly.
+// radial-gradient whose origin sits behind the illustration/SVG box (glow
+// lives inside the illustration wrapper, see markup below, so glowPos is
+// relative to that box's own dimensions — not the whole Card) but is free
+// to bleed out across the rest of the card, clipped only by Card's own
+// overflow-hidden. Color fades from saturated to transparent, positioned
+// differently per card. Tailwind's class:list can't express an arbitrary
+// radial-gradient with a dynamic center + color, so this is applied via
+// inline `style` instead of a class. `glow` is the actual saturated signal
+// hex (blue-600/teal-600/amber-500, matching tailwind.config.mjs), NOT the
+// light -50 tints used for chipBg — light tints are what made the old
+// corner blobs disappear under blur. The `ink` glow hex is a saturated
+// dark-neutral stand-in (Tailwind's rgb()-tuple custom-color format can't
+// be dropped straight into a gradient stop) — double-check it against the
+// real ink hex in tailwind.config.mjs and adjust if it doesn't match
+// exactly.
 //
 // `glowOpacity` is per-signal (not a shared Tailwind opacity-[…] class
 // anymore) because the ink glow at the same 0.28 opacity as the color
@@ -187,15 +190,9 @@ const reasons = [
         const Illustration = step.illustration;
 
         return (
-          // `relative isolate overflow-hidden` on Card is new here: `relative`
-          // makes Card (not the small illustration box) the containing block
-          // the glow's `absolute inset-[-10%]` resolves against, so it bleeds
-          // across the whole card into the padding area instead of being
-          // boxed in; `overflow-hidden` clips that bleed to Card's own
-          // rounded corners; `isolate` gives the card its own stacking
-          // context so the glow's z-0 vs. the rest of the card's z-10 only
-          // ever gets compared against each other, never against sibling
-          // cards or the page.
+          // `relative overflow-hidden isolate` on Card still clips the
+          // glow's final spread to the card's own rounded corners and keeps
+          // its own stacking context (both unchanged from before).
           <Card variant="flat-lift" class="relative isolate overflow-hidden">
             <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
@@ -209,33 +206,42 @@ const reasons = [
             </h3>
 
             {/*
-              Glow is now a direct child of Card (sibling of the illustration
-              wrapper below), not nested inside it — that's what lets it
-              span/bleed across the whole card. It's `position: relative`
-              (via Card) + `z-0`, while every other direct child in this card
-              is `relative z-10`, so it always paints behind them regardless
-              of DOM order.
+              Illustration wrapper: `relative`, no `overflow-hidden` here —
+              this is the glow's containing block now, so inset-[-N%] and
+              `circle at ${glowPos}` resolve against the illustration box's
+              own dimensions (origin sits right behind the SVG, matching the
+              reference), while still being free to bleed past this div's
+              edges. `z-10` keeps this whole wrapper (and everything in it)
+              above the glow, same as the other direct children of Card.
             */}
-            <span
-              class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
-              style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
-              aria-hidden="true"
-            ></span>
+            <div class="relative z-10 mt-5 h-48 sm:h-56">
+              <span
+                class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
+                style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
+                aria-hidden="true"
+              ></span>
 
-            <div class="relative z-10 mt-5 h-48 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-56">
-              <Illustration />
+              {/*
+                SVG + chips move into their own clipped inner box (what used
+                to be the single illustration wrapper) — this is the div that
+                actually crops the SVG to crisp edges; the glow sits outside
+                it (sibling above) so this overflow-hidden no longer clips it.
+              */}
+              <div class="relative z-10 h-full overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white">
+                <Illustration />
 
-              {step.chips.map((chip) => (
-                <div
-                  class:list={[chipClasses, chip.position]}
-                  style={`animation-delay: ${chip.delay}`}
-                >
-                  <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
-                    <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
-                  </span>
-                  {chip.label}
-                </div>
-              ))}
+                {step.chips.map((chip) => (
+                  <div
+                    class:list={[chipClasses, chip.position]}
+                    style={`animation-delay: ${chip.delay}`}
+                  >
+                    <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
+                      <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
+                    </span>
+                    {chip.label}
+                  </div>
+                ))}
+              </div>
             </div>
 
             <p class="relative z-10 mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
