@@ -226,8 +226,13 @@ const reasons = [
                 to be the single illustration wrapper) — this is the div that
                 actually crops the SVG to crisp edges; the glow sits outside
                 it (sibling above) so this overflow-hidden no longer clips it.
+                No background here (was bg-gradient-to-b from-paper to-white)
+                — this box must stay transparent so the glow (z-0, behind it)
+                actually shows through instead of being covered by an opaque
+                fill; z-10 here is only for stacking above the glow, not for
+                painting a surface.
               */}
-              <div class="relative z-10 h-full overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white">
+              <div class="relative z-10 h-full overflow-hidden rounded-xl">
                 <Illustration />
 
                 {step.chips.map((chip) => (
