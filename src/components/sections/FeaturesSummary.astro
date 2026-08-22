@@ -244,9 +244,22 @@ const reasons = [
           // removes it transiently during active mouse movement (for
           // instant, non-laggy tracking) and restores it on mouseleave so
           // the return-to-flat snap is still smoothed.
+          // `hover:!shadow-none hover:!translate-y-0`: cancels out the
+          // flat-lift variant's own `hover:shadow-lg hover:-translate-y-1`
+          // — those fire instantly the moment CSS :hover triggers (on
+          // mouseenter), before the tilt script's first `mousemove` has a
+          // chance to overwrite them with its own inline transform/
+          // box-shadow. Without this override there's a brief static
+          // shadow-lg + translateY(-1) flash right on entry, then a visible
+          // snap to the dynamic tilt shadow once the first mousemove fires
+          // — that flash was the "leftover old shadow" being seen. `!`
+          // needed for the same reason as `!bg-white` elsewhere in this
+          // file: stylesheet rule order decides which utility wins, not
+          // HTML class-attribute order, so plain hover:shadow-none would
+          // not reliably beat flat-lift's hover:shadow-lg.
           <Card
             variant="flat-lift"
-            class="js-tilt-card relative isolate overflow-hidden !bg-white"
+            class="js-tilt-card relative isolate overflow-hidden !bg-white hover:!shadow-none hover:!translate-y-0"
           >
             <div class="relative z-10 flex items-center gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
