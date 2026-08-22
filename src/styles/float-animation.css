@@ -13,6 +13,7 @@
  *   <div class="glass-float-a-mirror">...</div>       (float-a, mirrored to the opposite rotate/skew sign)
  *   <div class="glass-float-b-mirror">...</div>       (float-b, mirrored to the opposite rotate/skew sign)
  *   <div class="glass-float-b-mirror-fast">...</div>  (float-b-mirror, shorter duration)
+ *   <div class="glass-float-d">...</div>              (new drift path, see note below)
  *
  * BUG FIX (this pass): `-a-reverse` and `-b-fast` used to just replay
  * glass-float-a/b's OWN keyframes (reverse direction / faster timing)
@@ -73,12 +74,27 @@
   50% { transform: translate(12px, -14px) rotate(4deg) skewX(10deg); }
 }
 
+/* glass-float-d — new drift path for s6's reworked wide/short panel
+   (short height, wide width, tilted toward the top-right). Given its
+   own keyframe rather than reusing any of the above: reusing an
+   existing one whose rotate/skew doesn't match the element's static
+   Tailwind rotate-[...]/skew-x-[...] classes is exactly the bug this
+   file's other keyframes were already fixed for (see file header) —
+   a running animation always wins `transform` over the static utility
+   classes, so a mismatched keyframe would silently override the
+   intended top-right tilt. */
+@keyframes glass-float-d {
+  0%, 100% { transform: translate(0, 0) rotate(12deg) skewX(6deg); }
+  50% { transform: translate(10px, -14px) rotate(16deg) skewX(6deg); }
+}
+
 .glass-float-a { animation: glass-float-a 9s ease-in-out infinite; }
 .glass-float-b { animation: glass-float-b 11s ease-in-out infinite; }
 .glass-float-c { animation: glass-float-c 8s ease-in-out infinite; }
 .glass-float-a-mirror { animation: glass-float-a-mirror 10s ease-in-out infinite; }
 .glass-float-b-mirror { animation: glass-float-b-mirror 11s ease-in-out infinite; }
 .glass-float-b-mirror-fast { animation: glass-float-b-mirror-fast 7.5s ease-in-out infinite; }
+.glass-float-d { animation: glass-float-d 10s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .glass-float-a,
@@ -86,7 +102,8 @@
   .glass-float-c,
   .glass-float-a-mirror,
   .glass-float-b-mirror,
-  .glass-float-b-mirror-fast {
+  .glass-float-b-mirror-fast,
+  .glass-float-d {
     animation: none;
   }
 }
