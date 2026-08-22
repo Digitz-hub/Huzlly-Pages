@@ -332,17 +332,18 @@ const reasons = [
      HeroDashboardPreview rather than reimplemented here. Tilt defaults
      (10deg max tilt, 1.03 scale, 150ms track / 600ms leave easing) match
      what this file already had, so no visual change there — just no
-     longer duplicated inline. Reveal uses `initScrollReveal`'s own
-     default `completionFraction` (1, i.e. the original full bottom→
-     center journey) rather than HeroDashboardPreview's 0.7 — that
-     early-finish tuning was specific to the dashboard preview's taller
-     hero-scroll distance, not needed here. -->
+     longer duplicated inline. `completionFraction: 0.7` on the reveal
+     call matches HeroDashboardPreview's own bento-card setup exactly (per
+     explicit request to mirror that component's behavior) — each card
+     settles into place once it's covered 70% of the bottom→center
+     distance, instead of requiring it to reach viewport-center, so the
+     reveal finishes a little earlier/lower on screen while scrolling. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
 
   initTiltCard('.js-tilt-card');
-  initScrollReveal('#how-it-works .dp-reveal');
+  initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
 </script>
 
 <section class="bg-[linear-gradient(135deg,#FBFBF9_0%,#F7F5F1_50%,#F2EFEA_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
