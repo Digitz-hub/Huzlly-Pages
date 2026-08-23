@@ -48,9 +48,7 @@
 //   across different components/selectors on the same page.
 //
 //   Touch/tablet devices do NOT get this effect at all (see the pointer
-//   guard below) — they instead get a simpler scale-only "grow" effect via
-//   `src/scripts/center-hover.ts`, wired up separately by each component
-//   that uses `.js-tilt-card` (that helper is not called from this file).
+//   guard below).
 //
 // ⚠️ GOTCHA — wiring this (or scroll-reveal.ts) onto a NEW element:
 //   Both `applyTilt`'s `--tilt-rx/-ry/-scale` path AND scroll-reveal.css's
@@ -82,9 +80,7 @@
 //     stylus, etc). Rationale for NOT wiring raw `mousemove`/`touchstart`
 //     taps on touch devices instead: synthetic/awkward tap events would
 //     give a stuck or jittery tilt instead of a real hover gesture, so
-//     touch/tablet devices simply don't get this effect — they get the
-//     separate scale-only "grow" effect from `center-hover.ts` instead
-//     (see USAGE above).
+//     touch/tablet devices simply don't get this effect.
 //
 // FIX — scroll-under-stationary-cursor (see this file's changelog):
 //   `mousemove`/`mouseleave` only fire when the CURSOR moves relative to
