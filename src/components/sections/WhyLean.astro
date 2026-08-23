@@ -67,7 +67,7 @@ const quickWins = [
   below intentionally mirrors SectionHeader's type scale/eyebrow styling by
   hand so it still reads as the same header pattern, just left-aligned.
 -->
-<section class="bg-[linear-gradient(180deg,#EAF1FC_0%,#F2F7FE_60%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<section id="why-lean" class="bg-[linear-gradient(180deg,#EAF1FC_0%,#F2F7FE_60%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-5 lg:gap-12">
       <div class="lg:col-span-2">
@@ -129,3 +129,24 @@ const quickWins = [
     </div>
   </div>
 </section>
+
+<!-- `initCenterHover` — touch-equivalent for the `reasons` cards' desktop
+     `hover:shadow-md` (part of Card.astro's `elevated` variant classes),
+     which — like any plain CSS `:hover` rule — never fires on touch/
+     tablet. Scoped to `'#why-lean [data-card-variant="elevated"]'`, using
+     Card.astro's stable `data-card-variant` marker attribute rather than a
+     bespoke `js-*` class, since every card rendered by this section with
+     that variant should get the effect (same convention HowItWorks.astro
+     uses for its own `js-chip-pill` touch-equivalent hover, just keyed off
+     the variant attribute instead of a manually-added class here).
+     `initCenterHover` itself is a no-op on devices with real hover (or
+     with reduced motion requested) — see its own header comment — so this
+     call is safe to leave in unconditionally; it only ever does anything
+     on touch/tablet. The actual `.is-center-active` visual (mirroring
+     `hover:shadow-md`) lives in `center-hover.css`, not here — this call
+     only wires up the trigger. -->
+<script>
+  import { initCenterHover } from '../../scripts/center-hover';
+
+  initCenterHover('#why-lean [data-card-variant="elevated"]');
+</script>
