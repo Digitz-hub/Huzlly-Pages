@@ -62,4 +62,29 @@
     --tw-scale-y: 1.05;
     transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
+
+  /* Card.astro's `elevated` variant (WhyLean.astro's 3 `reasons` cards, via
+   * `initCenterHover('#why-lean [data-card-variant="elevated"]')` — see
+   * that file's own script comment): `classesByVariant.elevated` includes
+   * Tailwind's `hover:shadow-md` for desktop, which never fires on touch/
+   * tablet. Unlike the chip pill above, this isn't a `transform` — it's a
+   * plain `box-shadow`, so no `--tw-*` var composition/preservation
+   * concerns apply here; this rule just needs to reproduce Tailwind's own
+   * `shadow-md` box-shadow value verbatim (Tailwind's default scale, not
+   * customized in tailwind.config.mjs's `theme.extend` — confirmed no
+   * `boxShadow` override there) so `.is-center-active` looks pixel-identical
+   * to what `:hover` already produces on desktop for the same variant.
+   * `elevated`'s own classes already carry `shadow-sm` at rest plus
+   * `transition-shadow duration-200 ease-in-out`, so the box-shadow change
+   * this rule applies still transitions smoothly in/out as the card crosses
+   * the viewport's center — no transition needs repeating here. Scoped to
+   * `[data-card-variant="elevated"]` (Card.astro's stable variant marker,
+   * added for this) rather than a `js-*` class so any future `elevated`
+   * card anywhere on the site gets this touch-equivalent for free without
+   * needing its own opt-in class — `flat`/`flat-lift`/`highlighted` are
+   * deliberately NOT given a rule here, since only `elevated` was in scope
+   * for this pass. */
+  [data-card-variant="elevated"].is-center-active {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
 }
