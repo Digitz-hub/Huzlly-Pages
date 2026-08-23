@@ -417,12 +417,12 @@ const quickWins = [
      reason cards below, which keep their existing plain elevated-card
      hover with no reveal. tilt-card.ts / scroll-reveal.ts themselves are
      unchanged (out of scope for this pass) — same extraction pattern,
-     both reused as-is from HeroDashboardPreview. Tilt defaults (10deg max
-     tilt, 1.03 scale, 150ms track / 600ms leave easing) and
-     `completionFraction: 0.7` match HeroDashboardPreview's own bento-card
-     setup exactly, same as before the row restructure — no behavior
-     change here, just the classes living on the illustration box instead
-     of the old Card.
+     both reused as-is from HeroDashboardPreview. `completionFraction: 0.7`
+     matches HeroDashboardPreview's own bento-card setup exactly, same as
+     before the row restructure. Tilt intensity (`maxTilt`/`scale`) is
+     bumped above the library defaults for just this call — see the note
+     on the `initTiltCard` call itself below for the current values and
+     why.
 
      `initTiltCard` below is scoped to `'#how-it-works .js-tilt-card'`
      rather than the bare `.js-tilt-card` class — this illustration box
@@ -434,17 +434,25 @@ const quickWins = [
      zeroes that shadow out for just this call (tilt-card.ts always writes
      SOME box-shadow value — see `applyTilt`/`resetTilt` — so 0/0 is what
      makes it fully invisible rather than omitting the option, which would
-     fall back to the 22px/36px defaults). Tilt rotation/scale are
-     untouched — only the shadow options differ. Scoping the selector to
-     `#how-it-works` also means this options change can't affect any
+     fall back to the 22px/36px defaults). Scoping the selector to
+     `#how-it-works` also means any options change here can't affect any
      other `.js-tilt-card` element elsewhere on the site (e.g.
      HeroDashboardPreview), which still gets its own call with the
-     library defaults. -->
+     library defaults.
+
+     `maxTilt: 17` / `scale: 1.25` (this call only, per explicit request
+     for a more pronounced hover effect on just this illustration box) —
+     up from the library defaults of 10 / 1.03 that this call used to rely
+     on implicitly. trackMs/leaveMs/perspective are left at their defaults
+     (150ms / 600ms / 800px); the larger rotation/scale didn't need a
+     different easing duration to stay smooth in testing, and per the
+     scoping above, changing them here still can't touch any other
+     `.js-tilt-card` caller. tilt-card.ts itself is unchanged. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-  initTiltCard('#how-it-works .js-tilt-card', { shadowMaxOffset: 0, shadowBlur: 0 });
+  initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 17, scale: 1.25, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
 </script>
 
