@@ -1,10 +1,8 @@
 ---
 // src/components/sections/Hero.astro
 // Homepage hero. Light iridescent-blue gradient background, glass-shape
-// HeroScatterDecoration (now shown at all breakpoints — the component
-// itself scales/repositions its shapes responsively so it no longer
-// needs to be lg-only), in-flow HeroDashboardPreview bento grid below
-// the CTAs. Nav.astro handles the nav bar separately.
+// HeroScatterDecoration (lg+ only), in-flow HeroDashboardPreview bento
+// grid below the CTAs. Nav.astro handles the nav bar separately.
 //
 // ⚠️ Open flag: the gradient stops (#FFFFFF/#EEF3FC/#D3E0F9) aren't
 // registered as DESIGN_SYSTEM.md tokens or in tailwind.config.mjs —
@@ -29,7 +27,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        section's solid white background. -->
   <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[7] h-48 bg-[linear-gradient(180deg,transparent_0%,transparent_35%,rgba(255,255,255,0.35)_60%,rgba(255,255,255,0.8)_80%,#FFFFFF_100%)] sm:h-64 lg:h-72" aria-hidden="true"></div>
 
-  <HeroScatterDecoration />
+  <HeroScatterDecoration class="hidden lg:block" />
 
   <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
