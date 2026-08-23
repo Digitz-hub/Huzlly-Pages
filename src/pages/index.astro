@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
-import FeaturesSummary from '../components/sections/FeaturesSummary.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import WhyLean from '../components/sections/WhyLean.astro';
 import WaitlistForm from '../components/sections/WaitlistForm.astro';
 
 // Minimal SoftwareApplication schema, page-specific per Layout.astro's
@@ -39,7 +40,8 @@ const softwareSchema = {
 >
   <main>
     <Hero />
-    <FeaturesSummary />
+    <HowItWorks />
+    <WhyLean />
     <WaitlistForm />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
   </main>
