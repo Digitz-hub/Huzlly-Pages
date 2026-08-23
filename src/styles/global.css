@@ -2,6 +2,7 @@
 @import './tilt-card.css';
 @import './float-animation.css';
 @import './card-illustration.css';
+@import './center-hover.css';
 
 @tailwind base;
 @tailwind components;
