@@ -17,7 +17,49 @@
  * `initCenterHover()` itself already refuses to add the active class at
  * all on fine-pointer devices, but scoping the CSS too is a second,
  * independent safety net — even if some other code path toggled the class
- * on a desktop browser, the rule simply wouldn't match there. No rules yet
- * — those get added per-component in later steps once specific elements
- * are wired up to `initCenterHover()`.
+ * on a desktop browser, the rule simply wouldn't match there.
  */
+
+@media (hover: none), (pointer: coarse) {
+  /* HowItWorks.astro's floating chips (the `.js-chip-pill` layer — see
+   * that file's `chipClasses`/`js-chip-pill` comments): `chipClasses`
+   * includes Tailwind's `hover:scale-105` for desktop, which compiles to
+   * `.hover\:scale-105:hover { --tw-scale-x: 1.05; --tw-scale-y: 1.05;
+   * transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+   * rotate(var(--tw-rotate)) skewX(var(--tw-skew-x))
+   * skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+   * scaleY(var(--tw-scale-y)); }` — Tailwind's shared transform
+   * composition stack, where every transform utility (translate/rotate/
+   * skew/scale) reads/writes its own `--tw-*` var into one shared
+   * `transform` value rather than each utility setting `transform`
+   * outright. This matters here because one chip (the Grow stage's
+   * "Repeat Work") ALSO carries a plain (non-hover) `-translate-x-1/2` on
+   * this exact same pill layer, for centering under its anchor (see
+   * `splitChipPosition`'s comment in HowItWorks.astro) — that utility
+   * writes `--tw-translate-x: -50%` and composes it into the same
+   * `transform` at rest. If `.is-center-active` set a raw
+   * `transform: scale(1.05)` instead, it would silently blow away that
+   * chip's `-50%` translate the instant it activates on touch (same
+   * "transform can only have one source of truth" trap documented in
+   * tilt-card.ts/scroll-reveal.ts). So this rule instead only writes the
+   * two `--tw-scale-*` vars — that alone isn't enough, though: most chips
+   * carry no OTHER transform utility, so at rest they have no `transform`
+   * property at all to read those vars through (only a conditional
+   * `:hover` rule would ever set one) — updating the vars alone would do
+   * nothing for them. So this rule also sets `transform` explicitly, using
+   * the exact same composed formula Tailwind's own utilities use. For the
+   * translate-carrying chip, `var(--tw-translate-x)` still resolves to its
+   * `-50%` (that class's own rule keeps setting the custom property
+   * regardless of `.is-center-active`); for every other chip it resolves
+   * to Tailwind preflight's default `0`. Either way this reproduces
+   * `hover:scale-105`'s visible result exactly, composed correctly with
+   * whatever translate a given chip already has.
+   * `transition-transform duration-200 ease-out` is already part of
+   * `chipClasses` itself (applies regardless of what triggers the
+   * transform change), so no transition is repeated here. */
+  .js-chip-pill.is-center-active {
+    --tw-scale-x: 1.05;
+    --tw-scale-y: 1.05;
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  }
+}
