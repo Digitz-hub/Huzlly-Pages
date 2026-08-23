@@ -1,0 +1,23 @@
+/* src/styles/center-hover.css
+ *
+ * Touch-equivalent hover effects, driven by `initCenterHover()` in
+ * `src/scripts/center-hover.ts`. That script toggles a plain CSS class
+ * (default `.is-center-active`) on an element as it crosses the viewport's
+ * vertical center on touch/tablet devices — the touch-equivalent trigger
+ * for a device that has no cursor to `:hover` with (see the header comment
+ * in center-hover.ts for the full rationale).
+ *
+ * This file is where components add the actual `.is-center-active` (or
+ * custom `activeClass`) rules that mirror whatever their desktop `:hover`
+ * CSS already does, so the effect looks the same on both input types.
+ *
+ * SCOPING — every rule in here MUST be wrapped in
+ * `@media (hover: none), (pointer: coarse)`. This is what keeps
+ * touch-equivalent rules from ever firing on devices that have real hover:
+ * `initCenterHover()` itself already refuses to add the active class at
+ * all on fine-pointer devices, but scoping the CSS too is a second,
+ * independent safety net — even if some other code path toggled the class
+ * on a desktop browser, the rule simply wouldn't match there. No rules yet
+ * — those get added per-component in later steps once specific elements
+ * are wired up to `initCenterHover()`.
+ */
