@@ -325,21 +325,39 @@ const quickWins = [
 <!-- Mouse-follow 3D tilt + scroll-scrub reveal — see the `js-tilt-card`
      and `dp-reveal`/`dp-reveal-left`/`dp-reveal-right` notes on the
      illustration box above. Both scoped to just those 4 illustration
-     boxes (`#how-it-works .dp-reveal` / `.js-tilt-card`), not the row
-     wrapper, not the text column, and not the 3 "why lean" reason cards
-     below, which keep their existing plain elevated-card hover with no
-     reveal. tilt-card.ts / scroll-reveal.ts themselves are unchanged
-     (out of scope for this pass) — same extraction pattern, both reused
-     as-is from HeroDashboardPreview. Tilt defaults (10deg max tilt, 1.03
-     scale, 150ms track / 600ms leave easing) and `completionFraction: 0.7`
-     match HeroDashboardPreview's own bento-card setup exactly, same as
-     before the row restructure — no behavior change here, just the
-     classes living on the illustration box instead of the old Card. -->
+     boxes (`#how-it-works .dp-reveal` / `#how-it-works .js-tilt-card`),
+     not the row wrapper, not the text column, and not the 3 "why lean"
+     reason cards below, which keep their existing plain elevated-card
+     hover with no reveal. tilt-card.ts / scroll-reveal.ts themselves are
+     unchanged (out of scope for this pass) — same extraction pattern,
+     both reused as-is from HeroDashboardPreview. Tilt defaults (10deg max
+     tilt, 1.03 scale, 150ms track / 600ms leave easing) and
+     `completionFraction: 0.7` match HeroDashboardPreview's own bento-card
+     setup exactly, same as before the row restructure — no behavior
+     change here, just the classes living on the illustration box instead
+     of the old Card.
+
+     `initTiltCard` below is scoped to `'#how-it-works .js-tilt-card'`
+     rather than the bare `.js-tilt-card` class — this illustration box
+     has no background/border/overflow-hidden anymore (per the earlier
+     change that let the glow spread freely instead of being boxed in),
+     so tilt-card.ts's directional lifted box-shadow (see its own header
+     comment) would otherwise render as a stray visible rectangle with
+     nothing else to justify it. `{ shadowMaxOffset: 0, shadowBlur: 0 }`
+     zeroes that shadow out for just this call (tilt-card.ts always writes
+     SOME box-shadow value — see `applyTilt`/`resetTilt` — so 0/0 is what
+     makes it fully invisible rather than omitting the option, which would
+     fall back to the 22px/36px defaults). Tilt rotation/scale are
+     untouched — only the shadow options differ. Scoping the selector to
+     `#how-it-works` also means this options change can't affect any
+     other `.js-tilt-card` element elsewhere on the site (e.g.
+     HeroDashboardPreview), which still gets its own call with the
+     library defaults. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-  initTiltCard('.js-tilt-card');
+  initTiltCard('#how-it-works .js-tilt-card', { shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
 </script>
 
