@@ -274,21 +274,24 @@ const quickWins = [
 
               {/* Illustration column: ~40% width on desktop.
                   `js-tilt-card` + `dp-reveal dp-reveal-left/-right` scoped
-                  to just this box, not the row/text column — same
+                  to just this element, not the row/text column — same
                   reasoning as the prior Card-based version (see the
                   <script> comment below): `tilt-card.ts` sets `transform`
                   directly on mousemove, and detects `dp-reveal` to switch
                   to writing `--tilt-rx/-ry/-scale` custom properties
                   instead so `scroll-reveal.css`'s `.dp-reveal-left/-right`
                   rules can compose the slide-in translate with the live
-                  tilt. `overflow-hidden rounded-xl` clips the glow to this
-                  box's own bounds; `relative` gives the glow/chips their
-                  positioning context. */}
+                  tilt. No `overflow-hidden`/`rounded-xl`/background here
+                  anymore (per explicit direction) — there's no visible
+                  boxed container around the glow/illustration/chips, so
+                  the glow-pulse-el blur bleeds outward past the old box
+                  edges instead of being clipped to them; `relative` still
+                  gives the glow/chips their positioning context. */}
               <div
                 class={`order-1 lg:w-[40%] lg:shrink-0 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}
               >
                 <div
-                  class={`dp-reveal ${revealDirection} js-tilt-card relative h-56 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-64 lg:h-72`}
+                  class={`dp-reveal ${revealDirection} js-tilt-card relative h-56 sm:h-64 lg:h-72`}
                 >
                   <span
                     class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
