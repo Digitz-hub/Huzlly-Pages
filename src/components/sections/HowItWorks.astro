@@ -114,24 +114,6 @@ const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity:
 // share an element either. Three layers, three separate transforms,
 // composing visually through normal parent/child nesting instead of all
 // fighting for one `transform` property.
-//
-// Touch equivalent for `hover:scale-105` (this pass): `chipClasses`
-// includes Tailwind's `hover:scale-105`, which — like any plain CSS
-// `:hover` rule — never fires on touch/tablet (no cursor to hover with).
-// The pill layer (this same element) also carries a `js-chip-pill` marker
-// class, purely as a stable selector hook for `initCenterHover()` (see
-// `src/scripts/center-hover.ts`) to target from this file's own <script>
-// tag below — specifically THIS layer, not the position layer (outer div,
-// carries `dp-reveal`/direction) or the float layer (middle div, carries
-// `chip-float-el`'s idle bob keyframe), for the same reason those two
-// already can't share a `transform` with each other: `initCenterHover`
-// toggles a plain class (`.is-center-active`, see center-hover.css) whose
-// CSS rule reproduces `hover:scale-105`'s effect (via Tailwind's own
-// `--tw-scale-x/-y` composition, so it stays correct even for the one
-// chip that also carries a translate on this same layer — see
-// center-hover.css's comment), so it has to land on whichever layer
-// actually owns that composed `transform` — the pill layer, same as
-// `hover:scale-105` itself.
 const chipClasses =
   'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-medium text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
 const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
@@ -369,7 +351,7 @@ const stages = [
                         class:list={['pointer-events-none absolute', offset, 'dp-reveal', revealDirection]}
                       >
                         <div class="chip-float-el inline-block" style={`animation-delay: ${chip.delay}`}>
-                          <div class:list={['js-chip-pill', chipClasses, transform]}>
+                          <div class:list={[chipClasses, transform]}>
                             <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
                               <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
                             </span>
@@ -435,41 +417,11 @@ const stages = [
      rather than snapping back as fast as it engaged. `perspective` is
      untouched (default 800px). Per the scoping above, none of this can
      touch any other `.js-tilt-card` caller. tilt-card.ts itself is
-     unchanged.
-
-     `initCenterHover` (chips): touch-equivalent for the chips'
-     `hover:scale-105` (part of `chipClasses`, see that comment above),
-     which — like any plain CSS `:hover` rule — never fires on touch/
-     tablet. Scoped to `'#how-it-works .js-chip-pill'`, the pill layer
-     specifically (see the `js-chip-pill` note in the `chipClasses`
-     comment above for why it has to be that layer and not the position
-     or float layers). `initCenterHover` itself is a no-op on devices with
-     real hover (or with reduced motion requested) — see its own header
-     comment — so this call is safe to leave in unconditionally; it only
-     ever does anything on touch/tablet. The actual `.is-center-active`
-     visual (mirroring `hover:scale-105`) lives in `center-hover.css`, not
-     here — this call only wires up the trigger.
-
-     `initCenterHover` (illustration wrapper, new this pass): touch/tablet
-     equivalent for the illustration box's desktop mouse-tilt above — now
-     that tilt-card.ts is back to a fine-pointer-only effect (its
-     coarse-pointer branch was removed), touch/tablet gets a plain
-     scale-only "grow" here instead, via the same `.dp-reveal.is-center-
-     active` rule in `center-hover.css` that HeroDashboardPreview's bento
-     cards also use. Scoped to `'#how-it-works .js-tilt-card'` — the exact
-     same selector `initTiltCard` above already targets, since the touch
-     grow and the desktop tilt are two input-specific treatments of the
-     same illustration box, not two different elements. `initCenterHover`
-     is a no-op on devices with real hover, so this is safe to leave in
-     unconditionally alongside `initTiltCard` without double-driving
-     anything on desktop. -->
+     unchanged. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
-  import { initCenterHover } from '../../scripts/center-hover';
 
   initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
-  initCenterHover('#how-it-works .js-chip-pill');
-  initCenterHover('#how-it-works .js-tilt-card');
 </script>
