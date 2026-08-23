@@ -249,7 +249,20 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
      `nowrap` in place, any leftover extra width just overflows silently
      past the box edges for the ~1s of the animation (clipped by the
      section's own `overflow-hidden`), invisible in practice since
-     opacity is still ramping up from 0 during that window. */
+     opacity is still ramping up from 0 during that window.
+
+     `margin-right: -1em` paired with letter-spacing at 0% (both left
+     unset at 100%, so both implicitly animate back to their normal
+     underlying values): `letter-spacing` in CSS only inserts space
+     *after* each character, including a trailing gap after the very last
+     one with no matching gap before the first. With centered text, that
+     unmatched trailing gap pushes the whole line's visual center
+     rightward, so it looked anchored on the left and growing in from the
+     right only, instead of converging symmetrically from both sides. The
+     matching negative margin cancels exactly that trailing gap at every
+     point through the animation (both animate together at the same
+     rate), so the visible glyphs stay centered and both edges move
+     inward evenly. */
   .reveal.tracking-in-contract.is-visible {
     animation: tracking-in-contract 1s cubic-bezier(0.215, 0.61, 0.355, 1) both;
     transition: none;
@@ -258,6 +271,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
   @keyframes tracking-in-contract {
     0% {
       letter-spacing: 1em;
+      margin-right: -1em;
       opacity: 0;
     }
     40% {
