@@ -265,4 +265,19 @@ const { class: className } = Astro.props;
     shadowBlur: 24,
     shadowMaxOffset: 14,
   });
+
+  // Touch/tablet equivalent for the bento cards' mouse-tilt above — now
+  // that tilt-card.ts is back to a fine-pointer-only effect, touch/tablet
+  // gets a plain scale-only "grow" instead, via the shared `.dp-reveal
+  // .is-center-active` rule in `center-hover.css` (the same rule
+  // HowItWorks.astro's illustration boxes use). Scoped to
+  // `'[data-dashboard-preview] .js-tilt-card'` — the exact same selector
+  // `initTiltCard` above already targets, since the touch grow and the
+  // desktop tilt are two input-specific treatments of the same 5 bento
+  // cards, not two different elements. `initCenterHover` is a no-op on
+  // devices with real hover, so this is safe to leave in unconditionally
+  // alongside `initTiltCard` without double-driving anything on desktop.
+  import { initCenterHover } from '../../scripts/center-hover';
+
+  initCenterHover('[data-dashboard-preview] .js-tilt-card');
 </script>
