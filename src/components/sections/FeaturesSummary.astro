@@ -207,132 +207,112 @@ const quickWins = [
       subtitle="Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human."
     />
 
-    <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
+    {/*
+      v3 "how it works" restructure. Moves away from Card.astro's 4-up grid
+      to 4 full-width horizontal rows, one per `stages` entry, each split
+      into a ~60% text column and a ~40% illustration-box column, with a
+      thin `border-t border-rail` divider between consecutive rows.
+      Card.astro itself is untouched — it's still used elsewhere (the "why
+      lean" reasons cards below, and other pages) — this section just
+      stops importing/rendering it.
+
+      Zigzag: even index (stages 1 & 3, i.e. index 0 & 2) put text on the
+      left / illustration box on the right at `lg:`; odd index (stages 2 &
+      4, i.e. index 1 & 3) flip that. Mobile always shows the illustration
+      box above the text regardless of which stage it is — done with
+      `order-1`/`order-2` as the base (mobile-first) ordering, then only
+      the even-index rows need an `lg:` override to swap text back to
+      order-1/left; the odd-index rows already match the mobile order, so
+      no `lg:` override is needed there (see inline comment below).
+
+      Illustration column (this pass): the glow span / <Illustration /> /
+      floating-chips markup is the same logic the old Card-based version
+      used — `signalStyles`, `chipClasses`, `chipIconWrapClasses`,
+      `chipIconGlyphClasses`, and each stage's `illustration`/`chips`
+      fields are unchanged, just reconnected inside the new row layout
+      instead of inside a Card. `js-tilt-card` + `dp-reveal`/
+      `dp-reveal-left`/`dp-reveal-right` (mouse-tilt + scroll-scrub reveal,
+      see <script> below) now live on this illustration box specifically —
+      not on the row wrapper and not on the text column, which stays
+      static per prior decision. Reveal direction alternates by row index
+      the same way it alternated by grid column before.
+    */}
+    <div class="mt-14">
       {stages.map((step, index) => {
         const s = signalStyles[step.signal];
         const Illustration = step.illustration;
-        // Alternate reveal direction by grid column (2-col grid: even index
-        // = left column, odd = right column), same left/right-per-column
-        // convention HeroDashboardPreview's bento grid uses for its own
-        // `.dp-reveal-left`/`.dp-reveal-right` cards.
+        const isEven = index % 2 === 0;
         const revealDirection = index % 2 === 0 ? 'dp-reveal-left' : 'dp-reveal-right';
 
         return (
-          // `relative isolate overflow-hidden` on Card is kept (harmless)
-          // even though the glow is now contained to the illustration box
-          // again, not spread across the whole card — so this overflow-
-          // hidden isn't doing the glow-clipping work anymore (the
-          // illustration wrapper's own overflow-hidden does that), but
-          // there's no reason to remove it.
-          //
-          // `!bg-white`: these 4 stage cards need pure white behind the
-          // glow instead of the flat-lift variant's default bg-paper (cream/
-          // off-white) — glow color reads muddier over a cream tint. Note
-          // this uses Tailwind's `!` important-modifier rather than relying
-          // on class-string order: Card.astro appends this `class` prop
-          // after `classesByVariant[variant]` in the HTML class attribute,
-          // but HTML attribute order does NOT guarantee which utility wins
-          // in Tailwind — that's decided by the order rules land in the
-          // generated stylesheet (driven by Tailwind's theme/plugin order,
-          // not by where `class="..."` puts them), and `bg-paper` is a
-          // custom theme color so its rule position isn't guaranteed to
-          // come first. `!bg-white` sidesteps that entirely and always wins.
-          //
-          // `hover:scale-[1.02] hover:!translate-y-0`: scoped to just these
-          // 4 stage cards, not Card.astro's shared flat-lift variant —
-          // `flat-lift` is also used by features.astro's step-list cards
-          // (`Card variant="flat-lift" tick class="p-6 sm:p-8"`), and per
-          // explicit decision only these "how it works" cards get the
-          // grow/scale hover feel; the step-list keeps its existing
-          // slide/lift hover untouched. `hover:!translate-y-0` needs the
-          // `!` important-modifier (not just being later in the class
-          // string) to reliably cancel out the variant's
-          // `hover:-translate-y-1` — both utilities target the same
-          // `--tw-translate-y` custom property, and same reasoning as the
-          // `!bg-white` note above: which one wins is decided by stylesheet
-          // rule order, not HTML class-attribute order. `scale-[1.02]` is a
-          // different transform property (`--tw-scale-x/y`) so it composes
-          // fine without needing `!`. Existing `transition-all duration-200
-          // ease-in-out` from the variant already covers animating the
-          // scale smoothly, so nothing extra needed there.
-          // `js-tilt-card`: hooks up the mouse-follow 3D tilt effect (see
-          // <script> at the bottom of this file). Previously this hover
-          // feel was a static `hover:scale-[1.02] hover:!translate-y-0`
-          // pair — that's now removed because the tilt script sets
-          // `transform` directly via JS on every mousemove (rotateX +
-          // rotateY + a slight scale), and a competing Tailwind
-          // hover:transform utility would just get overwritten/fight with
-          // that inline style. `transition-all duration-200 ease-in-out`
-          // stays from the flat-lift variant — the tilt script only
-          // removes it transiently during active mouse movement (for
-          // instant, non-laggy tracking) and restores it on mouseleave so
-          // the return-to-flat snap is still smoothed.
-          // `dp-reveal dp-reveal-left/-right`: wires up the same bottom→
-          // center scroll-scrub reveal HeroDashboardPreview's bento cards
-          // use (`src/scripts/scroll-reveal.ts` + `scroll-reveal.css`).
-          // Direction alternates per grid column via `revealDirection`
-          // above. Composes cleanly with `js-tilt-card` already on this
-          // element — `tilt-card.ts` detects the `dp-reveal` class and
-          // automatically switches to writing `--tilt-rx/-ry/-scale`
-          // custom properties instead of setting `transform` directly, so
-          // scroll-reveal.css's `.dp-reveal-left/-right` rules can compose
-          // both the slide-in translate AND the live tilt into one
-          // `transform` — see the TILT COMPOSITION note in
-          // scroll-reveal.css for why that has to happen in one place
-          // rather than two scripts fighting over the same property.
-          <Card
-            variant="flat-lift"
-            class={`dp-reveal ${revealDirection} js-tilt-card relative isolate overflow-hidden !bg-white`}
-          >
-            <div class="relative z-10 flex items-center gap-3">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink font-display text-sm font-semibold text-paper">
-                {step.number}
-              </span>
-              <span class="font-mono text-sm uppercase tracking-wide text-ink/70">{step.stage}</span>
-            </div>
-
-            <h3 class="relative z-10 mt-4 font-display text-xl font-semibold leading-snug text-ink sm:text-2xl">
-              {step.headline}
-            </h3>
-
-            {/*
-              Illustration wrapper: back to a single box (previous pass had
-              split this into an outer `relative` wrapper + a separate inner
-              overflow-hidden box so the glow could live outside the clip and
-              bleed across the whole card). Reverted per direct instruction:
-              glow is now contained to this box again, not spread over the
-              card, so there's no need for two nested divs — one wrapper
-              with `overflow-hidden rounded-xl` + its `bg-gradient-to-b
-              from-paper to-white` background back, and `relative` for the
-              glow's positioning context. `glowPos`/`inset-[-10%]` now
-              resolve against this box's own dimensions again, and
-              `overflow-hidden` here clips the glow to the box bounds
-              instead of Card's overflow-hidden doing that job.
-            */}
-            <div class="relative z-10 mt-5 h-48 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-56">
-              <span
-                class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
-                style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
-                aria-hidden="true"
-              ></span>
-
-              <Illustration />
-
-              {step.chips.map((chip) => (
-                <div
-                  class:list={[chipClasses, chip.position]}
-                  style={`animation-delay: ${chip.delay}`}
-                >
-                  <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
-                    <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
+          <div class="border-t border-rail py-14 first:border-t-0 first:pt-0 sm:py-16">
+            <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
+              {/* Text column: ~60% width on desktop. No animation classes
+                  here — this column stays static per this step's scope. */}
+              <div
+                class={`order-2 flex flex-col justify-center lg:w-[60%] lg:shrink-0 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
+              >
+                <div class="flex items-center gap-4">
+                  <span
+                    class="font-display text-7xl font-semibold leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-8xl"
+                  >
+                    {step.number}.
                   </span>
-                  {chip.label}
+                  <span
+                    class="h-1 w-10 shrink-0 rounded-full"
+                    style={`background-color: ${s.glow}`}
+                    aria-hidden="true"
+                  ></span>
                 </div>
-              ))}
-            </div>
 
-            <p class="relative z-10 mt-4 text-sm leading-relaxed text-ink/70">{step.body}</p>
-          </Card>
+                <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
+                  {step.headline}
+                </h3>
+
+                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">{step.body}</p>
+              </div>
+
+              {/* Illustration column: ~40% width on desktop.
+                  `js-tilt-card` + `dp-reveal dp-reveal-left/-right` scoped
+                  to just this box, not the row/text column — same
+                  reasoning as the prior Card-based version (see the
+                  <script> comment below): `tilt-card.ts` sets `transform`
+                  directly on mousemove, and detects `dp-reveal` to switch
+                  to writing `--tilt-rx/-ry/-scale` custom properties
+                  instead so `scroll-reveal.css`'s `.dp-reveal-left/-right`
+                  rules can compose the slide-in translate with the live
+                  tilt. `overflow-hidden rounded-xl` clips the glow to this
+                  box's own bounds; `relative` gives the glow/chips their
+                  positioning context. */}
+              <div
+                class={`order-1 lg:w-[40%] lg:shrink-0 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}
+              >
+                <div
+                  class={`dp-reveal ${revealDirection} js-tilt-card relative h-56 overflow-hidden rounded-xl bg-gradient-to-b from-paper to-white sm:h-64 lg:h-72`}
+                >
+                  <span
+                    class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
+                    style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
+                    aria-hidden="true"
+                  ></span>
+
+                  <Illustration />
+
+                  {step.chips.map((chip) => (
+                    <div
+                      class:list={[chipClasses, chip.position]}
+                      style={`animation-delay: ${chip.delay}`}
+                    >
+                      <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
+                        <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
+                      </span>
+                      {chip.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         );
       })}
     </div>
@@ -340,22 +320,18 @@ const quickWins = [
 </section>
 
 <!-- Mouse-follow 3D tilt + scroll-scrub reveal — see the `js-tilt-card`
-     and `dp-reveal`/`dp-reveal-left`/`dp-reveal-right` notes on the stage
-     Card above. Both scoped to just those 4 cards (`#how-it-works
-     .dp-reveal` / `.js-tilt-card`), not the 3 "why lean" reason cards
+     and `dp-reveal`/`dp-reveal-left`/`dp-reveal-right` notes on the
+     illustration box above. Both scoped to just those 4 illustration
+     boxes (`#how-it-works .dp-reveal` / `.js-tilt-card`), not the row
+     wrapper, not the text column, and not the 3 "why lean" reason cards
      below, which keep their existing plain elevated-card hover with no
-     reveal. The actual mousemove/rotation math and scroll math live in
-     `src/scripts/tilt-card.ts` and `src/scripts/scroll-reveal.ts`
-     respectively — same extraction pattern, both reused as-is from
-     HeroDashboardPreview rather than reimplemented here. Tilt defaults
-     (10deg max tilt, 1.03 scale, 150ms track / 600ms leave easing) match
-     what this file already had, so no visual change there — just no
-     longer duplicated inline. `completionFraction: 0.7` on the reveal
-     call matches HeroDashboardPreview's own bento-card setup exactly (per
-     explicit request to mirror that component's behavior) — each card
-     settles into place once it's covered 70% of the bottom→center
-     distance, instead of requiring it to reach viewport-center, so the
-     reveal finishes a little earlier/lower on screen while scrolling. -->
+     reveal. tilt-card.ts / scroll-reveal.ts themselves are unchanged
+     (out of scope for this pass) — same extraction pattern, both reused
+     as-is from HeroDashboardPreview. Tilt defaults (10deg max tilt, 1.03
+     scale, 150ms track / 600ms leave easing) and `completionFraction: 0.7`
+     match HeroDashboardPreview's own bento-card setup exactly, same as
+     before the row restructure — no behavior change here, just the
+     classes living on the illustration box instead of the old Card. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
