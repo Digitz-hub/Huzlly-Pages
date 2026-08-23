@@ -10,7 +10,7 @@
  * this section's small chip bob / glow pulse / SVG accents.
  *
  * USAGE (applied per-element in FeaturesSummary.astro from Step 2 onward):
- *   .chip-float-el   — floating chip pills (subtle vertical bob)
+ *   .chip-float-el   — floating chip pills (vertical bob, -11px amplitude)
  *   .glow-pulse-el   — the illustration's background glow blob(s)
  *   .dash-move-el    — Card 04's looping stroke-dasharray path
  *   .soft-pulse-el   — Card 01's approval-badge circle (opacity pulse)
@@ -23,7 +23,7 @@
 
 @keyframes chip-float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  50% { transform: translateY(-11px); }
 }
 
 @keyframes glow-pulse {
