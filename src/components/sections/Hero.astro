@@ -236,17 +236,20 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
      as every other `.reveal` element, so it still uses the shared
      IntersectionObserver below rather than needing its own.
 
-     Peak letter-spacing dropped from Animista's stock 1em to 0.35em, and
-     `whitespace-nowrap` added on the h1 itself (Tailwind utility on the
-     element, not in this block): at the stock 1em, this 24-character
-     headline needs far more width than its box, forcing a genuine reflow
-     (2 lines -> 3 lines -> 1 line) as the animation played out — learned
-     the hard way from the "-bck" variant used earlier in this section's
-     history. 0.35em + nowrap keeps the converging effect visible while
-     any leftover extra width just overflows silently past the box edges
-     for the ~1s of the animation (clipped by the section's own
-     `overflow-hidden`), invisible in practice since opacity is still
-     ramping up from 0 during that window. */
+     Peak letter-spacing kept at Animista's stock 1em for a clearly
+     visible both-sides convergence (text is centered, so the outer
+     letters visibly travel in from both left and right as spacing
+     shrinks) — this is safe against reflow purely because of
+     `whitespace-nowrap` on the h1 itself (Tailwind utility on the
+     element, not in this block): learned the hard way from the "-bck"
+     variant used earlier in this section's history that at 1em this
+     24-character headline needs far more width than its box, which
+     forces a genuine line-wrap reflow (2 lines -> 3 lines -> 1 line) as
+     the animation plays out unless wrapping itself is disabled. With
+     `nowrap` in place, any leftover extra width just overflows silently
+     past the box edges for the ~1s of the animation (clipped by the
+     section's own `overflow-hidden`), invisible in practice since
+     opacity is still ramping up from 0 during that window. */
   .reveal.tracking-in-contract.is-visible {
     animation: tracking-in-contract 1s cubic-bezier(0.215, 0.61, 0.355, 1) both;
     transition: none;
@@ -254,7 +257,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 
   @keyframes tracking-in-contract {
     0% {
-      letter-spacing: 0.35em;
+      letter-spacing: 1em;
       opacity: 0;
     }
     40% {
