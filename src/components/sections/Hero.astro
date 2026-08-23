@@ -147,7 +147,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
        narrower viewports. -->
   <HeroScatterDecoration class="hidden lg:block" />
 
-  <div class="relative mx-auto max-w-2xl text-center" style="perspective:1000px;">
+  <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
       class="reveal inline-flex items-center gap-1.5 rounded-full border border-rail bg-white px-4 py-1.5
              text-sm text-ink/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-ink/20"
@@ -158,7 +158,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 
     <p class="reveal mt-6 text-sm text-ink/50">One workflow. Less admin.</p>
 
-    <h1 class="reveal tracking-in-contract-bck whitespace-nowrap mt-2 font-display text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
+    <h1 class="reveal tracking-in-contract whitespace-nowrap mt-2 font-display text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
       One flow. Not five apps.
     </h1>
 
@@ -226,51 +226,42 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
 
-  /* Heading gets Animista's "Tracking In Contract Backwards" instead of
-     the generic translateY fade above — letter-spacing starts wide and
-     the text sits pushed back in Z-space (translateZ 400px, needs
-     `perspective` on the ancestor, set inline on the text column above),
-     then both contract/advance to normal while fading in. Scoped to
-     `.reveal.tracking-in-contract-bck` so it overrides the plain `.reveal`
+  /* Heading gets Animista's "Tracking In Contract" instead of the generic
+     translateY fade above — letter-spacing starts wide and contracts to
+     normal while fading in (no Z-translate/perspective needed for this
+     variant, unlike the "-bck" version). Scoped to
+     `.reveal.tracking-in-contract` so it overrides the plain `.reveal`
      rule above instead of running alongside it (both animate opacity —
      letting both fire would fight each other). Same `.is-visible` trigger
      as every other `.reveal` element, so it still uses the shared
      IntersectionObserver below rather than needing its own.
 
-     Two changes vs. the vanilla Animista preset, both because this is a
-     full multi-word headline rather than a short label/eyebrow (which is
-     what that preset is normally used for):
-     — Peak letter-spacing dropped from the stock 1em to 0.35em. At 1em,
-       a 24-character headline needs way more width than its box, which
-       was forcing a genuine reflow (2 lines -> 3 lines -> 1 line) as the
-       animation progressed — the "jumping" the request described. 0.35em
-       keeps the spread-out/converging effect visible without demanding
-       that much extra width.
-     — `whitespace-nowrap` added on the h1 itself (Tailwind utility on the
-       element, not in this block) so that whatever extra width the
-       animation *does* need never triggers a line-wrap reflow — it just
-       overflows silently past the box edges for the ~1s of the animation
-       (clipped by the section's own `overflow-hidden`), while opacity is
-       still ramping up from 0, so it isn't visually noticeable. */
-  .reveal.tracking-in-contract-bck {
-    transform: none;
-  }
-  .reveal.tracking-in-contract-bck.is-visible {
-    animation: tracking-in-contract-bck 1s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+     Peak letter-spacing dropped from Animista's stock 1em to 0.35em, and
+     `whitespace-nowrap` added on the h1 itself (Tailwind utility on the
+     element, not in this block): at the stock 1em, this 24-character
+     headline needs far more width than its box, forcing a genuine reflow
+     (2 lines -> 3 lines -> 1 line) as the animation played out — learned
+     the hard way from the "-bck" variant used earlier in this section's
+     history. 0.35em + nowrap keeps the converging effect visible while
+     any leftover extra width just overflows silently past the box edges
+     for the ~1s of the animation (clipped by the section's own
+     `overflow-hidden`), invisible in practice since opacity is still
+     ramping up from 0 during that window. */
+  .reveal.tracking-in-contract.is-visible {
+    animation: tracking-in-contract 1s cubic-bezier(0.215, 0.61, 0.355, 1) both;
     transition: none;
   }
 
-  @keyframes tracking-in-contract-bck {
+  @keyframes tracking-in-contract {
     0% {
       letter-spacing: 0.35em;
-      transform: translateZ(400px);
       opacity: 0;
     }
     40% {
       opacity: 0.6;
     }
     100% {
-      transform: translateZ(0);
+      letter-spacing: normal;
       opacity: 1;
     }
   }
@@ -281,7 +272,7 @@ import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
       transform: none !important;
       transition: none !important;
     }
-    .reveal.tracking-in-contract-bck.is-visible {
+    .reveal.tracking-in-contract.is-visible {
       animation: none !important;
       letter-spacing: normal !important;
     }
