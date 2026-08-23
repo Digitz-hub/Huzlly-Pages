@@ -24,7 +24,7 @@
 //     instantly (a `transition: none` during tracking was the original
 //     jhatka/snap bug in the first version of this effect). Leave gets a
 //     slightly longer, gentler ease back to flat.
-//   - NEW: a directional box-shadow now follows the tilt instead of using
+//   - A directional box-shadow follows the tilt instead of using
 //     Card.astro's static `hover:shadow-lg` (which always sits in the same
 //     fixed direction no matter which way the card is actually tilting).
 //     The shadow offset is driven by the exact same cursor-relative px/py
@@ -46,6 +46,11 @@
 //   `[data-dashboard-preview] .dp-reveal`, if multiple tilt groups end up on
 //   the same page with different settings. Safe to call multiple times
 //   across different components/selectors on the same page.
+//
+//   Touch/tablet devices do NOT get this effect at all (see the pointer
+//   guard below) — they instead get a simpler scale-only "grow" effect via
+//   `src/scripts/center-hover.ts`, wired up separately by each component
+//   that uses `.js-tilt-card` (that helper is not called from this file).
 //
 // ⚠️ GOTCHA — wiring this (or scroll-reveal.ts) onto a NEW element:
 //   Both `applyTilt`'s `--tilt-rx/-ry/-scale` path AND scroll-reveal.css's
@@ -71,17 +76,15 @@
 //   transform can't be silently overridden by cascade order/specificity.
 //
 // Guards (baked in, not opt-out — see rationale on each below):
-//   - `prefers-reduced-motion`: skips the effect entirely, on every pointer
-//     type (fine or coarse).
-//   - `matchMedia('(pointer: fine)')`: no longer a full skip (see TOUCH
-//     EQUIVALENT below) — it now just selects which interaction model
-//     drives the shared `applyTilt`/`resetTilt` closures: real mousemove
-//     tracking on fine pointers, scroll-position-crosses-center on coarse
-//     ones. The rationale for NOT wiring raw `mousemove`/`touchstart` taps
-//     on touch devices still holds — synthetic/awkward tap events would
-//     give a stuck or jittery tilt instead of a real hover gesture — the
-//     touch branch below deliberately never listens for tap/touch events
-//     at all, only scroll position.
+//   - `prefers-reduced-motion`: skips the effect entirely.
+//   - `matchMedia('(pointer: fine)')`: skips the effect entirely on any
+//     device without a real mouse/trackpad-style pointer (touch, coarse
+//     stylus, etc). Rationale for NOT wiring raw `mousemove`/`touchstart`
+//     taps on touch devices instead: synthetic/awkward tap events would
+//     give a stuck or jittery tilt instead of a real hover gesture, so
+//     touch/tablet devices simply don't get this effect — they get the
+//     separate scale-only "grow" effect from `center-hover.ts` instead
+//     (see USAGE above).
 //
 // FIX — scroll-under-stationary-cursor (see this file's changelog):
 //   `mousemove`/`mouseleave` only fire when the CURSOR moves relative to
@@ -93,26 +96,7 @@
 //   `mousemove` listener) and, on every scroll (rAF-throttled), checking
 //   each card's current `getBoundingClientRect()` against that last
 //   position to synthesize the same apply/reset the real mouse events
-//   would have triggered. Fine-pointer only — see TOUCH EQUIVALENT below
-//   for the coarse-pointer counterpart, which reuses the same rAF-throttled
-//   scroll listener but has no cursor position to track at all.
-//
-// TOUCH EQUIVALENT (coarse pointer, motion allowed):
-//   Touch devices have no hover state and no cursor to track, so the
-//   fine-pointer mousemove/scroll-recheck model above doesn't apply at
-//   all. Instead: on every scroll (rAF-throttled, same shared listener as
-//   the fine-pointer scroll-recheck above — just a different callback per
-//   card), check whether the viewport's vertical center
-//   (`window.innerHeight / 2`) currently falls within the card's own
-//   `getBoundingClientRect()` (top..bottom). The moment it does, that's
-//   treated as "the mouse is hovering here" and `applyTilt(...)` is called
-//   with the card's own horizontal center as x and the viewport's vertical
-//   center as y — same closure the real mousemove handler calls, just fed
-//   a synthesized position instead of `e.clientX/clientY`. Once the
-//   viewport center scrolls back out of the card's rect, `resetTilt()` is
-//   called, same as a real `mouseleave`. Also run once synchronously at
-//   setup, in case a card is already centered in the viewport before the
-//   user ever scrolls (e.g. it's the first thing in view on load).
+//   would have triggered.
 
 export interface TiltCardOptions {
   /** Max tilt angle in degrees on each axis. Defaults to 10. */
@@ -171,7 +155,7 @@ export function initTiltCard(
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 
-  if (prefersReducedMotion) {
+  if (prefersReducedMotion || !hasFinePointer) {
     return () => {};
   }
 
@@ -207,15 +191,13 @@ export function initTiltCard(
   let lastClientY = 0;
   let hasPointer = false;
 
-  if (hasFinePointer) {
-    const onWindowMouseMove = (e: MouseEvent) => {
-      lastClientX = e.clientX;
-      lastClientY = e.clientY;
-      hasPointer = true;
-    };
-    window.addEventListener('mousemove', onWindowMouseMove, { passive: true });
-    cleanups.push(() => window.removeEventListener('mousemove', onWindowMouseMove));
-  }
+  const onWindowMouseMove = (e: MouseEvent) => {
+    lastClientX = e.clientX;
+    lastClientY = e.clientY;
+    hasPointer = true;
+  };
+  window.addEventListener('mousemove', onWindowMouseMove, { passive: true });
+  cleanups.push(() => window.removeEventListener('mousemove', onWindowMouseMove));
 
   // Each card registers a "recheck" callback here; the shared scroll
   // listener below calls all of them, rAF-throttled, on every scroll.
@@ -280,102 +262,57 @@ export function initTiltCard(
       card.style.boxShadow = 'none';
     };
 
-    if (hasFinePointer) {
-      // --- Real-mouse desktop path (unchanged) ---
-      const onMouseMove = (e: MouseEvent) => {
-        isHovering = true;
-        applyTilt(e.clientX, e.clientY);
-      };
+    const onMouseMove = (e: MouseEvent) => {
+      isHovering = true;
+      applyTilt(e.clientX, e.clientY);
+    };
 
-      const onMouseLeave = () => {
+    const onMouseLeave = () => {
+      isHovering = false;
+      resetTilt();
+    };
+
+    card.addEventListener('mousemove', onMouseMove);
+    card.addEventListener('mouseleave', onMouseLeave);
+
+    // Scroll recheck: with the cursor held still, figure out from the
+    // last known pointer position whether this card is now under it (or
+    // no longer is) and synthesize whatever a real mousemove/mouseleave
+    // would have done.
+    scrollRechecks.push(() => {
+      if (!hasPointer) return;
+
+      const rect = card.getBoundingClientRect();
+      const inside =
+        lastClientX >= rect.left &&
+        lastClientX <= rect.right &&
+        lastClientY >= rect.top &&
+        lastClientY <= rect.bottom;
+
+      if (inside) {
+        isHovering = true;
+        applyTilt(lastClientX, lastClientY);
+      } else if (isHovering) {
         isHovering = false;
         resetTilt();
-      };
+      }
+    });
 
-      card.addEventListener('mousemove', onMouseMove);
-      card.addEventListener('mouseleave', onMouseLeave);
-
-      // Scroll recheck: with the cursor held still, figure out from the
-      // last known pointer position whether this card is now under it (or
-      // no longer is) and synthesize whatever a real mousemove/mouseleave
-      // would have done.
-      scrollRechecks.push(() => {
-        if (!hasPointer) return;
-
-        const rect = card.getBoundingClientRect();
-        const inside =
-          lastClientX >= rect.left &&
-          lastClientX <= rect.right &&
-          lastClientY >= rect.top &&
-          lastClientY <= rect.bottom;
-
-        if (inside) {
-          isHovering = true;
-          applyTilt(lastClientX, lastClientY);
-        } else if (isHovering) {
-          isHovering = false;
-          resetTilt();
-        }
-      });
-
-      cleanups.push(() => {
-        card.removeEventListener('mousemove', onMouseMove);
-        card.removeEventListener('mouseleave', onMouseLeave);
-        card.style.transition = '';
-        if (hasScrollReveal) {
-          card.style.removeProperty('--tilt-perspective');
-          card.style.removeProperty('--tilt-rx');
-          card.style.removeProperty('--tilt-ry');
-          card.style.removeProperty('--tilt-scale');
-        } else {
-          card.style.transform = '';
-        }
-        card.style.boxShadow = '';
-        card.style.willChange = '';
-      });
-    } else {
-      // --- Touch equivalent (coarse pointer): viewport-center-crosses-card ---
-      // No cursor exists, so `isHovering` here just tracks whether THIS
-      // card is the one currently "centered" (i.e. currently tilted),
-      // driven purely by scroll position instead of pointer position.
-      const checkCenterCross = () => {
-        const rect = card.getBoundingClientRect();
-        const viewportCenterY = window.innerHeight / 2;
-        const inside = viewportCenterY >= rect.top && viewportCenterY <= rect.bottom;
-
-        if (inside && !isHovering) {
-          isHovering = true;
-          const cardCenterX = rect.left + rect.width / 2;
-          applyTilt(cardCenterX, viewportCenterY);
-        } else if (!inside && isHovering) {
-          isHovering = false;
-          resetTilt();
-        }
-      };
-
-      // Same shared rAF-throttled scroll listener the fine-pointer path
-      // uses below — just a different per-card callback.
-      scrollRechecks.push(checkCenterCross);
-
-      // Run once on mount in case a card is already centered in the
-      // viewport before any scroll event ever fires (e.g. it's the first
-      // thing in view on load).
-      checkCenterCross();
-
-      cleanups.push(() => {
-        card.style.transition = '';
-        if (hasScrollReveal) {
-          card.style.removeProperty('--tilt-perspective');
-          card.style.removeProperty('--tilt-rx');
-          card.style.removeProperty('--tilt-ry');
-          card.style.removeProperty('--tilt-scale');
-        } else {
-          card.style.transform = '';
-        }
-        card.style.boxShadow = '';
-        card.style.willChange = '';
-      });
-    }
+    cleanups.push(() => {
+      card.removeEventListener('mousemove', onMouseMove);
+      card.removeEventListener('mouseleave', onMouseLeave);
+      card.style.transition = '';
+      if (hasScrollReveal) {
+        card.style.removeProperty('--tilt-perspective');
+        card.style.removeProperty('--tilt-rx');
+        card.style.removeProperty('--tilt-ry');
+        card.style.removeProperty('--tilt-scale');
+      } else {
+        card.style.transform = '';
+      }
+      card.style.boxShadow = '';
+      card.style.willChange = '';
+    });
   });
 
   // Single rAF-throttled scroll listener shared by every card this call
