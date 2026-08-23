@@ -437,7 +437,7 @@ const stages = [
      touch any other `.js-tilt-card` caller. tilt-card.ts itself is
      unchanged.
 
-     `initCenterHover` (new this pass): touch-equivalent for the chips'
+     `initCenterHover` (chips): touch-equivalent for the chips'
      `hover:scale-105` (part of `chipClasses`, see that comment above),
      which — like any plain CSS `:hover` rule — never fires on touch/
      tablet. Scoped to `'#how-it-works .js-chip-pill'`, the pill layer
@@ -448,7 +448,21 @@ const stages = [
      comment — so this call is safe to leave in unconditionally; it only
      ever does anything on touch/tablet. The actual `.is-center-active`
      visual (mirroring `hover:scale-105`) lives in `center-hover.css`, not
-     here — this call only wires up the trigger. -->
+     here — this call only wires up the trigger.
+
+     `initCenterHover` (illustration wrapper, new this pass): touch/tablet
+     equivalent for the illustration box's desktop mouse-tilt above — now
+     that tilt-card.ts is back to a fine-pointer-only effect (its
+     coarse-pointer branch was removed), touch/tablet gets a plain
+     scale-only "grow" here instead, via the same `.dp-reveal.is-center-
+     active` rule in `center-hover.css` that HeroDashboardPreview's bento
+     cards also use. Scoped to `'#how-it-works .js-tilt-card'` — the exact
+     same selector `initTiltCard` above already targets, since the touch
+     grow and the desktop tilt are two input-specific treatments of the
+     same illustration box, not two different elements. `initCenterHover`
+     is a no-op on devices with real hover, so this is safe to leave in
+     unconditionally alongside `initTiltCard` without double-driving
+     anything on desktop. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
@@ -457,4 +471,5 @@ const stages = [
   initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
   initCenterHover('#how-it-works .js-chip-pill');
+  initCenterHover('#how-it-works .js-tilt-card');
 </script>
