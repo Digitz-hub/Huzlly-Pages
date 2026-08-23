@@ -442,17 +442,21 @@ const quickWins = [
 
      `maxTilt: 17` / `scale: 1.25` (this call only, per explicit request
      for a more pronounced hover effect on just this illustration box) —
-     up from the library defaults of 10 / 1.03 that this call used to rely
-     on implicitly. trackMs/leaveMs/perspective are left at their defaults
-     (150ms / 600ms / 800px); the larger rotation/scale didn't need a
-     different easing duration to stay smooth in testing, and per the
-     scoping above, changing them here still can't touch any other
+     up from the library defaults of 10 / 1.03. `trackMs: 320` /
+     `leaveMs: 850` (also this call only, up from the defaults of 150 /
+     600) — the larger scale/tilt read as snappy at the default timings,
+     so both the hover-in engage and the leave-reset are slowed down to
+     feel smooth rather than instant; `leaveMs` stays noticeably longer
+     than `trackMs` (as in the library default's own 150/600 ratio) so
+     the reset-to-flat still reads as an "ease out" rather than snapping
+     back as fast as it engaged. `perspective` is untouched (default
+     800px). Per the scoping above, none of this can touch any other
      `.js-tilt-card` caller. tilt-card.ts itself is unchanged. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-  initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 17, scale: 1.25, shadowMaxOffset: 0, shadowBlur: 0 });
+  initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 17, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
 </script>
 
