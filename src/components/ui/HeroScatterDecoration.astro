@@ -39,14 +39,18 @@
 // animation only, same as the previous starfield file) a <style> block.
 //
 // TEXT-COLUMN CLEARANCE: Hero.astro centers its content in a `max-w-2xl`
-// column with no max-width on the `<section>` itself. Like the previous
-// version, this component only renders at `lg:` and up (applied by the
-// consumer via `class="hidden lg:block"` on Hero.astro's usage of this
-// component, not hardcoded here) — so the narrowest viewport is 1024px,
-// where the centered column spans ~17%–83%. Every shape below sits
-// within roughly -6% to 6% of the left/right edges (per the approved
-// preview's own edge-hugging placements), well clear of that column at
-// every `lg:`+ width.
+// column with no max-width on the `<section>` itself. This component
+// previously only rendered at `lg:` and up, because at the original
+// fixed pixel sizes (e.g. 220x320, 260x220) the shapes would overlap
+// the text column on narrow viewports. UPDATED THIS PASS: the consumer
+// no longer gates this with `hidden lg:block` — instead, each shape
+// below now carries responsive w-/h- steps (small at the mobile
+// default, mid at `sm:`, full original size at `lg:`) so the panels
+// shrink to edge-hugging slivers on narrow screens instead of being
+// hidden outright. Every shape still sits within roughly -6% to 6% of
+// the left/right edges at every breakpoint, so even at mobile widths
+// the (now much smaller) shapes stay clear of the centered text column
+// rather than overlapping it.
 //
 // WRAPPER CLEARANCE — CORRECTED, NOT JUST COPIED: the previous starfield
 // file's wrapper used `top-40 sm:top-48 lg:top-56`, matching a padding
@@ -152,13 +156,13 @@ const { class: className } = Astro.props;
   aria-hidden="true"
 >
   <!-- s1 — top-left tall slab, blue tint -->
-  <div class="glass-float-a absolute w-56 h-80 top-[-6%] left-[-4%] rotate-[-18deg] skew-y-[-4deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-a absolute w-24 h-36 sm:w-40 sm:h-60 lg:w-56 lg:h-80 top-[-6%] left-[-4%] rotate-[-18deg] skew-y-[-4deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-14 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
   <!-- s2 — top-right block, no tint -->
-  <div class="glass-float-b absolute w-64 h-56 top-[4%] right-[-6%] rotate-[22deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-b absolute w-28 h-24 sm:w-44 sm:h-40 lg:w-64 lg:h-56 top-[4%] right-[-6%] rotate-[22deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-12 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
@@ -166,7 +170,7 @@ const { class: className } = Astro.props;
        original bottom-[-8%] via a calc() offset (not translate — see s4's
        comment below for why: glass-float-c's keyframes drive `transform`
        on a loop, which would override a static translate class). -->
-  <div class="glass-float-c absolute w-40 h-40 bottom-[calc(-8%+70px)] left-[4%] rotate-[35deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-c absolute w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 bottom-[calc(-8%+70px)] left-[4%] rotate-[35deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
@@ -183,7 +187,7 @@ const { class: className } = Astro.props;
        element's rotate-[-12deg]/skew-y-[5deg] classes below, which were
        therefore dead. `glass-float-a-mirror` carries its own keyframe
        that actually matches this element's angle; see float-animation.css. -->
-  <div class="glass-float-a-mirror absolute w-72 h-64 bottom-[calc(-10%+70px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-a-mirror absolute w-32 h-28 sm:w-48 sm:h-44 lg:w-72 lg:h-64 bottom-[calc(-10%+70px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
     <div class="absolute left-[12%] top-[10%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
@@ -195,7 +199,7 @@ const { class: className } = Astro.props;
        rotate-[8deg]/skew-x-[10deg] classes below, which were therefore
        dead. `glass-float-b-mirror-fast` carries its own keyframe that
        actually matches this element's angle; see float-animation.css. -->
-  <div class="glass-float-b-mirror-fast absolute w-28 h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-b-mirror-fast absolute w-14 h-28 sm:w-20 sm:h-40 lg:w-28 lg:h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 
@@ -213,7 +217,7 @@ const { class: className } = Astro.props;
        keyframe matching this element's actual angle, at the same 11s
        base timing as glass-float-b (s5 already claims the faster
        mirrored timing) — see float-animation.css. -->
-  <div class="glass-float-b-mirror absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
+  <div class="glass-float-b-mirror absolute w-14 h-28 sm:w-20 sm:h-40 lg:w-28 lg:h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
     <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
   </div>
 </div>
