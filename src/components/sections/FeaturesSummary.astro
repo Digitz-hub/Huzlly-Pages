@@ -440,23 +440,29 @@ const quickWins = [
      HeroDashboardPreview), which still gets its own call with the
      library defaults.
 
-     `maxTilt: 17` / `scale: 1.25` (this call only, per explicit request
+     `maxTilt: 38.25` / `scale: 1.25` (this call only, per explicit request
      for a more pronounced hover effect on just this illustration box) —
-     up from the library defaults of 10 / 1.03. `trackMs: 320` /
-     `leaveMs: 850` (also this call only, up from the defaults of 150 /
-     600) — the larger scale/tilt read as snappy at the default timings,
-     so both the hover-in engage and the leave-reset are slowed down to
-     feel smooth rather than instant; `leaveMs` stays noticeably longer
-     than `trackMs` (as in the library default's own 150/600 ratio) so
-     the reset-to-flat still reads as an "ease out" rather than snapping
-     back as fast as it engaged. `perspective` is untouched (default
-     800px). Per the scoping above, none of this can touch any other
-     `.js-tilt-card` caller. tilt-card.ts itself is unchanged. -->
+     `maxTilt` up from the library default of 10, via two successive 50%
+     bumps through intermediate values of 17 then 25.5. Note this is now
+     well past a subtle "follow the cursor" tilt — worth eyeballing in
+     the browser at this value, since tilt-card.ts's rotation is
+     `maxTilt * 2` at the pointer's extremes (see `applyTilt`), so 38.25
+     here means roughly +/-76.5deg of rotation at the edges of the box.
+     `trackMs: 320` / `leaveMs: 850` (also this call only, up from the
+     defaults of 150 / 600) — the larger scale/tilt read as snappy at the
+     default timings, so both the hover-in engage and the leave-reset are
+     slowed down to feel smooth rather than instant; `leaveMs` stays
+     noticeably longer than `trackMs` (as in the library default's own
+     150/600 ratio) so the reset-to-flat still reads as an "ease out"
+     rather than snapping back as fast as it engaged. `perspective` is
+     untouched (default 800px). Per the scoping above, none of this can
+     touch any other `.js-tilt-card` caller. tilt-card.ts itself is
+     unchanged. -->
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
 
-  initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 17, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
+  initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
 </script>
 
