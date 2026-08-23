@@ -8,8 +8,16 @@
  * in center-hover.ts for the full rationale).
  *
  * This file is where components add the actual `.is-center-active` (or
- * custom `activeClass`) rules that mirror whatever their desktop `:hover`
- * CSS already does, so the effect looks the same on both input types.
+ * custom `activeClass`) rules for their touch-equivalent effect.
+ *
+ * SIMPLIFIED SCOPE (this pass): touch/tablet no longer tries to mimic
+ * tilt-card.ts's full mouse-tilt effect (rotation + directional shadow) —
+ * that turned out to be more complex than needed for a touch gesture with
+ * no real cursor behind it. Every rule below is now a plain scale-up
+ * "grow", nothing else: no rotation, no shadow-mirroring. The chip rule
+ * still reproduces its own desktop `hover:scale-105` (it always was a
+ * plain grow), and the card rule below now does the same instead of
+ * mirroring `hover:shadow-md`.
  *
  * SCOPING — every rule in here MUST be wrapped in
  * `@media (hover: none), (pointer: coarse)`. This is what keeps
@@ -65,26 +73,50 @@
 
   /* Card.astro's `elevated` variant (WhyLean.astro's 3 `reasons` cards, via
    * `initCenterHover('#why-lean [data-card-variant="elevated"]')` — see
-   * that file's own script comment): `classesByVariant.elevated` includes
-   * Tailwind's `hover:shadow-md` for desktop, which never fires on touch/
-   * tablet. Unlike the chip pill above, this isn't a `transform` — it's a
-   * plain `box-shadow`, so no `--tw-*` var composition/preservation
-   * concerns apply here; this rule just needs to reproduce Tailwind's own
-   * `shadow-md` box-shadow value verbatim (Tailwind's default scale, not
-   * customized in tailwind.config.mjs's `theme.extend` — confirmed no
-   * `boxShadow` override there) so `.is-center-active` looks pixel-identical
-   * to what `:hover` already produces on desktop for the same variant.
-   * `elevated`'s own classes already carry `shadow-sm` at rest plus
-   * `transition-shadow duration-200 ease-in-out`, so the box-shadow change
-   * this rule applies still transitions smoothly in/out as the card crosses
-   * the viewport's center — no transition needs repeating here. Scoped to
-   * `[data-card-variant="elevated"]` (Card.astro's stable variant marker,
-   * added for this) rather than a `js-*` class so any future `elevated`
-   * card anywhere on the site gets this touch-equivalent for free without
-   * needing its own opt-in class — `flat`/`flat-lift`/`highlighted` are
-   * deliberately NOT given a rule here, since only `elevated` was in scope
-   * for this pass. */
+   * that file's own script comment). Simplified this pass: instead of
+   * mirroring `hover:shadow-md`, this is now a plain scale-up grow, same
+   * treatment as everything else in this file. `elevated`'s own classes
+   * (see `classesByVariant.elevated` in Card.astro) only ship
+   * `transition-shadow`, not `transition-transform` — this rule declares
+   * its own `transition: transform ...` right here rather than relying on
+   * anything from Card.astro, so the grow still eases in/out smoothly as
+   * the card crosses the viewport's center. Scoped to
+   * `[data-card-variant="elevated"]` (Card.astro's stable variant marker)
+   * rather than a `js-*` class so any future `elevated` card anywhere on
+   * the site gets this touch-equivalent for free without needing its own
+   * opt-in class — `flat`/`flat-lift`/`highlighted` are deliberately NOT
+   * given a rule here, since only `elevated` was in scope for this pass. */
   [data-card-variant="elevated"].is-center-active {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    transform: scale(1.04);
+    transition: transform 200ms ease-out;
+  }
+
+  /* Tilt-card illustration wrappers/bento cards (HowItWorks.astro's 4
+   * illustration boxes via `initCenterHover('#how-it-works .js-tilt-card')`
+   * and HeroDashboardPreview.astro's 5 bento cards via
+   * `initCenterHover('[data-dashboard-preview] .js-tilt-card')`): on
+   * desktop these get the full tilt-card.ts mouse effect (rotation +
+   * directional shadow); on touch/tablet they get this plain scale-up grow
+   * instead — no rotation, no shadow. Every element both callers target
+   * already carries `dp-reveal` alongside `js-tilt-card` (tilt-card.ts
+   * itself requires that pairing — see its own `classList.contains
+   * ('dp-reveal')` check), so this single rule, scoped to the shared
+   * `.dp-reveal` base class, covers both call sites at once with no
+   * duplication. Rather than writing `transform` directly (which would
+   * fight scroll-reveal.css's own `!important`-guarded `.dp-reveal-left/
+   * -right/-up` transform — see the TILT COMPOSITION note in
+   * scroll-reveal.css), this sets the same `--tilt-scale` custom property
+   * `initTiltCard()`'s `applyTilt`/`resetTilt` already write for the
+   * mouse-tilt path, which those `.dp-reveal-*` rules already compose into
+   * their own transform via `scale(var(--tilt-scale, 1))` — no conflict,
+   * since that composition already exists and already defaults to 1 when
+   * nothing sets it. `--tilt-scale` is already registered via `@property`
+   * in `tilt-card.css` (typed as `<number>`, not touched by this pass),
+   * which is what makes `transition: --tilt-scale ...` here animate
+   * smoothly instead of snapping — same mechanism tilt-card.ts's own
+   * `applyTilt`/`resetTilt` already rely on for the mouse-tilt path. */
+  .dp-reveal.is-center-active {
+    --tilt-scale: 1.04;
+    transition: --tilt-scale 200ms ease-out;
   }
 }
