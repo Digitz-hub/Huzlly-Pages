@@ -131,20 +131,21 @@ const quickWins = [
 </section>
 
 <!-- `initCenterHover` — touch-equivalent for the `reasons` cards' desktop
-     `hover:shadow-md` (part of Card.astro's `elevated` variant classes),
-     which — like any plain CSS `:hover` rule — never fires on touch/
-     tablet. Scoped to `'#why-lean [data-card-variant="elevated"]'`, using
-     Card.astro's stable `data-card-variant` marker attribute rather than a
-     bespoke `js-*` class, since every card rendered by this section with
-     that variant should get the effect (same convention HowItWorks.astro
-     uses for its own `js-chip-pill` touch-equivalent hover, just keyed off
-     the variant attribute instead of a manually-added class here).
+     hover feel (Card.astro's `elevated` variant), which — like any plain
+     CSS `:hover` rule — never fires on touch/tablet. Scoped to
+     `'#why-lean [data-card-variant="elevated"]'`, using Card.astro's
+     stable `data-card-variant` marker attribute rather than a bespoke
+     `js-*` class, since every card rendered by this section with that
+     variant should get the effect (same convention HowItWorks.astro uses
+     for its own `js-chip-pill` touch-equivalent hover, just keyed off the
+     variant attribute instead of a manually-added class here).
      `initCenterHover` itself is a no-op on devices with real hover (or
      with reduced motion requested) — see its own header comment — so this
      call is safe to leave in unconditionally; it only ever does anything
-     on touch/tablet. The actual `.is-center-active` visual (mirroring
-     `hover:shadow-md`) lives in `center-hover.css`, not here — this call
-     only wires up the trigger. -->
+     on touch/tablet. The actual `.is-center-active` visual — a plain
+     scale-up grow, not a shadow mirror (see `center-hover.css`'s own
+     comment on this rule) — lives in `center-hover.css`, not here; this
+     call only wires up the trigger. -->
 <script>
   import { initCenterHover } from '../../scripts/center-hover';
 
