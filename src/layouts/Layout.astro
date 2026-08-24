@@ -67,6 +67,14 @@ const organizationSchema = {
         history.scrollRestoration = 'manual';
       }
     </script>
+    <!-- Sitewide smooth-scroll, powered by Lenis. Initialized once here
+         (the only file that owns <body>/the document shell) so every page
+         gets the same inertia-scroll feel. See src/scripts/lenis.ts for
+         the reduced-motion guard and cleanup details. -->
+    <script>
+      import { initLenis } from '../scripts/lenis';
+      initLenis();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
