@@ -135,14 +135,12 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
 </style>
 
 <script>
-  // Full waitlist submit / screen-swap / animation logic, moved here from
-  // the old WaitlistSplitCard.astro now that the split card and next-steps
-  // panels live in two separate components (WaitlistFormCard.astro and
-  // WaitlistConfirmationCard.astro). Element lookups below target IDs
-  // owned by those two components; see the "Astro scoping note" comments
-  // in each of those files for how the shared keyframe animations
-  // (`split-card-in`, `split-card-float`, `screen-enter`, `screen-leave`)
-  // stay resolvable across the component boundary.
+  // DEBUG: waitlist submit logic, moved here from the old
+  // WaitlistSplitCard.astro now that the split card and next-steps panels
+  // live in two separate components (WaitlistFormCard.astro and
+  // WaitlistConfirmationCard.astro). Screen-swap / animation logic has
+  // been stripped out for this debug pass — both panels are always
+  // visible now.
   const JOINED_COOKIE_NAME = 'huzlly_waitlist_joined';
 
   function getCookie(name: string): string | null {
@@ -163,80 +161,16 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
 
   const form = document.getElementById('waitlist-form');
   const errorEl = document.getElementById('waitlist-error');
-  const splitCard = document.getElementById('waitlist-split-card');
-  const nextSteps = document.getElementById('waitlist-next-steps');
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
   const emailInput = document.getElementById('waitlist-email') as HTMLInputElement | null;
   const successTitle = document.getElementById('waitlist-success-title');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isDesktopViewport = () => window.matchMedia('(min-width: 1024px)').matches;
 
-  // The split card's entire animation lifecycle (one-shot entrance on
-  // mount, persistent idle float on desktop, leave/re-enter on toggle) is
-  // driven from here via inline `style.animation`, not CSS classes. Every
-  // one of these phases used to be a separate class fighting the others
-  // over the same `animation` property, and whichever class got removed
-  // last, the card fell back to whatever the cascade resolved to next —
-  // sometimes the base (invisible) state, sometimes a restarted entrance.
-  // Setting `style.animation` directly sidesteps that entirely: inline
-  // style always wins, so there's only ever one animation active at a
-  // time and it's always the one we just chose.
-  function setSplitCardAnimation(phase: 'idle' | 'enter' | 'leave') {
-    if (!splitCard) return;
-
-    if (prefersReducedMotion) {
-      splitCard.style.animation = 'none';
-      splitCard.style.opacity = '1';
-      splitCard.style.transform = 'none';
-      return;
-    }
-
-    if (phase === 'idle') {
-      splitCard.style.opacity = '1';
-      splitCard.style.transform = 'translateY(0)';
-      splitCard.style.animation = isDesktopViewport()
-        ? 'split-card-float 9s ease-in-out infinite'
-        : 'none';
-      return;
-    }
-
-    if (phase === 'enter') {
-      splitCard.style.animation = 'screen-enter 0.6s ease-out forwards';
-      splitCard.addEventListener('animationend', () => setSplitCardAnimation('idle'), { once: true });
-      return;
-    }
-
-    if (phase === 'leave') {
-      splitCard.style.animation = 'screen-leave 0.4s ease-in forwards';
-    }
-  }
-
-  // Initial page-load state. If the visitor already has the "joined"
-  // cookie set, skip the split card entirely (no entrance animation, no
-  // idle float — just hide it) and show the confirmation panel directly
-  // in its final visible/static state, with the "already joined" title.
-  // Otherwise, behave exactly as before: play the one-shot entrance, then
-  // hand off to the idle float.
-  if (alreadyJoined) {
-    if (splitCard) {
-      splitCard.style.animation = 'none';
-      splitCard.style.display = 'none';
-    }
-    if (nextSteps) {
-      nextSteps.classList.remove('hidden');
-      nextSteps.style.display = 'flex';
-    }
-    if (successTitle) {
-      successTitle.textContent = "You're already on the list.";
-    }
-  } else if (splitCard) {
-    if (prefersReducedMotion) {
-      setSplitCardAnimation('idle');
-    } else {
-      splitCard.style.animation = 'split-card-in 1.1s ease-out forwards';
-      splitCard.addEventListener('animationend', () => setSplitCardAnimation('idle'), { once: true });
-    }
+  // DEBUG: initial page-load state no longer hides/shows either panel —
+  // both are always visible. Only the non-visual "already joined" title
+  // swap from the cookie check is kept.
+  if (alreadyJoined && successTitle) {
+    successTitle.textContent = "You're already on the list.";
   }
 
   // Swap `border-rail` <-> `border-red-500` rather than stacking a second
@@ -291,90 +225,14 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
     });
   }
 
-  // Animated swap between the split-card (screen 1) and next-steps
-  // (screen 2) panels — used for both directions (submit → next-steps,
-  // "Go back" → split-card). `fromEl` fades/slides out first, then
-  // `toEl` is unhidden and fades/slides in, so the two never render
-  // stacked/overlapping mid-transition. `toDisplay` is the display value
-  // to apply to `toEl` once it's shown ('flex' for next-steps, '' for
-  // split-card so its own responsive `lg:grid` etc. classes take over
-  // instead of a hardcoded value).
-  function switchScreens(fromEl: HTMLElement | null, toEl: HTMLElement | null, toDisplay: string) {
-    if (!fromEl || !toEl) return;
+  // DEBUG: switchScreens() (animated swap between the split-card and
+  // next-steps panels) removed — both panels are always visible now, so
+  // there's nothing to swap.
 
-    // The form panel and the next-steps panel have different natural
-    // heights, so swapping which one is visible used to snap the shared
-    // stage instantly to the new height. Lock the stage at its current
-    // height first, then (once the incoming panel is laid out) animate
-    // toward its height instead — the `.waitlist-stage` CSS transition
-    // above does the actual gliding.
-    const stage = fromEl.closest('section');
-    if (stage) {
-      stage.style.minHeight = `${stage.getBoundingClientRect().height}px`;
-    }
-
-    const enterToEl = () => {
-      toEl.classList.remove('hidden');
-      toEl.style.display = toDisplay;
-
-      if (stage) {
-        if (prefersReducedMotion) {
-          stage.style.minHeight = '';
-        } else {
-          // Wait a frame so toEl has its final layout before measuring.
-          requestAnimationFrame(() => {
-            stage.style.minHeight = `${toEl.getBoundingClientRect().height}px`;
-          });
-          stage.addEventListener('transitionend', () => {
-            stage.style.minHeight = '';
-          }, { once: true });
-        }
-      }
-
-      if (prefersReducedMotion) return;
-
-      // The split card drives its own enter animation (and the follow-up
-      // hand-off to the idle float) via setSplitCardAnimation — see
-      // above — rather than the shared `.screen-enter` class, since it's
-      // the one panel with a persistent idle state to return to.
-      if (toEl === splitCard) {
-        setSplitCardAnimation('enter');
-        return;
-      }
-
-      toEl.classList.add('screen-enter');
-      toEl.addEventListener('animationend', () => {
-        toEl.classList.remove('screen-enter');
-      }, { once: true });
-    };
-
-    if (prefersReducedMotion) {
-      fromEl.style.display = 'none';
-      enterToEl();
-      return;
-    }
-
-    if (fromEl === splitCard) {
-      setSplitCardAnimation('leave');
-      splitCard.addEventListener('animationend', () => {
-        fromEl.style.display = 'none';
-        enterToEl();
-      }, { once: true });
-      return;
-    }
-
-    fromEl.classList.add('screen-leave');
-    fromEl.addEventListener('animationend', () => {
-      fromEl.style.display = 'none';
-      fromEl.classList.remove('screen-leave');
-      enterToEl();
-    }, { once: true });
-  }
-
-  // "Already reserved your spot?" — bypasses the form/API entirely and
-  // jumps straight to the next-steps screen, same as a real duplicate
-  // response would (title reads "You're already on the list."). Does NOT
-  // set the "joined" cookie — only an actual successful form submit does.
+  // "Already reserved your spot?" — no longer swaps screens (both panels
+  // are always visible); still updates the confirmation title to match,
+  // same as a real duplicate response would. Does NOT set the "joined"
+  // cookie — only an actual successful form submit does.
   const alreadyReservedBtn = document.getElementById('waitlist-already-reserved');
   alreadyReservedBtn?.addEventListener('click', () => {
     showSuccess(true);
@@ -391,16 +249,13 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
     if (successTitle) {
       successTitle.textContent = duplicate ? "You're already on the list." : "You're on the list.";
     }
-    switchScreens(splitCard, nextSteps, 'flex');
   }
 
-  // "Go back" on the next-steps screen — same animated swap as
-  // showSuccess, just reversed. Works the same regardless of whether the
-  // "joined" cookie is set — it only affects the initial page-load state.
+  // "Go back" on the next-steps screen — no longer swaps screens (both
+  // panels are always visible), so there's nothing left for this handler
+  // to do.
   const goBackBtn = document.getElementById('waitlist-go-back');
-  goBackBtn?.addEventListener('click', () => {
-    switchScreens(nextSteps, splitCard, '');
-  });
+  goBackBtn?.addEventListener('click', () => {});
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
