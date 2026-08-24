@@ -9,9 +9,20 @@
 // only ever sends email, while the full form on /waitlist
 // (WaitlistSignupForm.astro) sends both. A signup that arrives without a
 // name is stored with name: null rather than rejected.
+//
+// After a NEW signup is saved, we also send a confirmation email via
+// Resend (https://resend.com). Requires:
+//   - env.RESEND_API_KEY   — set as a Secret in Cloudflare Pages
+//                            (Settings → Environment variables)
+//   - a verified sending domain in Resend (huzlly.com)
+// Email sending failures are swallowed on purpose — the signup itself
+// (the KV write) has already succeeded by the time we try to email, and
+// a flaky email API should never turn a successful signup into an error
+// for the user. Duplicates never re-trigger the email.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_NAME_LENGTH = 100;
+const FROM_EMAIL = 'Huzlly <noreply@huzlly.com>';
 
 export async function onRequestPost({ request, env }) {
   let email = '';
@@ -78,7 +89,52 @@ export async function onRequestPost({ request, env }) {
     })
   );
 
+  // Signup is saved. Best-effort confirmation email — never block or fail
+  // the response on this.
+  await sendConfirmationEmail(env, normalized, trimmedName);
+
   return json({ ok: true });
+}
+
+async function sendConfirmationEmail(env, email, name) {
+  if (!env.RESEND_API_KEY) {
+    // Not configured — skip silently rather than erroring the signup.
+    console.log('RESEND_API_KEY not set; skipping confirmation email');
+    return;
+  }
+
+  const greeting = name ? `Hi ${name},` : 'Hi,';
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: email,
+        subject: "You're on the Huzlly waitlist!",
+        html: `
+          <p>${greeting}</p>
+          <p>Thanks for joining the Huzlly waitlist! We've got your spot saved.</p>
+          <p>We'll email you as soon as we're ready to let you in.</p>
+          <p>— The Huzlly team</p>
+        `,
+      }),
+    });
+
+    if (!res.ok) {
+      // Log the failure for later debugging (visible in Cloudflare Pages
+      // Functions logs / `wrangler pages deployment tail`), but don't
+      // throw — the signup already succeeded.
+      const errorBody = await res.text();
+      console.error('Resend API error:', res.status, errorBody);
+    }
+  } catch (err) {
+    console.error('Failed to send confirmation email:', err);
+  }
 }
 
 function json(data, status = 200) {
