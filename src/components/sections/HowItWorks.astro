@@ -272,7 +272,13 @@ const stages = [
               {/* Text column: ~60% width on desktop. Column itself has no
                   reveal/tilt classes and doesn't move — it's static. */}
               <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
-                <div class="flex items-center gap-4">
+                {/* Number + accent-dash wrapper: reveals via the same
+                    `#how-it-works .dp-reveal` call as the illustration
+                    below, via `dp-reveal-left` — slides/fades in from the
+                    left to mirror the illustration column's slide-in from
+                    the right (`dp-reveal-right`). Headline/body stay
+                    static, unchanged. */}
+                <div class="dp-reveal dp-reveal-left flex items-center gap-4">
                   <span
                     class="font-display text-7xl font-semibold leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-8xl"
                   >
