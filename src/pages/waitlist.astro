@@ -256,13 +256,6 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
     showNextSteps(duplicate ? "You're already on the list." : "You're on the list.");
   }
 
-  // "Go back" on the next-steps screen — instantly switches back to the
-  // split-card panel (no animation).
-  const goBackBtn = document.getElementById('waitlist-go-back');
-  goBackBtn?.addEventListener('click', () => {
-    showSplitCard();
-  });
-
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
     errorEl?.classList.add('hidden');
