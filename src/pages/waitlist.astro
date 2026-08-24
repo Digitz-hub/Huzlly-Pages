@@ -296,17 +296,24 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.ok) {
-        showError('Something went wrong on our end — try again in a moment.');
+        // A duplicate email is a failure case now: show an error below the
+        // input and stay on the form panel, same as an invalid email —
+        // do NOT set the "joined" cookie and do NOT switch to the
+        // confirmation panel.
+        if (data.error === 'duplicate_email') {
+          showError('This email is already on the waitlist.');
+        } else {
+          showError('Something went wrong on our end — try again in a moment.');
+        }
         submitBtn?.removeAttribute('disabled');
         return;
       }
 
-      // A real, successful form submission — set the "joined" cookie so a
-      // returning visitor skips straight to the confirmation panel next
-      // time, regardless of whether the server reported it as a
-      // duplicate.
+      // A real, successful (non-duplicate) form submission — set the
+      // "joined" cookie so a returning visitor skips straight to the
+      // confirmation panel next time.
       setJoinedCookie();
-      showSuccess(Boolean(data.duplicate));
+      showSuccess(false);
     } catch {
       showError('Could not reach the server. Check your connection and try again.');
       submitBtn?.removeAttribute('disabled');
