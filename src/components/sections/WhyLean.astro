@@ -85,7 +85,7 @@ const quickWins = [
       <div class="lg:col-span-3">
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {reasons.map((reason, index) => (
-            <Card variant="elevated" class={index === 0 ? 'sm:col-span-2' : ''}>
+            <Card variant="elevated" class={index === 0 ? 'sm:col-span-2 !bg-white' : '!bg-white'}>
               {/*
                 Visual block: same containment technique as the
                 "how it works" illustration boxes (overflow-hidden
@@ -119,7 +119,7 @@ const quickWins = [
 
     <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:mt-12">
       {quickWins.map((item) => (
-        <div class="flex flex-col items-start gap-3 rounded-2xl border border-rail bg-paper p-5">
+        <div class="flex flex-col items-start gap-3 rounded-2xl bg-white p-5">
           <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
             <item.icon class="h-5 w-5" stroke-width="1.75" />
           </span>
