@@ -60,8 +60,10 @@ export async function onRequestPost({ request, env }) {
   const key = `waitlist:${normalized}`;
   const existing = await env.WAITLIST_KV.get(key);
   if (existing) {
-    // Already signed up — don't re-send the confirmation email.
-    return json({ ok: true, duplicate: true });
+    // Already signed up — treated as a failure so the frontend keeps the
+    // visitor on the form panel instead of the confirmation panel, and
+    // don't re-send the confirmation email.
+    return json({ ok: false, error: 'duplicate_email' }, 409);
   }
 
   await env.WAITLIST_KV.put(
