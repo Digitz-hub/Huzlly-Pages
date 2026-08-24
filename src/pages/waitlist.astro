@@ -135,12 +135,13 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
 </style>
 
 <script>
-  // DEBUG: waitlist submit logic, moved here from the old
-  // WaitlistSplitCard.astro now that the split card and next-steps panels
-  // live in two separate components (WaitlistFormCard.astro and
-  // WaitlistConfirmationCard.astro). Screen-swap / animation logic has
-  // been stripped out for this debug pass — both panels are always
-  // visible now.
+  // Waitlist submit logic, moved here from the old WaitlistSplitCard.astro
+  // now that the split card and next-steps panels live in two separate
+  // components (WaitlistFormCard.astro and WaitlistConfirmationCard.astro).
+  // This page owns the show/hide switching between the two panels —
+  // instant (no animation/transition of any kind), driven by the
+  // `huzlly_waitlist_joined` cookie on load, and by the form
+  // submit / "already reserved" / "go back" interactions below.
   const JOINED_COOKIE_NAME = 'huzlly_waitlist_joined';
 
   function getCookie(name: string): string | null {
@@ -164,13 +165,32 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
   const submitBtn = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
   const emailInput = document.getElementById('waitlist-email') as HTMLInputElement | null;
   const successTitle = document.getElementById('waitlist-success-title');
+  const splitCard = document.getElementById('waitlist-split-card');
+  const nextSteps = document.getElementById('waitlist-next-steps');
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // DEBUG: initial page-load state no longer hides/shows either panel —
-  // both are always visible. Only the non-visual "already joined" title
-  // swap from the cookie check is kept.
-  if (alreadyJoined && successTitle) {
-    successTitle.textContent = "You're already on the list.";
+  // Plain, instant show/hide switching between the two panels — no
+  // animation. `splitCard` is reset to '' (its natural block/lg:grid
+  // display from its own classes) rather than a hardcoded value; `nextSteps`
+  // is explicitly set to 'flex' to match its flex-col/items-center classes,
+  // and 'none' to hide either panel.
+  function showNextSteps(title: string) {
+    if (splitCard) splitCard.style.display = 'none';
+    if (nextSteps) nextSteps.style.display = 'flex';
+    if (successTitle) successTitle.textContent = title;
+  }
+
+  function showSplitCard() {
+    if (nextSteps) nextSteps.style.display = 'none';
+    if (splitCard) splitCard.style.display = '';
+  }
+
+  // Initial page-load state, driven by the "joined" cookie. No animation —
+  // instant switch before the visitor interacts with anything.
+  if (alreadyJoined) {
+    showNextSteps("You're already on the list.");
+  } else {
+    showSplitCard();
   }
 
   // Swap `border-rail` <-> `border-red-500` rather than stacking a second
@@ -225,14 +245,10 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
     });
   }
 
-  // DEBUG: switchScreens() (animated swap between the split-card and
-  // next-steps panels) removed — both panels are always visible now, so
-  // there's nothing to swap.
-
-  // "Already reserved your spot?" — no longer swaps screens (both panels
-  // are always visible); still updates the confirmation title to match,
-  // same as a real duplicate response would. Does NOT set the "joined"
-  // cookie — only an actual successful form submit does.
+  // "Already reserved your spot?" — instantly switches to the next-steps
+  // panel (no animation), with the "already on the list" title, same as a
+  // real duplicate response would show. Does NOT set the "joined" cookie —
+  // only an actual successful form submit does.
   const alreadyReservedBtn = document.getElementById('waitlist-already-reserved');
   alreadyReservedBtn?.addEventListener('click', () => {
     showSuccess(true);
@@ -246,16 +262,15 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
   }
 
   function showSuccess(duplicate: boolean) {
-    if (successTitle) {
-      successTitle.textContent = duplicate ? "You're already on the list." : "You're on the list.";
-    }
+    showNextSteps(duplicate ? "You're already on the list." : "You're on the list.");
   }
 
-  // "Go back" on the next-steps screen — no longer swaps screens (both
-  // panels are always visible), so there's nothing left for this handler
-  // to do.
+  // "Go back" on the next-steps screen — instantly switches back to the
+  // split-card panel (no animation).
   const goBackBtn = document.getElementById('waitlist-go-back');
-  goBackBtn?.addEventListener('click', () => {});
+  goBackBtn?.addEventListener('click', () => {
+    showSplitCard();
+  });
 
   form?.addEventListener('submit', async (event) => {
     event.preventDefault();
