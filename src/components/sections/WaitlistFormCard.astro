@@ -1,0 +1,216 @@
+---
+// src/components/sections/WaitlistFormCard.astro
+// Used only on src/pages/waitlist.astro, alongside
+// WaitlistConfirmationCard.astro — together they replace the single
+// WaitlistSplitCard.astro. This component is "screen 1": the split
+// brand/value panel + signup form panel. The page (waitlist.astro) owns
+// the `<section class="waitlist-stage">` wrapper (shared with
+// WaitlistConfirmationCard.astro) and the full script that drives the
+// submit flow / animated swap between the two panels.
+//
+// PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
+// Design source: user-supplied reference screenshot of a two-column,
+// rounded, floating signup modal (soft pastel gradient panel on the left
+// with logo/headline/stat-block/benefit rows, clean white form panel on
+// the right with a centered badge, heading, stacked labeled inputs, and a
+// full-width solid CTA). DESIGN_SYSTEM.md v2 tokens (ink/paper/rail as a
+// strict palette, dot-grid/flow-rail motifs) are NOT the source for this
+// component's layout, background treatment, or card shape — see the chat
+// design note for the exact tokens used here.
+//
+// Fixed regardless of the override (Section 4.5's non-negotiable list):
+// blue-600 accent (badge, stat accents, focus rings, headline highlight),
+// all copy/facts from SITE_IDENTITY_AND_AEO.md (proof points carry
+// "designed to" qualifying language since they're pre-launch targets, per
+// Section 3 of that file), full-file delivery / no split tags / no inline
+// styles, and the ui/ Button and Badge primitives (used below rather than
+// hand-rolled markup).
+//
+// Structural note: the ink/paper/rail tokens are still used for text and
+// hairlines where they read naturally (ink for body text, rail for
+// borders) — the override permits deviation, it doesn't forbid reuse.
+//
+// v2 polish pass: elevation shadow + ambient page glow so the card lifts
+// off the flat paper background, text-balance/text-pretty on headline and
+// body copy to fix awkward line wraps, panel divider on desktop, refined
+// input/button states (shadow, focus ring, hover-lift via Button's
+// `motion` prop) — no new layout/color tokens introduced.
+//
+// ASTRO SCOPING NOTE: this panel's entrance/idle/leave animations are
+// driven from waitlist.astro's page-level <script> via *inline*
+// `element.style.animation = '<name> ...'` assignments (not CSS classes),
+// referencing the plain keyframe names `split-card-in`, `split-card-float`,
+// `screen-enter`, `screen-leave`. Astro scopes (renames) `@keyframes`
+// names declared inside a component's own <style> block by default, which
+// would break those inline-style lookups since the JS string can't know
+// the generated name. All keyframes below are declared with the
+// `-global-` name prefix so they keep their literal names in the compiled
+// CSS and stay reachable by name from the page's script, regardless of
+// which component's stylesheet the browser actually loaded them from.
+import { ArrowLeft, ArrowRight, Zap, Clock, ShieldCheck, Mail } from 'lucide-astro';
+import Button from '../ui/Button.astro';
+
+const bullets = [
+  { icon: Zap, bold: 'Automatic handoff', rest: 'from proposal to project, no manual step in between.' },
+  { icon: Clock, bold: 'Save 5–8 hrs/week', rest: 'by automating client onboarding, billing, and status updates.' },
+  { icon: ShieldCheck, bold: 'Per-client control', rest: "over what's shared in the client portal." },
+];
+---
+
+<div id="waitlist-split-card" class="split-card mx-auto w-full max-w-5xl overflow-hidden rounded-3xl border border-rail bg-white lg:grid lg:h-full lg:max-h-full lg:grid-cols-2 lg:divide-x lg:divide-rail">
+  <!-- Left panel: brand + value -->
+  <div class="relative flex h-full flex-col justify-center gap-8 overflow-hidden bg-gradient-to-br from-blue-50 via-teal-50 to-white p-8 sm:p-10 lg:p-14">
+    <!-- Ambient pastel accents (decorative, contained within the panel) -->
+    <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-teal-200/40 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-blue-200/30 blur-3xl" aria-hidden="true"></div>
+
+    <!-- Logo: normal flow on mobile/tablet (panel height = content height there,
+         so absolute positioning would collide with the heading below it).
+         Pinned to the panel's top-left corner only at lg, where the 2-col grid
+         gives the panel real spare height to pin against. -->
+    <a href="/" class="group relative inline-flex items-center gap-2 lg:absolute lg:left-14 lg:top-14" aria-label="Back to Huzlly home">
+      <ArrowLeft class="w-3.5 h-3.5 text-ink/40 transition-transform group-hover:-translate-x-0.5 group-hover:text-ink/70" stroke-width="2" />
+      <span class="h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
+      <span class="font-display text-lg font-semibold text-ink">Huzlly</span>
+    </a>
+
+    <div class="relative">
+      <h1 class="text-balance font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
+        Be first in when a <span class="text-blue-600">spot opens</span>.
+      </h1>
+    </div>
+
+    <div class="relative mt-6 space-y-4">
+      {bullets.map((bullet) => (
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white/90 text-blue-600 shadow-sm ring-1 ring-blue-100">
+            <bullet.icon class="w-4 h-4" stroke-width="1.75" />
+          </span>
+          <p class="text-sm lg:text-base text-ink/80 leading-snug">
+            <strong class="font-semibold text-ink">{bullet.bold}</strong> {bullet.rest}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Right panel: signup form -->
+  <div class="relative flex flex-col justify-center overflow-hidden bg-white p-8 sm:p-10 lg:p-14">
+    <!-- Ambient wash so the right panel doesn't read as flat/empty next to
+         the left panel's gradient — same token family (blue-50, low
+         opacity, contained), just a single quiet accent rather than the
+         left panel's fuller teal/blue treatment. -->
+    <div class="pointer-events-none absolute left-1/2 top-0 -z-10 h-72 w-72 -translate-x-1/2 -translate-y-1/3 rounded-full bg-blue-50/80 blur-3xl" aria-hidden="true"></div>
+
+    <h2 class="text-center font-sans text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-ink">
+      Get early access
+    </h2>
+    <p class="text-pretty mt-3 text-center text-ink/70 leading-relaxed max-w-sm mx-auto">
+      We'll email you the moment a spot opens - no spam.
+    </p>
+
+    <form id="waitlist-form" class="mt-8 flex flex-col gap-2 max-w-md w-full mx-auto" novalidate>
+      <div>
+        <label for="waitlist-email" class="mb-1.5 block text-sm font-medium text-ink/70">Email</label>
+        <div class="relative">
+          <Mail class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink/35" stroke-width="1.75" />
+          <input id="waitlist-email"
+            name="email"
+            type="email"
+            required
+            placeholder="you@studio.com"
+            autocomplete="email"
+            class="w-full rounded-xl border border-rail bg-paper/60 pl-10 pr-4 py-2.5 text-sm text-ink placeholder:text-ink/40 shadow-sm transition-colors hover:border-ink/20 focus-visible:border-blue-600 focus-visible:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20"
+          />
+        </div>
+        <p id="waitlist-error" class="mt-1.5 text-sm text-red-600 hidden"></p>
+      </div>
+
+      <!-- Honeypot: hidden from real visitors, irresistible to bots that fill every field. -->
+      <div class="sr-only" aria-hidden="true">
+        <label for="waitlist-company">Company</label>
+        <input id="waitlist-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <Button type="submit" size="lg" motion class="group mt-7 w-full" ariaLabel="Join waitlist">
+        Join waitlist
+        <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-0.5" stroke-width="1.75" />
+      </Button>
+
+      <p class="mt-1 text-center text-xs leading-snug text-ink/50">
+        By joining the waitlist, you agree to our <a href="/terms" class="underline underline-offset-2 hover:text-ink">Terms of Service</a> and <a href="/privacy" class="underline underline-offset-2 hover:text-ink">Privacy Policy</a>.
+      </p>
+    </form>
+
+    <div class="mx-auto mt-7 w-full max-w-md" aria-hidden="true">
+      <div class="h-px w-full bg-rail"></div>
+    </div>
+
+    <p class="mt-5 text-center text-sm">
+      <span class="font-medium text-ink">Already reserved your spot?</span>
+      <button type="button" id="waitlist-already-reserved" class="font-medium text-blue-600 underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600/20 rounded">
+        See what happens next
+      </button>
+    </p>
+  </div>
+</div>
+
+<style>
+  /* Base one-shot entrance + resting styles for the split card. The
+     actual `animation` (entrance vs. idle float vs. leave/enter) is set
+     directly via inline style from the page's script, not through
+     competing CSS classes. The earlier class-based approach
+     (`.split-card` + `.is-idle` + `.screen-leave`/`.screen-enter` all
+     fighting over the same `animation` property) kept letting the base
+     `opacity: 0` here show back through whenever control handed between
+     states — driving it from JS instead means exactly one animation is
+     ever active, chosen explicitly, with nothing left to fall back to. */
+  .split-card {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: transform 0.4s ease;
+    will-change: transform;
+  }
+  @keyframes -global-split-card-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes -global-split-card-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .split-card {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Shared screen-to-screen transition keyframes (JS-triggered via
+     switchScreens() in waitlist.astro). This panel's own leave/enter is
+     applied via inline `style.animation` (see setSplitCardAnimation in
+     the page script) rather than these classes, so no `.screen-leave` /
+     `.screen-enter` class rules are needed here — but the keyframes
+     themselves must still be declared in this component (as `-global-`)
+     so the inline style lookup resolves regardless of load order. The
+     matching classes live in WaitlistConfirmationCard.astro, which
+     applies them to the next-steps panel. */
+  @keyframes -global-screen-leave {
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes -global-screen-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
