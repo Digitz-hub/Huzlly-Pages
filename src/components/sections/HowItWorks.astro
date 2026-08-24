@@ -398,10 +398,10 @@ const stages = [
           before this split — these still only reach their fully-revealed
           state once their center crosses viewport-center, exactly as
           when a single shared call covered all `.dp-reveal` elements here.
-       2. `'#how-it-works .dp-reveal-blur'` at `completionFraction: 0.7` —
+       2. `'#how-it-works .dp-reveal-blur'` at `completionFraction: 0.5` —
           only the stage `<h3>`/`<p>` blur-to-focus elements from the
           `stages.map(...)` loop above. These now sharpen into full focus
-          once their center has covered 70% of the bottom→center scroll
+          once their center has covered 50% of the bottom→center scroll
           distance, i.e. noticeably before reaching viewport-center, so
           the headline/body text is legible sooner as the card scrolls
           into view instead of staying blurred until dead-center like the
@@ -451,5 +451,5 @@ const stages = [
 
   initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal:not(.dp-reveal-blur)', { completionFraction: 1 });
-  initScrollReveal('#how-it-works .dp-reveal-blur', { completionFraction: 0.7 });
+  initScrollReveal('#how-it-works .dp-reveal-blur', { completionFraction: 0.5 });
 </script>
