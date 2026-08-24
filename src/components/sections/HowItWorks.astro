@@ -270,21 +270,7 @@ const stages = [
           <div class="border-t border-rail py-14 first:border-t-0 first:pt-0 sm:py-16">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
               {/* Text column: ~60% width on desktop. Column itself has no
-                  reveal/tilt classes and doesn't move — but the headline
-                  and body text inside it each get their own independent
-                  scroll-scrubbed "typewriter" character reveal (see the
-                  `.js-typewriter` spans below and
-                  src/scripts/typewriter-reveal.ts), reusing the same
-                  bottom→center scroll-progress approach as the
-                  illustration's `dp-reveal` just below, only driving
-                  per-character visibility instead of opacity/transform on
-                  the whole box. Each `<h3>`/`<p>` keeps the full real text
-                  in a `.sr-only` sibling span, completely untouched by the
-                  animation, so screen readers always get the full text
-                  regardless of scroll position — the `.js-typewriter`
-                  span is the aria-hidden visual-only copy that the script
-                  splits into per-character spans and reveals/un-reveals in
-                  sync with scroll. */}
+                  reveal/tilt classes and doesn't move — it's static. */}
               <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
                 <div class="flex items-center gap-4">
                   <span
@@ -299,15 +285,9 @@ const stages = [
                   ></span>
                 </div>
 
-                <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
-                  <span class="sr-only">{step.headline}</span>
-                  <span class="js-typewriter" aria-hidden="true">{step.headline}</span>
-                </h3>
+                <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">{step.headline}</h3>
 
-                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">
-                  <span class="sr-only">{step.body}</span>
-                  <span class="js-typewriter" aria-hidden="true">{step.body}</span>
-                </p>
+                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">{step.body}</p>
               </div>
 
               {/* Illustration column: ~40% width on desktop. `js-tilt-card`
@@ -439,14 +419,7 @@ const stages = [
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
-  import { initTypewriterReveal } from '../../scripts/typewriter-reveal';
 
   initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
-  // Same `completionFraction: 0.7` as the illustration reveal above, so the
-  // headline/body typing finishes in sync with the illustration sliding
-  // in rather than lagging behind it — separate call/separate script
-  // (typewriter-reveal.ts), not a shared instance, since it drives
-  // per-character visibility instead of a single --dp-progress var.
-  initTypewriterReveal('#how-it-works .js-typewriter', { completionFraction: 0.7 });
 </script>
