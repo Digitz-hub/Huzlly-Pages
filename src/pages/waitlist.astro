@@ -245,15 +245,6 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
     });
   }
 
-  // "Already reserved your spot?" — instantly switches to the next-steps
-  // panel (no animation), with the "already on the list" title, same as a
-  // real duplicate response would show. Does NOT set the "joined" cookie —
-  // only an actual successful form submit does.
-  const alreadyReservedBtn = document.getElementById('waitlist-already-reserved');
-  alreadyReservedBtn?.addEventListener('click', () => {
-    showSuccess(true);
-  });
-
   function showError(message: string, emailInvalid = false) {
     if (!errorEl) return;
     errorEl.textContent = message;
