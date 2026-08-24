@@ -103,9 +103,20 @@
     scale(var(--tilt-scale, 1)) !important;
 }
 
+/* Sharpens into focus as --dp-progress goes 0 -> 1 — fully blurred at
+   --dp-progress: 0, `filter: blur(0)` at --dp-progress: 1. Unlike the
+   direction modifiers above, this one does NOT touch `transform` (no
+   slide/rise motion, no tilt composition) — it only drives `filter`, so it
+   composes cleanly alongside a direction modifier on the same element if
+   ever needed, or stands alone paired with just the base `.dp-reveal`. */
+.dp-reveal-blur {
+  filter: blur(calc((1 - var(--dp-progress)) * 8px));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dp-reveal {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
   }
 }
