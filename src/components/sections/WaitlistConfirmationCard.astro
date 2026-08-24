@@ -39,7 +39,7 @@ const nextSteps = [
 <!-- "What happens now?" panel — swapped in for #waitlist-split-card on
      successful submit (see script in waitlist.astro). Same slot, same
      footprint, centered stepper instead of the two-column form layout. -->
-<div id="waitlist-next-steps" class="next-steps hidden relative mx-auto w-full max-w-3xl flex-col items-center rounded-3xl border border-rail bg-white px-8 py-14 text-center sm:px-14 sm:py-16">
+<div id="waitlist-next-steps" class="next-steps relative mx-auto w-full max-w-3xl flex-col items-center rounded-3xl border border-rail bg-white px-8 py-14 text-center sm:px-14 sm:py-16">
   <span class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
     <Check class="w-6 h-6" stroke-width="2" />
   </span>
@@ -86,57 +86,6 @@ const nextSteps = [
 </div>
 
 <style>
-  /* One-shot fade-up, triggered the moment this panel is unhidden via JS
-     rather than on page load. (Not currently added by the page script —
-     preserved from the original component as-is.) */
-  .next-steps.is-entering {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: -global-split-card-in 0.9s ease-out forwards;
-  }
-  @keyframes -global-split-card-in {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .next-steps.is-entering {
-      opacity: 1;
-      transform: none;
-      animation: none;
-    }
-  }
-
-  /* Screen-to-screen transition (JS-triggered via switchScreens() in
-     waitlist.astro). Used for this panel's leave/enter in both
-     directions (submit → next-steps, "Go back" → split-card). */
-  .screen-leave {
-    animation: -global-screen-leave 0.4s ease-in forwards;
-  }
-  .screen-enter {
-    animation: -global-screen-enter 0.6s ease-out forwards;
-  }
-  @keyframes -global-screen-leave {
-    to {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-  }
-  @keyframes -global-screen-enter {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .screen-leave,
-    .screen-enter {
-      animation: none;
-    }
-  }
+  /* DEBUG: leave/enter animation rules and keyframes removed — this
+     panel is now visible by default with no transform. */
 </style>
