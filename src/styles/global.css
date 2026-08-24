@@ -2,7 +2,6 @@
 @import './tilt-card.css';
 @import './float-animation.css';
 @import './card-illustration.css';
-@import './typewriter-reveal.css';
 
 @tailwind base;
 @tailwind components;
