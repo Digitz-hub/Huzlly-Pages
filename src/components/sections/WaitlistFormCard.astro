@@ -156,61 +156,14 @@ const bullets = [
 </div>
 
 <style>
-  /* Base one-shot entrance + resting styles for the split card. The
-     actual `animation` (entrance vs. idle float vs. leave/enter) is set
-     directly via inline style from the page's script, not through
-     competing CSS classes. The earlier class-based approach
-     (`.split-card` + `.is-idle` + `.screen-leave`/`.screen-enter` all
-     fighting over the same `animation` property) kept letting the base
-     `opacity: 0` here show back through whenever control handed between
-     states — driving it from JS instead means exactly one animation is
-     ever active, chosen explicitly, with nothing left to fall back to. */
+  /* DEBUG: entrance/idle/leave animation removed — .split-card is now
+     visible by default with no transform. */
   .split-card {
-    opacity: 0;
-    transform: translateY(10px);
-    transition: transform 0.4s ease;
-    will-change: transform;
-  }
-  @keyframes -global-split-card-in {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes -global-split-card-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
   }
   @media (prefers-reduced-motion: reduce) {
     .split-card {
       opacity: 1;
       transform: none;
-    }
-  }
-
-  /* Shared screen-to-screen transition keyframes (JS-triggered via
-     switchScreens() in waitlist.astro). This panel's own leave/enter is
-     applied via inline `style.animation` (see setSplitCardAnimation in
-     the page script) rather than these classes, so no `.screen-leave` /
-     `.screen-enter` class rules are needed here — but the keyframes
-     themselves must still be declared in this component (as `-global-`)
-     so the inline style lookup resolves regardless of load order. The
-     matching classes live in WaitlistConfirmationCard.astro, which
-     applies them to the next-steps panel. */
-  @keyframes -global-screen-leave {
-    to {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-  }
-  @keyframes -global-screen-enter {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
     }
   }
 </style>
