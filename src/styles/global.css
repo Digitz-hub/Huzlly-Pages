@@ -7,10 +7,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
-}
-
 /* Clip horizontal overflow (decorative elements that bleed past the
    viewport edge, e.g. the waitlist page's blur orbs) without breaking
    native page scroll on mobile. Deliberately `clip`, not `hidden`: per
