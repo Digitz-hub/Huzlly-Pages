@@ -97,7 +97,7 @@ async function sendConfirmationEmail(env, email) {
         from: FROM_EMAIL,
         to: email,
         template: {
-          alias: TEMPLATE_ALIAS,
+          id: TEMPLATE_ALIAS,
         },
       }),
     });
