@@ -222,22 +222,24 @@ const stages = [
       lean" reasons cards in WhyLean.astro, and other pages) — this section
       just stops importing/rendering it.
 
-      Zigzag: even index (stages 1 & 3, i.e. index 0 & 2) put text on the
-      left / illustration box on the right at `lg:`; odd index (stages 2 &
-      4, i.e. index 1 & 3) flip that. Mobile always shows the illustration
-      box above the text regardless of which stage it is — done with
-      `order-1`/`order-2` as the base (mobile-first) ordering, then only
-      the even-index rows need an `lg:` override to swap text back to
-      order-1/left; the odd-index rows already match the mobile order, so
-      no `lg:` override is needed there (see inline comment below).
+      Fixed left/right layout (no more zigzag): the text column is always
+      `lg:order-1` (left) and the illustration column is always
+      `lg:order-2` (right) at `lg:`, for every row — this used to alternate
+      by row index (`isEven`) but no longer does. Mobile always shows the
+      illustration box above the text regardless of which stage it is, via
+      the mobile-first `order-1`/`order-2` base classes below — those are
+      unchanged; only the `lg:` overrides stopped alternating.
 
       Illustration column (this pass): the glow span / <Illustration /> /
       floating-chips markup is the same logic the old Card-based version
       used — `signalStyles`, `chipClasses`, `chipIconWrapClasses`,
       `chipIconGlyphClasses`, and each stage's `illustration`/`chips`
       fields are unchanged, just reconnected inside the new row layout
-      instead of inside a Card. Reveal direction alternates by row index
-      the same way it alternated by grid column before.
+      instead of inside a Card. Reveal direction is now always
+      `dp-reveal-right` for every row (it used to alternate by row index,
+      matching the zigzag) — since the illustration column is always on
+      the right now, sliding in from the right is the only direction that
+      still makes sense.
 
       Untilt-chips split (this pass): the illustration box is no longer
       one `js-tilt-card` div wrapping everything — it's now an outer
@@ -259,17 +261,31 @@ const stages = [
       {stages.map((step, index) => {
         const s = signalStyles[step.signal];
         const Illustration = step.illustration;
-        const isEven = index % 2 === 0;
-        const revealDirection = index % 2 === 0 ? 'dp-reveal-left' : 'dp-reveal-right';
+        // Always slides in from the right now that the illustration
+        // column is always on the right (see the layout note above) — no
+        // longer alternates by row index.
+        const revealDirection = 'dp-reveal-right';
 
         return (
           <div class="border-t border-rail py-14 first:border-t-0 first:pt-0 sm:py-16">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-              {/* Text column: ~60% width on desktop. No animation classes
-                  here — this column stays static per this step's scope. */}
-              <div
-                class={`order-2 flex flex-col justify-center lg:w-[60%] lg:shrink-0 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}
-              >
+              {/* Text column: ~60% width on desktop. Column itself has no
+                  reveal/tilt classes and doesn't move — but the headline
+                  and body text inside it each get their own independent
+                  scroll-scrubbed "typewriter" character reveal (see the
+                  `.js-typewriter` spans below and
+                  src/scripts/typewriter-reveal.ts), reusing the same
+                  bottom→center scroll-progress approach as the
+                  illustration's `dp-reveal` just below, only driving
+                  per-character visibility instead of opacity/transform on
+                  the whole box. Each `<h3>`/`<p>` keeps the full real text
+                  in a `.sr-only` sibling span, completely untouched by the
+                  animation, so screen readers always get the full text
+                  regardless of scroll position — the `.js-typewriter`
+                  span is the aria-hidden visual-only copy that the script
+                  splits into per-character spans and reveals/un-reveals in
+                  sync with scroll. */}
+              <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
                 <div class="flex items-center gap-4">
                   <span
                     class="font-display text-7xl font-semibold leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-8xl"
@@ -284,10 +300,14 @@ const stages = [
                 </div>
 
                 <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">
-                  {step.headline}
+                  <span class="sr-only">{step.headline}</span>
+                  <span class="js-typewriter" aria-hidden="true">{step.headline}</span>
                 </h3>
 
-                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">{step.body}</p>
+                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">
+                  <span class="sr-only">{step.body}</span>
+                  <span class="js-typewriter" aria-hidden="true">{step.body}</span>
+                </p>
               </div>
 
               {/* Illustration column: ~40% width on desktop. `js-tilt-card`
@@ -308,9 +328,7 @@ const stages = [
                   being clipped to them; `relative` on the outer box below
                   still gives the glow/illustration/chips their shared
                   positioning context. */}
-              <div
-                class={`order-1 lg:w-[40%] lg:shrink-0 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}
-              >
+              <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
                 {/* Outer box: just the positioning context + sizing now —
                     no tilt, no reveal of its own. Holds two kinds of
                     children: the tilt+reveal illustration wrapper below,
@@ -421,7 +439,14 @@ const stages = [
 <script>
   import { initTiltCard } from '../../scripts/tilt-card';
   import { initScrollReveal } from '../../scripts/scroll-reveal';
+  import { initTypewriterReveal } from '../../scripts/typewriter-reveal';
 
   initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
   initScrollReveal('#how-it-works .dp-reveal', { completionFraction: 0.7 });
+  // Same `completionFraction: 0.7` as the illustration reveal above, so the
+  // headline/body typing finishes in sync with the illustration sliding
+  // in rather than lagging behind it — separate call/separate script
+  // (typewriter-reveal.ts), not a shared instance, since it drives
+  // per-character visibility instead of a single --dp-progress var.
+  initTypewriterReveal('#how-it-works .js-typewriter', { completionFraction: 0.7 });
 </script>
