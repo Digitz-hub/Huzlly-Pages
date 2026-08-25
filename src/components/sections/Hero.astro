@@ -12,11 +12,11 @@ import { ChevronRight } from 'lucide-astro';
 ---
 
 <section class="relative isolate overflow-hidden flex flex-col items-center justify-center h-screen px-4 pt-36 pb-28 sm:px-6 sm:pt-44 sm:pb-40 lg:px-8 lg:pt-52">
-  <!-- Top 60% blue background; bottom 40% stays white with a hard edge. -->
-  <div class="absolute inset-x-0 top-0 h-[60%] -z-10 bg-blue-600" aria-hidden="true"></div>
+  <!-- Full blue background. -->
+  <div class="absolute inset-x-0 top-0 h-full -z-10 bg-blue-600" aria-hidden="true"></div>
 
   <!-- Grain overlay, purely decorative. Matches the blue region only. -->
-  <div class="hero-grain pointer-events-none absolute inset-x-0 top-0 h-[60%] -z-[9]" aria-hidden="true"></div>
+  <div class="hero-grain pointer-events-none absolute inset-x-0 top-0 h-full -z-[9]" aria-hidden="true"></div>
 
   <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
