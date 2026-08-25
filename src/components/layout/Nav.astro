@@ -270,7 +270,7 @@
 //   byte-for-byte unchanged from the prior pass; this was a shape/border/
 //   shadow/spacing correction only.
 
-import { Menu, X, ArrowRight } from 'lucide-astro';
+import { Menu, X } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
 const navLinks = [
@@ -318,9 +318,8 @@ const isActive = (href: string) => {
 
       <!-- Right: Desktop CTA -->
       <div class="hidden md:flex md:items-center">
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-white hover:!bg-white/90 !text-blue-600 !shadow-none">
+        <Button href="/waitlist" size="default" class="!bg-white hover:!bg-white/90 !text-blue-600 !shadow-none">
           Join Waitlist
-          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
       </div>
 
@@ -354,9 +353,8 @@ const isActive = (href: string) => {
             {link.label}
           </a>
         ))}
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-white hover:!bg-white/90 !text-blue-600 !shadow-none mt-1.5 w-full">
+        <Button href="/waitlist" size="default" class="!bg-white hover:!bg-white/90 !text-blue-600 !shadow-none mt-1.5 w-full">
           Join Waitlist
-          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
       </nav>
     </div>
