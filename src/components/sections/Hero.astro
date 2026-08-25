@@ -21,9 +21,13 @@ import { ChevronRight } from 'lucide-astro';
   <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
       class="reveal inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5
-             text-sm text-white/80 shadow-sm transition-colors duration-200 ease-in-out hover:border-white/40"
+             text-sm text-white/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-white/40"
     >
-      Join 500+ pros on the waitlist
+      <span class="relative inline-flex h-2 w-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+      </span>
+      Join <span class="font-semibold text-white">500+ pros</span> on the waitlist
       <ChevronRight class="w-3.5 h-3.5 text-white" stroke-width="2" />
     </a>
 
