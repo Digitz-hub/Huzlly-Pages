@@ -73,7 +73,15 @@ const checklist = [
 ];
 ---
 
-<section id="the-shift" class="scroll-mt-20 relative bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- White → blue-tint → white gradient, not a one-directional fade: this
+     section sits between Hero.astro (which fades to white at its own
+     bottom edge) and HowItWorks.astro (which starts with a pure-white
+     band before easing into blue) — so TheShift needs to be white at
+     BOTH its top and bottom edges to match both neighbors' seams cleanly,
+     with the blue tint only appearing in the middle for visual interest
+     rather than fighting either transition. #F2F7FE is reused verbatim
+     from HowItWorks.astro's own gradient mid-stop, not a new hex. -->
+<section id="the-shift" class="scroll-mt-20 relative bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F7FE_45%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="The Shift"
       title="Stop Managing Client Work Across a Dozen Different Places."
