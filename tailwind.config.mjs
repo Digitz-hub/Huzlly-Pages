@@ -11,6 +11,10 @@ export default {
         ink: '#14110F',
         paper: '#FCFBF8',
         rail: '#E4E0D8',
+        // Electric — new vivid, saturated, indigo-leaning royal blue accent.
+        // Distinct from the default Tailwind blue scale already used
+        // elsewhere (e.g. Nav's CTA, Button.astro accent variant).
+        electric: '#3B4EFF',
       },
       fontFamily: {
         // Body/UI face — unchanged.
