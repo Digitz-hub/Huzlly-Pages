@@ -77,11 +77,12 @@ const checklist = [
      section sits between Hero.astro (which fades to white at its own
      bottom edge) and HowItWorks.astro (which starts with a pure-white
      band before easing into blue) — so TheShift needs to be white at
-     BOTH its top and bottom edges to match both neighbors' seams cleanly,
-     with the blue tint only appearing in the middle for visual interest
-     rather than fighting either transition. #F2F7FE is reused verbatim
-     from HowItWorks.astro's own gradient mid-stop, not a new hex. -->
-<section id="the-shift" class="scroll-mt-20 relative bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F7FE_45%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+     BOTH its top and bottom edges to match both neighbors' seams cleanly.
+     The white band is held to just the first/last 5% at each edge, with
+     the blue tint filling the entire middle 90% instead of only peaking
+     briefly partway through. #F2F7FE is reused verbatim from
+     HowItWorks.astro's own gradient mid-stop, not a new hex. -->
+<section id="the-shift" class="scroll-mt-20 relative bg-[linear-gradient(180deg,#FFFFFF_0%,#F2F7FE_5%,#F2F7FE_95%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="The Shift"
       title="Stop Managing Client Work Across a Dozen Different Places."
@@ -95,8 +96,11 @@ const checklist = [
         via Card's `class` prop rather than edited into Card.astro itself,
         so this stays a one-off override for this section only. */}
     <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
-      {challenges.map((challenge) => (
-        <Card variant="elevated" class="!bg-white dp-reveal dp-reveal-up">
+      {challenges.map((challenge, index) => {
+        const revealDirection =
+          index === 0 ? 'dp-reveal-left' : index === challenges.length - 1 ? 'dp-reveal-right' : 'dp-reveal-up';
+        return (
+        <Card variant="elevated" class={`!bg-white dp-reveal ${revealDirection}`}>
           <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">
             <challenge.icon class="h-5 w-5" stroke-width="2" />
           </span>
@@ -113,7 +117,8 @@ const checklist = [
             Learn more <ArrowRight class="h-3.5 w-3.5" stroke-width="2" />
           </Button>
         </Card>
-      ))}
+        );
+      })}
     </div>
 
     {/* Part 2: Featured Solution panel. Plain div, not Card.astro (see
@@ -121,7 +126,7 @@ const checklist = [
         image column from the right, matching this section's existing
         left-content/right-visual convention rather than one shared
         `dp-reveal-up` on the whole panel. */}
-    <div class="relative mt-10 overflow-hidden rounded-2xl bg-blue-50 lg:mt-12">
+    <div class="relative mt-10 overflow-hidden rounded-2xl bg-white lg:mt-12">
       <div class="dp-reveal dp-reveal-up flex max-w-2xl flex-col justify-center p-8 sm:p-10 lg:p-12">
         <Badge variant="beta" class="w-fit">Featured Solution</Badge>
 
