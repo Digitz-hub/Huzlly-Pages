@@ -1,36 +1,25 @@
 ---
 // src/components/sections/TheShift.astro
-// v3 rebuild: replaces the v2 structure (3-card challenge/solution grid +
-// "Featured Solution" panel) with a single, simpler two-column layout —
-// image on the left, copy + CTA on the right. `challenges`/`checklist`
-// data arrays and their only-used-here icon imports (Layers, Clock, Tag,
-// Check) are gone along with the card grid; Card.astro and Badge.astro
-// are no longer used by this file (left untouched elsewhere in the
-// codebase). SectionHeader and Button are still used, so those imports
-// stay.
+// v4: replaces the v3 two-column layout (image on the left, copy + CTA
+// on the right) with a single-column layout — heading stays as-is via
+// SectionHeader, and the content below it is now the full-width
+// DashboardPreview component instead of the Stress.png image + four
+// paragraphs + "Learn more about Huzlly" Button. `challenges`/`checklist`
+// data arrays, the card grid, and Card.astro/Badge.astro were already
+// removed in the prior (v3) pass and remain untouched/unused here.
+// Button.astro is no longer used by this file (its only usage was the
+// removed CTA), so its import is dropped; SectionHeader is still used,
+// so that import stays.
 //
-// Image: public/images/Stress.png, referenced by root-relative path
-// (no other .astro file in this codebase currently renders a
-// public/images/* asset via <img> or astro:assets — the closest existing
-// convention is root-relative string paths into public/, e.g.
-// Layout.astro's `href="/favicon.svg"` and the per-page `ogImage="/og/
-// og-*.png"` props — so a plain <img src="/images/Stress.png" .../> is
-// the closest fit to that convention).
-//
-// Layout: single 2-col grid (grid-cols-1 lg:grid-cols-2), image first in
-// source order so it's naturally on top on mobile/stacked and on the left
-// at lg+, matching this file's existing left-content/right-visual
-// convention otherwise (reveal directions below are assigned by column,
-// not by visual side, to match).
-//
-// Scroll-reveal: same `initScrollReveal('#the-shift .dp-reveal', ...)`
-// call as before, untouched. Heading gets `dp-reveal-up`, image column
-// gets `dp-reveal-left`, text column gets `dp-reveal-right` — consistent
-// with this file's prior use of left/right reveal for a left-content/
-// right-visual pairing, and up for a standalone heading.
+// Layout: single column now (no grid wrapper) — SectionHeader on top,
+// DashboardPreview directly below, full width. Spacing: `mt-14` between
+// the heading and the content below matches this file's own prior
+// heading-to-content spacing value and the same convention used in
+// sibling section files (e.g. FeaturesSummary.astro's `mt-14` wrapper
+// directly below its "How it works" SectionHeader).
 
 import SectionHeader from '../ui/SectionHeader.astro';
-import Button from '../ui/Button.astro';
+import DashboardPreview from '../ui/DashboardPreview.astro';
 ---
 
 <section id="the-shift" class="scroll-mt-20 relative border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
@@ -40,23 +29,6 @@ import Button from '../ui/Button.astro';
       title="Freelancing was never supposed to feel this complicated."
     />
 
-    <div class="mt-14 grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-      <div class="overflow-hidden rounded-2xl">
-        <img
-          src="/images/Stress.png"
-          alt="A freelancer overwhelmed by scattered tools and manual admin work"
-          class="h-full w-full object-cover"
-        />
-      </div>
-
-      <div>
-        <p class="text-base leading-relaxed text-ink/70">Freelancing shouldn't feel like full-time administration.</p>
-        <p class="mt-4 text-base leading-relaxed text-ink/70">When your contracts, client messages, tasks, and payments live in different places, things fall through the cracks.</p>
-        <p class="mt-4 text-base leading-relaxed text-ink/70">Huzlly brings your entire workflow under one roof.</p>
-        <p class="mt-4 text-base leading-relaxed text-ink/70">From the first proposal to the final invoice - manage your entire freelance business effortlessly.</p>
-
-        <Button variant="primary" href="/about" class="mt-6">Learn more about Huzlly</Button>
-      </div>
-    </div>
+    <DashboardPreview class="mt-14" />
   </div>
 </section>
