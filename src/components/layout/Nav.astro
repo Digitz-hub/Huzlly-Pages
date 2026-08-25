@@ -169,15 +169,57 @@
 //   `src/scripts/`, since this behavior is owned entirely by this one
 //   component/element, matching this file's established convention.
 //
+// FULL-WIDTH BLUE BAR (this pass): shape swap from the floating,
+// margin-inset, rounded-full pill back to an edge-to-edge bar, plus a
+// color swap from the dark ink/zinc gradient + blue CTA to a blue gradient
+// bar + white CTA. Content, links, CTA copy, mobile menu behavior, the
+// hide-on-scroll logic, and all accessibility/focus-visible attributes are
+// unchanged — this is a re-skin only:
+// - Shape: `<header>` drops its `px-4 pt-4 sm:px-6 sm:pt-6` edge-inset
+//   padding — it's now just `fixed inset-x-0 top-0 z-50` plus the existing
+//   hide-on-scroll transition/will-change classes, so the bar sits flush
+//   against the true viewport top/sides again. The inner bar div drops
+//   `rounded-full` and `border border-white/15` (no rounding utility, no
+//   all-around border — a full-bleed bar doesn't need either) and picks up
+//   a `border-b border-white/10` hairline instead, for a light seam against
+//   whatever sits below it. The `relative mx-auto max-w-5xl` wrapper still
+//   centers/constrains the nav content inside the full-width bar, and the
+//   bar keeps its existing `pl-4 pr-2 sm:pl-6 sm:pr-3` padding split (from
+//   the earlier "CTA shift" pass) since the header no longer supplies any
+//   outer inset. `#mobile-menu` keeps `absolute inset-x-0 top-full`
+//   relative to that same wrapper, so it still lines up correctly under
+//   the new flush bar; its own `rounded-3xl` floating-card shape and
+//   content are untouched.
+// - Background: the bar's `bg-gradient-to-b from-zinc-700/95 via-zinc-900/95
+//   to-black/95` dark gradient becomes `bg-gradient-to-b from-blue-500
+//   via-blue-600 to-blue-800` — standard Tailwind blue-scale steps built
+//   around this repo's fixed blue-600 accent, no arbitrary hex. `#mobile-
+//   menu` gets the same blue gradient swap so the bar and the mobile sheet
+//   stay visually consistent. `backdrop-blur-xl` is kept on both (still
+//   reads as glass over a solid blue fill).
+// - Active nav link: `bg-blue-500/15 text-blue-400` blended into the new
+//   blue background, so the active state becomes a high-contrast white
+//   pill — `bg-white text-blue-700` — while the inactive `text-paper`
+//   links (already white) stay legible on blue as-is.
+// - CTA: `Join Waitlist` (desktop + mobile) swaps its override from
+//   `!bg-blue-600 hover:!bg-blue-700` (blue-on-blue, would disappear into
+//   the new bar) to `!bg-white hover:!bg-white/90 !text-blue-600`, keeping
+//   `!rounded-full !shadow-none` and the `ArrowRight` icon exactly as they
+//   were — a white pill with blue text now reads as the high-contrast CTA
+//   against the blue bar.
+//
 // Structure (current):
-//   1. `<header>` — fixed positioning context + edge-inset padding.
+//   1. `<header>` — fixed positioning context, flush to the true viewport
+//      top/sides (no edge-inset padding).
 //   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
 //      centering, and the positioning parent for the mobile sheet.
-//   3. The pill itself — `rounded-full`, `bg-ink/90`, `backdrop-blur-xl`,
-//      `border border-white/15`, containing brand / nav links / CTA /
-//      mobile toggle, structurally unchanged from prior passes.
-//   4. Mobile sheet — `rounded-3xl`, positioned `top-full` under the
-//      pill via the shared wrapper, unchanged content/behavior.
+//   3. The bar itself — square corners (no rounding utility), `border-b
+//      border-white/10` hairline only, `bg-gradient-to-b from-blue-500
+//      via-blue-600 to-blue-800`, `backdrop-blur-xl`, containing brand /
+//      nav links / CTA / mobile toggle.
+//   4. Mobile sheet — `rounded-3xl`, positioned `top-full` under the bar
+//      via the shared wrapper, same blue gradient as the bar, unchanged
+//      content/behavior.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -197,10 +239,10 @@ const isActive = (href: string) => {
 };
 ---
 
-<header id="site-header" class="fixed inset-x-0 top-0 z-50 px-4 pt-4 transition-transform duration-300 ease-out will-change-transform sm:px-6 sm:pt-6">
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out will-change-transform">
   <div class="relative mx-auto max-w-5xl">
-    <!-- Floating glass pill -->
-    <div class="flex h-12 items-center justify-between rounded-full border border-white/15 bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95 pl-4 pr-2 shadow-xl shadow-black/40 backdrop-blur-xl sm:h-14 sm:pl-6 sm:pr-3">
+    <!-- Full-width blue glass bar -->
+    <div class="flex h-12 items-center justify-between border-b border-white/10 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-800 pl-4 pr-2 shadow-xl shadow-black/40 backdrop-blur-xl sm:h-14 sm:pl-6 sm:pr-3">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
@@ -215,7 +257,7 @@ const isActive = (href: string) => {
           <a href={link.href}
             class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-500/15 text-blue-400'
+                ? 'bg-white text-blue-700'
                 : 'text-paper hover:bg-white/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
@@ -227,7 +269,7 @@ const isActive = (href: string) => {
 
       <!-- Right: Desktop CTA -->
       <div class="hidden md:flex md:items-center">
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 !shadow-none hover:!bg-blue-700">
+        <Button href="/waitlist" size="default" class="!rounded-full !bg-white hover:!bg-white/90 !text-blue-600 !shadow-none">
           Join Waitlist
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
@@ -248,14 +290,14 @@ const isActive = (href: string) => {
 
     <!-- Mobile Menu Sheet — glass dropdown floating below the pill -->
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95 p-3 shadow-xl shadow-black/40 backdrop-blur-xl md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-800 p-3 shadow-xl shadow-black/40 backdrop-blur-xl md:hidden"
     >
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
             class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-blue-500/15 text-blue-400'
+                ? 'bg-white text-blue-700'
                 : 'text-paper hover:bg-white/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
@@ -263,7 +305,7 @@ const isActive = (href: string) => {
             {link.label}
           </a>
         ))}
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 !shadow-none hover:!bg-blue-700 mt-1.5 w-full">
+        <Button href="/waitlist" size="default" class="!rounded-full !bg-white hover:!bg-white/90 !text-blue-600 !shadow-none mt-1.5 w-full">
           Join Waitlist
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
         </Button>
