@@ -23,7 +23,15 @@ const {
 } = Astro.props;
 ---
 
-<section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- Soft amber-tinted gradient instead of flat white: this is the page's
+     final CTA, and every section above it lives in blue/teal/neutral
+     territory, so a warm amber wash (amber-50/amber-100 territory,
+     #FFFBEB/#FEF3C7-adjacent at low saturation) closes the page on a
+     distinct "warm" note rather than another cool/neutral repeat. Same
+     top-white-hold-into-tint structure as the other gradient sections.
+     `border-t border-rail` adds a thin seam at the top, matching the
+     other sections' transition treatment. -->
+<section class="border-t border-rail bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFDF5_20%,#FEF6E4_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-2xl">
     <Card variant="highlighted" class="p-8 sm:p-12 text-center">
       <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
