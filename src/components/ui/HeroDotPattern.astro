@@ -1,0 +1,82 @@
+---
+// src/components/ui/HeroDotPattern.astro
+// Purely decorative dot-matrix texture for the hero's left/right blank
+// margins (the empty bg-electric space beside the centered max-w-2xl
+// text column). Inspired by inertiajs.com's hero: soft, organic-looking
+// clusters of small dots rather than a literal shape (no clouds/logos).
+//
+// This is a NEW, separate decorative layer from HeroScatterDecoration.astro
+// — that component was built for a light hero background (frosted-glass
+// panels tinted with signal colors) and doesn't apply to Hero.astro's
+// current solid `bg-electric` dark background. This file reuses only its
+// conventions (see below), not its markup or colors.
+//
+// COLOR: white only, low opacity (~10-15%), so the dots read as a subtle
+// texture against bg-electric (#3B4EFF) rather than a graphic. No new
+// color tokens introduced.
+//
+// VISIBILITY: like HeroScatterDecoration.astro, the `lg:`-only visibility
+// toggle is NOT hardcoded in this file — the consumer (Hero.astro) applies
+// `class="hidden lg:block"` on this component's usage, which flows into
+// the `class` prop below and lands on the wrapper.
+//
+// TEXT-COLUMN CLEARANCE: Hero.astro centers its content in a `max-w-2xl`
+// (672px) column with no max-width on the `<section>` itself. At the
+// narrowest width this component ever renders (`lg:` = 1024px), that
+// column spans roughly 17%-83% of the viewport. Both clusters below sit
+// within the outer ~-3% to ~20% margins on their respective side (one
+// hugging the left edge, its mirror hugging the right), and each cluster's
+// dot-visible area is itself faded out via a radial mask well before its
+// bounding box's inner edge — so the effective dot texture clears the
+// column with room to spare at 1024px and only gains clearance as the
+// viewport widens further.
+//
+// STACKING ORDER: positioned at `-z-[5]`, matching HeroScatterDecoration's
+// documented reasoning — less negative than the `.hero-grain` overlay's
+// `-z-[9]` (grain paints furthest back, this dot texture paints just in
+// front of it), while still sitting behind the in-flow, un-z-indexed
+// content column.
+//
+// Asymmetric-but-balanced layout: a smaller cluster near the top-left,
+// a larger mirrored cluster near the bottom-right — same composition idea
+// as the reference (inertiajs.com), not a literal copy.
+//
+// Implementation: CSS `radial-gradient` for the repeating dot grid, with
+// a second radial-gradient used as a `mask-image` so each cluster fades
+// out into the background at its edges (organic blob silhouette) instead
+// of reading as a hard-edged rectangle of dots. No inline `style="..."`
+// attributes anywhere below; the <style> block only carries the
+// background-image/mask-image pattern itself, which has no Tailwind
+// utility equivalent. All sizing/position/opacity is Tailwind classes.
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={['pointer-events-none absolute -z-[5] inset-0', className]}
+  aria-hidden="true"
+>
+  <!-- Top-left cluster — smaller, hugs the left edge. -->
+  <div class="hero-dot-cluster absolute top-[12%] left-[-3%] h-56 w-56 opacity-10"></div>
+
+  <!-- Bottom-right cluster — larger, mirrored to the right edge. -->
+  <div class="hero-dot-cluster absolute bottom-[10%] right-[-4%] h-72 w-72 opacity-[0.12]"></div>
+</div>
+
+<style>
+  /* Small repeating white dots, softened at the edges by a radial mask
+     so the cluster reads as an organic blob rather than a dot-filled
+     rectangle. Dot color is fully opaque white; the ~10-15% opacity
+     comes from each cluster div's Tailwind opacity-* utility above, so
+     there's a single source of truth for the "how subtle" knob. */
+  .hero-dot-cluster {
+    background-image: radial-gradient(circle, #fff 1px, transparent 1.6px);
+    background-size: 14px 14px;
+    -webkit-mask-image: radial-gradient(ellipse 55% 55% at 50% 50%, #000 0%, #000 35%, transparent 72%);
+    mask-image: radial-gradient(ellipse 55% 55% at 50% 50%, #000 0%, #000 35%, transparent 72%);
+  }
+</style>
