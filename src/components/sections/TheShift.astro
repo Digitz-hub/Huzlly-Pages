@@ -35,7 +35,7 @@
 // layout. No new CSS/keyframes — the floating chip below reuses the
 // existing global .chip-float-el bob animation from card-illustration.css.
 
-import { ArrowRight, X, Check, Layers } from 'lucide-astro';
+import { ArrowRight, X, Check } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 
 const pairs = [
@@ -54,24 +54,7 @@ const pairs = [
 ];
 ---
 
-<section id="the-shift" class="scroll-mt-20 relative bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-  <!-- Decorative floating chip, siblings of the header. Reuses the shared
-       chip-float-el idle-bob class (already global via global.css) rather
-       than inventing new motion for one chip — same pill/icon-chip styling
-       as HowItWorks.astro's floating chips (border-rail + bg-paper/90 +
-       shadow-sm + backdrop-blur-sm), just positioned relative to this
-       section's header instead of an illustration box. -->
-  <div class="pointer-events-none absolute right-4 top-8 hidden sm:right-8 sm:block lg:right-16">
-    <div class="chip-float-el inline-block">
-      <div class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-3 py-1.5 text-xs font-medium text-ink shadow-sm backdrop-blur-sm">
-        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-          <Layers class="h-3 w-3" stroke-width="2.2" />
-        </span>
-        No more app-switching
-      </div>
-    </div>
-  </div>
-
+<section id="the-shift" class="scroll-mt-20 relative bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="The Shift"
       title="Stop Managing Client Work Across a Dozen Different Places."
@@ -87,8 +70,13 @@ const pairs = [
            with a vertical gradient fade so it doesn't hard-cut at the
            top/bottom edges of the stack. -->
       <div
+        class="pointer-events-none absolute inset-y-0 left-1/2 hidden w-2 -translate-x-1/2 blur-sm lg:block"
+        style="background: linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.12) 15%, rgba(37,99,235,0.12) 85%, transparent 100%);"
+        aria-hidden="true"
+      ></div>
+      <div
         class="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 lg:block"
-        style="background: linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.3) 15%, rgba(37,99,235,0.3) 85%, transparent 100%);"
+        style="background: linear-gradient(180deg, transparent 0%, #2563eb 15%, #0d9488 50%, #2563eb 85%, transparent 100%);"
         aria-hidden="true"
       ></div>
 
@@ -99,7 +87,7 @@ const pairs = [
                 icon chip + text-ink/40 glyph + text-ink/50 body copy,
                 deliberately lower-contrast than the solution column. */}
             <div class="dp-reveal dp-reveal-left flex items-center gap-4">
-              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rail/40 text-ink/40">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600">
                 <X class="h-4 w-4" stroke-width="2.2" />
               </span>
               <p class="text-base leading-relaxed text-ink/50">{pair.problem}</p>
@@ -118,7 +106,7 @@ const pairs = [
                 bg-blue-50 icon chip + text-blue-600 glyph + font-medium
                 full-ink body copy, this is the emphasized "new way". */}
             <div class="dp-reveal dp-reveal-right flex items-center gap-4">
-              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600">
                 <Check class="h-4 w-4" stroke-width="2.2" />
               </span>
               <p class="text-base font-medium leading-relaxed text-ink">{pair.solution}</p>
