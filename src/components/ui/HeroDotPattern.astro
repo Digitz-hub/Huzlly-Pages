@@ -10,10 +10,12 @@
 // current solid `bg-electric` dark background. This file reuses only its
 // conventions (see below), not its markup or colors.
 //
-// COLOR: white only, dot color at ~40% opacity — clearly visible against
-// bg-electric (#3B4EFF) at the section's edges. (Earlier passes used
-// isolated ~10-15% then ~18-24% opacity corner/side clusters; this pass
-// replaces that clustered approach entirely — see APPROACH below.)
+// COLOR: black only, dot color at ~60% opacity — clearly, prominently
+// visible against bg-electric (#3B4EFF) without looking harsh or muddy.
+// (Earlier passes used isolated ~10-15% then ~18-24% opacity corner/side
+// clusters, then a full-bleed white layer at ~40% opacity; this pass
+// keeps the full-bleed single-layer approach but switches the dot color
+// to black and raises the opacity for stronger visibility.)
 // No new color tokens introduced.
 //
 // VISIBILITY: like HeroScatterDecoration.astro, the `lg:`-only visibility
@@ -37,12 +39,15 @@
 // narrowest width this component ever renders (`lg:` = 1024px), that
 // column spans roughly 17%-83% of the viewport width, vertically
 // centered in the section. The mask's inner ellipse (see <style> below)
-// is sized to fully clear that column — flat 0%-opacity through roughly
-// the center 45% of the section's width and a comparable share of its
-// height — with the fade-out ramping up from there out to the edges,
-// which are fully opaque. Widening the viewport beyond 1024px only
-// shrinks the column's share of the total width, so clearance is
-// preserved (and grows) at every larger breakpoint too.
+// is sized to keep just enough clearance for that column — flat
+// 0%-opacity through roughly the center 25% of the section's width and
+// a comparable share of its height, intentionally tight rather than
+// generous — with the fade-out ramping up from there out to the edges,
+// which are fully opaque. This lets the dots creep in much closer to
+// the text than a wider clear zone would, without rendering directly
+// behind the badge/heading/paragraph/buttons. Widening the viewport
+// beyond 1024px only shrinks the column's share of the total width, so
+// clearance is preserved (and grows) at every larger breakpoint too.
 //
 // STACKING ORDER: positioned at `-z-[5]`, matching HeroScatterDecoration's
 // documented reasoning — less negative than the `.hero-grain` overlay's
@@ -78,9 +83,9 @@ const { class: className } = Astro.props;
      (where the content column sits) by one radial mask, so dots are
      visible at all 4 edges but fully transparent behind the content. */
   .hero-dot-field {
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1.6px);
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.6) 1px, transparent 1.6px);
     background-size: 14px 14px;
-    -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 45%, #000 85%);
-    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 45%, #000 85%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 25%, #000 85%);
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 25%, #000 85%);
   }
 </style>
