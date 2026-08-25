@@ -17,12 +17,18 @@
 // heading-to-content spacing value and the same convention used in
 // sibling section files (e.g. FeaturesSummary.astro's `mt-14` wrapper
 // directly below its "How it works" SectionHeader).
+//
+// Background: `bg-white` swapped for a top-to-bottom red gradient
+// (red-100 -> red-50 -> white), same linear-gradient-as-inline-arbitrary-
+// value technique FeaturesSummary.astro's "Why lean" section uses for its
+// blue gradient background — fades to white at the bottom so the
+// section-to-section border/seam still reads cleanly.
 
 import SectionHeader from '../ui/SectionHeader.astro';
 import DashboardPreview from '../ui/DashboardPreview.astro';
 ---
 
-<section id="the-shift" class="scroll-mt-20 relative border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<section id="the-shift" class="scroll-mt-20 relative border-t border-rail bg-[linear-gradient(180deg,#FEE2E2_0%,#FEF2F2_60%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader
       as="h2"
