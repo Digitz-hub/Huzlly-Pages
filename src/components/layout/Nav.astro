@@ -26,7 +26,9 @@
 //   reference's five (Research / Features / Product / Community / Blog) —
 //   content always follows PAGE_MAP_AND_SEO.md, never the inspiration
 //   source, even when the inspiration has a different link count.
-// - No dropdowns, no hide-on-scroll — CTA and pill stay static/persistent.
+// - No dropdowns. Hide-on-scroll was previously absent (CTA and pill were
+//   fully static/persistent) — see "HIDE-ON-SCROLL ADDED" below for the
+//   pass that introduced it; that line is now superseded by this note.
 //
 // Note: a scroll/load/hover animation layer (spring reveal, frosted-glass
 // scroll state, sliding tab indicator, CTA hover-scale) was added and then
@@ -129,6 +131,44 @@
 // underline, no hover-underline swap). Keeping this note per this file's
 // convention of recording reverted passes rather than deleting them.
 //
+// HIDE-ON-SCROLL ADDED (this pass): the `<header>` now hides/shows itself
+// in response to scroll direction, matching this repo's existing
+// scroll-driven-effect conventions (`lenis.ts`, `Hero.astro`'s reveal
+// script) rather than introducing a new pattern:
+// - Scrolling down slides the header up and out of view via
+//   `transform: translateY(-150%)` (fully clears the pill, including its
+//   `shadow-xl`); scrolling up slides it back to `translateY(0)`. The
+//   header gained `transition-transform duration-300 ease-out
+//   will-change-transform` (standard Tailwind utilities, no arbitrary
+//   easing/duration values) so the slide is a smooth CSS transition, not
+//   an instant snap. No other visual styling (color, padding, radius,
+//   shadow, borders) changed.
+// - The header also gained an `id="site-header"` purely so this file's own
+//   script can select it reliably; this is not a styling change and
+//   doesn't affect the "id-less <header>" structural description above in
+//   any visual sense.
+// - Below a small top-of-page threshold (`scrollY <= 50`) the header
+//   always stays visible regardless of direction, so it doesn't flicker
+//   hidden on page load or on tiny scroll jitter right at the top.
+// - Whenever `#mobile-menu` is open, the header is forced visible and the
+//   hide-on-scroll logic is skipped for that check, so the mobile sheet
+//   and the hide/show behavior never fight each other.
+// - Reacts only once accumulated scroll delta since the last check passes
+//   a small threshold (5px), avoiding jitter on sub-pixel scroll events,
+//   and the scroll listener is rAF-throttled with the same
+//   `if (!ticking) { ticking = true; requestAnimationFrame(update); }`
+//   pattern used elsewhere in this repo's scripts (see `lenis.ts`), rather
+//   than running full logic on every raw scroll event.
+// - Respects `prefers-reduced-motion: reduce` via the same
+//   `window.matchMedia('(prefers-reduced-motion: reduce)').matches` check
+//   `lenis.ts` and `Hero.astro` already use: under that preference the
+//   hide-on-scroll listener is never attached and no sliding transform is
+//   ever applied, so the header just stays static/persistent as before.
+// - All added logic lives in this file's own existing `<script>` tag
+//   (previously mobile-menu-toggle-only) — no new file under
+//   `src/scripts/`, since this behavior is owned entirely by this one
+//   component/element, matching this file's established convention.
+//
 // Structure (current):
 //   1. `<header>` — fixed positioning context + edge-inset padding.
 //   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
@@ -157,7 +197,7 @@ const isActive = (href: string) => {
 };
 ---
 
-<header class="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6 sm:pt-6">
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 px-4 pt-4 transition-transform duration-300 ease-out will-change-transform sm:px-6 sm:pt-6">
   <div class="relative mx-auto max-w-5xl">
     <!-- Floating glass pill -->
     <div class="flex h-12 items-center justify-between rounded-full border border-white/15 bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95 pl-4 pr-2 shadow-xl shadow-black/40 backdrop-blur-xl sm:h-14 sm:pl-6 sm:pr-3">
@@ -257,5 +297,59 @@ const isActive = (href: string) => {
         toggleBtn.setAttribute('aria-expanded', 'false');
       });
     });
+  }
+
+  // Hide-on-scroll-down / show-on-scroll-up for the fixed header.
+  const header = document.getElementById('site-header');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (header && !prefersReducedMotion) {
+    const TOP_THRESHOLD = 50; // px — always show near the very top of the page
+    const DELTA_THRESHOLD = 5; // px — ignore tiny sub-pixel scroll jitter
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const isMobileMenuOpen = () =>
+      !!mobileMenu && !mobileMenu.classList.contains('hidden');
+
+    const showHeader = () => {
+      header.style.transform = 'translateY(0)';
+    };
+
+    const hideHeader = () => {
+      header.style.transform = 'translateY(-150%)';
+    };
+
+    const update = () => {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+
+      if (currentScrollY <= TOP_THRESHOLD || isMobileMenuOpen()) {
+        // Always visible near the top of the page, and whenever the
+        // mobile sheet is open, regardless of scroll direction.
+        showHeader();
+      } else if (Math.abs(delta) >= DELTA_THRESHOLD) {
+        if (delta > 0) {
+          hideHeader(); // scrolling down
+        } else {
+          showHeader(); // scrolling up
+        }
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      },
+      { passive: true }
+    );
   }
 </script>
