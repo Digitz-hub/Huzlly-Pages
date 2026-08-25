@@ -220,6 +220,55 @@
 //   4. Mobile sheet — `rounded-3xl`, positioned `top-full` under the bar
 //      via the shared wrapper, same blue gradient as the bar, unchanged
 //      content/behavior.
+//
+// FLUSH-BAR CORRECTIVE PASS (this pass): the "FULL-WIDTH BLUE BAR" pass
+// above intended an edge-to-edge bar but shipped visually broken/
+// inconsistent — it kept the pill-era `relative mx-auto max-w-5xl` wrapper
+// around the bar, so the bar itself was still width-constrained and
+// centered rather than truly spanning the viewport, and it carried
+// leftover shape artifacts (`border-b border-white/10` hairline,
+// `shadow-xl shadow-black/40`, asymmetric `pl-4 pr-2 sm:pl-6 sm:pr-3`
+// padding left over from the pill's "CTA shift" pass) that read as uneven
+// rounding/border/shadow rather than a clean flush bar. This pass is a
+// corrective redesign against a fresh reference (inertiajs.com's header:
+// solid/gradient blue, perfectly flush, edge-to-edge, bold white wordmark
+// left, plain inline content right, solid white rounded-full pill CTA) —
+// content (nav links, "Join Waitlist" CTA) stays Huzlly's own, only the
+// shape/border/shadow polish is corrected:
+// - Wrapper: `relative mx-auto max-w-5xl` → `relative` only. The width
+//   constraint was the root cause of the bar not being edge-to-edge; the
+//   wrapper now exists solely to give `#mobile-menu` a positioning parent,
+//   no longer to cap the bar's width.
+// - Bar shape: `rounded-full`/`border`-era leftovers are gone (this bar
+//   never had `rounded-full`, but the audit confirms zero rounding
+//   utilities of any kind survive on it — plain square corners). Dropped
+//   `border-b border-white/10` entirely (no border utility at all) and
+//   `shadow-xl shadow-black/40` in favor of a single soft `shadow-sm` for
+//   quiet depth — no harsh/heavy shadow. `backdrop-blur-xl` removed on
+//   both the bar and the mobile sheet since a solid-fill bar doesn't need
+//   glass blur (the reference bar isn't glassy either).
+// - Padding: asymmetric `pl-4 pr-2 sm:pl-6 sm:pr-3` → symmetric
+//   `px-6 sm:px-10`, now carried directly on the bar since the header
+//   supplies no outer inset margin. Height bumped `h-12 sm:h-14` →
+//   `h-16 sm:h-20` for more comfortable, evenly-balanced vertical rhythm
+//   now that the bar reads as a standalone full-width band rather than an
+//   inset pill.
+// - Background: gradient endpoint eased `to-blue-800` → `to-blue-700`
+//   (still standard Tailwind blue scale, no arbitrary hex) for a slightly
+//   lighter, cleaner gradient across the full bar width; `#mobile-menu`
+//   gets the same updated gradient so the dropdown stays visually
+//   consistent with the bar above it.
+// - Logo: wordmark bumped `text-lg font-semibold` / `sm:text-xl` →
+//   `text-xl font-bold` / `sm:text-2xl` so it reads as bold against the
+//   full-width fill, matching the reference's bold wordmark treatment.
+// - Everything else — nav link labels/hrefs, active-state colors
+//   (`bg-white text-blue-700`), inactive link color (`text-paper`), CTA
+//   styling (`!bg-white hover:!bg-white/90 !text-blue-600 !shadow-none
+//   !rounded-full`), the `ArrowRight` icon, the mobile toggle button/
+//   icon-swap logic, the hide-on-scroll JS and its transition/will-change
+//   classes, and all accessibility/focus-visible attributes — is
+//   byte-for-byte unchanged from the prior pass; this was a shape/border/
+//   shadow/spacing correction only.
 
 import { Menu, X, ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -240,12 +289,12 @@ const isActive = (href: string) => {
 ---
 
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out will-change-transform">
-  <div class="relative mx-auto max-w-5xl">
-    <!-- Full-width blue glass bar -->
-    <div class="flex h-12 items-center justify-between border-b border-white/10 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-800 pl-4 pr-2 shadow-xl shadow-black/40 backdrop-blur-xl sm:h-14 sm:pl-6 sm:pr-3">
+  <div class="relative">
+    <!-- Full-width blue bar -->
+    <div class="flex h-16 items-center justify-between bg-gradient-to-b from-blue-500 via-blue-600 to-blue-700 px-6 shadow-sm sm:h-20 sm:px-10">
       <!-- Left: Brand -->
       <a href="/"
-        class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xl"
+        class="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-2xl"
       >
         <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
         Huzlly
@@ -288,9 +337,9 @@ const isActive = (href: string) => {
       </button>
     </div>
 
-    <!-- Mobile Menu Sheet — glass dropdown floating below the pill -->
+    <!-- Mobile Menu Sheet — floating card dropdown below the bar -->
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-800 p-3 shadow-xl shadow-black/40 backdrop-blur-xl md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-700 p-3 shadow-xl shadow-black/40 md:hidden"
     >
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
