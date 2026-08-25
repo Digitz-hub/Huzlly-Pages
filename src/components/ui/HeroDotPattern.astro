@@ -10,13 +10,38 @@
 // current solid `bg-electric` dark background. This file reuses only its
 // conventions (see below), not its markup or colors.
 //
-// COLOR: black only, dot color at ~60% opacity — clearly, prominently
-// visible against bg-electric (#3B4EFF) without looking harsh or muddy.
-// (Earlier passes used isolated ~10-15% then ~18-24% opacity corner/side
-// clusters, then a full-bleed white layer at ~40% opacity; this pass
-// keeps the full-bleed single-layer approach but switches the dot color
-// to black and raises the opacity for stronger visibility.)
+// COLOR: white only, dot color at ~60% opacity — clearly, prominently
+// visible against bg-electric (#3B4EFF). (Earlier passes used isolated
+// ~10-15% then ~18-24% opacity corner/side clusters, then a full-bleed
+// white layer at ~40% opacity, then a full-bleed black layer at ~60%
+// opacity; this pass keeps the full-bleed single-layer approach and the
+// ~60% opacity but switches the dot color back to white so it reads
+// clearly against the dark background.)
 // No new color tokens introduced.
+//
+// ANIMATION: two layered motion effects, both defined entirely in the
+// <style> block below (no markup changes, no extra elements — the shine
+// sweep uses a `::before` pseudo-element on `.hero-dot-field` rather than
+// a sibling `<div>`, since a pseudo-element is sufficient here):
+//   1) WAVE SHIFT — `.hero-dot-field`'s own `background-position` is
+//      animated diagonally from `0 0` to exactly one tile (`14px 14px`),
+//      `linear`/`infinite`, so the dot grid appears to drift continuously
+//      with a perfectly seamless loop (the pattern is identical at the
+//      start and end of the cycle since the shift is an exact multiple
+//      of the `14px 14px` tile size).
+//   2) GLASS SHINE SWEEP — a `::before` pseudo-element layered on top of
+//      the dots holds an oversized diagonal `linear-gradient` "band"
+//      (soft white, low opacity, feathered edges via wide gradient
+//      stops). Its `background-position` is animated across a much
+//      larger `background-size` so the band sweeps across the element on
+//      a loop; because the band reads as fully transparent at both ends
+//      of the animation range, the reset-to-start jump is not visible.
+//      This layer reuses the *exact same* `mask-image` ellipse as the
+//      dots (see <style> below) so the shine sweep is clipped by the
+//      same center clearance and never crosses over the content column.
+//   Both animations respect `prefers-reduced-motion: reduce` — they are
+//   disabled entirely (frozen to a static frame) for users who request
+//   reduced motion.
 //
 // VISIBILITY: like HeroScatterDecoration.astro, the `lg:`-only visibility
 // toggle is NOT hardcoded in this file — the consumer (Hero.astro) applies
@@ -81,11 +106,71 @@ const { class: className } = Astro.props;
 <style>
   /* Single full-bleed dot texture, faded out toward the section's center
      (where the content column sits) by one radial mask, so dots are
-     visible at all 4 edges but fully transparent behind the content. */
+     visible at all 4 edges but fully transparent behind the content.
+     The dot layer's own background-position is animated diagonally by
+     exactly one tile (14px 14px) for a seamless drift loop. */
   .hero-dot-field {
-    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.6) 1px, transparent 1.6px);
+    position: relative;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1.6px);
     background-size: 14px 14px;
+    background-position: 0 0;
     -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 25%, #000 85%);
     mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 25%, #000 85%);
+    animation: hero-dot-drift 4s linear infinite;
+  }
+
+  /* Glass shine sweep: a soft, feathered diagonal highlight band layered
+     on top of the dots via ::before. The band lives on an oversized
+     background-size and is swept across by animating background-position,
+     so it reads as fully transparent at both ends of the loop and the
+     reset jump is invisible. Reuses the exact same radial ellipse mask
+     as the dot layer so the sweep is clipped to the same center
+     clearance and never crosses the content column. */
+  .hero-dot-field::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 70%
+    );
+    background-size: 300% 300%;
+    background-repeat: no-repeat;
+    -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 25%, #000 85%);
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, transparent 0%, transparent 25%, #000 85%);
+    animation: hero-dot-shine 3s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes hero-dot-drift {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 14px 14px;
+    }
+  }
+
+  @keyframes hero-dot-shine {
+    0% {
+      background-position: -100% -100%;
+    }
+    100% {
+      background-position: 200% 200%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-dot-field {
+      animation: none;
+      background-position: 0 0;
+    }
+
+    .hero-dot-field::before {
+      animation: none;
+      background-position: -100% -100%;
+    }
   }
 </style>
