@@ -1,56 +1,75 @@
 ---
 // src/components/sections/TheShift.astro
-// New homepage section, placed between Hero and HowItWorks. Both of those
-// neighbors already agree on the seam here: Hero fades to white at its own
-// bottom edge (see Hero.astro's "Fade-to-white so the gradient doesn't cut
-// hard against the next section" comment), and HowItWorks's own background
-// gradient holds a pure-white band at its top before easing into blue tint
-// (`bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFFFF_5%,...)]`). This section
-// sits in between those two white moments, so it stays on a plain white/
-// paper background rather than introducing its own gradient — it reads as
-// the "settled" white beat of the page, not another transition.
+// v2 restructure: moves from a 3-row problem/solution split-panel layout to
+// a two-part structure — a 3-card challenge/solution grid, plus a single
+// "Featured Solution" panel beneath it — per user-supplied reference
+// screenshot. Structure/composition (card grid + featured panel below it)
+// is borrowed from that reference; palette/components stay entirely on
+// this site's own system (Card.astro/Button.astro/Badge.astro, ink/paper/
+// rail + blue-600/red-600/green-600), not a literal copy of the
+// reference's own colors or photography treatment.
 //
-// Content shape: a 3-row problem/solution split-panel ("the old way" vs
-// "Huzlly"), not another feature list — HowItWorks already covers what the
-// product does stage-by-stage, and WhyLean covers why it's built lean. This
-// section's job is narrower: name the specific pain of juggling freelance
-// client work today, then show the one-line contrast. Three pairs, three
-// distinct angles (tool fragmentation, manual/chasing admin, cost/
-// complexity) so the section reads as a deliberate short list, not padding.
+// Content shape is unchanged from v1 in substance — same 3 challenges
+// (tool fragmentation, manual/chasing admin, cost/complexity) — just
+// reshaped from `pairs` ({ problem, solution }) into `challenges`
+// ({ icon, title, problem, solution }), since each is now its own card
+// with a title/icon instead of a row in a shared split-panel.
 //
-// Color treatment: left ("problem") column deliberately stays muted
-// (text-ink/50, bg-rail/40 chip, text-ink/40 icon) rather than full ink —
-// it's the de-emphasized "old way" being described, not something the
-// section wants to draw the eye to. Right ("solution") column uses the
-// sitewide blue-600 signal color at full text-ink weight, so the eye lands
-// on the resolution of each pair, not the problem. Same muted-vs-signal
-// logic as the rest of the site's ink/paper/rail + blue-600/teal-600/
-// amber-500 system, just applied as a two-state contrast instead of
-// picking one of the three signal hues.
+// Card grid (Part 1): each card is `<Card variant="elevated">` with a
+// `border border-rail` override passed via the `class` prop, scoped to
+// just this instance — Card.astro itself is untouched, so `elevated`'s
+// shared border-less styling stays sitewide-consistent elsewhere (per its
+// own header comment). Red-600 marks the "problem" half of each card
+// (icon chip + title), blue-600 marks the "Our Solution" label — same
+// muted-vs-signal contrast intent as v1, just using the site's red/blue
+// signal pairing instead of a muted-ink/blue-600 pairing, to read clearly
+// inside a bordered card instead of an open split-panel row.
 //
-// Scroll-reveal: reuses the existing dp-reveal/dp-reveal-left/
-// dp-reveal-right system (see HowItWorks.astro's own script tag for the
-// same pattern) — problem column slides in from the left, solution column
-// from the right, mirroring the physical problem-left/solution-right
-// layout. No new CSS/keyframes — the floating chip below reuses the
-// existing global .chip-float-el bob animation from card-illustration.css.
+// Featured panel (Part 2): NOT built with Card.astro — it needs an
+// edge-to-edge image bleeding to the container's own rounded corners on
+// one side, which doesn't fit Card.astro's fixed `p-6` padding on every
+// edge. Built as a plain 2-column grid instead (text | image), reusing
+// this section's own established left-content/right-visual reveal
+// convention (`dp-reveal-left` / `dp-reveal-right`) rather than one
+// shared `dp-reveal-up` on the whole panel, since it isn't a single
+// atomic unit the way the small challenge cards are.
+//
+// Scroll-reveal: still wired up via one shared `initScrollReveal('#the-
+// shift .dp-reveal', ...)` call in the script tag below — unchanged from
+// v1. `dp-reveal-up` (new to this file) is confirmed to already exist as
+// a sitewide modifier in src/styles/scroll-reveal.css; not touched here.
 
-import { ArrowRight, X, Check } from 'lucide-astro';
+import { ArrowRight, Layers, Clock, Tag, Check } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
+import Card from '../ui/Card.astro';
+import Button from '../ui/Button.astro';
+import Badge from '../ui/Badge.astro';
 
-const pairs = [
+const challenges = [
   {
+    icon: Layers,
+    title: 'Scattered Client Work',
     problem: 'Client files scattered across email, Drive, and WhatsApp.',
     solution: 'Everything lives in one shared workspace.',
   },
   {
+    icon: Clock,
+    title: 'Manual Admin Work',
     problem: 'Chasing signatures, invoices, and status updates by hand.',
     solution: 'Proposals, contracts, and invoices move themselves.',
   },
   {
+    icon: Tag,
+    title: 'Per-Seat Pricing',
     problem: 'Enterprise platforms charging per seat for tools you don\u2019t use.',
     solution: 'One flat price, built for a freelancer of one.',
   },
+];
+
+const checklist = [
+  'Centralized client and project workspace',
+  'Automated proposal-to-payment flow',
+  'One flat price, no per-seat fees',
 ];
 ---
 
@@ -61,68 +80,73 @@ const pairs = [
       subtitle="Huzlly gives freelancers one simple workspace to organize client work, share project information, and deliver a better client experience."
     />
 
-    {/* Row-pair stack. `relative` gives the absolutely-positioned center
-        divider line below a positioning context that spans the full
-        height of every row, not just one. */}
-    <div class="relative mt-14">
-      <!-- Full-height center divider, desktop only, purely decorative —
-           a 1px column absolutely centered on the row-pairs container,
-           with a vertical gradient fade so it doesn't hard-cut at the
-           top/bottom edges of the stack. -->
-      <div
-        class="pointer-events-none absolute inset-y-0 left-1/2 hidden w-2 -translate-x-1/2 blur-sm lg:block"
-        style="background: linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.12) 15%, rgba(37,99,235,0.12) 85%, transparent 100%);"
-        aria-hidden="true"
-      ></div>
-      <div
-        class="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 lg:block"
-        style="background: linear-gradient(180deg, transparent 0%, #2563eb 15%, #0d9488 50%, #2563eb 85%, transparent 100%);"
-        aria-hidden="true"
-      ></div>
+    {/* Part 1: 3-card challenge/solution grid. Each card pairs a muted
+        red "problem" half with a blue "Our Solution" half, separated by
+        a plain divider — same content as v1's split-panel rows, just
+        reshaped into standalone cards. `border border-rail` is passed
+        via Card's `class` prop rather than edited into Card.astro itself,
+        so this stays a one-off override for this section only. */}
+    <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-3">
+      {challenges.map((challenge) => (
+        <Card variant="elevated" class="border border-rail dp-reveal dp-reveal-up">
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600">
+            <challenge.icon class="h-5 w-5" stroke-width="2" />
+          </span>
 
-      {pairs.map((pair) => (
-        <div class="border-t border-rail py-10 first:border-t-0 first:pt-0 sm:py-12">
-          <div class="relative grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-center lg:gap-16">
-            {/* Problem column: muted "old way" treatment — bg-rail/40
-                icon chip + text-ink/40 glyph + text-ink/50 body copy,
-                deliberately lower-contrast than the solution column. */}
-            <div class="dp-reveal dp-reveal-left flex items-center gap-4">
-              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600">
-                <X class="h-4 w-4" stroke-width="2.2" />
-              </span>
-              <p class="text-base leading-relaxed text-ink/50">{pair.problem}</p>
-            </div>
+          <h3 class="mt-4 text-lg font-semibold text-red-600">{challenge.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-ink/70">{challenge.problem}</p>
 
-            {/* Mobile connector: rotated 90deg, sits between the stacked
-                columns. Desktop connector below replaces this one via the
-                sm:hidden / lg:flex split. */}
-            <div class="flex items-center justify-center lg:hidden" aria-hidden="true">
-              <span class="flex h-8 w-8 items-center justify-center rounded-full border border-rail bg-white shadow-sm">
-                <ArrowRight class="h-4 w-4 rotate-90 text-ink/40" stroke-width="2.2" />
-              </span>
-            </div>
+          <div class="my-5 border-t border-rail"></div>
 
-            {/* Solution column: full-contrast blue-600 signal treatment —
-                bg-blue-50 icon chip + text-blue-600 glyph + font-medium
-                full-ink body copy, this is the emphasized "new way". */}
-            <div class="dp-reveal dp-reveal-right flex items-center gap-4">
-              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600">
-                <Check class="h-4 w-4" stroke-width="2.2" />
-              </span>
-              <p class="text-base font-medium leading-relaxed text-ink">{pair.solution}</p>
-            </div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">Our Solution</p>
+          <p class="mt-2 text-sm leading-relaxed text-ink/70">{challenge.solution}</p>
 
-            <!-- Desktop connector: absolutely centered on the row, on top
-                 of the seam between the two columns. Hidden below `lg:`
-                 in favor of the rotated inline connector above. -->
-            <div class="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" aria-hidden="true">
-              <span class="flex h-8 w-8 items-center justify-center rounded-full border border-rail bg-white shadow-sm">
-                <ArrowRight class="h-4 w-4 text-ink/40" stroke-width="2.2" />
-              </span>
-            </div>
-          </div>
-        </div>
+          <Button variant="accent" href="/waitlist" class="mt-4">
+            Learn more <ArrowRight class="h-3.5 w-3.5" stroke-width="2" />
+          </Button>
+        </Card>
       ))}
+    </div>
+
+    {/* Part 2: Featured Solution panel. Plain div, not Card.astro (see
+        header comment for why) — text column reveals from the left,
+        image column from the right, matching this section's existing
+        left-content/right-visual convention rather than one shared
+        `dp-reveal-up` on the whole panel. */}
+    <div class="relative mt-10 grid overflow-hidden rounded-2xl border border-rail bg-white lg:mt-12 lg:grid-cols-2 lg:items-stretch">
+      <div class="dp-reveal dp-reveal-left flex flex-col justify-center p-8 sm:p-10 lg:p-12">
+        <Badge variant="beta" class="w-fit">Featured Solution</Badge>
+
+        <h3 class="mt-4 font-display text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
+          One flow, not five apps.
+        </h3>
+
+        <p class="mt-3 text-base leading-relaxed text-ink/70">
+          One workspace replaces the scattered files, manual chasing, and per-seat platforms freelancers put up with today — automated from proposal to payment, at a single flat price.
+        </p>
+
+        <ul class="mt-5 flex flex-col gap-2.5">
+          {checklist.map((item) => (
+            <li class="flex items-center gap-2.5 text-sm text-ink/80">
+              <Check class="h-4 w-4 shrink-0 text-green-600" stroke-width="2.2" />
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <Button variant="primary" href="/waitlist">Join waitlist</Button>
+          <Button variant="outline" href="#how-it-works">See how it works</Button>
+        </div>
+      </div>
+
+      <div class="dp-reveal dp-reveal-right relative min-h-[240px] lg:min-h-0">
+        <img
+          src="/images/the-shift-featured.jpg"
+          alt="Freelancer viewing client projects, tasks, and invoices together in the Huzlly workspace"
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+      </div>
     </div>
   </div>
 </section>
