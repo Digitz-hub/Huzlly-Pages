@@ -38,11 +38,10 @@ import Button from '../ui/Button.astro';
     <SectionHeader
       as="h2"
       title="Freelancing was never supposed to feel this complicated."
-      class="dp-reveal dp-reveal-up"
     />
 
     <div class="mt-14 grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-      <div class="dp-reveal dp-reveal-left overflow-hidden rounded-2xl">
+      <div class="overflow-hidden rounded-2xl">
         <img
           src="/images/Stress.png"
           alt="A freelancer overwhelmed by scattered tools and manual admin work"
@@ -50,7 +49,7 @@ import Button from '../ui/Button.astro';
         />
       </div>
 
-      <div class="dp-reveal dp-reveal-right">
+      <div>
         <p class="text-base leading-relaxed text-ink/70">Freelancing shouldn't feel like full-time administration.</p>
         <p class="mt-4 text-base leading-relaxed text-ink/70">When your contracts, client messages, tasks, and payments live in different places, things fall through the cracks.</p>
         <p class="mt-4 text-base leading-relaxed text-ink/70">Huzlly brings your entire workflow under one roof.</p>
@@ -61,9 +60,3 @@ import Button from '../ui/Button.astro';
     </div>
   </div>
 </section>
-
-<script>
-  import { initScrollReveal } from '../../scripts/scroll-reveal';
-
-  initScrollReveal('#the-shift .dp-reveal', { completionFraction: 1 });
-</script>
