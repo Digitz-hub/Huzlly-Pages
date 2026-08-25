@@ -1,0 +1,146 @@
+---
+// src/components/sections/TheShift.astro
+// New homepage section, placed between Hero and HowItWorks. Both of those
+// neighbors already agree on the seam here: Hero fades to white at its own
+// bottom edge (see Hero.astro's "Fade-to-white so the gradient doesn't cut
+// hard against the next section" comment), and HowItWorks's own background
+// gradient holds a pure-white band at its top before easing into blue tint
+// (`bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFFFF_5%,...)]`). This section
+// sits in between those two white moments, so it stays on a plain white/
+// paper background rather than introducing its own gradient — it reads as
+// the "settled" white beat of the page, not another transition.
+//
+// Content shape: a 3-row problem/solution split-panel ("the old way" vs
+// "Huzlly"), not another feature list — HowItWorks already covers what the
+// product does stage-by-stage, and WhyLean covers why it's built lean. This
+// section's job is narrower: name the specific pain of juggling freelance
+// client work today, then show the one-line contrast. Three pairs, three
+// distinct angles (tool fragmentation, manual/chasing admin, cost/
+// complexity) so the section reads as a deliberate short list, not padding.
+//
+// Color treatment: left ("problem") column deliberately stays muted
+// (text-ink/50, bg-rail/40 chip, text-ink/40 icon) rather than full ink —
+// it's the de-emphasized "old way" being described, not something the
+// section wants to draw the eye to. Right ("solution") column uses the
+// sitewide blue-600 signal color at full text-ink weight, so the eye lands
+// on the resolution of each pair, not the problem. Same muted-vs-signal
+// logic as the rest of the site's ink/paper/rail + blue-600/teal-600/
+// amber-500 system, just applied as a two-state contrast instead of
+// picking one of the three signal hues.
+//
+// Scroll-reveal: reuses the existing dp-reveal/dp-reveal-left/
+// dp-reveal-right system (see HowItWorks.astro's own script tag for the
+// same pattern) — problem column slides in from the left, solution column
+// from the right, mirroring the physical problem-left/solution-right
+// layout. No new CSS/keyframes — the floating chip below reuses the
+// existing global .chip-float-el bob animation from card-illustration.css.
+
+import { ArrowRight, X, Check, Layers } from 'lucide-astro';
+import SectionHeader from '../ui/SectionHeader.astro';
+
+const pairs = [
+  {
+    problem: 'Client files scattered across email, Drive, and WhatsApp.',
+    solution: 'Everything lives in one shared workspace.',
+  },
+  {
+    problem: 'Chasing signatures, invoices, and status updates by hand.',
+    solution: 'Proposals, contracts, and invoices move themselves.',
+  },
+  {
+    problem: 'Enterprise platforms charging per seat for tools you don\u2019t use.',
+    solution: 'One flat price, built for a freelancer of one.',
+  },
+];
+---
+
+<section id="the-shift" class="scroll-mt-20 relative bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+  <!-- Decorative floating chip, siblings of the header. Reuses the shared
+       chip-float-el idle-bob class (already global via global.css) rather
+       than inventing new motion for one chip — same pill/icon-chip styling
+       as HowItWorks.astro's floating chips (border-rail + bg-paper/90 +
+       shadow-sm + backdrop-blur-sm), just positioned relative to this
+       section's header instead of an illustration box. -->
+  <div class="pointer-events-none absolute right-4 top-8 hidden sm:right-8 sm:block lg:right-16">
+    <div class="chip-float-el inline-block">
+      <div class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-3 py-1.5 text-xs font-medium text-ink shadow-sm backdrop-blur-sm">
+        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+          <Layers class="h-3 w-3" stroke-width="2.2" />
+        </span>
+        No more app-switching
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-5xl">
+    <SectionHeader eyebrow="The Shift"
+      title="Stop Managing Client Work Across a Dozen Different Places."
+      subtitle="Huzlly gives freelancers one simple workspace to organize client work, share project information, and deliver a better client experience."
+    />
+
+    {/* Row-pair stack. `relative` gives the absolutely-positioned center
+        divider line below a positioning context that spans the full
+        height of every row, not just one. */}
+    <div class="relative mt-14">
+      <!-- Full-height center divider, desktop only, purely decorative —
+           a 1px column absolutely centered on the row-pairs container,
+           with a vertical gradient fade so it doesn't hard-cut at the
+           top/bottom edges of the stack. -->
+      <div
+        class="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 lg:block"
+        style="background: linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.3) 15%, rgba(37,99,235,0.3) 85%, transparent 100%);"
+        aria-hidden="true"
+      ></div>
+
+      {pairs.map((pair) => (
+        <div class="border-t border-rail py-10 first:border-t-0 first:pt-0 sm:py-12">
+          <div class="relative grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-center lg:gap-16">
+            {/* Problem column: muted "old way" treatment — bg-rail/40
+                icon chip + text-ink/40 glyph + text-ink/50 body copy,
+                deliberately lower-contrast than the solution column. */}
+            <div class="dp-reveal dp-reveal-left flex items-center gap-4">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rail/40 text-ink/40">
+                <X class="h-4 w-4" stroke-width="2.2" />
+              </span>
+              <p class="text-base leading-relaxed text-ink/50">{pair.problem}</p>
+            </div>
+
+            {/* Mobile connector: rotated 90deg, sits between the stacked
+                columns. Desktop connector below replaces this one via the
+                sm:hidden / lg:flex split. */}
+            <div class="flex items-center justify-center lg:hidden" aria-hidden="true">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full border border-rail bg-white shadow-sm">
+                <ArrowRight class="h-4 w-4 rotate-90 text-ink/40" stroke-width="2.2" />
+              </span>
+            </div>
+
+            {/* Solution column: full-contrast blue-600 signal treatment —
+                bg-blue-50 icon chip + text-blue-600 glyph + font-medium
+                full-ink body copy, this is the emphasized "new way". */}
+            <div class="dp-reveal dp-reveal-right flex items-center gap-4">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
+                <Check class="h-4 w-4" stroke-width="2.2" />
+              </span>
+              <p class="text-base font-medium leading-relaxed text-ink">{pair.solution}</p>
+            </div>
+
+            <!-- Desktop connector: absolutely centered on the row, on top
+                 of the seam between the two columns. Hidden below `lg:`
+                 in favor of the rotated inline connector above. -->
+            <div class="pointer-events-none absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" aria-hidden="true">
+              <span class="flex h-8 w-8 items-center justify-center rounded-full border border-rail bg-white shadow-sm">
+                <ArrowRight class="h-4 w-4 text-ink/40" stroke-width="2.2" />
+              </span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initScrollReveal } from '../../scripts/scroll-reveal';
+
+  initScrollReveal('#the-shift .dp-reveal', { completionFraction: 1 });
+</script>
