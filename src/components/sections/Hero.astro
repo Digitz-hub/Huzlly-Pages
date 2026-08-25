@@ -1,76 +1,67 @@
 ---
 // src/components/sections/Hero.astro
-// Homepage hero. Light iridescent-blue gradient background, glass-shape
-// HeroScatterDecoration (lg+ only), in-flow HeroDashboardPreview bento
-// grid below the CTAs. Nav.astro handles the nav bar separately.
+// Homepage hero. Solid blue-600 background, in-flow HeroDashboardPreview
+// bento grid below the CTAs. Nav.astro handles the nav bar separately.
 //
 // ⚠️ Open flag: the gradient stops (#FFFFFF/#EEF3FC/#D3E0F9) aren't
 // registered as DESIGN_SYSTEM.md tokens or in tailwind.config.mjs —
 // confirm whether to formalize these (e.g. `hero-wash-*`) instead of
 // leaving them as an arbitrary `bg-[linear-gradient(...)]` value.
-// ⚠️ Open flag: HeroScatterDecoration's internal glass-tint values were
-// tuned for an older pink/purple/teal wash and haven't been re-checked
-// against this current blue-only gradient — may need a follow-up tint
-// adjustment.
 
 import { ChevronRight } from 'lucide-astro';
 import HeroDashboardPreview from '../ui/HeroDashboardPreview.astro';
-import HeroScatterDecoration from '../ui/HeroScatterDecoration.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FFFFFF_0%,#EEF3FC_45%,#D3E0F9_100%)] flex flex-col items-center justify-center min-h-[85vh] px-4 pt-36 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-44 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-52">
-  <!-- Grain overlay, purely decorative. -z-[9] stays behind the scatter
-       decoration's -z-[5] within this section's `isolate` context. -->
+<section class="relative isolate overflow-hidden bg-blue-600 flex flex-col items-center justify-center min-h-[85vh] px-4 pt-36 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-44 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-52">
+  <!-- Grain overlay, purely decorative. -->
   <div class="hero-grain pointer-events-none absolute inset-0 -z-[9]" aria-hidden="true"></div>
 
   <!-- Fade-to-white so the gradient doesn't cut hard against the next
        section's solid white background. -->
   <div class="pointer-events-none absolute inset-x-0 bottom-0 -z-[7] h-48 bg-[linear-gradient(180deg,transparent_0%,transparent_35%,rgba(255,255,255,0.35)_60%,rgba(255,255,255,0.8)_80%,#FFFFFF_100%)] sm:h-64 lg:h-72" aria-hidden="true"></div>
 
-  <HeroScatterDecoration class="hidden lg:block" />
-
   <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
-      class="reveal inline-flex items-center gap-1.5 rounded-full border border-rail bg-white px-4 py-1.5
-             text-sm text-ink/70 shadow-sm transition-colors duration-200 ease-in-out hover:border-ink/20"
+      class="reveal inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5
+             text-sm text-white/80 shadow-sm transition-colors duration-200 ease-in-out hover:border-white/40"
     >
-      Closed beta, cohort 3 &middot; <span class="font-semibold text-blue-600">50 spots left</span>
-      <ChevronRight class="w-3.5 h-3.5 text-blue-600" stroke-width="2" />
+      Closed beta, cohort 3 &middot; <span class="font-semibold text-white">50 spots left</span>
+      <ChevronRight class="w-3.5 h-3.5 text-white" stroke-width="2" />
     </a>
 
-    <p class="reveal mt-6 text-sm text-ink/50">One workflow. Less admin.</p>
+    <p class="reveal mt-6 text-sm text-white/60">One workflow. Less admin.</p>
 
-    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-ink leading-[1.1]">
+    <h1 class="reveal mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
       One flow. Not five apps.
     </h1>
 
-    <p class="reveal mt-6 text-base sm:text-lg text-ink/70 leading-relaxed max-w-xl mx-auto">
+    <p class="reveal mt-6 text-base sm:text-lg text-white/80 leading-relaxed max-w-xl mx-auto">
       Huzlly is the lean alternative to a pile of freelance tools. Proposals, contracts, invoices,
       and projects &mdash; connected in one automatic flow, built for solo freelancers.
     </p>
 
     <div class="reveal mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
       <a href="/waitlist"
-        class="inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-5 py-2.5
-               text-sm font-semibold text-paper shadow-sm transition-all duration-200 ease-in-out
-               hover:bg-ink/90 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-2.5
+               text-sm font-semibold text-blue-600 shadow-sm transition-all duration-200 ease-in-out
+               hover:bg-white/90 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         Join the waitlist
       </a>
       <a href="#how-it-works"
-        class="inline-flex items-center justify-center gap-2 rounded-xl border border-rail bg-paper px-5 py-2.5
-               text-sm font-semibold text-ink shadow-sm transition-colors duration-200 ease-in-out
-               hover:bg-rail/20 hover:border-ink/30
-               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+        class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-2.5
+               text-sm font-semibold text-white shadow-sm transition-colors duration-200 ease-in-out
+               hover:bg-white/20 hover:border-white/50
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         See how it works
       </a>
     </div>
 
-    <p class="reveal mt-4 text-xs text-ink/50">Free to join. No credit card required.</p>
+    <p class="reveal mt-4 text-xs text-white/60">Free to join. No credit card required.</p>
 
-    <a href="/features" class="reveal mt-8 inline-block text-xs text-ink/50 underline underline-offset-4 hover:text-ink/70">
+    <a href="/features" class="reveal mt-8 inline-block text-xs text-white/60 underline underline-offset-4 hover:text-white/80">
       See what's inside
     </a>
   </div>
