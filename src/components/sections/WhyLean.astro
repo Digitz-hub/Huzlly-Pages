@@ -67,7 +67,15 @@ const quickWins = [
   below intentionally mirrors SectionHeader's type scale/eyebrow styling by
   hand so it still reads as the same header pattern, just left-aligned.
 -->
-<section class="bg-[linear-gradient(180deg,#EAF1FC_0%,#F2F7FE_60%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- Flat bg-white instead of the old blue-tinted top-to-bottom gradient
+     (#EAF1FC → #F2F7FE → #FFFFFF): with TheShift/HowItWorks also in the
+     blue-tint family, this section was blending into the same repeated
+     wash. A flat white backdrop differentiates it while staying neutral
+     — the single blue-600 card-glow inside the reasons cards (see that
+     block's own comment) is untouched, it's a separate deliberate choice.
+     `border-t border-rail` adds a thin seam at the top now that there's
+     no gradient to soften the transition from HowItWorks above. -->
+<section class="border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-5 lg:gap-12">
       <div class="lg:col-span-2">
