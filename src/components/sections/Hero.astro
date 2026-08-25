@@ -9,6 +9,7 @@
 // leaving them as an arbitrary `bg-[linear-gradient(...)]` value.
 
 import { ChevronRight, User } from 'lucide-astro';
+import HeroDotPattern from '../ui/HeroDotPattern.astro';
 ---
 
 <section class="relative isolate overflow-hidden flex flex-col items-center justify-center h-screen px-4 pt-36 pb-28 sm:px-6 sm:pt-44 sm:pb-40 lg:px-8 lg:pt-52">
@@ -17,6 +18,9 @@ import { ChevronRight, User } from 'lucide-astro';
 
   <!-- Grain overlay, purely decorative. Matches the blue region only. -->
   <div class="hero-grain pointer-events-none absolute inset-x-0 top-0 h-full -z-[9]" aria-hidden="true"></div>
+
+  <!-- Dot-matrix texture, purely decorative. Only visible at lg: and up. -->
+  <HeroDotPattern class="hidden lg:block" />
 
   <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
