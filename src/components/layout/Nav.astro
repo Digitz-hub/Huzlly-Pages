@@ -291,7 +291,7 @@ const isActive = (href: string) => {
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out will-change-transform">
   <div class="relative">
     <!-- Full-width blue bar -->
-    <div class="flex h-16 items-center justify-between bg-electric/80 backdrop-blur-lg px-6 shadow-sm sm:h-20 sm:px-10">
+    <div id="site-header-bar" class="flex h-16 items-center justify-between backdrop-blur-lg px-6 shadow-sm shadow-white sm:h-[50px] sm:px-10">
       <!-- Left: Brand -->
       <a href="/"
         class="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-2xl"
@@ -392,24 +392,36 @@ const isActive = (href: string) => {
 
   // Hide-on-scroll-down / show-on-scroll-up for the fixed header.
   const header = document.getElementById('site-header');
+  const headerBar = document.getElementById('site-header-bar');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (header && !prefersReducedMotion) {
     const TOP_THRESHOLD = 50; // px — always show near the very top of the page
     const DELTA_THRESHOLD = 5; // px — ignore tiny sub-pixel scroll jitter
+    const SCROLLED_BG_CLASS = 'bg-electric/80';
 
     let lastScrollY = window.scrollY;
     let ticking = false;
+    // Tracks whether the header has been hidden via scroll-down at least
+    // once. Until that first hide happens, the bar background stays fully
+    // transparent — even while showHeader() runs due to TOP_THRESHOLD.
+    // Only after a genuine hide-then-reshow does the bar pick up its
+    // scrolled background fill.
+    let hasHiddenOnce = false;
 
     const isMobileMenuOpen = () =>
       !!mobileMenu && !mobileMenu.classList.contains('hidden');
 
     const showHeader = () => {
       header.style.transform = 'translateY(0)';
+      if (headerBar && hasHiddenOnce) {
+        headerBar.classList.add(SCROLLED_BG_CLASS);
+      }
     };
 
     const hideHeader = () => {
       header.style.transform = 'translateY(-150%)';
+      hasHiddenOnce = true;
     };
 
     const update = () => {
