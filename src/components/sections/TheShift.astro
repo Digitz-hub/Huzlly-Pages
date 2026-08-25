@@ -113,7 +113,7 @@ const checklist = [
         image column from the right, matching this section's existing
         left-content/right-visual convention rather than one shared
         `dp-reveal-up` on the whole panel. */}
-    <div class="relative mt-10 grid overflow-hidden rounded-2xl border border-rail bg-white lg:mt-12 lg:grid-cols-2 lg:items-stretch">
+    <div class="relative mt-10 grid overflow-hidden rounded-2xl border border-rail bg-blue-50 lg:mt-12 lg:grid-cols-2 lg:items-stretch">
       <div class="dp-reveal dp-reveal-left flex flex-col justify-center p-8 sm:p-10 lg:p-12">
         <Badge variant="beta" class="w-fit">Featured Solution</Badge>
 
@@ -146,6 +146,14 @@ const checklist = [
           alt="Freelancer viewing client projects, tasks, and invoices together in the Huzlly workspace"
           class="absolute inset-0 h-full w-full object-cover"
         />
+        <svg
+          class="pointer-events-none absolute inset-y-0 left-0 z-10 hidden h-full w-24 lg:block"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d="M0,0 C50,10 50,90 0,100 L0,0 Z" fill="#eff6ff" />
+        </svg>
       </div>
     </div>
   </div>
