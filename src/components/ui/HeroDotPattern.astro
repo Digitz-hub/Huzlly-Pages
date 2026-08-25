@@ -11,9 +11,10 @@
 // current solid `bg-electric` dark background. This file reuses only its
 // conventions (see below), not its markup or colors.
 //
-// COLOR: white only, low opacity (~10-15%), so the dots read as a subtle
-// texture against bg-electric (#3B4EFF) rather than a graphic. No new
-// color tokens introduced.
+// COLOR: white only, opacity in the ~18-24% range — clearly noticeable
+// as a texture against bg-electric (#3B4EFF) without competing with the
+// content column. (Bumped up from an earlier, too-subtle ~10-15% pass.)
+// No new color tokens introduced.
 //
 // VISIBILITY: like HeroScatterDecoration.astro, the `lg:`-only visibility
 // toggle is NOT hardcoded in this file — the consumer (Hero.astro) applies
@@ -23,13 +24,22 @@
 // TEXT-COLUMN CLEARANCE: Hero.astro centers its content in a `max-w-2xl`
 // (672px) column with no max-width on the `<section>` itself. At the
 // narrowest width this component ever renders (`lg:` = 1024px), that
-// column spans roughly 17%-83% of the viewport. Both clusters below sit
-// within the outer ~-3% to ~20% margins on their respective side (one
-// hugging the left edge, its mirror hugging the right), and each cluster's
-// dot-visible area is itself faded out via a radial mask well before its
-// bounding box's inner edge — so the effective dot texture clears the
-// column with room to spare at 1024px and only gains clearance as the
-// viewport widens further.
+// column spans roughly 17%-83% of the viewport. Every cluster below —
+// on both sides — sits within the outer ~-4% to ~20% margin on its
+// respective side (left-side clusters hug the left edge, right-side
+// clusters hug the right edge), and each cluster's dot-visible area is
+// itself faded out via a radial mask well before its bounding box's
+// inner edge — so the effective dot texture clears the column with room
+// to spare at 1024px and only gains clearance as the viewport widens
+// further. Only the horizontal placement is constrained this way; the
+// clusters are free to vary vertically (see "COVERAGE" below) since the
+// text column's clearance is purely a left/right concern.
+//
+// COVERAGE: four clusters per side (eight total), staggered across the
+// section's full height — not just the two original corners — so the
+// texture reads continuously from top to bottom on both margins. Sizes
+// and opacities are varied per cluster (see markup) for a natural,
+// non-repetitive scatter rather than a uniform repeated tile.
 //
 // STACKING ORDER: positioned at `-z-[5]`, matching HeroScatterDecoration's
 // documented reasoning — less negative than the `.hero-grain` overlay's
@@ -37,9 +47,10 @@
 // front of it), while still sitting behind the in-flow, un-z-indexed
 // content column.
 //
-// Asymmetric-but-balanced layout: a smaller cluster near the top-left,
-// a larger mirrored cluster near the bottom-right — same composition idea
-// as the reference (inertiajs.com), not a literal copy.
+// Asymmetric-but-balanced layout: four clusters per side, alternating
+// varied sizes and opacities top-to-bottom, same composition idea as the
+// reference (inertiajs.com) — organic and scattered, not a literal copy
+// and not a uniform grid.
 //
 // Implementation: CSS `radial-gradient` for the repeating dot grid, with
 // a second radial-gradient used as a `mask-image` so each cluster fades
@@ -60,19 +71,26 @@ const { class: className } = Astro.props;
   class:list={['pointer-events-none absolute -z-[5] inset-0', className]}
   aria-hidden="true"
 >
-  <!-- Top-left cluster — smaller, hugs the left edge. -->
-  <div class="hero-dot-cluster absolute top-[12%] left-[-3%] h-56 w-56 opacity-10"></div>
+  <!-- Left side, top-to-bottom. -->
+  <div class="hero-dot-cluster absolute top-[4%] left-[-4%] h-64 w-64 opacity-20"></div>
+  <div class="hero-dot-cluster absolute top-[28%] left-[-2%] h-52 w-52 opacity-[0.18]"></div>
+  <div class="hero-dot-cluster absolute bottom-[28%] left-[-3%] h-72 w-72 opacity-[0.22]"></div>
+  <div class="hero-dot-cluster absolute bottom-[4%] left-[-2%] h-60 w-60 opacity-20"></div>
 
-  <!-- Bottom-right cluster — larger, mirrored to the right edge. -->
-  <div class="hero-dot-cluster absolute bottom-[10%] right-[-4%] h-72 w-72 opacity-[0.12]"></div>
+  <!-- Right side, top-to-bottom — mirrored, varied sizes/opacities so it
+       doesn't read as a literal duplicate of the left column. -->
+  <div class="hero-dot-cluster absolute top-[8%] right-[-3%] h-60 w-60 opacity-[0.19]"></div>
+  <div class="hero-dot-cluster absolute top-[32%] right-[-4%] h-80 w-80 opacity-[0.24]"></div>
+  <div class="hero-dot-cluster absolute bottom-[24%] right-[-2%] h-56 w-56 opacity-[0.18]"></div>
+  <div class="hero-dot-cluster absolute bottom-[2%] right-[-3%] h-64 w-64 opacity-[0.22]"></div>
 </div>
 
 <style>
   /* Small repeating white dots, softened at the edges by a radial mask
      so the cluster reads as an organic blob rather than a dot-filled
-     rectangle. Dot color is fully opaque white; the ~10-15% opacity
+     rectangle. Dot color is fully opaque white; the ~18-24% opacity
      comes from each cluster div's Tailwind opacity-* utility above, so
-     there's a single source of truth for the "how subtle" knob. */
+     there's a single source of truth for the "how visible" knob. */
   .hero-dot-cluster {
     background-image: radial-gradient(circle, #fff 1px, transparent 1.6px);
     background-size: 14px 14px;
