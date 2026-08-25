@@ -94,26 +94,20 @@ const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity:
 // gap/font/icon size step down one notch so chips don't crowd each other
 // or the illustration on narrow phones (<400px).
 //
-// Untilt-chips split (this pass): each chip is now three nested elements
-// instead of one, so its three motion sources never fight over the same
-// element's `transform` — see the per-chip markup below for why each
-// needs its own layer:
-//   1. position layer  — absolute + chip.position + dp-reveal/direction
+// Each chip is three nested elements instead of one, so its motion
+// sources never fight over the same element's `transform` — see the
+// per-chip markup below for why each needs its own layer:
+//   1. position layer  — absolute + chip.position
 //   2. float layer      — chip-float-el (the idle bob keyframe animation)
 //   3. pill layer        — chipClasses below + the hover-scale utilities
-// `chipClasses` now holds ONLY the visual-pill + inner-layout styling
-// (no more `chip-float-el`, `pointer-events-none`, or `absolute` — those
-// moved to the position/float layers). Two motion sources can't safely
-// share an element here: `.dp-reveal-left/-right`'s `!important` transform
-// (see scroll-reveal.css) would silently freeze `chip-float-el`'s
-// keyframe-driven transform if they were on the same element (identical
-// mechanism to the Card.astro hover conflict documented there), and
-// separately, a running CSS animation always overrides a same-property
-// `:hover` transform on its own element regardless of specificity (author
-// !important aside) — so `chip-float-el` and `hover:scale-*` can't safely
-// share an element either. Three layers, three separate transforms,
-// composing visually through normal parent/child nesting instead of all
-// fighting for one `transform` property.
+// `chipClasses` holds ONLY the visual-pill + inner-layout styling (no
+// `chip-float-el`, `pointer-events-none`, or `absolute` — those live on
+// the position/float layers). A running CSS animation always overrides a
+// same-property `:hover` transform on its own element regardless of
+// specificity (author !important aside) — so `chip-float-el` and
+// `hover:scale-*` can't safely share an element. Three layers, three
+// separate transforms, composing visually through normal parent/child
+// nesting instead of all fighting for one `transform` property.
 const chipClasses =
   'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-medium text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
 const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
@@ -122,16 +116,13 @@ const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
 // One `chips` entry (Grow stage's "Repeat Work") uses a `translate-x-*`
 // utility inside its `position` string (`bottom-4 left-1/2
 // -translate-x-1/2`, for centering under a `left-1/2` anchor) — a
-// transform, same as `dp-reveal-left/-right`'s `!important` transform.
-// Unlike the chip-float-el/hover-scale case above, this one can't just
-// move to its own layer arbitrarily: it has to land on the pill layer
-// specifically (chipClasses' element), not the position layer, because
-// Tailwind's translate/scale utilities all compose into one `transform`
-// via shared `--tw-*` custom properties — so `-translate-x-1/2` sitting
-// alongside `hover:scale-105` on that same pill layer composes safely
-// (translate + hover-scale both apply together), whereas putting it on
-// the position layer would collide with `dp-reveal-left/-right`'s
-// hardcoded `!important` transform the same way `hover:scale-*` would.
+// transform. It can't just stay on the position layer arbitrarily: it
+// has to land on the pill layer specifically (chipClasses' element),
+// because Tailwind's translate/scale utilities all compose into one
+// `transform` via shared `--tw-*` custom properties — so
+// `-translate-x-1/2` sitting alongside `hover:scale-105` on that same
+// pill layer composes safely (translate + hover-scale both apply
+// together).
 // This helper splits any transform-utility tokens out of a chip's
 // `position` string so they land on the pill layer while plain offset
 // tokens (left/right/top/bottom/inset-*) stay on the position layer.
@@ -238,54 +229,29 @@ const stages = [
       used — `signalStyles`, `chipClasses`, `chipIconWrapClasses`,
       `chipIconGlyphClasses`, and each stage's `illustration`/`chips`
       fields are unchanged, just reconnected inside the new row layout
-      instead of inside a Card. Reveal direction is now always
-      `dp-reveal-right` for every row (it used to alternate by row index,
-      matching the zigzag) — since the illustration column is always on
-      the right now, sliding in from the right is the only direction that
-      still makes sense.
+      instead of inside a Card.
 
-      Untilt-chips split (this pass): the illustration box is no longer
-      one `js-tilt-card` div wrapping everything — it's now an outer
-      `relative` box (no tilt/reveal of its own) holding two kinds of
-      children: the glow + `<Illustration />`, wrapped in their own
-      `js-tilt-card`+`dp-reveal` div; and the chips, as siblings of that
-      div instead of children of it. Chips previously tilted rigidly with
-      the illustration since they shared its `js-tilt-card`; now they sit
-      outside it, so mouse-tilt only ever applies to the illustration.
-      Each chip still gets its own `dp-reveal`/`dp-reveal-left`/
-      `dp-reveal-right` scroll-in (not just the illustration), plus an
-      idle float and a hover-grow — see the `chipClasses` comment near
-      the top of this file for why each chip needs 3 nested layers
-      instead of 1 to keep those three transforms from fighting each
-      other. Not on the row wrapper and not on the text column, which
-      both stay static per prior decision.
+      Chips split: the illustration box is an outer `relative` box holding
+      two kinds of children: the glow + `<Illustration />` in their own
+      wrapper div, and the chips, as siblings of that div instead of
+      children of it — see the `chipClasses` comment near the top of this
+      file for why each chip needs 3 nested layers instead of 1 to keep
+      the idle-float and hover-grow transforms from fighting each other.
+      Not on the row wrapper and not on the text column, which both stay
+      static per prior decision.
     */}
     <div class="mt-14">
       {stages.map((step, index) => {
         const s = signalStyles[step.signal];
         const Illustration = step.illustration;
-        // Always slides in from the right now that the illustration
-        // column is always on the right (see the layout note above) — no
-        // longer alternates by row index.
-        const revealDirection = 'dp-reveal-right';
 
         return (
           <div class="border-t border-rail py-14 first:border-t-0 first:pt-0 sm:py-16">
             <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-              {/* Text column: ~60% width on desktop. Column itself has no
-                  reveal/tilt classes and doesn't move — it's static. */}
+              {/* Text column: ~60% width on desktop. Column itself
+                  doesn't move — it's static. */}
               <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
-                {/* Number + accent-dash wrapper: reveals via the same
-                    `#how-it-works .dp-reveal` call as the illustration
-                    below, via `dp-reveal-left` — slides/fades in from the
-                    left to mirror the illustration column's slide-in from
-                    the right (`dp-reveal-right`). Headline/body no longer
-                    stay static: each now blurs into focus independently
-                    via `dp-reveal-blur` (own `dp-reveal`, so each tracks
-                    its own scroll progress via the same `#how-it-works
-                    .dp-reveal` call, rather than sharing one block's
-                    progress) — no slide/rise, just fade+blur-to-sharp. */}
-                <div class="dp-reveal dp-reveal-left flex items-center gap-4">
+                <div class="flex items-center gap-4">
                   <span
                     class="font-display text-7xl font-semibold leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-8xl"
                   >
@@ -298,47 +264,30 @@ const stages = [
                   ></span>
                 </div>
 
-                <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl dp-reveal dp-reveal-blur">{step.headline}</h3>
+                <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">{step.headline}</h3>
 
-                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70 dp-reveal dp-reveal-blur">{step.body}</p>
+                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">{step.body}</p>
               </div>
 
-              {/* Illustration column: ~40% width on desktop. `js-tilt-card`
-                  lives on the illustration wrapper two levels down (see
-                  below), scoped to just the glow+Illustration, not the
-                  row/text column and not the chips — same reasoning as
-                  the prior Card-based version (see the <script> comment
-                  below): `tilt-card.ts` sets `transform` directly on
-                  mousemove, and detects `dp-reveal` on that same element
-                  to switch to writing `--tilt-rx/-ry/-scale` custom
-                  properties instead so `scroll-reveal.css`'s
-                  `.dp-reveal-left/-right` rules can compose the slide-in
-                  translate with the live tilt. No `overflow-hidden`/
-                  `rounded-xl`/background anywhere in this column (per
-                  explicit direction) — there's no visible boxed container
-                  around the glow/illustration/chips, so the glow-pulse-el
-                  blur bleeds outward past the old box edges instead of
-                  being clipped to them; `relative` on the outer box below
-                  still gives the glow/illustration/chips their shared
-                  positioning context. */}
+              {/* Illustration column: ~40% width on desktop. No
+                  `overflow-hidden`/`rounded-xl`/background anywhere in
+                  this column (per explicit direction) — there's no
+                  visible boxed container around the glow/illustration/
+                  chips, so the glow-pulse-el blur bleeds outward past the
+                  old box edges instead of being clipped to them;
+                  `relative` on the outer box below still gives the
+                  glow/illustration/chips their shared positioning
+                  context. */}
               <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
-                {/* Outer box: just the positioning context + sizing now —
-                    no tilt, no reveal of its own. Holds two kinds of
-                    children: the tilt+reveal illustration wrapper below,
-                    and the chips (siblings of it, not descendants), so
-                    the chips no longer inherit the illustration's
-                    mouse-tilt rotation. */}
+                {/* Outer box: just the positioning context + sizing.
+                    Holds two kinds of children: the illustration wrapper
+                    below, and the chips (siblings of it, not
+                    descendants). */}
                 <div class="relative h-56 sm:h-64 lg:h-72">
-                  {/* Illustration wrapper: keeps js-tilt-card + dp-reveal
-                      together (tilt-card.ts requires both on the same
-                      element — see its `classList.contains('dp-reveal')`
-                      check — to compose tilt into the reveal transform
-                      instead of fighting it). `absolute inset-0` fills
-                      the outer box exactly like the old single div's own
+                  {/* Illustration wrapper: `absolute inset-0` fills the
+                      outer box exactly like the old single div's own
                       `h-56 sm:h-64 lg:h-72` did, just one level down. */}
-                  <div
-                    class={`dp-reveal ${revealDirection} js-tilt-card absolute inset-0`}
-                  >
+                  <div class="absolute inset-0">
                     <span
                       class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
                       style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
@@ -348,19 +297,16 @@ const stages = [
                     <Illustration />
                   </div>
 
-                  {/* Chips: siblings of the tilt/illustration wrapper, so
-                      they float independently instead of tilting rigidly
-                      with it. Each is 3 nested layers — see the
-                      `chipClasses`/`splitChipPosition` comments above for
-                      why, and why a chip's own `position` string gets
-                      split across two of those layers rather than sitting
-                      on one. */}
+                  {/* Chips: siblings of the illustration wrapper, so they
+                      float independently of it. Each is 3 nested layers —
+                      see the `chipClasses`/`splitChipPosition` comments
+                      above for why, and why a chip's own `position`
+                      string gets split across two of those layers rather
+                      than sitting on one. */}
                   {step.chips.map((chip) => {
                     const { offset, transform } = splitChipPosition(chip.position);
                     return (
-                      <div
-                        class:list={['pointer-events-none absolute', offset, 'dp-reveal', revealDirection]}
-                      >
+                      <div class:list={['pointer-events-none absolute', offset]}>
                         <div class="chip-float-el inline-block" style={`animation-delay: ${chip.delay}`}>
                           <div class:list={[chipClasses, transform]}>
                             <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
@@ -381,78 +327,3 @@ const stages = [
     </div>
   </div>
 </section>
-
-<!-- Mouse-follow 3D tilt + scroll-scrub reveal — see the `js-tilt-card`
-     and `dp-reveal`/`dp-reveal-left`/`dp-reveal-right` notes on the
-     illustration box above. Both scoped to just those 4 illustration
-     boxes (`#how-it-works .dp-reveal` / `#how-it-works .js-tilt-card`),
-     not the row wrapper, not the text column. tilt-card.ts / scroll-reveal.ts
-     themselves are unchanged (out of scope for this pass) — same
-     extraction pattern, both reused as-is from HeroDashboardPreview.
-
-     `initScrollReveal` below is now TWO separate calls instead of one,
-     split by selector so the headline/body blur-to-focus reveal can
-     complete on its own schedule without touching every other
-     `.dp-reveal` element in this section:
-       1. `'#how-it-works .dp-reveal:not(.dp-reveal-blur)'` at
-          `completionFraction: 1` — the number/dash wrapper's
-          `dp-reveal-left`, the illustration box's `dp-reveal-right`, and
-          the chips' `dp-reveal-left`/`dp-reveal-right`. Unchanged from
-          before this split — these still only reach their fully-revealed
-          state once their center crosses viewport-center, exactly as
-          when a single shared call covered all `.dp-reveal` elements here.
-       2. `'#how-it-works .dp-reveal-blur'` at `completionFraction: 0.5` —
-          only the stage `<h3>`/`<p>` blur-to-focus elements from the
-          `stages.map(...)` loop above. These now sharpen into full focus
-          once their center has covered 50% of the bottom→center scroll
-          distance, i.e. noticeably before reaching viewport-center, so
-          the headline/body text is legible sooner as the card scrolls
-          into view instead of staying blurred until dead-center like the
-          rest of the card's reveal elements.
-
-     Tilt intensity (`maxTilt`/`scale`) is bumped above the library
-     defaults for just the `initTiltCard` call — see the note on that
-     call itself below for the current values and why.
-
-     `initTiltCard` below is scoped to `'#how-it-works .js-tilt-card'`
-     rather than the bare `.js-tilt-card` class — this illustration box
-     has no background/border/overflow-hidden anymore (per the earlier
-     change that let the glow spread freely instead of being boxed in),
-     so tilt-card.ts's directional lifted box-shadow (see its own header
-     comment) would otherwise render as a stray visible rectangle with
-     nothing else to justify it. `{ shadowMaxOffset: 0, shadowBlur: 0 }`
-     zeroes that shadow out for just this call (tilt-card.ts always writes
-     SOME box-shadow value — see `applyTilt`/`resetTilt` — so 0/0 is what
-     makes it fully invisible rather than omitting the option, which would
-     fall back to the 22px/36px defaults). Scoping the selector to
-     `#how-it-works` also means any options change here can't affect any
-     other `.js-tilt-card` element elsewhere on the site (e.g.
-     HeroDashboardPreview), which still gets its own call with the
-     library defaults.
-
-     `maxTilt: 38.25` / `scale: 1.25` (this call only, per explicit request
-     for a more pronounced hover effect on just this illustration box) —
-     `maxTilt` up from the library default of 10, via two successive 50%
-     bumps through intermediate values of 17 then 25.5. Note this is now
-     well past a subtle "follow the cursor" tilt — worth eyeballing in
-     the browser at this value, since tilt-card.ts's rotation is
-     `maxTilt * 2` at the pointer's extremes (see `applyTilt`), so 38.25
-     here means roughly +/-76.5deg of rotation at the edges of the box.
-     `trackMs: 320` / `leaveMs: 850` (also this call only, up from the
-     defaults of 150 / 600) — the larger scale/tilt read as snappy at the
-     default timings, so both the hover-in engage and the leave-reset are
-     slowed down to feel smooth rather than instant; `leaveMs` stays
-     noticeably longer than `trackMs` (as in the library default's own
-     150/600 ratio) so the reset-to-flat still reads as an "ease out"
-     rather than snapping back as fast as it engaged. `perspective` is
-     untouched (default 800px). Per the scoping above, none of this can
-     touch any other `.js-tilt-card` caller. tilt-card.ts itself is
-     unchanged. -->
-<script>
-  import { initTiltCard } from '../../scripts/tilt-card';
-  import { initScrollReveal } from '../../scripts/scroll-reveal';
-
-  initTiltCard('#how-it-works .js-tilt-card', { maxTilt: 38.25, scale: 1.25, trackMs: 320, leaveMs: 850, shadowMaxOffset: 0, shadowBlur: 0 });
-  initScrollReveal('#how-it-works .dp-reveal:not(.dp-reveal-blur)', { completionFraction: 1 });
-  initScrollReveal('#how-it-works .dp-reveal-blur', { completionFraction: 0.5 });
-</script>
