@@ -12,9 +12,12 @@ import { ChevronRight } from 'lucide-astro';
 import HeroDashboardPreview from '../ui/HeroDashboardPreview.astro';
 ---
 
-<section class="relative isolate overflow-hidden bg-blue-600 flex flex-col items-center justify-center min-h-[85vh] px-4 pt-36 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-44 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-52">
-  <!-- Grain overlay, purely decorative. -->
-  <div class="hero-grain pointer-events-none absolute inset-0 -z-[9]" aria-hidden="true"></div>
+<section class="relative isolate overflow-hidden flex flex-col items-center justify-center min-h-[85vh] px-4 pt-36 pb-28 sm:min-h-[90vh] sm:px-6 sm:pt-44 sm:pb-40 lg:min-h-screen lg:px-8 lg:pt-52">
+  <!-- Top 60% blue background; bottom 40% stays white with a hard edge. -->
+  <div class="absolute inset-x-0 top-0 h-[60%] -z-10 bg-blue-600" aria-hidden="true"></div>
+
+  <!-- Grain overlay, purely decorative. Matches the blue region only. -->
+  <div class="hero-grain pointer-events-none absolute inset-x-0 top-0 h-[60%] -z-[9]" aria-hidden="true"></div>
 
   <div class="relative mx-auto max-w-2xl text-center">
     <a href="/waitlist"
