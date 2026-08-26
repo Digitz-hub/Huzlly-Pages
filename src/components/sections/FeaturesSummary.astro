@@ -1,38 +1,5 @@
 ---
 // src/components/sections/FeaturesSummary.astro
-// Homepage features summary: the four-stage lifecycle explained in card
-// form, plus a short "why lean, not bloated" strip pulled from the same
-// positioning used in FAQAccordion's Comparisons category. Deep-dive
-// copy stays on /features — this is the summary version.
-//
-// v2.1 card redesign (per user-supplied inspiration, CLAUDE.md Section 4.5):
-// "how it works" cards move from the plain icon-chip layout to a numbered-
-// badge + headline + bespoke per-card SVG illustration + floating chip
-// layout. Structure/composition is from the inspiration reference
-// (huzlly-how-it-works.html); palette stays on the sitewide ink/paper/rail
-// + signal-color system so it reads as this site's design language, not a
-// copy-pasted foreign look. Each card's illustration lives in its own
-// component under ./how-it-works/ (GetStartedIllustration.astro,
-// WorkIllustration.astro, GetPaidIllustration.astro, GrowIllustration.astro)
-// — the shared Card/badge/headline/glow/chip/description markup below is
-// written once and driven by the `stages` data array.
-//
-// Content note: copy moves from the granular automation-trigger framing
-// (Proposal/Contract/Invoice/Project) to a 4-stage lifecycle framing
-// (Get Started/Work/Get Paid/Grow), per explicit user direction — this is
-// a deliberate content decision made with awareness that it diverges from
-// SITE_IDENTITY_AND_AEO.md's canonical flow language; AEO/schema follow-up
-// is being handled separately by the user, not silently reconciled here.
-//
-// Color note: the design system only defines three approved signal colors
-// (blue-600 / teal-600 / amber-500) — see AutomationNotificationCard.astro's
-// comment. Card 04 ("Grow") originally used the neutral ink/rail treatment
-// instead of inventing a new hue, flagged per CLAUDE.md Section 3.
-// User then explicitly requested Card 04 use a distinct color (green-600,
-// from Tailwind's default palette) instead of the neutral ink treatment —
-// this does deviate from AutomationNotificationCard.astro's 3-signal-color
-// convention, per the user's direct instruction, not silently reconciled
-// here. If that convention gets revisited, this card is the one to check.
 
 import {
   FileText,
