@@ -1,219 +1,68 @@
 ---
 // src/components/ui/HeroScatterDecoration.astro
-// Purely decorative scattered-shape layer for the hero. SUPERSEDES the
-// previous white/paper-toned starfield version — that pass is fully
-// replaced, not layered alongside this one (per the standing "one
-// decorative pattern per component" rule)
+// Purely decorative full-bleed hero layer. SUPERSEDES the previous
+// "glass/chrome" scattered-panel version (six frosted, tinted, floating
+// panels driven by float-animation.css) — that pass is fully replaced,
+// not layered alongside this one, per the standing "one decorative
+// pattern per component" rule.
 //
-// Source: converted from an approved static HTML preview
-// (`hero-scatter-preview.html`) showing five floating "glass/chrome"
-// panels — soft frosted rectangles with a highlight streak and a subtle
-// color tint on select shapes — toggleable in the preview between a dark
-// and a light hero background. Only the LIGHT-background version is
-// built here: Hero.astro's background is moving to the light iridescent
-// gradient per the redesign plan, so this component targets that end
-// state. (No dark-mode variant exists in this file — if the dark
-// background ships instead, this file needs a follow-up pass, not a
-// runtime toggle; the preview's toggle bar and "headline sits here"
-// label were both preview-only scaffolding and are not present below.)
+// This is now an animated starfield/warp-tunnel effect: a full-bleed
+// `<canvas>` rendered and driven by `src/scripts/heroStarfield.ts`, which
+// is a vanilla-TS port of the "Glitter Wrap" Originkit/Framer component
+// (glittering sparkle flashes streaming toward/away from the viewer).
+// This project has no React and no Framer runtime, so only the actual
+// canvas simulation/rendering algorithm was ported over — see that
+// file's own header comment for the full breakdown of what was kept vs.
+// stripped.
 //
-// DESIGN SYSTEM NOTE (per CLAUDE.md Section 4.5 — Per-Page
-// Inspiration-Driven Design): the approved preview is the authoritative
-// design source for THIS component's shape language (frosted-glass
-// panels), which is not one of DESIGN_SYSTEM.md Section 7.5's approved
-// decorative patterns — that override is expected and is not flagged as
-// a deviation, per 4.5's explicit instruction. What still stays fixed
-// per 4.5's own carve-out: the three signal colors below are exactly
-// DESIGN_SYSTEM.md's approved blue-600/teal-600/amber-500 tokens (no new
-// tint hues introduced), and every zero-tolerance process rule in
-// CLAUDE.md Sections 1/2/5 (layout ownership, no inline style, full-file
-// delivery, etc.) still applies in full.
+// POSITIONING: unlike the previous panel version (which hugged the
+// section's padded content box via `top-24 sm:top-28 lg:top-32` /
+// `bottom-28 sm:bottom-40` offsets, since those panels needed clearance
+// from the header/footer edges of the hero's own padding), this canvas
+// is `absolute inset-0` — full-bleed across the entire parent `<section>`,
+// same convention HeroDotPattern.astro already uses for its own full-bleed
+// texture layer. A warp-tunnel effect reads correctly filling the whole
+// stage, not clipped to an inset content box.
 //
-// Colors/materials: shape fill is a `bg-white` gradient (white is
-// already a sanctioned base tone in DESIGN_SYSTEM.md Section 4's
-// bg-paper/bg-white section-background rhythm) at varying opacity to
-// read as frosted glass; select shapes carry a color-tint overlay using
-// only the three approved signal tokens (blue-600, teal-600, amber-500).
-// Nothing here is an inline style="..." attribute — all variation is
-// Tailwind utility classes, standard-scale values, or (for keyframe
-// animation only, same as the previous starfield file) a <style> block.
+// STACKING ORDER: kept at `-z-[5]`, same value the previous panel wrapper
+// used and matching HeroDotPattern.astro's own documented reasoning —
+// less negative than the `.hero-grain` overlay's `-z-[9]` (grain paints
+// furthest back, this layer paints just in front of it), while still
+// sitting behind the in-flow, un-z-indexed content column and behind
+// HeroDotPattern (per Hero.astro's DOM order: grain → this starfield →
+// HeroDotPattern → content).
 //
-// TEXT-COLUMN CLEARANCE: Hero.astro centers its content in a `max-w-2xl`
-// column with no max-width on the `<section>` itself. Like the previous
-// version, this component only renders at `lg:` and up (applied by the
-// consumer via `class="hidden lg:block"` on Hero.astro's usage of this
-// component, not hardcoded here) — so the narrowest viewport is 1024px,
-// where the centered column spans ~17%–83%. Every shape below sits
-// within roughly -6% to 6% of the left/right edges (per the approved
-// preview's own edge-hugging placements), well clear of that column at
-// every `lg:`+ width.
+// MOTION: respects `prefers-reduced-motion: reduce` the same way
+// Hero.astro's own `<script>` block does (checking
+// `window.matchMedia('(prefers-reduced-motion: reduce)').matches`) —
+// `heroStarfield.ts`'s `initHeroStarfield` draws a single static frame
+// and never starts the animation loop when that preference is set,
+// rather than continuously animating.
 //
-// WRAPPER CLEARANCE — CORRECTED, NOT JUST COPIED: the previous starfield
-// file's wrapper used `top-40 sm:top-48 lg:top-56`, matching a padding
-// scale Hero.astro's <section> used to have. Hero.astro's own history
-// (see its "PILL → FULL-WIDTH BAR" pass comment) shows that top padding
-// was later tightened to `pt-24 sm:pt-28 lg:pt-32` — the starfield
-// file's top offset was never updated to match and is stale. Copying
-// those old top-40/48/56 values forward here would reintroduce the
-// exact header-clearance bug this wrapper exists to prevent, just with
-// wrong numbers pointed at padding that no longer exists. This file uses
-// `top-24 sm:top-28 lg:top-32`, matching Hero.astro's <section> padding
-// as it actually stands today. Bottom offset (`bottom-28 sm:bottom-40`)
-// matches Hero.astro's unchanged `pb-28 sm:pb-40` and needed no
-// correction. Same underlying logic as before either way: positioned
-// against the section's real padded content box, never `inset-0`.
-//
-// STACKING ORDER: kept at `-z-[5]`, matching the previous file and
-// Hero.astro's own explicit comment that this layer must sit less
-// negative than the hero-grain layer's `-z-[9]` (so grain paints first/
-// furthest back, this shape layer paints just in front of it, both
-// still behind the `z-auto` in-flow content). This is NOT swapped for a
-// standard `-z-10` utility: `-z-10` is more negative than `-z-[9]` and
-// would flip the intended paint order, putting these shapes behind the
-// grain instead of in front of it. Flagged per the "don't quietly
-// invent a value" rule, but this bracket value is preserved deliberately
-// (it encodes real cross-component stacking order, not a free
-// decorative choice) rather than replaced.
+// VISIBILITY: like the previous version, the `lg:`-only visibility
+// toggle is NOT hardcoded here — the consumer (Hero.astro) applies
+// `class="hidden lg:block"` on this component's usage, which flows into
+// the `class` prop below and lands on the wrapper.
 
 export interface Props {
   class?: string;
 }
 
 const { class: className } = Astro.props;
-
-// ⚠️ Flags (per CLAUDE.md Section 3 "stop and flag" rule) — visual
-// effects from the preview that don't map cleanly onto an existing
-// Tailwind utility or a DESIGN_SYSTEM.md token, and how each was
-// resolved instead of silently inventing a new value:
-//
-// 1. Panel box-shadow: the preview uses a custom tinted, multi-layer
-//    shadow (large soft drop shadow + two inset highlight/shading
-//    layers) with hand-picked rgba stops. Tailwind has no utility for a
-//    custom-color drop shadow or a dual inset shadow without arbitrary
-//    values. Resolved to the nearest STANDARD shadow scale step,
-//    `shadow-2xl`, and the inset highlight/shading layers were dropped
-//    rather than approximated with bracket syntax. Visual effect is
-//    close but flatter than the preview's glass depth — worth a design
-//    check before shipping if that depth matters.
-// 2. Panel corner radius: preview uses a fixed 18px. Nearest standard
-//    Tailwind step is `rounded-2xl` (16px), which also matches this
-//    design system's existing Card radius convention (DESIGN_SYSTEM.md
-//    Section 3), so it was used both as the closest match and as the
-//    more "in-system" choice over an arbitrary `rounded-[18px]`.
-// 3. Panel width/height: preview uses exact pixel dimensions (e.g.
-//    220x320, 260x220). None of these are covered by CLAUDE.md's
-//    decorative-transform exception (only rotate/translate/position are
-//    listed, not size), so each was mapped to the nearest standard
-//    Tailwind w-/h- scale step instead (e.g. 220→w-56, 320→h-80 exactly;
-//    260→w-64, 220→h-56; 160→w-40/h-40 exact; 300→w-72, 260→h-64;
-//    120→w-28, 220→h-56). Shapes read slightly different in exact
-//    proportion from the preview but stay recognizably the same
-//    composition.
-// 4. `skew-x-[...]`/`skew-y-[...]`: CLAUDE.md's decorative-transform
-//    exception names `rotate-[...]`, `translate-[...]`, and
-//    `top/left/right/bottom-[...]` explicitly, but doesn't name skew.
-//    Skew is used here anyway (it's what gives the panels their
-//    glass-plane, not-just-a-rotated-rectangle look, and is compositing
-//    with rotation the same way translate would) — treated as covered
-//    in spirit, but flagged since it isn't literally on the list.
-// 5. Highlight streak blur: preview uses `blur(6px)`. Mapped to the
-//    nearest standard step, `blur-sm` (4px) — Tailwind has no 6px step.
-//
-// Confirmed: this is the LIGHT-background variant only (per the task —
-// Hero.astro is moving to a light gradient). The preview's dark-stage
-// styling was not built here.
-//
-// Animation: kept, not simplified or dropped. The preview's three
-// float keyframes (subtle translate + a touch of added rotation at the
-// midpoint, looping) are reproduced as three named animations, same
-// mechanism the previous starfield file used for its twinkle keyframes.
-// `prefers-reduced-motion: reduce` disables all of them, matching that
-// same file's pattern. Kept because the motion is what sells "glass
-// panels drifting," not just static decoration — dropping it would lose
-// the point of the preview.
-// EXTRACTED (later pass): these keyframes/classes (`glass-float-a/b/c`
-// and the mirrored/fast variants) originally lived in this file's own
-// inline <style> block. They've since been moved to
-// `src/styles/float-animation.css` (imported globally via global.css) so
-// other components can reuse the same drift animation without
-// redefining it — this file's markup below is unchanged, it just now
-// sources those classes globally instead of locally.
-//
-// BUG FIX (this pass): s4/s5/s6 were on `-reverse`/`-fast` classes that
-// replayed glass-float-a/b's OWN hardcoded rotate/skew (just reversed or
-// sped up), which silently overrode those three elements' own static
-// rotate-[...]/skew-*-[...] Tailwind classes (a running CSS animation
-// always wins the `transform` property). s4/s5/s6 now use dedicated
-// `-mirror`/`-mirror-fast` classes whose keyframes actually match each
-// element's own angle — see float-animation.css for the fix detail.
 ---
 
-<div class:list={['pointer-events-none absolute -z-[5] top-24 sm:top-28 lg:top-32 inset-x-0 bottom-28 sm:bottom-40', className]}
+<div
+  class:list={['pointer-events-none absolute -z-[5] inset-0', className]}
   aria-hidden="true"
 >
-  <!-- s1 — top-left tall slab, blue tint -->
-  <div class="glass-float-a absolute w-56 h-80 top-[-6%] left-[-4%] rotate-[-18deg] skew-y-[-4deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
-    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600/30 to-transparent"></div>
-    <div class="absolute left-[12%] top-[10%] h-2 w-14 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
-  </div>
-
-  <!-- s2 — top-right block, no tint -->
-  <div class="glass-float-b absolute w-64 h-56 top-[4%] right-[-6%] rotate-[22deg] skew-x-[-6deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
-    <div class="absolute left-[12%] top-[10%] h-2 w-12 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
-  </div>
-
-  <!-- s3 — bottom-left small chip, amber tint. Nudged up 70px from its
-       original bottom-[-8%] via a calc() offset (not translate — see s4's
-       comment below for why: glass-float-c's keyframes drive `transform`
-       on a loop, which would override a static translate class). -->
-  <div class="glass-float-c absolute w-40 h-40 bottom-[calc(-8%+70px)] left-[4%] rotate-[35deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
-    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500/30 to-transparent"></div>
-    <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
-  </div>
-
-  <!-- s4 — bottom-right large angled block, teal tint. Nudged up 70px
-       from its original bottom-[-10%] via a calc() offset (not a
-       translate/transform utility — glass-float-a-mirror's keyframes
-       already drive `transform` on this element, and a running CSS
-       animation always wins that property over a static transform
-       class, so the shift has to happen on `bottom` itself instead).
-       BUG FIX: previously used `glass-float-a-reverse`, which replayed
-       glass-float-a's OWN rotate(-18deg→-14deg)/skewY(-4deg) keyframe
-       (just in reverse playback order) — silently overriding this
-       element's rotate-[-12deg]/skew-y-[5deg] classes below, which were
-       therefore dead. `glass-float-a-mirror` carries its own keyframe
-       that actually matches this element's angle; see float-animation.css. -->
-  <div class="glass-float-a-mirror absolute w-72 h-64 bottom-[calc(-10%+70px)] right-[2%] rotate-[-12deg] skew-y-[5deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
-    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-600/30 to-transparent"></div>
-    <div class="absolute left-[12%] top-[10%] h-2 w-16 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
-  </div>
-
-  <!-- s5 — right-mid thin sliver, no tint.
-       BUG FIX: previously used `glass-float-b-fast`, which replayed
-       glass-float-b's OWN rotate(22deg→26deg)/skewX(-6deg) keyframe at
-       a faster speed — silently overriding this element's
-       rotate-[8deg]/skew-x-[10deg] classes below, which were therefore
-       dead. `glass-float-b-mirror-fast` carries its own keyframe that
-       actually matches this element's angle; see float-animation.css. -->
-  <div class="glass-float-b-mirror-fast absolute w-28 h-56 top-[40%] right-[-3%] rotate-[8deg] skew-x-[10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
-    <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
-  </div>
-
-  <!-- s6 — left-mid thin sliver, no tint. Added to balance the left side
-       (previously 2 shapes: s1, s3) against the right side's 3 (s2, s4,
-       s5) — mirrors s5's right-mid placement/size, flipped to the left
-       edge with rotation/skew signs reversed so it reads as a matching
-       counterpart rather than a duplicate.
-       BUG FIX: this used to reuse plain `glass-float-b` (s2's class),
-       which carries glass-float-b's OWN rotate(22deg→26deg)/skewX(-6deg)
-       keyframe — silently overriding this element's rotate-[-8deg]/
-       skew-x-[-10deg] classes below (which were therefore dead) and
-       making s6 visually snap to s2's angle instead of its own mirrored
-       one. Now uses `glass-float-b-mirror`, which carries its own
-       keyframe matching this element's actual angle, at the same 11s
-       base timing as glass-float-b (s5 already claims the faster
-       mirrored timing) — see float-animation.css. -->
-  <div class="glass-float-b-mirror absolute w-28 h-56 top-[40%] left-[-3%] rotate-[-8deg] skew-x-[-10deg] overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-br from-white/90 via-white/45 to-white/20 shadow-2xl">
-    <div class="absolute left-[12%] top-[10%] h-2 w-10 rotate-[-15deg] rounded-full bg-white/90 blur-sm"></div>
-  </div>
+  <canvas data-hero-starfield class="block h-full w-full"></canvas>
 </div>
+
+<script>
+  import { initHeroStarfield } from '../../scripts/heroStarfield';
+
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-starfield]');
+  if (canvas) {
+    initHeroStarfield(canvas);
+  }
+</script>
