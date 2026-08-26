@@ -1,14 +1,5 @@
 ---
 // src/components/sections/WhyLean.astro
-// Split out of FeaturesSummary.astro (which used to hold both this section
-// and the "how it works" section above it in one file). This file contains
-// ONLY the "why lean" section — see HowItWorks.astro for the other half.
-// FeaturesSummary.astro itself is left untouched for now and no longer
-// used from index.astro; it will be deleted manually after this split is
-// verified in deployment.
-//
-// This section deliberately does NOT use the shared SectionHeader
-// component — see the comment above the <section> markup below for why.
 
 import { Feather, Zap, Tag, Layers } from 'lucide-astro';
 import Card from '../ui/Card.astro';
