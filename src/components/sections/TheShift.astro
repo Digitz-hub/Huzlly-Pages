@@ -1,38 +1,8 @@
 ---
 // src/components/sections/TheShift.astro
-// v4: replaces the v3 two-column layout (image on the left, copy + CTA
-// on the right) with a single-column layout — heading stays as-is via
-// SectionHeader, and the content below it is now the full-width
-// DashboardPreview component instead of the Stress.png image + four
-// paragraphs + "Learn more about Huzlly" Button. `challenges`/`checklist`
-// data arrays, the card grid, and Card.astro/Badge.astro were already
-// removed in the prior (v3) pass and remain untouched/unused here.
-// Button.astro is no longer used by this file (its only usage was the
-// removed CTA), so its import is dropped; SectionHeader is still used,
-// so that import stays.
-//
-// Layout: single column now (no grid wrapper) — SectionHeader on top,
-// DashboardPreview directly below, full width. Spacing: `mt-14` between
-// the heading and the content below matches this file's own prior
-// heading-to-content spacing value and the same convention used in
-// sibling section files (e.g. FeaturesSummary.astro's `mt-14` wrapper
-// directly below its "How it works" SectionHeader).
-//
-// Background: `bg-white` swapped for a top-to-bottom red gradient
-// (red-100 -> red-50 -> white), same linear-gradient-as-inline-arbitrary-
-// value technique FeaturesSummary.astro's "Why lean" section uses for its
-// blue gradient background — fades to white at the bottom so the
-// section-to-section border/seam still reads cleanly.
 
 import DashboardPreview from '../ui/DashboardPreview.astro';
 
-// STEP 1 of redesign — infrastructure only (no visible layout/content change):
-// - Loads Google Font "Outfit" (400;500;600;700;800), scoped to this section
-//   only via <link> tags below (not touched: Layout.astro, tailwind.config.mjs).
-//   Not applied to any element yet — that happens in a later step.
-// - Loads the Phosphor Icons (duotone) stylesheet via CDN, once, here (parent
-//   component), since both this file and DashboardPreview.astro will need
-//   icons across this redesign.
 ---
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
