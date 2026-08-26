@@ -1,38 +1,5 @@
 ---
 // src/components/layout/Footer.astro
-// Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
-// Link set and social profiles sourced from PAGE_MAP_AND_SEO.md Section 3
-// and SITE_IDENTITY_AND_AEO.md Section 1.
-//
-// PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
-// Design source: user-supplied reference screenshot of a floating "card"
-// SaaS footer (light background, rounded-3xl container, 4-column layout,
-// pill CTA in the last column). DESIGN_SYSTEM.md v2 tokens (paper/rail
-// surface, mono eyebrow labels, icon-button social links) are NOT the
-// source for this component's shape/color/typography — see the chat
-// design note for the exact tokens used. Fixed regardless of the override
-// (Section 4.5's non-negotiable list): blue-600 accent, strict layout
-// ownership (footer-only markup, consumed only by Layout.astro), the ui/
-// Button primitive for the CTA, and full link/routing compliance with
-// PAGE_MAP_AND_SEO.md.
-//
-// Content deviations from the reference screenshot/spec, resolved silently
-// per governing-file priority (PAGE_MAP_AND_SEO.md routing rules > visual
-// reference):
-// - "Useful Links" includes Home in addition to Features/Pricing/FAQ/About
-//   — PAGE_MAP_AND_SEO.md Section 3 Rule 6 requires the footer to link
-//   every indexable route (Home, Features, Pricing, About, FAQ, Waitlist);
-//   Waitlist is already covered by the column 4 CTA, so Home is the one
-//   route the written spec's 4-item list was missing.
-// - "Follow Us" lists only X and Instagram — Huzlly's two real profiles
-//   per SITE_IDENTITY_AND_AEO.md Section 1. The reference screenshot shows
-//   a Facebook link; Huzlly has no Facebook account, so it's omitted
-//   rather than inventing one.
-// - Privacy and Terms links are appended to the bottom bar (not one of
-//   the four spec'd columns) — still required sitewide per
-//   PAGE_MAP_AND_SEO.md, just placed where they don't disrupt the
-//   requested 4-column layout.
-// - Copyright line uses Huzlly, not a placeholder brand name.
 
 import { ArrowRight } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -56,7 +23,6 @@ const year = new Date().getFullYear();
 <footer class="px-4 pb-4 pt-10 sm:px-6 sm:pb-6 sm:pt-14">
   <div class="mx-auto max-w-7xl rounded-3xl border border-black/5 bg-white/80 shadow-lg shadow-black/5 backdrop-blur-xl">
     <div class="grid grid-cols-1 gap-10 p-8 sm:grid-cols-2 sm:p-10 lg:grid-cols-4 lg:p-12">
-      <!-- Column 1: Brand -->
       <div>
         <a href="/"
           class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
@@ -70,7 +36,6 @@ const year = new Date().getFullYear();
         </p>
       </div>
 
-      <!-- Column 2: Useful Links -->
       <div>
         <p class="text-sm font-medium text-ink">Useful Links</p>
         <ul class="mt-4 space-y-3">
@@ -88,7 +53,6 @@ const year = new Date().getFullYear();
         </ul>
       </div>
 
-      <!-- Column 3: Follow Us -->
       <div>
         <p class="text-sm font-medium text-ink">Follow Us</p>
         <ul class="mt-4 space-y-3">
@@ -108,7 +72,6 @@ const year = new Date().getFullYear();
         </ul>
       </div>
 
-      <!-- Column 4: Waitlist CTA -->
       <div>
         <p class="text-sm font-medium text-ink">Join our waitlist</p>
         <p class="mt-4 text-sm leading-relaxed text-ink/50">
@@ -121,7 +84,6 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Bottom bar -->
     <div class="flex flex-col gap-3 border-t border-black/5 px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-12">
       <p class="text-sm text-ink/40">Copyright &copy; {year} Huzlly.</p>
       <div class="flex items-center gap-4">
