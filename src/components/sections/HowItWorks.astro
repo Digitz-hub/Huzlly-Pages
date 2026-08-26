@@ -73,9 +73,9 @@ import GrowIllustration from './how-it-works/GrowIllustration.astro';
 // a proper saturated color like blue/teal/amber, so it doesn't need the
 // dialed-down opacity the old neutral-ink treatment needed.
 const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity: string; icon: string; chipBg: string }> = {
-  blue: { glow: '#2563eb', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
-  teal: { glow: '#0d9488', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
-  amber: { glow: '#f59e0b', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
+  blue: { glow: '#2563eb', glowPos: '34% 38%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
+  teal: { glow: '#0d9488', glowPos: '66% 30%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
+  amber: { glow: '#f59e0b', glowPos: '34% 66%', glowOpacity: '0.28', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
   green: { glow: '#16a34a', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-green-600', chipBg: 'bg-green-50' },
 };
 
@@ -102,7 +102,7 @@ const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity:
 // separate transforms, composing visually through normal parent/child
 // nesting instead of all fighting for one `transform` property.
 const chipClasses =
-  'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border-[0.5px] border-rail bg-white/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-[Outfit] font-semibold text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
+  'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-white/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-[Outfit] font-semibold text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
 const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
 const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
 
@@ -238,7 +238,7 @@ const stages = [
               <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
                 <div class="flex items-center gap-4">
                   <span
-                    class="font-display font-[Outfit] text-[64px] font-[800] leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-[80px]"
+                    class="font-display text-[64px] font-[800] leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-[80px]"
                   >
                     {step.number}.
                   </span>
@@ -249,7 +249,7 @@ const stages = [
                   ></span>
                 </div>
 
-                <h3 class="mt-5 font-display font-[Outfit] text-[28px] font-bold leading-snug tracking-[-0.015em] text-ink">{step.headline}</h3>
+                <h3 class="mt-5 font-display text-[28px] font-bold leading-snug tracking-[-0.015em] text-ink">{step.headline}</h3>
 
                 <p class="mt-4 max-w-lg font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">{step.body}</p>
               </div>
