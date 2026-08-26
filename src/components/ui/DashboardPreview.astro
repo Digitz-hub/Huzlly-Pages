@@ -136,8 +136,6 @@
 // is accepted for outer placement/spacing only, matching the passthrough
 // pattern already used on AutomationNotificationCard.
 
-import { ClipboardList, MessageSquareWarning } from 'lucide-astro';
-
 export interface Props {
   class?: string;
 }
@@ -150,7 +148,7 @@ const { class: className } = Astro.props;
   <!-- Card 1: Endless Admin Chores (tall, left column, spans both top rows) -->
   <div class="flex flex-col rounded-2xl bg-white p-6 shadow-sm lg:row-span-2">
     <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-sm">
-      <ClipboardList class="w-6 h-6 text-white" stroke-width="1.5" aria-hidden="true" />
+      <i class="ph-duotone ph-clipboard-text text-2xl text-white" aria-hidden="true"></i>
     </div>
     <h3 class="mb-3 text-xl font-semibold leading-snug text-ink">Trapped in Admin Work</h3>
     <p class="text-sm text-ink/50">0 billable hours</p>
@@ -217,7 +215,7 @@ const { class: className } = Astro.props;
   <!-- Card 5: Messy Client Communication & Scope Creep (bottom row, full width — absorbs the dropped 6th cell, see file-header note) -->
   <div class="flex flex-col items-start gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
     <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-ink shadow-sm">
-      <MessageSquareWarning class="w-6 h-6 text-paper" stroke-width="1.5" aria-hidden="true" />
+      <i class="ph-duotone ph-chats-circle text-2xl text-paper" aria-hidden="true"></i>
     </div>
     <div class="flex-grow">
       <h4 class="text-lg font-semibold text-ink">Messy Client Communication & Scope Creep</h4>
