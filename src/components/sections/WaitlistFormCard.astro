@@ -1,52 +1,6 @@
 ---
 // src/components/sections/WaitlistFormCard.astro
-// Used only on src/pages/waitlist.astro, alongside
-// WaitlistConfirmationCard.astro — together they replace the single
-// WaitlistSplitCard.astro. This component is "screen 1": the split
-// brand/value panel + signup form panel. The page (waitlist.astro) owns
-// the `<section class="waitlist-stage">` wrapper (shared with
-// WaitlistConfirmationCard.astro) and the full script that drives the
-// submit flow / animated swap between the two panels.
-//
-// PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
-// Design source: user-supplied reference screenshot of a two-column,
-// rounded, floating signup modal (soft pastel gradient panel on the left
-// with logo/headline/stat-block/benefit rows, clean white form panel on
-// the right with a centered badge, heading, stacked labeled inputs, and a
-// full-width solid CTA). DESIGN_SYSTEM.md v2 tokens (ink/paper/rail as a
-// strict palette, dot-grid/flow-rail motifs) are NOT the source for this
-// component's layout, background treatment, or card shape — see the chat
-// design note for the exact tokens used here.
-//
-// Fixed regardless of the override (Section 4.5's non-negotiable list):
-// blue-600 accent (badge, stat accents, focus rings, headline highlight),
-// all copy/facts from SITE_IDENTITY_AND_AEO.md (proof points carry
-// "designed to" qualifying language since they're pre-launch targets, per
-// Section 3 of that file), full-file delivery / no split tags / no inline
-// styles, and the ui/ Button and Badge primitives (used below rather than
-// hand-rolled markup).
-//
-// Structural note: the ink/paper/rail tokens are still used for text and
-// hairlines where they read naturally (ink for body text, rail for
-// borders) — the override permits deviation, it doesn't forbid reuse.
-//
-// v2 polish pass: elevation shadow + ambient page glow so the card lifts
-// off the flat paper background, text-balance/text-pretty on headline and
-// body copy to fix awkward line wraps, panel divider on desktop, refined
-// input/button states (shadow, focus ring, hover-lift via Button's
-// `motion` prop) — no new layout/color tokens introduced.
-//
-// ASTRO SCOPING NOTE: this panel's entrance/idle/leave animations are
-// driven from waitlist.astro's page-level <script> via *inline*
-// `element.style.animation = '<name> ...'` assignments (not CSS classes),
-// referencing the plain keyframe names `split-card-in`, `split-card-float`,
-// `screen-enter`, `screen-leave`. Astro scopes (renames) `@keyframes`
-// names declared inside a component's own <style> block by default, which
-// would break those inline-style lookups since the JS string can't know
-// the generated name. All keyframes below are declared with the
-// `-global-` name prefix so they keep their literal names in the compiled
-// CSS and stay reachable by name from the page's script, regardless of
-// which component's stylesheet the browser actually loaded them from.
+
 import { ArrowLeft, ArrowRight, Zap, Clock, ShieldCheck, Mail } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
