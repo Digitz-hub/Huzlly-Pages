@@ -1,4 +1,4 @@
-// src/scripts/heroStarfield.ts
+// src/scripts/starfield.ts
 //
 // Vanilla canvas port of the "Glitter Wrap" Originkit/Framer component
 // (see GlitterWrap-reference.tsx) — an animated starfield warp-tunnel
@@ -18,8 +18,8 @@
 // as props.
 //
 // USAGE (same cleanup-function convention as `lenis.ts`):
-//   import { initHeroStarfield } from '../../scripts/heroStarfield';
-//   const cleanup = initHeroStarfield(canvasEl);
+//   import { initStarfield } from '../../scripts/starfield';
+//   const cleanup = initStarfield(canvasEl);
 //   // ...later, if ever needed: cleanup();
 
 // ---- Hard-coded configuration (reference file's resolved defaults) ----
@@ -103,7 +103,7 @@ const RGB_STRS = PALETTE.map((c) => `rgb(${c[0]}, ${c[1]}, ${c[2]})`);
  *   the ResizeObserver, mirroring the reference component's own cleanup
  *   and the `cleanup-function` convention used by `lenis.ts`.
  */
-export function initHeroStarfield(canvas: HTMLCanvasElement): () => void {
+export function initStarfield(canvas: HTMLCanvasElement): () => void {
   const ctx = canvas.getContext('2d');
   if (!ctx) return () => {};
 
