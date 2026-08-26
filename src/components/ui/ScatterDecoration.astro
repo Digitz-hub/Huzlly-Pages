@@ -1,5 +1,5 @@
 ---
-// src/components/ui/HeroScatterDecoration.astro
+// src/components/ui/ScatterDecoration.astro
 // Purely decorative full-bleed hero layer. SUPERSEDES the previous
 // "glass/chrome" scattered-panel version (six frosted, tinted, floating
 // panels driven by float-animation.css) — that pass is fully replaced,
@@ -7,7 +7,7 @@
 // pattern per component" rule.
 //
 // This is now an animated starfield/warp-tunnel effect: a full-bleed
-// `<canvas>` rendered and driven by `src/scripts/heroStarfield.ts`, which
+// `<canvas>` rendered and driven by `src/scripts/starfield.ts`, which
 // is a vanilla-TS port of the "Glitter Wrap" Originkit/Framer component
 // (glittering sparkle flashes streaming toward/away from the viewer).
 // This project has no React and no Framer runtime, so only the actual
@@ -20,22 +20,22 @@
 // `bottom-28 sm:bottom-40` offsets, since those panels needed clearance
 // from the header/footer edges of the hero's own padding), this canvas
 // is `absolute inset-0` — full-bleed across the entire parent `<section>`,
-// same convention HeroDotPattern.astro already uses for its own full-bleed
+// same convention DotPattern.astro already uses for its own full-bleed
 // texture layer. A warp-tunnel effect reads correctly filling the whole
 // stage, not clipped to an inset content box.
 //
 // STACKING ORDER: kept at `-z-[5]`, same value the previous panel wrapper
-// used and matching HeroDotPattern.astro's own documented reasoning —
+// used and matching DotPattern.astro's own documented reasoning —
 // less negative than the `.hero-grain` overlay's `-z-[9]` (grain paints
 // furthest back, this layer paints just in front of it), while still
 // sitting behind the in-flow, un-z-indexed content column and behind
-// HeroDotPattern (per Hero.astro's DOM order: grain → this starfield →
-// HeroDotPattern → content).
+// DotPattern (per Hero.astro's DOM order: grain → this starfield →
+// DotPattern → content).
 //
 // MOTION: respects `prefers-reduced-motion: reduce` the same way
 // Hero.astro's own `<script>` block does (checking
 // `window.matchMedia('(prefers-reduced-motion: reduce)').matches`) —
-// `heroStarfield.ts`'s `initHeroStarfield` draws a single static frame
+// `starfield.ts`'s `initStarfield` draws a single static frame
 // and never starts the animation loop when that preference is set,
 // rather than continuously animating.
 //
@@ -59,10 +59,10 @@ const { class: className } = Astro.props;
 </div>
 
 <script>
-  import { initHeroStarfield } from '../../scripts/heroStarfield';
+  import { initStarfield } from '../../scripts/starfield';
 
   const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-starfield]');
   if (canvas) {
-    initHeroStarfield(canvas);
+    initStarfield(canvas);
   }
 </script>
