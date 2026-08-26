@@ -16,125 +16,51 @@
 // preview's cards (fixed layout, no expand/collapse, no icon slot) don't
 // match that component's collapsible-notification contract.
 //
-// GRID RESTRUCTURE (per brief item 1): the preview's 6th filler cell
-// ("20,000+ users already joined" in the bottom-right grid slot) is
-// dropped — that figure doesn't exist anywhere in SITE_IDENTITY_AND_AEO.md
-// (Section 3 gives a 50-person beta cohort, pre-launch) and would ship a
-// fabricated stat. Rather than leave the bottom-right cell empty, the grid
-// is restructured to 5 cells: the Client Portal card (originally 2/3-width
-// in the bottom row) now spans the full width of row 3 (`lg:col-span-3`),
-// so the 3x3 grid is fully and intentionally occupied with no dead cell
-// and no invented replacement content.
-//
-// GRID GEOMETRY FIX (bento rebalance — "Lower cost" card): the original
-// `lg:row-span-2` on card 4 relied on the browser's sparse auto-placement
-// dropping it into the middle column at row 2 (col 1 was pinned by card 1's
-// own row-span-2), which left column 3 empty for two full rows — a tall,
-// narrow numeral card floating next to dead space. Fix: card 4 drops
-// `lg:row-span-2` and takes `lg:col-span-2` instead (still a plain
-// standard-scale utility, no arbitrary value). With card 1 occupying
-// column 1 across rows 1–2, sparse auto-placement now naturally slots
-// cards 2 and 3 into columns 2–3 of row 1, and card 4's 2-column span is
-// the *only* opening left in row 2 (columns 2–3) — so it lands there
-// automatically with zero explicit `grid-column`/`grid-row` coordinates
-// needed. Net result: card 4 is now short and wide instead of tall and
-// narrow, every cell in the 3x3 area is filled, and no other card's span
-// had to change — cards 1, 2, 3, and 5 keep their original classes
-// untouched; only card 4's span utilities changed. Confirmed this still
-// degrades cleanly below `lg`: `lg:row-span-2` and `lg:col-span-2` are both
-// breakpoint-gated, so below `lg` every card reverts to the implicit
-// `col-span-1 row-span-1` on the single-column grid and stacks in DOM
-// order (1 → 2 → 3 → 4 → 5) exactly as before.
-//
-// ⚠️ Flag — gradient icon badges: the preview's pipeline/portal icon
-// badges use CSS gradients (`linear-gradient(135deg,#2f6bff,#5a8bff)` and
-// an ink gradient). DESIGN_SYSTEM.md Section 1 reserves gradients for the
-// flow-rail signature element only ("Reserved — not for general use.").
-// Mapped both badges to solid fills instead: pipeline → `bg-blue-600`
-// (fixed accent), portal → `bg-ink` (matches the Elevated/filled-dark
-// convention already used elsewhere, e.g. AutomationNotificationCard's
-// icon chips). No gradient anywhere in this file outside that convention.
-//
-// ⚠️ Flag — card 4's background wash: the preview gives the pricing card
-// a subtle `linear-gradient(165deg,#ffffff,#f6f8ff)` panel background.
-// DESIGN_SYSTEM.md doesn't approve a general card-background gradient
-// (again, gradients are reserved for the flow-rail only), so this was
-// dropped in favor of flat `bg-white`, matching every other card. Purely
-// a richness/polish loss, not a structural change.
-//
-// ⚠️ Flag — dot-grid placement (card 4 corner texture): the preview's
-// `.price-dots` corner texture is visually identical to DESIGN_SYSTEM.md
-// Section 4's approved Dot-Grid Texture technique (same radial-gradient
-// `rail`-color pattern), so it's implemented here using that same
-// approved bracket-notation pattern with a corner mask rather than an
-// invented texture. BUT Section 4 scopes dot-grid to "hero only, one per
-// page" and Section 7.5 says never stack two decorative patterns in the
-// same area. Since this component is destined for Hero.astro, and I
-// haven't been asked to inspect what background texture Hero.astro
-// itself already uses, this card's corner dot-grid may end up being a
-// second dot-grid instance on the same page/section once wired in —
-// confirm at integration time whether Hero.astro already has one, and
-// drop this card's instance if so.
-//
-// ⚠️ Flag — sub-heading size unification: the preview uses three
-// different ad-hoc h4 sizes (17px / 15px / 17px) for the "Replaces 5+
-// apps," "Project Timesheet," and "Client Portal" card headers. None of
-// these map to a named DESIGN_SYSTEM.md type-scale entry (only Feature H3
-// at text-xl is named for card headings). Unified all three to `text-lg
-// font-semibold text-ink` — the nearest standard Tailwind step below
-// Feature H3 — rather than approximating three separate arbitrary pixel
-// values.
-//
-// ⚠️ Flag — card 3's stat number: "5–8 hrs/week" is a secondary stat, not
-// the page's one allowed oversized Display Numeral (that treatment —
-// `font-display font-semibold text-amber-500` at `text-6xl`–`text-8xl`,
-// one per page max — is spent on card 4's "50–70%" instead, since that's
-// the closer match to the preview's largest/boldest number and to keep
-// only one amber numeral on the page). Card 3's number instead uses
-// `font-display text-2xl font-semibold text-ink` — display font for
-// numeral confidence, but sized and colored down since it isn't the
-// page's one big-numeral moment.
-//
-// ⚠️ Flag — qualifier pill colors (brief item 6): "(beta target)" and
-// "(target)" must stay visible, non-removable text per the brief. Rather
-// than inventing new pill styling, each was mapped to the closest already
-// -approved badge token based on the preview's own color choice: card 3's
-// amber/gold pill → the existing Warning badge
-// (`bg-amber-50 text-amber-700 ring-amber-600/20`, Section 1 functional
-// colors) — read here as "unverified projection, treat with caution."
-// Card 4's neutral grey pill → the Neutral/Category Pill (Section 3)
-// — read as a plain caveat label rather than a warning. Both are literal,
-// non-hidden text content, never a tooltip or title attribute.
-//
-// Body copy sizes: mapped to DESIGN_SYSTEM.md's *named* type-scale roles
-// (Body Paragraph `text-base text-ink/70 leading-relaxed`, Small/Caption
-// `text-sm text-ink/50`) exactly as specified, rather than hand-picking a
-// closer pixel match to the preview's 12.5–15px custom sizes — this
-// keeps every text style traceable to a named token instead of an
-// eyeballed approximation.
-//
-// bg-white vs bg-paper: DESIGN_SYSTEM.md's card specs (Standard Feature
-// Card, Elevated Card) both default to `bg-paper`, but this component
-// uses `bg-white` for every card surface instead. Reasoning: this bento
-// grid is meant to read as a crisp, self-contained "product dashboard"
-// floating over whatever background Hero.astro paints behind it (gradient
-// wash / dot-grid / paper — all warm-toned), the same way Section 4's
-// "Section Background Rhythm" describes `bg-white` as "the occasional
-// crisp break" against the paper baseline. It also matches the preview's
-// own `--card: #ffffff` more precisely than paper's warm off-white would.
-// Confirm this reads correctly once actually placed against Hero.astro's
-// specific background at integration time.
-//
-// The preview's custom toggle-switch (built via a `::after` pseudo-
-// element in the source HTML) is rebuilt here as two plain nested spans
-// using only standard-scale Tailwind position/size utilities
-// (`h-6 w-11`, `right-0.5`, `top-0.5`, `h-5 w-5`) — no pseudo-elements, no
-// inline style. It's decorative only (no real on/off state to convey
-// beyond the "Manual overhead" pill's own text), so it's `aria-hidden`.
-//
 // No required props — this is a fixed, content-complete block. `class`
 // is accepted for outer placement/spacing only, matching the passthrough
 // pattern already used on AutomationNotificationCard.
+//
+// STEP 3 — full port of freelancer-pain-points-redesign.html's 5-card
+// bento grid (replaces the earlier 3-column/9-card-slot bento built in
+// prior passes). Grid: `grid-cols-12` at the `lg` breakpoint (this
+// project's existing grid-switch convention, in place of the mockup's
+// custom 900px breakpoint) with `lg:col-span-*`/`lg:row-span-*` matching
+// the mockup's spans exactly (admin 5/2, apps 4, time 3, fees 7, comm
+// 12). Below `lg`, every card reverts to the implicit single-column
+// stack in DOM order (1 → 2 → 3 → 4 → 5), same as before.
+//
+// Outfit font: applied locally to this file's headings/numerals via
+// inline `style="font-family: 'Outfit', sans-serif;"`, the same approach
+// used for TheShift.astro's <h2> in Step 2 — not added to Tailwind's
+// global font config. The `<link>` tags that actually load Outfit +
+// Phosphor live in TheShift.astro (Step 1) and are unchanged/untouched
+// here.
+//
+// Coral accent: mockup's single locked accent (`#e0492e` / tint
+// `#fdece7` / tint-border `#f6cfc5`) applied via Tailwind arbitrary-value
+// classes wherever the mockup uses it — the "0 billable hours" pill +
+// toggle switch on card 1, the "Unpaid Time" badge on card 3, and the
+// donut chart's colored arc + "SaaS bloat" figure on card 4 — matching
+// the same hex values established in Step 2, not added to
+// tailwind.config.mjs.
+//
+// Card 1 dark theme: mockup's dark admin card re-themed here with
+// `bg-ink text-white` (this project's existing dark-surface token,
+// already used as the "on-dark" fill for card 5's icon tile), with the
+// icon tile, body copy, divider, and toggle switch adjusted for
+// on-dark contrast per the mockup (translucent icon tile, muted-white
+// body copy, translucent divider).
+//
+// Card 4 donut: pure CSS conic-gradient circle (no image), coral arc
+// sized to the mockup's 35% figure (35% of 360° ≈ 126deg), with an
+// inset white/paper disc behind the "35% / SaaS bloat" label — same
+// technique as the mockup's `.fee-figure`/`::after` construction, just
+// rebuilt with Tailwind arbitrary-value utilities instead of custom CSS
+// classes.
+//
+// No scroll-triggered fade-in / IntersectionObserver / animation classes
+// ported from the mockup — every card renders fully visible immediately,
+// static, per the brief.
 
 export interface Props {
   class?: string;
@@ -143,85 +69,98 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-3', className]} data-dashboard-preview>
+<div class:list={['grid grid-cols-1 gap-5 lg:grid-cols-12', className]} data-dashboard-preview>
 
-  <!-- Card 1: Endless Admin Chores (tall, left column, spans both top rows) -->
-  <div class="flex flex-col rounded-2xl bg-white p-6 shadow-sm lg:row-span-2">
-    <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 shadow-sm">
+  <!-- Card 1: Trapped in Admin Work (dark, spans 5 cols + 2 rows) -->
+  <div class="flex flex-col rounded-2xl bg-ink p-6 text-white shadow-sm lg:col-span-5 lg:row-span-2">
+    <div class="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
       <i class="ph-duotone ph-clipboard-text text-2xl text-white" aria-hidden="true"></i>
     </div>
-    <h3 class="mb-3 text-xl font-semibold leading-snug text-ink">Trapped in Admin Work</h3>
-    <p class="text-sm text-ink/50">0 billable hours</p>
-    <p class="mt-3 flex-grow text-base leading-relaxed text-ink/70">Every accepted proposal triggers a mountain of unpaid prep: custom agreements, invoice reminders, and shared drives. It feels like a full-time job before work even starts.</p>
-    <div class="mt-6 flex items-center justify-between border-t border-rail pt-5">
-      <span class="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
-        <span class="h-1.5 w-1.5 rounded-full bg-red-600" aria-hidden="true"></span>
-        Manual overhead
+    <h3 style="font-family: 'Outfit', sans-serif;" class="mb-2 text-xl font-semibold leading-snug text-white">Trapped in Admin Work</h3>
+    <p class="flex-grow text-base leading-relaxed text-white/60">Every accepted proposal triggers a mountain of unpaid prep: custom agreements, invoice reminders, and shared drives. It feels like a full-time job before work even starts.</p>
+    <div class="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
+      <span class="inline-flex items-center gap-2 rounded-full bg-[#fdece7]/10 px-3 py-1 text-xs font-medium text-[#ff9a85]">
+        <span class="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true"></span>
+        0 billable hours
       </span>
-      <span class="relative inline-block h-6 w-11 flex-shrink-0 rounded-full bg-red-600" aria-hidden="true">
-        <span class="absolute right-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow"></span>
+      <span class="relative inline-block h-[22px] w-[38px] flex-shrink-0 rounded-full bg-[#e0492e]" aria-hidden="true">
+        <span class="absolute right-[3px] top-[3px] h-4 w-4 rounded-full bg-white"></span>
       </span>
     </div>
   </div>
 
-  <!-- Card 2: Too Many Disconnected Apps (middle column, top row) -->
-  <div class="rounded-2xl bg-white p-6 shadow-sm">
-    <h4 class="mb-4 text-lg font-semibold text-ink">Too Many Disconnected Apps</h4>
-    <div class="mb-4 flex flex-wrap gap-2">
+  <!-- Card 2: Too Many Disconnected Apps (spans 4 cols) -->
+  <div class="rounded-2xl bg-white p-6 shadow-sm lg:col-span-4">
+    <div class="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#fdece7]">
+      <i class="ph-duotone ph-squares-four text-2xl text-[#e0492e]" aria-hidden="true"></i>
+    </div>
+    <h3 style="font-family: 'Outfit', sans-serif;" class="mb-2 text-xl font-semibold leading-snug text-ink">Too Many Disconnected Apps</h3>
+    <p class="text-base leading-relaxed text-ink/70">A different app for every task. You end up switching tabs and copying the same info everywhere.</p>
+    <div class="mt-5 flex flex-wrap gap-2">
       <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
-        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        <i class="ph-duotone ph-file-text text-sm text-[#e0492e]" aria-hidden="true"></i>
         Agreements
       </span>
       <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
-        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        <i class="ph-duotone ph-receipt text-sm text-[#e0492e]" aria-hidden="true"></i>
         Billing
       </span>
       <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
-        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        <i class="ph-duotone ph-kanban text-sm text-[#e0492e]" aria-hidden="true"></i>
         Task Boards
       </span>
       <span class="inline-flex items-center gap-2 rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">
-        <span class="h-1.5 w-1.5 rounded-sm bg-blue-600" aria-hidden="true"></span>
+        <i class="ph-duotone ph-chat-circle-dots text-sm text-[#e0492e]" aria-hidden="true"></i>
         Client DMs
       </span>
-      <span class="inline-flex items-center rounded-full bg-transparent px-3 py-1 text-xs font-medium text-ink/50 ring-1 ring-inset ring-ink/10">
+      <span class="inline-flex items-center rounded-full border border-dashed border-ink/15 px-3 py-1 text-xs font-medium text-ink/40">
         + 4 more
       </span>
     </div>
-    <p class="text-sm text-ink/50">A different app for every little task. You end up wasting half your time switching between tabs and copying the same info everywhere.</p>
   </div>
 
-  <!-- Card 3: Wasted on Payment Chasing (middle column, bottom row) -->
-  <div class="rounded-2xl bg-white p-6 shadow-sm">
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="font-display text-2xl font-semibold text-ink">5–8 hrs/week</span>
-      <span class="inline-flex items-center rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">Unpaid Time</span>
+  <!-- Card 3: Chasing Payments (spans 3 cols) -->
+  <div class="flex flex-col rounded-2xl bg-white p-6 shadow-sm lg:col-span-3">
+    <div class="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#fdece7]">
+      <i class="ph-duotone ph-hourglass-medium text-2xl text-[#e0492e]" aria-hidden="true"></i>
     </div>
-    <p class="mt-3 text-sm text-ink/50">Wasted on Payment Chasing</p>
-    <p class="mt-3 text-sm leading-relaxed text-ink">Following up on unpaid invoices, hearing "it's in process," and losing days waiting for payouts.</p>
-  </div>
-
-  <!-- Card 4: Lower cost / pricing (short, wide — spans both middle/right columns, row 2 only) -->
-  <div class="relative flex flex-col overflow-hidden rounded-2xl bg-white p-6 shadow-sm lg:col-span-2">
-    <div class="pointer-events-none absolute -right-2 -top-2 h-24 w-24 opacity-40 [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)] [background-size:12px_12px] [mask-image:linear-gradient(225deg,black_10%,transparent_65%)]" aria-hidden="true"></div>
-    <div class="flex flex-wrap items-baseline gap-3">
-      <span class="font-display text-6xl font-semibold text-amber-500">30–40%</span>
+    <h3 style="font-family: 'Outfit', sans-serif;" class="mb-2 text-xl font-semibold leading-snug text-ink">Chasing Payments</h3>
+    <p class="flex-grow text-base leading-relaxed text-ink/70">Following up on unpaid invoices, hearing "it's in process," and losing days waiting for payouts.</p>
+    <div class="mt-5 flex items-center gap-2 border-t border-rail pt-5">
+      <span style="font-family: 'Outfit', sans-serif;" class="text-2xl font-bold tracking-tight text-ink">5–8<span class="ml-1 text-sm font-medium text-ink/40">hrs/wk</span></span>
+      <span class="ml-auto inline-flex items-center rounded-full bg-[#fdece7] px-3 py-1 text-xs font-medium text-[#e0492e]">Unpaid Time</span>
     </div>
-    <span class="mt-2 inline-flex w-fit items-center rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">SaaS Bloat</span>
-    <h3 class="mt-5 text-xl font-semibold leading-snug text-ink">Lost to Hidden Fees & Cuts</h3>
-    <p class="mt-2 flex-grow text-base leading-relaxed text-ink/70">Marketplace commissions and heavy per-seat software fees that eat into a big chunk of your actual earnings.</p>
   </div>
 
-  <!-- Card 5: Messy Client Communication & Scope Creep (bottom row, full width — absorbs the dropped 6th cell, see file-header note) -->
-  <div class="flex flex-col items-start gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-3">
-    <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-ink shadow-sm">
-      <i class="ph-duotone ph-chats-circle text-2xl text-paper" aria-hidden="true"></i>
+  <!-- Card 4: Lost to Hidden Fees & Cuts (spans 7 cols, horizontal) -->
+  <div class="flex items-center gap-8 rounded-2xl bg-white p-6 shadow-sm lg:col-span-7">
+    <div class="relative flex h-[150px] w-[150px] flex-shrink-0 items-center justify-center rounded-full" style="background: conic-gradient(#e0492e 0deg 126deg, #f0ece6 126deg 360deg);">
+      <div class="absolute inset-[11px] flex flex-col items-center justify-center rounded-full bg-white">
+        <span style="font-family: 'Outfit', sans-serif;" class="text-2xl font-bold tracking-tight text-ink">35%</span>
+        <span class="text-[10px] font-semibold uppercase tracking-wide text-ink/40">SaaS bloat</span>
+      </div>
+    </div>
+    <div class="min-w-0">
+      <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#fdece7]">
+        <i class="ph-duotone ph-chart-pie-slice text-2xl text-[#e0492e]" aria-hidden="true"></i>
+      </div>
+      <h3 style="font-family: 'Outfit', sans-serif;" class="mb-2 text-xl font-semibold leading-snug text-ink">Lost to Hidden Fees &amp; Cuts</h3>
+      <p class="text-base leading-relaxed text-ink/70">Marketplace commissions and heavy per-seat software fees quietly eat 30–40% of your actual earnings.</p>
+    </div>
+  </div>
+
+  <!-- Card 5: Messy Client Communication & Scope Creep (full width, horizontal) -->
+  <div class="flex flex-col items-start gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center lg:col-span-12">
+    <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#fdece7]">
+      <i class="ph-duotone ph-chats-circle text-2xl text-[#e0492e]" aria-hidden="true"></i>
     </div>
     <div class="flex-grow">
-      <h4 class="text-lg font-semibold text-ink">Messy Client Communication & Scope Creep</h4>
-      <p class="text-sm text-ink/50">Files scattered across WhatsApp, email, and DMs, unpaid extra revisions, and constantly explaining project status to clients.</p>
+      <div class="flex flex-wrap items-center gap-3">
+        <h3 style="font-family: 'Outfit', sans-serif;" class="text-xl font-semibold leading-snug text-ink">Messy Client Communication &amp; Scope Creep</h3>
+        <span class="inline-flex items-center rounded-full bg-[#fdece7] px-3 py-1 text-xs font-medium text-[#e0492e]">Zero Boundaries</span>
+      </div>
+      <p class="mt-2 text-base leading-relaxed text-ink/70">Files scattered across WhatsApp, email, and DMs. Unpaid extra revisions, and constantly explaining project status to clients.</p>
     </div>
-    <span class="inline-flex flex-shrink-0 items-center whitespace-nowrap rounded-full bg-rail/30 px-3 py-1 text-xs font-medium text-ink/70 ring-1 ring-inset ring-ink/10">Zero Boundaries</span>
   </div>
 
 </div>
