@@ -8,9 +8,18 @@ export interface Props {
   as?: 'h1' | 'h2' | 'h3';
   class?: string;
   titleClass?: string;
+  maxWidthClass?: string;
 }
 
-const { eyebrow, title, subtitle, as: HeadingTag = 'h2', class: className, titleClass } = Astro.props;
+const {
+  eyebrow,
+  title,
+  subtitle,
+  as: HeadingTag = 'h2',
+  class: className,
+  titleClass,
+  maxWidthClass = 'max-w-2xl',
+} = Astro.props;
 
 const headingClasses =
   HeadingTag === 'h1'
@@ -18,7 +27,7 @@ const headingClasses =
     : `font-display mt-2 ${titleClass ?? 'text-3xl sm:text-4xl'} font-semibold tracking-tight text-ink`;
 ---
 
-<div class={['mx-auto max-w-2xl text-center', className].filter(Boolean).join(' ')}>
+<div class={['mx-auto', maxWidthClass, 'text-center', className].filter(Boolean).join(' ')}>
   {eyebrow && <p class="font-mono text-xs uppercase tracking-widest text-blue-600">{eyebrow}</p>}
   <HeadingTag class={headingClasses}>{title}</HeadingTag>
   {subtitle && <p class="mt-4 text-lg text-ink/70">{subtitle}</p>}
