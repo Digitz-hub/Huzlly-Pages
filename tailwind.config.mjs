@@ -24,7 +24,7 @@ export default {
         display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         // Mono face (new) — eyebrow labels, flow-node captions, step counters.
         // DESIGN_SYSTEM.md v2 Section 2.
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        mono: ['"Outfit"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
     },
   },
