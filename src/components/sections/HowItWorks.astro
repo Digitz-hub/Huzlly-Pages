@@ -21,29 +21,7 @@ import WorkIllustration from './how-it-works/WorkIllustration.astro';
 import GetPaidIllustration from './how-it-works/GetPaidIllustration.astro';
 import GrowIllustration from './how-it-works/GrowIllustration.astro';
 
-// Full literal class strings per signal (Tailwind JIT needs literal
-// substrings to detect classes — no template-literal color interpolation).
-// chipBg pairs with `icon` to color each card's floating chip badges
-// (e.g. blue chips = bg-blue-50 + text-blue-600).
-//
-// `glow` / `glowPos` drive the single ambient illustration-glow blob (see
-// reference huzlly-how-it-works.html .illustration-glow rules) — one big
-// radial-gradient contained to the illustration box (glowPos/inset resolve
-// against that box's own dimensions, and its overflow-hidden clips the
-// glow to its bounds — it does not spread across the rest of the card).
-// Color fades from saturated to transparent, positioned differently per
-// card. Tailwind's class:list can't express an arbitrary radial-gradient
-// with a dynamic center + color, so this is applied via inline `style`
-// instead of a class. `glow` is the actual saturated signal hex
-// (blue-600/teal-600/amber-500/green-600, matching Tailwind's default
-// palette — see tailwind.config.mjs), NOT the light -50 tints used for
-// chipBg — light tints are what made the old corner blobs disappear under
-// blur.
-//
-// `glowOpacity` is per-signal (not a shared Tailwind opacity-[…] class
-// anymore). All four signals now sit at the reference's 0.28 — green-600 is
-// a proper saturated color like blue/teal/amber, so it doesn't need the
-// dialed-down opacity the old neutral-ink treatment needed.
+
 const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity: string; icon: string; chipBg: string }> = {
   blue: { glow: '#2563eb', glowPos: '34% 38%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
   teal: { glow: '#0d9488', glowPos: '66% 30%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
@@ -51,46 +29,11 @@ const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity:
   green: { glow: '#16a34a', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-green-600', chipBg: 'bg-green-50' },
 };
 
-// Common chip-pill classes, shared by every card. Sizing is intentionally
-// mobile-first and compacts below the `sm:` breakpoint (Step 6 responsive
-// pass) — at `sm:` and above every value matches the pre-refactor markup
-// exactly (px-3 py-1.5 text-xs, h-5 w-5 icon circle, h-3 w-3 icon glyph,
-// gap-1.5), so tablet/desktop look is unchanged. Below `sm:`, padding/
-// gap/font/icon size step down one notch so chips don't crowd each other
-// or the illustration on narrow phones (<400px).
-//
-// Each chip is three nested elements instead of one, so its motion
-// sources never fight over the same element's `transform` — see the
-// per-chip markup below for why each needs its own layer:
-//   1. position layer  — absolute + chip.position
-//   2. float layer      — chip-float-el (the idle bob keyframe animation)
-//   3. pill layer        — chipClasses below + the hover-scale utilities
-// `chipClasses` holds ONLY the visual-pill + inner-layout styling (no
-// `chip-float-el`, `pointer-events-none`, or `absolute` — those live on
-// the position/float layers). A running CSS animation always overrides a
-// same-property `:hover` transform on its own element regardless of
-// specificity (author !important aside) — so `chip-float-el` and
-// `hover:scale-*` can't safely share an element. Three layers, three
-// separate transforms, composing visually through normal parent/child
-// nesting instead of all fighting for one `transform` property.
 const chipClasses =
   'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-white/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-[Outfit] font-semibold text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
 const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
 const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
 
-// One `chips` entry (Grow stage's "Repeat Work") uses a `translate-x-*`
-// utility inside its `position` string (`bottom-4 left-1/2
-// -translate-x-1/2`, for centering under a `left-1/2` anchor) — a
-// transform. It can't just stay on the position layer arbitrarily: it
-// has to land on the pill layer specifically (chipClasses' element),
-// because Tailwind's translate/scale utilities all compose into one
-// `transform` via shared `--tw-*` custom properties — so
-// `-translate-x-1/2` sitting alongside `hover:scale-105` on that same
-// pill layer composes safely (translate + hover-scale both apply
-// together).
-// This helper splits any transform-utility tokens out of a chip's
-// `position` string so they land on the pill layer while plain offset
-// tokens (left/right/top/bottom/inset-*) stay on the position layer.
 function splitChipPosition(position: string) {
   const tokens = position.split(' ');
   const transform = tokens.filter((t) => /^-?(translate|rotate|skew|scale)-/.test(t));
@@ -155,8 +98,6 @@ const stages = [
 ];
 ---
 
-<!-- BACKGROUND: solid white (#FFFFFF) across the whole section — no
-     gradient or teal tint. -->
 <section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="How it works"
@@ -221,7 +162,7 @@ const stages = [
                   ></span>
                 </div>
 
-                <h3 class="mt-5 font-[Outfit] text-[28px] font-bold leading-snug tracking-[-0.015em] text-ink">{step.headline}</h3>
+                <h3 class="mt-5 font-display text-[28px] font-bold leading-snug tracking-[-0.015em] text-ink">{step.headline}</h3>
 
                 <p class="mt-4 max-w-lg font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">{step.body}</p>
               </div>
