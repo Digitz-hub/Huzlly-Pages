@@ -1,10 +1,10 @@
 ---
-// src/components/ui/HeroDotPattern.astro
+// src/components/ui/DotPattern.astro
 // Purely decorative full-bleed dot-matrix texture for the hero section.
 // Inspired by inertiajs.com's hero: a soft dot-grid texture, not a
 // literal shape (no clouds/logos).
 //
-// This is a NEW, separate decorative layer from HeroScatterDecoration.astro
+// This is a NEW, separate decorative layer from ScatterDecoration.astro
 // — that component was built for a light hero background (frosted-glass
 // panels tinted with signal colors) and doesn't apply to Hero.astro's
 // current solid `bg-electric` dark background. This file reuses only its
@@ -18,7 +18,7 @@
 // reverts to a static full-bleed layer, keeping white at ~60% opacity.)
 // No new color tokens introduced.
 //
-// VISIBILITY: like HeroScatterDecoration.astro, the `lg:`-only visibility
+// VISIBILITY: like ScatterDecoration.astro, the `lg:`-only visibility
 // toggle is NOT hardcoded in this file — the consumer (Hero.astro) applies
 // `class="hidden lg:block"` on this component's usage, which flows into
 // the `class` prop below and lands on the wrapper.
@@ -49,7 +49,7 @@
 // beyond 1024px only shrinks the column's share of the total width, so
 // clearance is preserved (and grows) at every larger breakpoint too.
 //
-// STACKING ORDER: positioned at `-z-[5]`, matching HeroScatterDecoration's
+// STACKING ORDER: positioned at `-z-[5]`, matching ScatterDecoration's
 // documented reasoning — less negative than the `.hero-grain` overlay's
 // `-z-[9]` (grain paints furthest back, this dot texture paints just in
 // front of it), while still sitting behind the in-flow, un-z-indexed
