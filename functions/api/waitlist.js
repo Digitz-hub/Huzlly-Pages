@@ -1,23 +1,4 @@
 // functions/api/waitlist.js
-// Cloudflare Pages Function — handles POST /api/waitlist.
-// Requires a KV namespace bound as WAITLIST_KV (see setup steps in README
-// or the message this was delivered with). Stores one KV entry per email:
-//   key:   waitlist:<lowercased email>
-//   value: { email, joinedAt }
-//
-// Email only — no name is collected or stored.
-//
-// After a NEW signup is saved, we also send a confirmation email via
-// Resend (https://resend.com), using a Resend Dashboard Template (no
-// dynamic variables — the template's content is fully static). Requires:
-//   - env.RESEND_API_KEY   — set as a Secret in Cloudflare Pages
-//                            (Settings → Environment variables)
-//   - a verified sending domain in Resend (huzlly.com)
-//   - a published Resend Template with alias "waitlist-confirmation"
-// Email sending failures are swallowed on purpose — the signup itself
-// (the KV write) has already succeeded by the time we try to email, and
-// a flaky email API should never turn a successful signup into an error
-// for the user. Duplicates never re-trigger the email.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const FROM_EMAIL = 'Huzlly <noreply@huzlly.com>';
