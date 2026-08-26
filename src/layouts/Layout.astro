@@ -1,17 +1,5 @@
 ---
 // src/layouts/Layout.astro
-// Owns the entire document shell per CLAUDE.md Section 1 — the ONLY file
-// permitted to contain <!doctype>, <html>, <head>, <body>, <header>, <footer>.
-//
-// Canonical/OG/meta implementation follows the exact pattern specified in
-// PAGE_MAP_AND_SEO.md ("Base Layout Implementation Pattern").
-//
-// Organization JSON-LD is rendered sitewide here, since PAGE_MAP_AND_SEO.md
-// Section 4 lists Organization schema as present on every route (e.g. /waitlist
-// gets "None beyond sitewide Organization"). Page-specific schema
-// (SoftwareApplication, FAQPage, etc.) is added by individual pages inside
-// their own <main> content, per CLAUDE.md Section 4's per-page JSON-LD rule —
-// schema.org script tags are valid anywhere in the document, not only <head>.
 
 import Nav from '../components/layout/Nav.astro';
 import Footer from '../components/layout/Footer.astro';
