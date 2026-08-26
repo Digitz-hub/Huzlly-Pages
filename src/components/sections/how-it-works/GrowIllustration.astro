@@ -1,16 +1,5 @@
 ---
 // src/components/sections/how-it-works/GrowIllustration.astro
-// Card 04 ("Grow") bespoke illustration — a circular "lifecycle loop"
-// (static base ring + animated dashed ring on top) with 4 nodes spaced
-// around it (client/user, past-projects/folder, checkmark, filled
-// repeat/refresh), ported from huzlly-how-it-works.html's .card--04
-// SVG. Extracted verbatim from FeaturesSummary.astro's Step 5 inline
-// version during the Step 6 structure-cleanup pass — markup/classes
-// unchanged, just relocated. This card previously used a distinct
-// green-200/400/600 ramp (per FeaturesSummary.astro's file-header note,
-// after originally using the neutral ink/rail treatment); it's now
-// unified onto the same blue-200/400/600 ramp as every other card, so
-// there's no more per-card color deviation to track.
 ---
 
 <svg
@@ -20,9 +9,7 @@
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
 >
-  {/* Loop path — static base ring */}
   <path d="M200 60a50 50 0 1 1 -0.1 0z" class="stroke-blue-200" stroke-width="2" fill="none" />
-  {/* Loop path — animated dashed ring */}
   <path
     d="M200 60a50 50 0 1 1 -0.1 0z"
     class="dash-move-el stroke-blue-400"
@@ -32,14 +19,12 @@
     stroke-linecap="round"
   />
 
-  {/* Node — client/user */}
   <g>
     <circle cx="200" cy="60" r="15" class="fill-white stroke-blue-600" stroke-width="1.8" />
     <path d="M195 63a5 5 0 0 1 10 0" class="stroke-blue-600" stroke-width="1.6" fill="none" stroke-linecap="round" />
     <circle cx="200" cy="56" r="2.6" class="fill-blue-600" />
   </g>
 
-  {/* Node — past projects / folder */}
   <g>
     <circle cx="250" cy="110" r="15" class="fill-white stroke-blue-600" stroke-width="1.8" />
     <rect x="244" y="104" width="12" height="11" rx="2.4" fill="none" class="stroke-blue-600" stroke-width="1.6" />
@@ -47,13 +32,11 @@
     <line x1="253.5" y1="102" x2="253.5" y2="106" class="stroke-blue-600" stroke-width="1.4" stroke-linecap="round" />
   </g>
 
-  {/* Node — checkmark */}
   <g>
     <circle cx="200" cy="160" r="15" class="fill-white stroke-blue-600" stroke-width="1.8" />
     <path d="M194 160.5 l4 4 l8 -9" class="stroke-blue-600" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
   </g>
 
-  {/* Node — repeat/refresh, filled */}
   <g>
     <circle cx="150" cy="110" r="15" class="fill-blue-600" />
     <path d="M144.5 105.5a7.5 7.5 0 0 1 10.5 -1.6" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round" />
