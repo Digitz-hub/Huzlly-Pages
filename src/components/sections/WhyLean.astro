@@ -22,16 +22,6 @@ const reasons = [
   },
 ];
 
-// Bottom quick-wins strip (v2.2 "Why lean" redesign, per user-supplied
-// inspiration reference — asymmetric persona-card layout + a compact
-// bottom strip of one-line wins). Per explicit user direction, this strip
-// is the 3 `reasons` above restated as short scannable one-liners (same
-// icon + title, description dropped) PLUS one net-new 4th item —
-// "Everything in one place" — added specifically to cover the
-// no-tool-switching / all-in-one angle that isn't covered by the existing
-// 3 (which cover cost/speed/simplicity, not consolidation). Deliberately
-// NOT four brand-new items: user confirmed "4th item" (singular addition),
-// not a fully distinct second content set.
 const quickWins = [
   { icon: Feather, label: 'Nothing you don\u2019t use' },
   { icon: Zap, label: 'Live in minutes' },
@@ -108,7 +98,7 @@ const quickWins = [
                   </span>
                 </span>
               </div>
-              <h3 class="mt-5 text-xl font-semibold leading-snug text-ink">{reason.title}</h3>
+              <h3 class="mt-5 text-xl font-semibold leading-snug text-ink font-display">{reason.title}</h3>
               <p class="mt-2 text-sm leading-relaxed text-ink/70">{reason.body}</p>
             </Card>
           ))}
