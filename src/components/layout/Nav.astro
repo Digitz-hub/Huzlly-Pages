@@ -3,13 +3,272 @@
 // Consumed only by Layout.astro (per CLAUDE.md Section 2 folder rules).
 //
 // PER-PAGE INSPIRATION OVERRIDE — CLAUDE.md Section 4.5
-// This file's shape and color are allowed to diverge from DESIGN_SYSTEM.md
-// v2 tokens under this override. What stays fixed regardless of the
-// override (per Section 4.5's non-negotiable list): the blue-600 accent
-// color, strict layout ownership (this file still renders only a
-// <header>, still consumed only by Layout.astro), the ui/ Button
-// primitive, full nav content/routes, and all accessibility/focus-
+// Design source: user-supplied reference screenshot of a light "Monopol"
+// hero with a dark, near-black, floating, centered, rounded-full pill
+// navbar inset from the viewport edges. DESIGN_SYSTEM.md v2 tokens still
+// supply the actual color value used (`bg-ink` / `#14110F`, the one warm
+// near-black already defined in Section 1) but the SHAPE (floating pill,
+// inset margins, rounded-full) is driven by this inspiration screenshot,
+// not by any v2 shape token. What stays fixed regardless of the override
+// (per Section 4.5's non-negotiable list): the blue-600 accent color,
+// strict layout ownership (this file still renders only a <header>, still
+// consumed only by Layout.astro), the ui/ Button primitive (used below for
+// the CTA rather than hand-rolled button markup, with a class override for
+// the pill radius), full nav content/routes, and all accessibility/focus-
 // visible requirements.
+//
+// Structural changes from spec vs. the reference screenshot:
+// - No "Sign in" link — spec explicitly says CTA only, no extra login link
+//   (the reference has both Sign in + Join Beta; Huzlly's nav keeps just
+//   the single "Join Waitlist" CTA, matching this repo's existing content
+//   contract, not the reference's link count).
+// - Four nav items (Features / Pricing / FAQ / About) instead of the
+//   reference's five (Research / Features / Product / Community / Blog) —
+//   content always follows PAGE_MAP_AND_SEO.md, never the inspiration
+//   source, even when the inspiration has a different link count.
+// - No dropdowns. Hide-on-scroll was previously absent (CTA and pill were
+//   fully static/persistent) — see "HIDE-ON-SCROLL ADDED" below for the
+//   pass that introduced it; that line is now superseded by this note.
+//
+// Note: a scroll/load/hover animation layer (spring reveal, frosted-glass
+// scroll state, sliding tab indicator, CTA hover-scale) was added and then
+// reverted at the user's request, prior to any of the shape passes below —
+// this file has never carried JS-driven motion beyond the mobile menu
+// toggle, and that remains true here.
+//
+// PILL → FULL-WIDTH BAR (earlier pass, now REVERTED by this pass): a prior
+// pass switched the shape from the floating, margin-inset, rounded-full
+// pill to an edge-to-edge bar spanning the full viewport width, flush to
+// the true top, with a bottom hairline border instead of an all-around
+// pill border. THIS PASS REVERSES THAT CHANGE per new inspiration (the
+// "Monopol" screenshot) explicitly calling for the floating pill shape
+// again — see "PILL SHAPE RESTORED" below for what changed back and why.
+// Keeping this note rather than deleting it per this repo's convention of
+// preserving pass history instead of erasing superseded decisions.
+//
+// PILL SHAPE RESTORED (this pass): per the Monopol reference, `<header>`
+// is no longer `inset-x-0 top-0` flush-to-edge — it keeps `inset-x-0
+// top-0` for its own fixed positioning context, but now carries edge
+// padding (`px-4 pt-4 sm:px-6 sm:pt-6`) so the pill sits inset from the
+// viewport on all sides rather than touching them. A new inner wrapper
+// (`relative mx-auto max-w-5xl`) reinstates the horizontal centering/width
+// constraint and gives the mobile sheet a positioning parent that itself
+// respects the same inset margins (so the dropdown lines up under the
+// pill instead of spanning the true viewport edges again). The bar's
+// `border-b` (bottom-only) reverts to `border` (all four sides, standard
+// Tailwind, no arbitrary value) and `rounded-none` implicit square corners
+// revert to `rounded-full` on the bar itself; the mobile sheet keeps its
+// existing `rounded-3xl` floating-card treatment unchanged (it was already
+// a rounded card in both prior passes, so no shape edit needed there).
+// Vertical rhythm (`h-14 sm:h-16`), link/CTA/toggle markup, active/hover/
+// focus-visible states, and the mobile toggle script are byte-for-byte
+// unchanged from the full-width-bar pass — only positioning, radius, and
+// border-side utilities moved. `⚠️ Flag` — the fixed-header height/margin
+// budget consumed by this pill (`h-14`/`h-16` bar + `pt-4`/`pt-6` top
+// margin) is now taller than the previous flush bar's own `h-14`/`h-16`
+// with zero top offset; any sibling component that hard-codes top
+// clearance to the *old* flush-bar height (e.g. `Hero.astro`'s top
+// padding, `ScatterDecoration.astro`'s wrapper offset, if either
+// assumes a fixed `pt-14`/`pt-16` equal to the bar height alone) will need
+// a follow-up bump to account for the added `pt-4`/`pt-6` margin — not
+// edited here per this task's scope, flagging only.
+//
+// LIQUID GLASS DISTORTION — SIMPLIFIED (this pass): the SVG
+// feTurbulence/feDisplacementMap distortion filter from the full-width-bar
+// pass is dropped for this floating-pill shape. Reasoning: the Monopol
+// reference sits over a very light, pale-gradient hero background, and a
+// visible pixel-bend/refraction effect reads clearly against a dark or
+// busy backdrop (where the earlier passes' greener/darker reference lived)
+// but turns visually murky/noisy against a light one — the displacement
+// would smear the pale background's soft color transitions rather than
+// read as "glass." Replaced with a plain, standard Tailwind
+// `backdrop-blur-xl` plus a solid-ish `bg-ink/90` fill (the design
+// system's one warm near-black, matching the reference's near-opaque
+// dark-pill look) — no SVG filter, no `<style>` block, no vendor-prefixed
+// backdrop-filter needed anymore. This is a simplification, not a
+// polish loss: the reference's pill itself reads as solid/near-opaque
+// dark, not visibly warped, so plain blur + solid fill is the closer
+// match, not a compromise.
+//
+// SLIM + BLUE CTA (this pass): quick follow-up per direct request — pill
+// height `h-14 sm:h-16` → `h-12 sm:h-14` (both standard Tailwind scale
+// steps, no arbitrary value) for a slimmer bar; the "Join Waitlist" CTA
+// (desktop and mobile) overrides `Button.astro`'s default `bg-ink` fill
+// with `!bg-blue-600 hover:!bg-blue-700` (blue-600 is the fixed accent
+// color per Section 4.5/DESIGN_SYSTEM.md Section 1, so this isn't a new
+// color — same `!important`-override convention already used for
+// `!rounded-full !shadow-none`). Text stays whatever `Button.astro`'s
+// default text color is; not touched since spec only said "blue-fill the
+// button."
+//
+// CTA SHIFT + SHINY GRADIENT (this pass): two more quick follow-ups per
+// direct request. (1) The pill's inner padding split from symmetric
+// `px-4 sm:px-6` to `pl-4 pr-2 sm:pl-6 sm:pr-3` — the brand/logo side keeps
+// its original left padding, but the CTA side's right padding was tightened
+// so the button sits closer to the pill's right edge, roughly matching the
+// vertical breathing room already sitting above/below it (both still
+// standard Tailwind spacing steps, no arbitrary value). (2) The pill and
+// mobile sheet's flat `bg-ink/90` fill is replaced with a diagonal-feeling
+// `bg-gradient-to-b from-zinc-700/95 via-zinc-900/95 to-black/95` — a
+// lighter warm-gray top fading through near-black to true black, giving
+// the bar a "shiny/glossy" dimensional read instead of one flat matte
+// color, while staying just barely translucent (`/95`) so `backdrop-blur-
+// xl` still contributes a hint of glass underneath. This is a Nav-only
+// color/gradient choice, not a DESIGN_SYSTEM.md Section 1 violation —
+// this file is still under the Section 4.5 per-page inspiration override
+// (see file-header note above), which explicitly frees this component's
+// colors/gradient from the v2 "gradient reserved for flow-rail only" rule.
+// All values are standard Tailwind color-scale + opacity-modifier syntax
+// (`zinc-700/95`, `zinc-900/95`, `black/95`) — no hex, no bracket notation.
+//
+// LINK COLOR + ACTIVE UNDERLINE (earlier pass, underline part now
+// REVERTED): inactive nav links (desktop and mobile) dropped their `/60`
+// and `/70` dimmed-opacity variants for plain `text-paper` (full-opacity,
+// "white" links) — this part stays. That same pass also added `underline
+// decoration-blue-400 hover:decoration-white` to the active link; per
+// direct follow-up request the underline was removed entirely — active
+// link now goes back to color-only (`bg-blue-500/15 text-blue-400`, no
+// underline, no hover-underline swap). Keeping this note per this file's
+// convention of recording reverted passes rather than deleting them.
+//
+// HIDE-ON-SCROLL ADDED (this pass): the `<header>` now hides/shows itself
+// in response to scroll direction, matching this repo's existing
+// scroll-driven-effect conventions (`lenis.ts`, `Hero.astro`'s reveal
+// script) rather than introducing a new pattern:
+// - Scrolling down slides the header up and out of view via
+//   `transform: translateY(-150%)` (fully clears the pill, including its
+//   `shadow-xl`); scrolling up slides it back to `translateY(0)`. The
+//   header gained `transition-transform duration-300 ease-out
+//   will-change-transform` (standard Tailwind utilities, no arbitrary
+//   easing/duration values) so the slide is a smooth CSS transition, not
+//   an instant snap. No other visual styling (color, padding, radius,
+//   shadow, borders) changed.
+// - The header also gained an `id="site-header"` purely so this file's own
+//   script can select it reliably; this is not a styling change and
+//   doesn't affect the "id-less <header>" structural description above in
+//   any visual sense.
+// - Below a small top-of-page threshold (`scrollY <= 50`) the header
+//   always stays visible regardless of direction, so it doesn't flicker
+//   hidden on page load or on tiny scroll jitter right at the top.
+// - Whenever `#mobile-menu` is open, the header is forced visible and the
+//   hide-on-scroll logic is skipped for that check, so the mobile sheet
+//   and the hide/show behavior never fight each other.
+// - Reacts only once accumulated scroll delta since the last check passes
+//   a small threshold (5px), avoiding jitter on sub-pixel scroll events,
+//   and the scroll listener is rAF-throttled with the same
+//   `if (!ticking) { ticking = true; requestAnimationFrame(update); }`
+//   pattern used elsewhere in this repo's scripts (see `lenis.ts`), rather
+//   than running full logic on every raw scroll event.
+// - Respects `prefers-reduced-motion: reduce` via the same
+//   `window.matchMedia('(prefers-reduced-motion: reduce)').matches` check
+//   `lenis.ts` and `Hero.astro` already use: under that preference the
+//   hide-on-scroll listener is never attached and no sliding transform is
+//   ever applied, so the header just stays static/persistent as before.
+// - All added logic lives in this file's own existing `<script>` tag
+//   (previously mobile-menu-toggle-only) — no new file under
+//   `src/scripts/`, since this behavior is owned entirely by this one
+//   component/element, matching this file's established convention.
+//
+// FULL-WIDTH BLUE BAR (this pass): shape swap from the floating,
+// margin-inset, rounded-full pill back to an edge-to-edge bar, plus a
+// color swap from the dark ink/zinc gradient + blue CTA to a blue gradient
+// bar + white CTA. Content, links, CTA copy, mobile menu behavior, the
+// hide-on-scroll logic, and all accessibility/focus-visible attributes are
+// unchanged — this is a re-skin only:
+// - Shape: `<header>` drops its `px-4 pt-4 sm:px-6 sm:pt-6` edge-inset
+//   padding — it's now just `fixed inset-x-0 top-0 z-50` plus the existing
+//   hide-on-scroll transition/will-change classes, so the bar sits flush
+//   against the true viewport top/sides again. The inner bar div drops
+//   `rounded-full` and `border border-white/15` (no rounding utility, no
+//   all-around border — a full-bleed bar doesn't need either) and picks up
+//   a `border-b border-white/10` hairline instead, for a light seam against
+//   whatever sits below it. The `relative mx-auto max-w-5xl` wrapper still
+//   centers/constrains the nav content inside the full-width bar, and the
+//   bar keeps its existing `pl-4 pr-2 sm:pl-6 sm:pr-3` padding split (from
+//   the earlier "CTA shift" pass) since the header no longer supplies any
+//   outer inset. `#mobile-menu` keeps `absolute inset-x-0 top-full`
+//   relative to that same wrapper, so it still lines up correctly under
+//   the new flush bar; its own `rounded-3xl` floating-card shape and
+//   content are untouched.
+// - Background: the bar's `bg-gradient-to-b from-zinc-700/95 via-zinc-900/95
+//   to-black/95` dark gradient becomes `bg-gradient-to-b from-blue-500
+//   via-blue-600 to-blue-800` — standard Tailwind blue-scale steps built
+//   around this repo's fixed blue-600 accent, no arbitrary hex. `#mobile-
+//   menu` gets the same blue gradient swap so the bar and the mobile sheet
+//   stay visually consistent. `backdrop-blur-xl` is kept on both (still
+//   reads as glass over a solid blue fill).
+// - Active nav link: `bg-blue-500/15 text-blue-400` blended into the new
+//   blue background, so the active state becomes a high-contrast white
+//   pill — `bg-white text-blue-700` — while the inactive `text-paper`
+//   links (already white) stay legible on blue as-is.
+// - CTA: `Join Waitlist` (desktop + mobile) swaps its override from
+//   `!bg-blue-600 hover:!bg-blue-700` (blue-on-blue, would disappear into
+//   the new bar) to `!bg-white hover:!bg-white/90 !text-blue-600`, keeping
+//   `!rounded-full !shadow-none` and the `ArrowRight` icon exactly as they
+//   were — a white pill with blue text now reads as the high-contrast CTA
+//   against the blue bar.
+//
+// Structure (current):
+//   1. `<header>` — fixed positioning context, flush to the true viewport
+//      top/sides (no edge-inset padding).
+//   2. Inner `relative mx-auto max-w-5xl` wrapper — width constraint,
+//      centering, and the positioning parent for the mobile sheet.
+//   3. The bar itself — square corners (no rounding utility), `border-b
+//      border-white/10` hairline only, `bg-gradient-to-b from-blue-500
+//      via-blue-600 to-blue-800`, `backdrop-blur-xl`, containing brand /
+//      nav links / CTA / mobile toggle.
+//   4. Mobile sheet — `rounded-3xl`, positioned `top-full` under the bar
+//      via the shared wrapper, same blue gradient as the bar, unchanged
+//      content/behavior.
+//
+// FLUSH-BAR CORRECTIVE PASS (this pass): the "FULL-WIDTH BLUE BAR" pass
+// above intended an edge-to-edge bar but shipped visually broken/
+// inconsistent — it kept the pill-era `relative mx-auto max-w-5xl` wrapper
+// around the bar, so the bar itself was still width-constrained and
+// centered rather than truly spanning the viewport, and it carried
+// leftover shape artifacts (`border-b border-white/10` hairline,
+// `shadow-xl shadow-black/40`, asymmetric `pl-4 pr-2 sm:pl-6 sm:pr-3`
+// padding left over from the pill's "CTA shift" pass) that read as uneven
+// rounding/border/shadow rather than a clean flush bar. This pass is a
+// corrective redesign against a fresh reference (inertiajs.com's header:
+// solid/gradient blue, perfectly flush, edge-to-edge, bold white wordmark
+// left, plain inline content right, solid white rounded-full pill CTA) —
+// content (nav links, "Join Waitlist" CTA) stays Huzlly's own, only the
+// shape/border/shadow polish is corrected:
+// - Wrapper: `relative mx-auto max-w-5xl` → `relative` only. The width
+//   constraint was the root cause of the bar not being edge-to-edge; the
+//   wrapper now exists solely to give `#mobile-menu` a positioning parent,
+//   no longer to cap the bar's width.
+// - Bar shape: `rounded-full`/`border`-era leftovers are gone (this bar
+//   never had `rounded-full`, but the audit confirms zero rounding
+//   utilities of any kind survive on it — plain square corners). Dropped
+//   `border-b border-white/10` entirely (no border utility at all) and
+//   `shadow-xl shadow-black/40` in favor of a single soft `shadow-sm` for
+//   quiet depth — no harsh/heavy shadow. `backdrop-blur-xl` removed on
+//   both the bar and the mobile sheet since a solid-fill bar doesn't need
+//   glass blur (the reference bar isn't glassy either).
+// - Padding: asymmetric `pl-4 pr-2 sm:pl-6 sm:pr-3` → symmetric
+//   `px-6 sm:px-10`, now carried directly on the bar since the header
+//   supplies no outer inset margin. Height bumped `h-12 sm:h-14` →
+//   `h-16 sm:h-20` for more comfortable, evenly-balanced vertical rhythm
+//   now that the bar reads as a standalone full-width band rather than an
+//   inset pill.
+// - Background: gradient endpoint eased `to-blue-800` → `to-blue-700`
+//   (still standard Tailwind blue scale, no arbitrary hex) for a slightly
+//   lighter, cleaner gradient across the full bar width; `#mobile-menu`
+//   gets the same updated gradient so the dropdown stays visually
+//   consistent with the bar above it.
+// - Logo: wordmark bumped `text-lg font-semibold` / `sm:text-xl` →
+//   `text-xl font-bold` / `sm:text-2xl` so it reads as bold against the
+//   full-width fill, matching the reference's bold wordmark treatment.
+// - Everything else — nav link labels/hrefs, active-state colors
+//   (`bg-white text-blue-700`), inactive link color (`text-paper`), CTA
+//   styling (`!bg-white hover:!bg-white/90 !text-blue-600 !shadow-none
+//   !rounded-full`), the `ArrowRight` icon, the mobile toggle button/
+//   icon-swap logic, the hide-on-scroll JS and its transition/will-change
+//   classes, and all accessibility/focus-visible attributes — is
+//   byte-for-byte unchanged from the prior pass; this was a shape/border/
+//   shadow/spacing correction only.
 
 import { Menu, X } from 'lucide-astro';
 import Button from '../ui/Button.astro';
@@ -137,6 +396,10 @@ const isActive = (href: string) => {
   if (header && !prefersReducedMotion) {
     const TOP_THRESHOLD = 50; // px — always show near the very top of the page
     const DELTA_THRESHOLD = 5; // px — ignore tiny sub-pixel scroll jitter
+    // Background tint applied once the user scrolls past TOP_THRESHOLD, so
+    // the glass header stays legible over light page sections; removed
+    // again whenever the user scrolls back within TOP_THRESHOLD of the top.
+    const SCROLLED_BG_CLASS = 'bg-blue-600/80';
 
     let lastScrollY = window.scrollY;
     let ticking = false;
@@ -152,9 +415,24 @@ const isActive = (href: string) => {
       header.style.transform = 'translateY(-150%)';
     };
 
+    // Evaluated on every scroll update based purely on current scroll
+    // position — independent of hide/show transform state — so the tint
+    // appears/disappears any time the user crosses TOP_THRESHOLD in either
+    // direction, even if the header itself never hides.
+    const updateHeaderTint = (currentScrollY) => {
+      if (!headerBar) return;
+      if (currentScrollY > TOP_THRESHOLD) {
+        headerBar.classList.add(SCROLLED_BG_CLASS);
+      } else {
+        headerBar.classList.remove(SCROLLED_BG_CLASS);
+      }
+    };
+
     const update = () => {
       const currentScrollY = window.scrollY;
       const delta = currentScrollY - lastScrollY;
+
+      updateHeaderTint(currentScrollY);
 
       if (currentScrollY <= TOP_THRESHOLD || isMobileMenuOpen()) {
         // Always visible near the top of the page, and whenever the
