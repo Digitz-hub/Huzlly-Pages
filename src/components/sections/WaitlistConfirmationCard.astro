@@ -1,26 +1,6 @@
 ---
 // src/components/sections/WaitlistConfirmationCard.astro
-// Used only on src/pages/waitlist.astro, alongside WaitlistFormCard.astro
-// — together they replace the single WaitlistSplitCard.astro. This
-// component is "screen 2": the post-submit "what happens now?" stepper
-// panel, swapped in for WaitlistFormCard.astro on successful submit (see
-// the page-level script in waitlist.astro), or shown directly on load if
-// the visitor already has the `huzlly_waitlist_joined` cookie set.
-//
-// ASTRO SCOPING NOTE: this panel's leave/enter transition is driven from
-// waitlist.astro's page-level <script> via `classList.add('screen-leave'
-// | 'screen-enter')`, referencing the keyframes `screen-leave` /
-// `screen-enter` by name. Astro scopes (renames) `@keyframes` names
-// declared inside a component's own <style> block by default; the
-// `animation` property on the *matching* class in the *same* style block
-// gets rewritten to the renamed name automatically, so the class-based
-// usage here is internally consistent on its own. They're still declared
-// with the `-global-` prefix (duplicating the same keyframes also defined
-// in WaitlistFormCard.astro) to keep one literal, page-wide name for both
-// components' usages — WaitlistFormCard.astro's script also drives this
-// panel indirectly via `switchScreens()`, and duplicating avoids any
-// dependency on which component's <style> block the browser happens to
-// process/keep first.
+
 import { Check, MailCheck, Users, Rocket, Compass } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
