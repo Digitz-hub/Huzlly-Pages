@@ -1,7 +1,7 @@
 /* src/styles/float-animation.css
  *
  * Shared "floating glass panel" drift animation — extracted from
- * HeroScatterDecoration.astro so any component can reuse it without
+ * ScatterDecoration.astro so any component can reuse it without
  * redefining the keyframes. Pure CSS, no JS needed (unlike
  * scroll-reveal.css/scroll-reveal.ts, this isn't scroll-driven — it's a
  * simple continuous loop).
