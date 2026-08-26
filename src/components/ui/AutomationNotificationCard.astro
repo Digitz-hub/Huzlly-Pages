@@ -1,33 +1,5 @@
 ---
 // src/components/ui/AutomationNotificationCard.astro
-// Collapsible "automation event" notification card — designed to sit as a
-// floating/scattered element in a hero section, implying a live automation
-// just ran inside Huzlly (e.g. "Client signed contract").
-//
-// Collapsed: icon badge + title + chevron, single row, vertically centered.
-// Expanded (on click/Enter/Space): a divider + description slide open below
-// the header row via a CSS grid-template-rows animation. The divider and
-// description are indented to align under the title, not the icon.
-//
-// No JS framework needed — this repo has no React/Vue integration installed
-// (see astro.config.mjs), so interactivity here follows the same pattern as
-// FAQAccordion.astro / Hero.astro's `.reveal` blocks: plain CSS + a small
-// inline <script>, with a `prefers-reduced-motion` fallback.
-//
-// Icon is passed via the "icon" slot so any lucide-astro icon (or custom
-// SVG) can be used per instance — this component only owns layout/behavior,
-// not icon content. `iconBg` should be a Tailwind background class using
-// DESIGN_SYSTEM.md tokens (bg-blue-600 / bg-teal-600 / bg-amber-500 are the
-// three currently-approved signal/accent colors; a 4th color for a 4-card
-// set isn't defined in the system yet — pick one and flag it for review
-// rather than inventing a new hex value here).
-//
-// Rotation is applied via `rotationClass` — a full Tailwind rotate class
-// (e.g. 'rotate-6', '-rotate-6') passed straight into class:list. This
-// replaces an earlier numeric `rotation` prop that drove rotation through
-// an inline `style="transform: rotate(...)"` attribute, which violated
-// CLAUDE.md Section 3's zero-tolerance inline-style rule. No inline style
-// anywhere in this component now.
 
 export interface Props {
   iconBg?: string; // Tailwind bg-* class, e.g. 'bg-teal-600'
@@ -59,7 +31,6 @@ const {
   tabindex="0"
   aria-expanded={defaultExpanded}
 >
-  <!-- Header row: icon + title + chevron — self-contained, fixed height regardless of expand state -->
   <div class="flex items-center gap-2.5">
     <div class:list={['flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white', iconBg]}>
       <slot name="icon" />
@@ -79,7 +50,6 @@ const {
     </div>
   </div>
 
-  <!-- Divider + description — separate block below the header row, indented to align under the title column (not the icon) -->
   <div class="detail-wrap grid pl-[46px] transition-[grid-template-rows] duration-300 ease-in-out">
     <div class="overflow-hidden">
       <div class="detail-inner opacity-0 transition-opacity duration-300 ease-in-out">
@@ -91,17 +61,6 @@ const {
 </div>
 
 <style>
-  /* SHARP-EDGE FIX (this pass): rotated elements (rotationClass above)
-     can render with soft/blurred edges in some browsers because the
-     rotated box no longer sits on the pixel grid. `backface-visibility:
-     hidden` + `will-change: transform` hints the browser to composite
-     this card on its own GPU layer, which keeps the rotated border/
-     shadow edges crisp. Deliberately NOT setting `transform` here
-     (e.g. translateZ(0)) since this component's `transform` is already
-     owned by the Tailwind `rotationClass` utility passed in via
-     class:list — adding a second `transform` declaration in this
-     scoped style block would override/conflict with that rotation
-     instead of complementing it. */
   .automation-card {
     backface-visibility: hidden;
     will-change: transform;
