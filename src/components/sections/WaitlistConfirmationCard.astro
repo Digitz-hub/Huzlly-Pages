@@ -4,11 +4,6 @@
 import { Check, MailCheck, Users, Rocket, Compass } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
-// "What happens now?" stepper — shown in place of the form card once the
-// waitlist form succeeds (or immediately, if the visitor already joined).
-// Uses the DESIGN_SYSTEM.md signal-color trio (blue-600 / teal-600 /
-// amber-500) for the three step icons instead of the reference
-// screenshot's purple/cyan/pink, so it stays on-brand.
 const nextSteps = [
   { icon: MailCheck, title: 'Confirmation sent', desc: "Check your inbox — we've just emailed you a confirmation.", gradient: 'from-blue-500 to-blue-600' },
   { icon: Users, title: "You're queued", desc: 'One of 50 spots this cohort — requests are reviewed in order.', gradient: 'from-teal-500 to-teal-600' },
