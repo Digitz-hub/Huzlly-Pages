@@ -26,15 +26,8 @@
 // SITE_IDENTITY_AND_AEO.md's canonical flow language; AEO/schema follow-up
 // is being handled separately by the user, not silently reconciled here.
 //
-// Color note: the design system only defines three approved signal colors
-// (blue-600 / teal-600 / amber-500) — see AutomationNotificationCard.astro's
-// comment. Card 04 ("Grow") originally used the neutral ink/rail treatment
-// instead of inventing a new hue, flagged per CLAUDE.md Section 3.
-// User then explicitly requested Card 04 use a distinct color (green-600,
-// from Tailwind's default palette) instead of the neutral ink treatment —
-// this does deviate from AutomationNotificationCard.astro's 3-signal-color
-// convention, per the user's direct instruction, not silently reconciled
-// here. If that convention gets revisited, this card is the one to check.
+// Color note: all four cards now share the same blue-600 signal color —
+// there is no other per-card color mapping to track.
 
 import {
   FileText,
@@ -109,7 +102,7 @@ const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity:
 // separate transforms, composing visually through normal parent/child
 // nesting instead of all fighting for one `transform` property.
 const chipClasses =
-  'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-paper/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-medium text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
+  'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-white/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-[Outfit] font-semibold text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
 const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
 const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
 
@@ -152,7 +145,7 @@ const stages = [
     stage: 'Work',
     headline: 'Manage every project in one place.',
     body: 'Organize projects and tasks, track your time, and keep clients updated with their own dedicated portal.',
-    signal: 'teal',
+    signal: 'blue',
     illustration: WorkIllustration,
     chips: [
       { icon: FolderKanban, label: 'Projects', position: 'left-3.5 top-3.5', delay: '0s' },
@@ -166,7 +159,7 @@ const stages = [
     stage: 'Get Paid',
     headline: 'Finish the work. Get paid.',
     body: 'Send invoices, collect payments, and keep your billing organized from project completion to payment.',
-    signal: 'amber',
+    signal: 'blue',
     illustration: GetPaidIllustration,
     chips: [
       { icon: Receipt, label: 'Invoice', position: 'right-4 top-3.5', delay: '0s' },
@@ -179,7 +172,7 @@ const stages = [
     stage: 'Grow',
     headline: 'Turn great work into repeat business.',
     body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
-    signal: 'green',
+    signal: 'blue',
     illustration: GrowIllustration,
     chips: [
       { icon: Users, label: 'Clients', position: 'left-4 top-3.5', delay: '0s' },
@@ -245,7 +238,7 @@ const stages = [
               <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
                 <div class="flex items-center gap-4">
                   <span
-                    class="font-display text-7xl font-semibold leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-8xl"
+                    class="font-display font-[Outfit] text-[64px] font-[800] leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-[80px]"
                   >
                     {step.number}.
                   </span>
@@ -256,9 +249,9 @@ const stages = [
                   ></span>
                 </div>
 
-                <h3 class="mt-5 font-display text-2xl font-semibold leading-snug text-ink sm:text-3xl">{step.headline}</h3>
+                <h3 class="mt-5 font-display font-[Outfit] text-[28px] font-bold leading-snug tracking-[-0.015em] text-ink">{step.headline}</h3>
 
-                <p class="mt-4 max-w-lg text-base leading-relaxed text-ink/70">{step.body}</p>
+                <p class="mt-4 max-w-lg font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">{step.body}</p>
               </div>
 
               {/* Illustration column: ~40% width on desktop. No
@@ -319,3 +312,7 @@ const stages = [
     </div>
   </div>
 </section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+</style>
