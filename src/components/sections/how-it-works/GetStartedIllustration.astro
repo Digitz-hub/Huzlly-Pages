@@ -1,12 +1,5 @@
 ---
 // src/components/sections/how-it-works/GetStartedIllustration.astro
-// Card 01 ("Get Started") bespoke illustration — stacked document
-// rectangles + signature squiggle + pulsing approval badge, ported
-// from huzlly-how-it-works.html's .card--01 SVG. Extracted verbatim
-// from FeaturesSummary.astro's Step 2 inline version during the Step 6
-// structure-cleanup pass — markup/classes unchanged, just relocated.
-// Every fill/stroke stays on the blue-600/blue-100/blue-50 signal ramp
-// (not the reference's raw hex) per the site's design-language rule.
 ---
 
 <svg
@@ -16,24 +9,17 @@
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
 >
-  {/* Back document */}
   <rect x="150" y="52" width="120" height="150" rx="10" class="fill-blue-50 stroke-blue-100" stroke-width="1.5" transform="rotate(6 210 127)" />
-  {/* Middle document */}
   <rect x="132" y="44" width="122" height="152" rx="10" class="fill-white stroke-blue-100" stroke-width="1.5" transform="rotate(-3 193 120)" />
-  {/* Main document */}
   <rect x="118" y="36" width="126" height="156" rx="12" class="fill-white stroke-blue-100" stroke-width="1.5" />
-  {/* Doc title bar */}
   <rect x="134" y="54" width="60" height="7" rx="3.5" class="fill-blue-600" opacity="0.85" />
   <rect x="134" y="68" width="90" height="5" rx="2.5" class="fill-blue-100" />
-  {/* Body text lines */}
   <rect x="134" y="88" width="94" height="4.5" rx="2.25" class="fill-blue-50" />
   <rect x="134" y="99" width="80" height="4.5" rx="2.25" class="fill-blue-50" />
   <rect x="134" y="110" width="94" height="4.5" rx="2.25" class="fill-blue-50" />
   <rect x="134" y="121" width="66" height="4.5" rx="2.25" class="fill-blue-50" />
-  {/* Signature squiggle */}
   <path d="M134 150 q6 -10 12 0 t12 0 t12 0 t12 0" class="stroke-blue-600" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7" />
   <line x1="134" y1="162" x2="200" y2="162" class="stroke-blue-50" stroke-width="1.5" />
-  {/* Approval badge */}
   <circle cx="222" cy="172" r="16" class="soft-pulse-el fill-blue-600" />
   <path d="M215 172 l5 5 l10 -11" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
 </svg>
