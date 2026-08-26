@@ -1,19 +1,5 @@
 ---
 // src/pages/features.astro
-// Deep-dive version of the homepage's FeaturesSummary teaser. Walks the
-// real product flow end to end: proposal approval automatically triggers
-// the contract, contract acceptance automatically triggers the invoice
-// and project creation, work gets tracked inside the project via tasks
-// and time entries, and everything can optionally be shared with the
-// client through a permission-controlled portal.
-//
-// v2 redesign pass: rebuilt against DESIGN_SYSTEM.md v2 — ink/paper/rail
-// palette, Space Grotesk display type, JetBrains Mono eyebrows/step
-// markers, dot-grid hero texture, Card `flat-lift` + `tick` on the main
-// 4-step sequence (this page's genuine numbered-sequence content, per
-// Section 4 "Numbered Step Markers"), Card `elevated` elsewhere. Mirrors
-// the ui/ primitives and section conventions already locked in Hero.astro
-// and FeaturesSummary.astro.
 
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
