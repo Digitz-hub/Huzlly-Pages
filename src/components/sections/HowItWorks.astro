@@ -1,33 +1,5 @@
 ---
 // src/components/sections/HowItWorks.astro
-// Split out of FeaturesSummary.astro (which used to hold both this section
-// and the "why lean" section below it in one file). This file contains
-// ONLY the "how it works" section — see WhyLean.astro for the other half.
-// FeaturesSummary.astro itself is left untouched for now and no longer
-// used from index.astro; it will be deleted manually after this split is
-// verified in deployment.
-//
-// v2.1 card redesign (per user-supplied inspiration, CLAUDE.md Section 4.5):
-// "how it works" cards move from the plain icon-chip layout to a numbered-
-// badge + headline + bespoke per-card SVG illustration + floating chip
-// layout. Structure/composition is from the inspiration reference
-// (huzlly-how-it-works.html); palette stays on the sitewide ink/paper/rail
-// + signal-color system so it reads as this site's design language, not a
-// copy-pasted foreign look. Each card's illustration lives in its own
-// component under ./how-it-works/ (GetStartedIllustration.astro,
-// WorkIllustration.astro, GetPaidIllustration.astro, GrowIllustration.astro)
-// — the shared Card/badge/headline/glow/chip/description markup below is
-// written once and driven by the `stages` data array.
-//
-// Content note: copy moves from the granular automation-trigger framing
-// (Proposal/Contract/Invoice/Project) to a 4-stage lifecycle framing
-// (Get Started/Work/Get Paid/Grow), per explicit user direction — this is
-// a deliberate content decision made with awareness that it diverges from
-// SITE_IDENTITY_AND_AEO.md's canonical flow language; AEO/schema follow-up
-// is being handled separately by the user, not silently reconciled here.
-//
-// Color note: all four cards now share the same blue-600 signal color —
-// there is no other per-card color mapping to track.
 
 import {
   FileText,
