@@ -25,8 +25,8 @@
 // ---- Hard-coded configuration (reference file's resolved defaults) ----
 const PARTICLE_COUNT = 1000;
 const COLOR_1 = '#ffffff';
-const COLOR_2 = '#FF0000';
-const COLOR_3 = '#FFE500';
+const COLOR_2 = '#ffffff';
+const COLOR_3 = '#ffffff';
 const SPEED = 2;
 const DENSITY = 100;
 const STAR_SIZE = 5;
