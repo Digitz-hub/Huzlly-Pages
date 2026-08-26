@@ -190,17 +190,9 @@ const stages = [
 ];
 ---
 
-<!-- BACKGROUND (retinted this pass): swapped from the blue-family tint
-     (#F2F7FE/#EAF1FC) to an equivalent teal-family tint at the same
-     stop structure/lightness — same white hold near the top (0%/5%)
-     easing into a light tint by the bottom (40%/100%) — so this section
-     reads as visually distinct from TheShift/WhyLean's blue territory
-     instead of repeating it, while staying inside the approved
-     blue-600/teal-600/amber-500 3-signal-color system (this section's own
-     per-stage signal colors in `stages` are untouched — this is only the
-     outer section wash). #F0FAF8/#E3F4F0 sit in teal-50/teal-100
-     territory, matching the previous blue tints' feel at teal's hue. -->
-<section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-[linear-gradient(180deg,#FFFFFF_0%,#FFFFFF_5%,#F0FAF8_40%,#E3F4F0_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<!-- BACKGROUND: solid white (#FFFFFF) across the whole section — no
+     gradient or teal tint. -->
+<section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <SectionHeader eyebrow="How it works"
       title="Four stages. Zero handoffs."
