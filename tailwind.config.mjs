@@ -15,7 +15,8 @@ export default {
         
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         
-        display: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Outfit — used on headings via the `font-display` class
+        display: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         
         mono: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
