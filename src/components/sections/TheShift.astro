@@ -24,7 +24,6 @@
 // blue gradient background — fades to white at the bottom so the
 // section-to-section border/seam still reads cleanly.
 
-import SectionHeader from '../ui/SectionHeader.astro';
 import DashboardPreview from '../ui/DashboardPreview.astro';
 
 // STEP 1 of redesign — infrastructure only (no visible layout/content change):
@@ -43,10 +42,18 @@ import DashboardPreview from '../ui/DashboardPreview.astro';
 
 <section id="the-shift" class="scroll-mt-20 relative border-t border-rail bg-[linear-gradient(180deg,#FEE2E2_0%,#FEF2F2_60%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
-    <SectionHeader
-      as="h2"
-      title="Freelancing was never supposed to feel this complicated."
-    />
+    <div class="inline-flex items-center gap-2 rounded-full border border-[#f6cfc5] bg-[#fdece7] px-4 py-1.5 text-sm font-medium text-[#e0492e]">
+      <i class="ph-duotone ph-warning-circle text-base" aria-hidden="true"></i>
+      Why freelancing feels harder than it should
+    </div>
+
+    <h2 style="font-family: 'Outfit', sans-serif;" class="mt-6 text-4xl font-bold leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl">
+      Freelancing was never supposed to feel this complicated.
+    </h2>
+
+    <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink/70">
+      Five friction points quietly eat your time, your money, and your focus before a single invoice gets paid.
+    </p>
 
     <DashboardPreview class="mt-14" />
   </div>
