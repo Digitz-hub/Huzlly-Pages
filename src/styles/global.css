@@ -1,3 +1,5 @@
+/* src/styles/global.css */
+
 @import './float-animation.css';
 @import './card-illustration.css';
 
@@ -5,18 +7,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Clip horizontal overflow (decorative elements that bleed past the
-   viewport edge, e.g. the waitlist page's blur orbs) without breaking
-   native page scroll on mobile. Deliberately `clip`, not `hidden`: per
-   the CSS overflow spec, an element with overflow-x: hidden paired with
-   overflow-y: visible has its y-axis forced to `auto`, turning html/body
-   into their own nested scroll container instead of the browser's native
-   viewport scroll — that's what caused the stuttery, non-momentum scroll.
-   `clip` clips the same way but is exempt from that pairing rule, so it
-   never creates a scroll container. `hidden` is kept as a fallback line
-   for older browsers without `clip` support (Safari < 16.4) — harmless
-   there since the fallback only matters for browsers that ignore the
-   `clip` line anyway. */
 html,
 body {
   overflow-x: hidden;
