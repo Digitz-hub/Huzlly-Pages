@@ -177,7 +177,7 @@ const softwareApplicationSchema = {
               <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                 <User class="w-5 h-5" stroke-width="1.75" />
               </span>
-              <h3 class="text-lg font-semibold text-ink">Huzlly is for you if</h3>
+              <h3 class="text-lg font-semibold text-ink font-display">Huzlly is for you if</h3>
             </div>
             <ul class="mt-6 space-y-4">
               {forYou.map((item) => (
@@ -194,7 +194,7 @@ const softwareApplicationSchema = {
               <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-rail/30 text-ink/50">
                 <Users class="w-5 h-5" stroke-width="1.75" />
               </span>
-              <h3 class="text-lg font-semibold text-ink">Not built for</h3>
+              <h3 class="text-lg font-semibold text-ink font-display">Not built for</h3>
             </div>
             <ul class="mt-6 space-y-4">
               {notForYou.map((item) => (
@@ -225,7 +225,7 @@ const softwareApplicationSchema = {
                 <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-paper shadow-sm">
                   <step.icon class="w-5 h-5" stroke-width="1.75" />
                 </span>
-                <h3 class="text-xl font-semibold text-ink">{step.title}</h3>
+                <h3 class="text-xl font-semibold text-ink font-display">{step.title}</h3>
                 <div class="flex flex-wrap gap-2 sm:ml-auto">
                   {step.chips.map((chip) => (
                     <Badge variant="neutral">{chip}</Badge>
@@ -271,7 +271,7 @@ const softwareApplicationSchema = {
             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <Mail class="w-5 h-5" stroke-width="1.75" />
             </span>
-            <h3 class="mt-4 text-lg font-semibold text-ink">Confirmation on every decision</h3>
+            <h3 class="mt-4 text-lg font-semibold text-ink font-display">Confirmation on every decision</h3>
             <p class="mt-2 text-sm text-ink/70 leading-relaxed">
               Every time a client approves a proposal, or accepts or rejects a contract, both of
               you get an email confirming exactly what happened. You never have to open Huzlly
@@ -283,7 +283,7 @@ const softwareApplicationSchema = {
             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
               <ShieldCheck class="w-5 h-5" stroke-width="1.75" />
             </span>
-            <h3 class="mt-4 text-lg font-semibold text-ink">Client access, on your terms</h3>
+            <h3 class="mt-4 text-lg font-semibold text-ink font-display">Client access, on your terms</h3>
             <p class="mt-2 text-sm text-ink/70 leading-relaxed">
               The client portal is off by default and set per client, not sitewide. You choose
               whether each client can see project and task progress, and whether they can message
@@ -308,7 +308,7 @@ const softwareApplicationSchema = {
               <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
                 <c.icon class="w-5 h-5" stroke-width="1.75" />
               </span>
-              <h3 class="mt-4 text-base font-semibold text-ink">{c.title}</h3>
+              <h3 class="mt-4 text-base font-semibold text-ink font-display">{c.title}</h3>
               <p class="mt-2 text-sm text-ink/70 leading-relaxed">{c.body}</p>
             </Card>
           ))}
