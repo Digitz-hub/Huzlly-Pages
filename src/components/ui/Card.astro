@@ -1,47 +1,15 @@
 ---
 // src/components/ui/Card.astro
-// Primitive card/container per DESIGN_SYSTEM.md v2 Section 3 (Cards & Containers).
 
 export interface Props {
   variant?: 'flat' | 'flat-lift' | 'elevated' | 'highlighted';
   class?: string;
   as?: 'div' | 'li' | 'article';
-  // New in v2 — renders the small tick-mark corner detail (technical-drawing
-  // annotation mark) in the top-left of the card, per DESIGN_SYSTEM.md
-  // Section 3. Feature/process cards only — silently ignored on
-  // elevated/highlighted, which get their hierarchy from elevation instead.
   tick?: boolean;
 }
 
 const { variant = 'flat', class: className, as: Tag = 'div', tick = false } = Astro.props;
 
-// Classes copied verbatim from DESIGN_SYSTEM.md v2 Section 3, MINUS the
-// border — removed sitewide per explicit direction (confirmed to affect
-// every page using this component: pricing.astro, features.astro,
-// about.astro, WaitlistForm.astro, FeaturesSummary.astro), not just the
-// FeaturesSummary usage that originally prompted this. Each variant now
-// gets its separation from the page background purely from bg-paper +
-// shadow/hover-shadow (elevated/flat-lift/highlighted already had shadow
-// doing real work; flat relies on its hover:shadow-md alone, same as
-// before minus the border).
-// ⚠️ Flag: `highlighted`'s `border-2 border-ink` was previously the PRIMARY
-// visual distinguisher for a recommended/featured item (e.g. pricing's
-// recommended tier, WaitlistForm/about's highlighted card) — it's now
-// carrying that distinction on `shadow-md` alone, which is a visibly
-// weaker signal than a 2px ink border was. Not restyled further here since
-// only "remove the border" was requested, not "replace highlighted's
-// emphasis mechanism" — but this variant in particular is worth a visual
-// check on pricing.astro specifically, since border was doing the most
-// visible work there.
-// ⚠️ Flag: `hover:border-ink/20` on `flat`/`flat-lift` is dropped too —
-// darkening a border that no longer exists has no visible effect, so
-// leaving it in would just be dead/meaningless code.
-//
-// Ink/paper/rail palette replaces the superseded stone/amber system.
-// "flat" = Standard Feature Card, "flat-lift" = Standard Feature Card — Lift
-// variant (3–4 card feature grids), "elevated" = Elevated Card
-// (pricing/testimonials), "highlighted" = Highlighted / Featured Card
-// (e.g. recommended pricing tier).
 const classesByVariant: Record<string, string> = {
   flat: 'rounded-2xl bg-paper p-6 hover:shadow-md transition-all duration-200 ease-in-out',
   'flat-lift':
@@ -51,14 +19,8 @@ const classesByVariant: Record<string, string> = {
   highlighted: 'rounded-2xl bg-paper p-6 shadow-md',
 };
 
-// Tick-mark only applies to feature/process cards (flat, flat-lift) — per
-// spec, elevated/highlighted cards stay plain and get hierarchy from
-// elevation instead, so the prop is silently ignored on those variants.
 const showTick = tick && (variant === 'flat' || variant === 'flat-lift');
 
-// Tick rendering needs the card to be a positioning context for the
-// absolutely-positioned corner mark, without adding a second wrapper div
-// (which would fight the `as` prop / Tag flexibility below).
 const classes = [classesByVariant[variant], showTick ? 'relative' : '', className]
   .filter(Boolean)
   .join(' ');
