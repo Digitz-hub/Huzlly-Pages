@@ -26,7 +26,20 @@
 
 import SectionHeader from '../ui/SectionHeader.astro';
 import DashboardPreview from '../ui/DashboardPreview.astro';
+
+// STEP 1 of redesign — infrastructure only (no visible layout/content change):
+// - Loads Google Font "Outfit" (400;500;600;700;800), scoped to this section
+//   only via <link> tags below (not touched: Layout.astro, tailwind.config.mjs).
+//   Not applied to any element yet — that happens in a later step.
+// - Loads the Phosphor Icons (duotone) stylesheet via CDN, once, here (parent
+//   component), since both this file and DashboardPreview.astro will need
+//   icons across this redesign.
 ---
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css" />
 
 <section id="the-shift" class="scroll-mt-20 relative border-t border-rail bg-[linear-gradient(180deg,#FEE2E2_0%,#FEF2F2_60%,#FFFFFF_100%)] px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
