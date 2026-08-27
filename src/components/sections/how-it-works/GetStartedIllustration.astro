@@ -216,17 +216,33 @@
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    function measure() {
-      const wRect = workflow!.getBoundingClientRect();
-      const r1 = marker1!.getBoundingClientRect();
-      const r2 = marker2!.getBoundingClientRect();
-      const r3 = marker3!.getBoundingClientRect();
+    // Computes an element's cumulative offset (top/left) relative to a
+    // given ancestor by walking up the offsetParent chain and summing
+    // offsetTop/offsetLeft at each step. Unlike getBoundingClientRect(),
+    // these values live in each ancestor's own untransformed local layout
+    // space, so they aren't affected by CSS transforms (e.g. scale()) on
+    // any ancestor between el and ancestor.
+    function offsetRelativeTo(el: HTMLElement, ancestor: HTMLElement) {
+      let top = 0, left = 0;
+      let node: HTMLElement | null = el;
+      while (node && node !== ancestor) {
+        top += node.offsetTop;
+        left += node.offsetLeft;
+        node = node.offsetParent as HTMLElement | null;
+      }
+      return { top, left };
+    }
 
-      const centerX = r1.left - wRect.left + r1.width / 2;
+    function measure() {
+      const o1 = offsetRelativeTo(marker1!, workflow!);
+      const o2 = offsetRelativeTo(marker2!, workflow!);
+      const o3 = offsetRelativeTo(marker3!, workflow!);
+
+      const centerX = o1.left + marker1!.offsetWidth / 2;
       pos.x = centerX;
-      pos.y1 = r1.top - wRect.top + r1.height / 2;
-      pos.y2 = r2.top - wRect.top + r2.height / 2;
-      pos.y3 = r3.top - wRect.top + r3.height / 2;
+      pos.y1 = o1.top + marker1!.offsetHeight / 2;
+      pos.y2 = o2.top + marker2!.offsetHeight / 2;
+      pos.y3 = o3.top + marker3!.offsetHeight / 2;
 
       trackLine!.style.left = centerX - 1 + 'px';
       trackLine!.style.top = pos.y1 + 'px';
