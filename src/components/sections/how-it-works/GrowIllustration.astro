@@ -118,11 +118,7 @@
 
     <!-- Footer -->
     <div class="mt-auto shrink-0 border-t border-[#EDF1F5] pt-4">
-      <div class="mb-1.5 flex items-center gap-2">
-        <span class="hiw-card4-glow-dot"></span>
-        <span class="text-[13px] font-semibold text-slate-900">Existing relationships, ready for new scopes</span>
-      </div>
-      <div class="pl-[15px] text-[12.5px] leading-relaxed text-slate-500">Client preferences, history, and payment terms saved for seamless repeat work.</div>
+      <p class="text-[12.5px] leading-relaxed text-slate-500">Client preferences, history, and payment terms saved for seamless repeat work.</p>
     </div>
   </div>
 </div>
@@ -207,31 +203,7 @@
     box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
   }
 
-  .hiw-card4-glow-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #059669;
-    box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.55);
-    flex-shrink: 0;
-    display: inline-block;
-    animation: hiw-card4-pulse 2.2s ease-in-out infinite;
-  }
-
-  @keyframes hiw-card4-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.55);
-    }
-    50% {
-      box-shadow: 0 0 0 5px #ecfdf5, 0 0 12px rgba(5, 150, 105, 0.7);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .hiw-card4-glow-dot {
-      animation: none;
-    }
     .hiw-card4-card,
     .hiw-card4-client-pill,
     .hiw-card4-check,
