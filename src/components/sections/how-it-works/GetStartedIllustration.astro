@@ -1,25 +1,314 @@
 ---
 // src/components/sections/how-it-works/GetStartedIllustration.astro
+// Ported from reference mockup: card-1-workflow-onboarding.html
 ---
 
-<svg
-  class="absolute inset-0 h-full w-full"
-  viewBox="0 0 400 220"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
->
-  <rect x="150" y="52" width="120" height="150" rx="10" class="fill-blue-50 stroke-blue-100" stroke-width="1.5" transform="rotate(6 210 127)" />
-  <rect x="132" y="44" width="122" height="152" rx="10" class="fill-white stroke-blue-100" stroke-width="1.5" transform="rotate(-3 193 120)" />
-  <rect x="118" y="36" width="126" height="156" rx="12" class="fill-white stroke-blue-100" stroke-width="1.5" />
-  <rect x="134" y="54" width="60" height="7" rx="3.5" class="fill-blue-600" opacity="0.85" />
-  <rect x="134" y="68" width="90" height="5" rx="2.5" class="fill-blue-100" />
-  <rect x="134" y="88" width="94" height="4.5" rx="2.25" class="fill-blue-50" />
-  <rect x="134" y="99" width="80" height="4.5" rx="2.25" class="fill-blue-50" />
-  <rect x="134" y="110" width="94" height="4.5" rx="2.25" class="fill-blue-50" />
-  <rect x="134" y="121" width="66" height="4.5" rx="2.25" class="fill-blue-50" />
-  <path d="M134 150 q6 -10 12 0 t12 0 t12 0 t12 0" class="stroke-blue-600" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7" />
-  <line x1="134" y1="162" x2="200" y2="162" class="stroke-blue-50" stroke-width="1.5" />
-  <circle cx="222" cy="172" r="16" class="soft-pulse-el fill-blue-600" />
-  <path d="M215 172 l5 5 l10 -11" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-</svg>
+<div class="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
+  <div
+    class="hiw-card1-flow-card flex w-full max-w-[420px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-8px_rgba(15,23,42,0.08)] transition-[box-shadow,transform] duration-300 ease-out sm:p-7"
+    tabindex="0"
+  >
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between gap-3">
+      <span class="font-display text-[15px] font-semibold tracking-[-0.005em] text-slate-900">Client onboarding</span>
+      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-emerald-50 px-[11px] py-[5px] text-[11.5px] font-medium text-emerald-600">
+        Auto-converted
+      </span>
+    </div>
+
+    <!-- Workflow -->
+    <div class="hiw-card1-workflow relative flex flex-col" id="hiwC1Workflow">
+      <div class="hiw-card1-track-line" id="hiwC1TrackLine"></div>
+      <div class="hiw-card1-track-dot" id="hiwC1TrackDot"></div>
+
+      <!-- Node 1: Proposal -->
+      <div class="relative z-[2] flex gap-4">
+        <div class="flex shrink-0 flex-col items-center pt-px">
+          <div class="hiw-card1-marker" id="hiwC1Marker1" aria-hidden="true">
+            <svg class="hiw-card1-check-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="min-w-0 flex-1 pb-[26px]">
+          <div class="text-sm font-medium leading-snug tracking-[-0.005em] text-slate-900">Brand Redesign Proposal</div>
+          <div class="mt-[3px] text-[13px] leading-relaxed text-slate-500">
+            <span class="font-sans tabular-nums text-[12.5px] text-slate-500">$4,800</span> · Accepted by client
+          </div>
+        </div>
+      </div>
+
+      <!-- Node 2: Contract -->
+      <div class="relative z-[2] flex gap-4">
+        <div class="flex shrink-0 flex-col items-center pt-px">
+          <div class="hiw-card1-marker" id="hiwC1Marker2" aria-hidden="true">
+            <svg class="hiw-card1-check-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="min-w-0 flex-1 pb-[26px]">
+          <div class="text-sm font-medium leading-snug tracking-[-0.005em] text-slate-900">Services Agreement</div>
+          <div class="mt-[3px] text-[13px] leading-relaxed text-slate-500">Signed · e-signature captured</div>
+        </div>
+      </div>
+
+      <!-- Node 3: Project Workspace -->
+      <div class="relative z-[2] flex gap-4">
+        <div class="flex shrink-0 flex-col items-center pt-px">
+          <div class="hiw-card1-marker" id="hiwC1Marker3" aria-hidden="true">
+            <span class="hiw-card1-pulse-core"></span>
+          </div>
+        </div>
+        <div class="min-w-0 flex-1 pb-0.5">
+          <div class="text-sm font-medium leading-snug tracking-[-0.005em] text-slate-900">Acme Corp Workspace</div>
+          <div class="mt-[3px] text-[13px] leading-relaxed text-slate-500">Active · milestones &amp; billing ready</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-auto shrink-0 border-t border-[#EDF1F5] pt-5">
+      <p class="text-[13px] leading-relaxed text-slate-500">One seamless flow, zero manual back-and-forth.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hiw-card1-flow-card {
+    max-height: 100%;
+  }
+  .hiw-card1-flow-card:hover {
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 20px 44px -10px rgba(15, 23, 42, 0.12);
+    transform: translateY(-2px);
+  }
+
+  /* Single continuous track spanning node1 -> node3 marker centers. */
+  .hiw-card1-track-line {
+    position: absolute;
+    width: 2px;
+    background: #e2e8f0;
+    z-index: 1;
+    top: 0;
+    height: 0;
+    left: 0;
+  }
+
+  /* The single traveling glowing dot. */
+  .hiw-card1-track-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.6), 0 0 2px rgba(16, 185, 129, 0.9);
+    z-index: 2;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    transition: top 2.2s cubic-bezier(0.45, 0, 0.55, 1), opacity 0.3s ease;
+  }
+
+  .hiw-card1-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    color: transparent;
+    position: relative;
+    z-index: 2;
+    transition: background 0.45s ease, border-color 0.45s ease;
+  }
+
+  .hiw-card1-check-icon {
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .hiw-card1-marker.is-check {
+    background: #059669;
+    border-color: #059669;
+    color: #fff;
+  }
+  .hiw-card1-marker.is-check .hiw-card1-check-icon {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .hiw-card1-marker.is-active {
+    background: #ffffff;
+    border-color: #10b981;
+  }
+
+  .hiw-card1-pulse-core {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    position: relative;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .hiw-card1-marker.is-active .hiw-card1-pulse-core {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .hiw-card1-marker.is-active .hiw-card1-pulse-core::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: rgba(16, 185, 129, 0.3);
+    animation: hiw-card1-pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes hiw-card1-pulse-ring {
+    0% {
+      transform: scale(0.5);
+      opacity: 0.9;
+    }
+    75% {
+      transform: scale(2);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hiw-card1-flow-card,
+    .hiw-card1-track-dot,
+    .hiw-card1-marker,
+    .hiw-card1-check-icon,
+    .hiw-card1-pulse-core,
+    .hiw-card1-pulse-core::after {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const workflow = document.getElementById('hiwC1Workflow');
+    const trackLine = document.getElementById('hiwC1TrackLine');
+    const trackDot = document.getElementById('hiwC1TrackDot');
+    const marker1 = document.getElementById('hiwC1Marker1');
+    const marker2 = document.getElementById('hiwC1Marker2');
+    const marker3 = document.getElementById('hiwC1Marker3');
+
+    if (!workflow || !trackLine || !trackDot || !marker1 || !marker2 || !marker3) return;
+
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const pos = { x: 0, y1: 0, y2: 0, y3: 0 };
+
+    function sleep(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function measure() {
+      const wRect = workflow!.getBoundingClientRect();
+      const r1 = marker1!.getBoundingClientRect();
+      const r2 = marker2!.getBoundingClientRect();
+      const r3 = marker3!.getBoundingClientRect();
+
+      const centerX = r1.left - wRect.left + r1.width / 2;
+      pos.x = centerX;
+      pos.y1 = r1.top - wRect.top + r1.height / 2;
+      pos.y2 = r2.top - wRect.top + r2.height / 2;
+      pos.y3 = r3.top - wRect.top + r3.height / 2;
+
+      trackLine!.style.left = centerX - 1 + 'px';
+      trackLine!.style.top = pos.y1 + 'px';
+      trackLine!.style.height = pos.y3 - pos.y1 + 'px';
+
+      trackDot!.style.left = centerX - 3 + 'px';
+    }
+
+    function resetMarkers() {
+      marker1!.classList.remove('is-check', 'is-active');
+      marker2!.classList.remove('is-check', 'is-active');
+      marker3!.classList.remove('is-active', 'is-check');
+    }
+
+    function setDot(top: number, transitionOverride?: string) {
+      trackDot!.style.transition = transitionOverride || 'top 2.2s cubic-bezier(.45,0,.55,1), opacity 0.3s ease';
+      trackDot!.style.top = top + 'px';
+    }
+
+    async function runLoop() {
+      measure();
+
+      while (true) {
+        // Phase: reset / idle — dot parked at node 1, hidden
+        resetMarkers();
+        setDot(pos.y1, 'top 0s, opacity 0.3s ease');
+        trackDot!.style.opacity = '0';
+        // force reflow so the next state change animates cleanly
+        void trackDot!.offsetHeight;
+
+        await sleep(300);
+
+        // Phase 0: Node 1 lights up (accepted)
+        marker1!.classList.add('is-check');
+        trackDot!.style.opacity = '1';
+        await sleep(450);
+
+        // Phase 1: travel node1 -> node2
+        setDot(pos.y2);
+        await sleep(2200);
+
+        // Phase 2: Node 2 lights up (signed)
+        marker2!.classList.add('is-check');
+        await sleep(450);
+
+        // Phase 3: travel node2 -> node3
+        setDot(pos.y3);
+        await sleep(2200);
+
+        // Phase 4: Node 3 unlocks (active, pulsing)
+        marker3!.classList.add('is-active');
+        trackDot!.style.transition = 'opacity 0.3s ease';
+        trackDot!.style.opacity = '0';
+
+        // Phase 5: hold completed pipeline, then loop
+        await sleep(1500);
+      }
+    }
+
+    function staticFinalState() {
+      measure();
+      marker1!.classList.add('is-check');
+      marker2!.classList.add('is-check');
+      marker3!.classList.add('is-active');
+      trackDot!.style.opacity = '0';
+    }
+
+    window.addEventListener('resize', measure);
+    window.addEventListener('load', () => {
+      if (reduceMotion) {
+        staticFinalState();
+      } else {
+        runLoop();
+      }
+    });
+
+    if (document.readyState === 'complete') {
+      if (reduceMotion) {
+        staticFinalState();
+      } else {
+        runLoop();
+      }
+    }
+  })();
+</script>
