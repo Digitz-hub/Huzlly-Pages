@@ -14,6 +14,7 @@ import {
   Package,
   Archive,
   Repeat,
+  ChevronDown,
 } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
@@ -108,122 +109,345 @@ const stages = [
     />
 
     {/*
-      v3 "how it works" restructure. Moves away from Card.astro's 4-up grid
-      to 4 full-width horizontal rows, one per `stages` entry, each split
-      into a ~60% text column and a ~40% illustration-box column, with a
-      thin `border-t border-rail` divider between consecutive rows.
-      Card.astro itself is untouched — it's still used elsewhere (the "why
-      lean" reasons cards in WhyLean.astro, and other pages) — this section
-      just stops importing/rendering it.
+      v4 "how it works" restructure. Replaces the v3 "4 stacked rows"
+      layout with a scroll-driven left-accordion / right-sticky-stage
+      pattern (interaction ported from a reference mockup; visuals are
+      this project's own — no reference colors/fonts/content).
 
-      Fixed left/right layout (no more zigzag): the text column is always
-      `lg:order-1` (left) and the illustration column is always
-      `lg:order-2` (right) at `lg:`, for every row — this used to alternate
-      by row index (`isEven`) but no longer does. Mobile always shows the
-      illustration box above the text regardless of which stage it is, via
-      the mobile-first `order-1`/`order-2` base classes below — those are
-      unchanged; only the `lg:` overrides stopped alternating.
+      `stages`, `signalStyles`, and the chip helpers above are all
+      unchanged from v3 — same data, same illustration imports, same
+      chip logic. Only the layout/animation wrapping them changed:
+      instead of one full-width row per stage, every stage's text now
+      lives in one accordion item on the left (`.acc-item`, only one
+      expanded at a time) and every stage's illustration now lives in
+      one absolutely-stacked layer on the right (`.stage-item`, only
+      one visible at a time), cross-fading as the accordion selection
+      changes.
 
-      Illustration column (this pass): the glow span / <Illustration /> /
-      floating-chips markup is the same logic the old Card-based version
-      used — `signalStyles`, `chipClasses`, `chipIconWrapClasses`,
-      `chipIconGlyphClasses`, and each stage's `illustration`/`chips`
-      fields are unchanged, just reconnected inside the new row layout
-      instead of inside a Card.
+      `#how-it-works-track` / `#how-it-works-sticky` implement the
+      scroll-hijack: at `lg:` and up, the track is a tall (220vh)
+      wrapper and the sticky inner element pins to the viewport while
+      wheel ticks step the active stage one at a time (see the
+      `<script>` at the bottom of this file); below `lg:`, none of
+      that height/sticky styling applies (Tailwind's responsive
+      classes simply don't kick in), so the section sits in normal
+      document flow as a plain click-to-expand accordion with the
+      illustration stage stacked above it — same mobile-first
+      `order-1`/`order-2` convention the old row layout used for its
+      text/illustration stacking order.
 
-      Chips split: the illustration box is an outer `relative` box holding
-      two kinds of children: the glow + `<Illustration />` in their own
-      wrapper div, and the chips, as siblings of that div instead of
-      children of it — see the `chipClasses` comment near the top of this
-      file for why each chip needs 3 nested layers instead of 1 to keep
-      the idle-float and hover-grow transforms from fighting each other.
-      Not on the row wrapper and not on the text column, which both stay
-      static per prior decision.
+      Illustration layer markup (glow span + `<Illustration />` +
+      floating chips) is copied as-is from the old per-row version,
+      just moved from "one per row" to "one per stacked `.stage-item`
+      layer" — see the comment further down for specifics. No card
+      border/background/shadow/padding was added around it, per
+      direction: it still just floats with its glow, same as before.
     */}
-    <div class="mt-14">
-      {stages.map((step, index) => {
-        const s = signalStyles[step.signal];
-        const Illustration = step.illustration;
+    <div id="how-it-works-track" class="mt-14 lg:h-[220vh]">
+      {/* Sticky inner wrapper. `lg:overflow-hidden` keeps the
+          cross-fading stage layers from ever peeking past this box
+          while pinned; everything below `lg:` is unaffected (no
+          sticky, no fixed height, no overflow clipping). */}
+      <div id="how-it-works-sticky" class="lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center lg:overflow-hidden">
+        <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
+          {/* Left column: accordion. Mobile-first `order-2` (below the
+              stage on small screens) / `lg:order-1` (left column on
+              desktop) — the reverse of the stage column below, same
+              convention the old row layout used for text vs.
+              illustration ordering. */}
+          <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
+            <div class="acc-list border-t border-rail" role="tablist" aria-orientation="vertical">
+              {stages.map((step, index) => {
+                const s = signalStyles[step.signal];
+                const panelId = `how-it-works-panel-${index}`;
 
-        return (
-          <div class="border-t border-rail py-14 first:border-t-0 first:pt-0 sm:py-16">
-            <div class="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-              {/* Text column: ~60% width on desktop. Column itself
-                  doesn't move — it's static. */}
-              <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
-                <div class="flex items-center gap-4">
-                  <span
-                    class="font-[Outfit] text-[64px] font-[800] leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-[80px]"
+                return (
+                  <div
+                    class="acc-item border-b border-rail"
+                    class:list={[index === 0 && 'is-active']}
+                    data-index={index}
+                    style={`--accent: ${s.glow};`}
                   >
-                    {step.number}.
-                  </span>
-                  <span
-                    class="h-1 w-10 shrink-0 rounded-full"
-                    style={`background-color: ${s.glow}`}
-                    aria-hidden="true"
-                  ></span>
-                </div>
-
-                <h3 class="mt-5 font-display text-[28px] font-bold leading-snug tracking-[-0.015em] text-ink">{step.headline}</h3>
-
-                <p class="mt-4 max-w-lg font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">{step.body}</p>
-              </div>
-
-              {/* Illustration column: ~40% width on desktop. No
-                  `overflow-hidden`/`rounded-xl`/background anywhere in
-                  this column (per explicit direction) — there's no
-                  visible boxed container around the glow/illustration/
-                  chips, so the glow-pulse-el blur bleeds outward past the
-                  old box edges instead of being clipped to them;
-                  `relative` on the outer box below still gives the
-                  glow/illustration/chips their shared positioning
-                  context. */}
-              <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
-                {/* Outer box: just the positioning context + sizing.
-                    Holds two kinds of children: the illustration wrapper
-                    below, and the chips (siblings of it, not
-                    descendants). */}
-                <div class="relative h-56 sm:h-64 lg:h-72">
-                  {/* Illustration wrapper: `absolute inset-0` fills the
-                      outer box exactly like the old single div's own
-                      `h-56 sm:h-64 lg:h-72` did, just one level down. */}
-                  <div class="absolute inset-0">
-                    <span
-                      class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
-                      style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
-                      aria-hidden="true"
-                    ></span>
-
-                    <Illustration />
-                  </div>
-
-                  {/* Chips: siblings of the illustration wrapper, so they
-                      float independently of it. Each is 3 nested layers —
-                      see the `chipClasses`/`splitChipPosition` comments
-                      above for why, and why a chip's own `position`
-                      string gets split across two of those layers rather
-                      than sitting on one. */}
-                  {step.chips.map((chip) => {
-                    const { offset, transform } = splitChipPosition(chip.position);
-                    return (
-                      <div class:list={['pointer-events-none absolute', offset]}>
-                        <div class="chip-float-el inline-block" style={`animation-delay: ${chip.delay}`}>
-                          <div class:list={[chipClasses, transform]}>
-                            <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
-                              <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
-                            </span>
-                            {chip.label}
-                          </div>
-                        </div>
+                    <button
+                      type="button"
+                      class="acc-trigger group flex w-full items-center gap-5 py-6 text-left"
+                      role="tab"
+                      aria-expanded={index === 0 ? 'true' : 'false'}
+                      aria-controls={panelId}
+                    >
+                      <span class="acc-number shrink-0 font-[Outfit] text-[64px] font-[800] leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-[80px]">
+                        {step.number}.
+                      </span>
+                      <span class="flex flex-1 items-center justify-between gap-4">
+                        <span class="acc-title font-display text-xl font-bold leading-snug tracking-[-0.01em] text-ink sm:text-2xl">
+                          {step.headline}
+                        </span>
+                        <ChevronDown class="acc-chevron h-5 w-5 shrink-0 text-ink/30" stroke-width="2.2" />
+                      </span>
+                    </button>
+                    <div class="acc-panel" id={panelId}>
+                      <div class="acc-panel-inner overflow-hidden">
+                        <p class="acc-desc max-w-md pb-7 pl-[calc(64px+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70 sm:pl-[calc(80px+1.25rem)]">
+                          {step.body}
+                        </p>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        );
-      })}
+
+          {/* Right column: sticky illustration stage. Mobile-first
+              `order-1` (above the accordion on small screens) /
+              `lg:order-2` (right column on desktop) — matches the old
+              row layout's illustration-above-text mobile ordering. */}
+          <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
+            <div class="stage-box relative h-64 sm:h-72 lg:h-[26rem]">
+              {stages.map((step, index) => {
+                const s = signalStyles[step.signal];
+                const Illustration = step.illustration;
+
+                return (
+                  <div
+                    class="stage-item absolute inset-0"
+                    class:list={[index === 0 && 'is-active']}
+                    data-index={index}
+                  >
+                    {/* Illustration wrapper: `absolute inset-0` fills
+                        this layer exactly like the old per-row
+                        version's own inner wrapper did — same glow
+                        span + `<Illustration />` pairing, unchanged. */}
+                    <div class="absolute inset-0">
+                      <span
+                        class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
+                        style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
+                        aria-hidden="true"
+                      ></span>
+
+                      <Illustration />
+                    </div>
+
+                    {/* Chips: siblings of the illustration wrapper,
+                        same 3-nested-layer split as before, just
+                        scoped to this stacked layer instead of a row. */}
+                    {step.chips.map((chip) => {
+                      const { offset, transform } = splitChipPosition(chip.position);
+                      return (
+                        <div class:list={['pointer-events-none absolute', offset]}>
+                          <div class="chip-float-el inline-block" style={`animation-delay: ${chip.delay}`}>
+                            <div class:list={[chipClasses, transform]}>
+                              <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
+                                <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
+                              </span>
+                              {chip.label}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* ---------- Accordion: collapse/expand ---------- */
+
+  .acc-trigger {
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .acc-trigger:focus-visible {
+    outline: 2px solid var(--accent, currentColor);
+    outline-offset: 4px;
+    border-radius: 8px;
+  }
+
+  /* grid-rows 0fr -> 1fr collapse/expand technique, same as the
+     reference mockup this interaction was ported from. */
+  .acc-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .acc-item.is-active .acc-panel {
+    grid-template-rows: 1fr;
+  }
+
+  .acc-desc {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.3s ease 0.08s, transform 0.35s ease 0.08s;
+  }
+  .acc-item.is-active .acc-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .acc-chevron {
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.35s ease;
+  }
+  .acc-item.is-active .acc-chevron {
+    transform: rotate(180deg);
+    color: var(--accent, currentColor);
+  }
+
+  /* Each stage's own signalStyles color accents its own number, not a
+     single fixed accent — `--accent` is set per `.acc-item` above. */
+  .acc-item.is-active .acc-number {
+    -webkit-text-stroke-color: var(--accent, #14110f4d);
+  }
+
+  /* ---------- Sticky stage: cross-fade between layers ---------- */
+
+  .stage-item {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+    pointer-events: none;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .stage-item.is-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .acc-panel,
+    .acc-desc,
+    .acc-chevron,
+    .stage-item {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Ports the reference mockup's wheel-driven "scroll-hijack" behavior:
+  // while `#how-it-works-track` is pinned in the viewport (desktop
+  // only), each wheel tick steps the active accordion item/stage layer
+  // one at a time; scrolling past the first or last item releases the
+  // page to scroll normally again. Clicking an accordion item always
+  // activates it directly and, on desktop, smooth-scrolls the section
+  // into its pinned position if it isn't already there.
+  //
+  // Compatibility note: this site runs Lenis (see src/scripts/lenis.ts)
+  // for sitewide smooth-wheel scrolling, which also listens for native
+  // `wheel` events on `window`. To keep the two from fighting over the
+  // same event when a step is being consumed here, this handler is
+  // registered with `capture: true` and calls `stopPropagation()` only
+  // on the ticks it actually intercepts — every other tick (off-screen,
+  // mobile, or at the first/last item) is left completely alone and
+  // reaches Lenis exactly as it would if this component didn't exist.
+  (function () {
+    const track = document.getElementById('how-it-works-track');
+    if (!track) return;
+
+    const items = Array.from(track.querySelectorAll('.acc-item'));
+    const stageItems = Array.from(track.querySelectorAll('.stage-item'));
+    const stepCount = items.length;
+    if (stepCount === 0) return;
+
+    const LOCK_MS = 400;
+    const desktopQuery = window.matchMedia('(min-width: 1024px)');
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let activeIndex = 0;
+    let isDesktop = desktopQuery.matches;
+    let isLocked = false;
+
+    function setActive(index: number) {
+      index = Math.min(stepCount - 1, Math.max(0, index));
+      if (index === activeIndex && items[index].classList.contains('is-active')) return;
+      activeIndex = index;
+
+      items.forEach((item, i) => {
+        const isActive = i === index;
+        item.classList.toggle('is-active', isActive);
+        const trigger = item.querySelector('.acc-trigger');
+        trigger?.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      });
+
+      stageItems.forEach((stage, i) => {
+        stage.classList.toggle('is-active', i === index);
+      });
+    }
+
+    // ---- Is the sticky section currently pinned in view? ----
+
+    function isEngaged() {
+      const rect = track.getBoundingClientRect();
+      return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+    }
+
+    function getTrackTop() {
+      const rect = track.getBoundingClientRect();
+      return rect.top + window.scrollY;
+    }
+
+    // ---- Wheel-driven single-step-per-tick snapping ----
+
+    function onWheel(e: WheelEvent) {
+      if (!isDesktop) return;
+      if (!isEngaged()) return; // outside the pinned range: let Lenis/the page scroll normally
+
+      const goingDown = e.deltaY > 0;
+      const atLastStep = activeIndex === stepCount - 1;
+      const atFirstStep = activeIndex === 0;
+
+      // at either edge, release control so the page can continue
+      // scrolling past (or above) the section instead of trapping the user
+      if (goingDown && atLastStep) return;
+      if (!goingDown && atFirstStep) return;
+
+      e.preventDefault();
+      e.stopPropagation(); // keep this tick from also reaching Lenis's own wheel handler
+
+      if (isLocked) return;
+      isLocked = true;
+      setActive(activeIndex + (goingDown ? 1 : -1));
+      setTimeout(() => {
+        isLocked = false;
+      }, LOCK_MS);
+    }
+
+    window.addEventListener('wheel', onWheel, { passive: false, capture: true });
+
+    // ---- Click-to-select with manual override ----
+
+    function ensureEngaged() {
+      if (!isDesktop) return;
+      if (isEngaged()) return;
+      const targetY = getTrackTop() + 1;
+      window.scrollTo({ top: targetY, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
+    }
+
+    items.forEach((item, i) => {
+      const trigger = item.querySelector('.acc-trigger');
+      trigger?.addEventListener('click', () => {
+        setActive(i);
+        ensureEngaged();
+      });
+    });
+
+    function handleDesktopChange(e: MediaQueryListEvent) {
+      isDesktop = e.matches;
+    }
+    if (typeof desktopQuery.addEventListener === 'function') {
+      desktopQuery.addEventListener('change', handleDesktopChange);
+    } else {
+      // Safari < 14 fallback
+      desktopQuery.addListener(handleDesktopChange);
+    }
+
+    setActive(0);
+  })();
+</script>
