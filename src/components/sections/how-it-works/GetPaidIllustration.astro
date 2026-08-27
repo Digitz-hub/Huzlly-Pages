@@ -1,34 +1,180 @@
 ---
 // src/components/sections/how-it-works/GetPaidIllustration.astro
+// Ported from reference mockup: card-3-billing-reminders.html
 ---
 
-<svg
-  class="absolute inset-0 h-full w-full"
-  viewBox="0 0 400 220"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
-  aria-hidden="true"
->
-  <rect x="128" y="30" width="144" height="164" rx="14" class="fill-white stroke-blue-100" stroke-width="1.5" />
-  <rect x="146" y="48" width="58" height="7" rx="3.5" class="fill-blue-600" opacity="0.85" />
-  <rect x="146" y="62" width="80" height="4.5" rx="2.25" class="fill-blue-50" />
+<div class="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
+  <div
+    class="hiw-card3-card flex w-full max-w-[420px] flex-col overflow-y-auto rounded-[20px] border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-16px_rgba(15,23,42,0.10)]"
+  >
+    <!-- Header -->
+    <div class="mb-[22px] flex items-center justify-between gap-3">
+      <div class="flex min-w-0 items-center gap-2.5">
+        <span class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] bg-emerald-50">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px] stroke-emerald-600">
+            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h9A2.5 2.5 0 0 1 18 5.5v15l-3.5-2-2 2-2-2-2 2-2-2-2 2v-15Z"/>
+            <path d="M8 8h6"/>
+            <path d="M8 12h6"/>
+            <path d="M8 16h3"/>
+          </svg>
+        </span>
+        <span class="font-display text-[15px] font-semibold tracking-[-0.01em] text-slate-900">Billing &amp; reminders</span>
+      </div>
+      <span class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[20px] bg-emerald-50 py-1.5 pl-2.5 pr-3 text-xs font-semibold text-emerald-600">
+        <span class="hiw-card3-pulse-dot"></span>
+        Auto-pilot
+      </span>
+    </div>
 
-  <line x1="146" y1="80" x2="254" y2="80" class="stroke-blue-100" stroke-width="1.5" />
+    <!-- Invoice overview -->
+    <div class="mb-6 rounded-[14px] border border-slate-200 bg-gradient-to-b from-[#FCFDFE] to-white p-[18px]">
+      <div class="mb-3 font-sans text-xs tabular-nums tracking-[0.01em] text-slate-500">
+        Invoice <strong class="font-semibold text-slate-900">#INV-2048</strong> · Acme Corp
+      </div>
+      <div class="mb-3 flex items-baseline justify-between gap-2.5">
+        <div class="font-sans text-[27px] font-extrabold tabular-nums tracking-[-0.02em] text-slate-900">$4,800.00</div>
+        <div class="inline-flex shrink-0 items-center gap-[5px] whitespace-nowrap rounded-[20px] border border-amber-100 bg-amber-50 px-2.5 py-[5px] text-[11.5px] font-semibold text-amber-700">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[11px] w-[11px] shrink-0 stroke-amber-700">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 3"/>
+          </svg>
+          Due in 3 days
+        </div>
+      </div>
+      <div class="border-t border-[#EDF1F5] pt-3 text-[12.5px] leading-relaxed text-slate-500">
+        Client viewed 15m ago &middot; <strong class="font-semibold text-slate-900">payment pending</strong>
+      </div>
+    </div>
 
-  <rect x="146" y="92" width="70" height="4.5" rx="2.25" class="fill-blue-100" />
-  <rect x="228" y="92" width="26" height="4.5" rx="2.25" class="fill-blue-100" />
-  <rect x="146" y="106" width="60" height="4.5" rx="2.25" class="fill-blue-100" />
-  <rect x="228" y="106" width="26" height="4.5" rx="2.25" class="fill-blue-100" />
-  <rect x="146" y="120" width="66" height="4.5" rx="2.25" class="fill-blue-100" />
-  <rect x="228" y="120" width="26" height="4.5" rx="2.25" class="fill-blue-100" />
+    <!-- Reminder timeline -->
+    <div class="mb-3.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-slate-500">Automated follow-up activity</div>
+    <div class="relative">
+      <div class="relative flex gap-3 pb-5">
+        <div class="hiw-card3-timeline-connector relative flex shrink-0 flex-col items-center">
+          <span class="relative z-[1] flex h-[27px] w-[27px] items-center justify-center rounded-full border border-emerald-100 bg-emerald-50">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[13px] w-[13px] stroke-emerald-600">
+              <path d="M5 12.5 9.5 17 19 7"/>
+            </svg>
+          </span>
+        </div>
+        <div class="min-w-0 flex-1 pt-[3px]">
+          <div class="mb-[3px] text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Friendly reminder sent</div>
+          <div class="text-xs leading-relaxed text-slate-500">3 days before due &middot; sarah@acmecorp.com</div>
+        </div>
+      </div>
 
-  <line x1="146" y1="138" x2="254" y2="138" class="stroke-blue-100" stroke-width="1.5" />
+      <div class="relative flex gap-3">
+        <div class="relative flex shrink-0 flex-col items-center">
+          <span class="relative z-[1] flex h-[27px] w-[27px] items-center justify-center rounded-full border border-slate-200 bg-white">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[13px] w-[13px] stroke-emerald-600">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            <span class="hiw-card3-mini-pulse"></span>
+          </span>
+        </div>
+        <div class="min-w-0 flex-1 pt-[3px]">
+          <div class="mb-[3px] text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Follow-up scheduled for due date</div>
+          <div class="text-xs leading-relaxed text-slate-500">Auto-sends if unpaid &middot; stops once settled</div>
+        </div>
+      </div>
+    </div>
 
-  <rect x="146" y="150" width="40" height="6" rx="3" class="fill-blue-600" opacity="0.6" />
-  <rect x="200" y="147" width="54" height="12" rx="6" class="fill-blue-50" />
-  <text x="227" y="156" class="font-mono fill-blue-600" font-size="9" text-anchor="middle" font-weight="600">$2,450</text>
+    <!-- Footer -->
+    <div class="mt-auto shrink-0 border-t border-[#EDF1F5] pt-4">
+      <div class="mb-1.5 flex items-center gap-2">
+        <span class="hiw-card3-glow-dot"></span>
+        <span class="text-[13px] font-semibold text-slate-900">Zero chasing. Automated follow-ups.</span>
+      </div>
+      <div class="pl-[15px] text-xs leading-relaxed text-slate-500">Invoices and gentle reminders trigger automatically until you get paid.</div>
+    </div>
+  </div>
+</div>
 
-  <rect x="146" y="170" width="58" height="18" rx="9" class="fill-blue-600" />
-  <path d="M156 179 l4 4 l8 -9" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-  <text x="184" y="182.5" class="font-mono fill-white" font-size="9" text-anchor="middle" font-weight="600">Paid</text>
-</svg>
+<style>
+  .hiw-card3-card {
+    max-height: 100%;
+  }
+
+  .hiw-card3-pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #059669;
+    position: relative;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+  .hiw-card3-pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: #059669;
+    opacity: 0.35;
+    animation: hiw-card3-pulse 1.8s ease-out infinite;
+  }
+
+  @keyframes hiw-card3-pulse {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.5;
+    }
+    70% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+
+  /* Connector line between the two timeline items. */
+  .hiw-card3-timeline-connector::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 27px;
+    bottom: -20px;
+    width: 1px;
+    background: #edf1f5;
+    transform: translateX(-50%);
+  }
+
+  .hiw-card3-mini-pulse {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #059669;
+  }
+  .hiw-card3-mini-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: #059669;
+    opacity: 0.4;
+    animation: hiw-card3-pulse 1.8s ease-out infinite;
+  }
+
+  .hiw-card3-glow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #059669;
+    box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.5);
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hiw-card3-pulse-dot::after,
+    .hiw-card3-mini-pulse::after {
+      animation: none;
+    }
+  }
+</style>
