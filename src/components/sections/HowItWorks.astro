@@ -54,13 +54,16 @@ const stages = [
 
 <section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
+    <div class="max-w-2xl">
+      <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink">Four stages. Zero handoffs.</h2>
+      <p class="mt-4 max-w-md font-[Outfit] text-base text-ink/70">Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human.</p>
+    </div>
+
     <div id="how-it-works-track" class="mt-14">
       <div id="how-it-works-sticky" class="lg:flex lg:items-center">
         <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
           <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-1/2 lg:shrink-0">
-            <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink">Four stages. Zero handoffs.</h2>
-            <p class="mt-4 max-w-md font-[Outfit] text-base text-ink/70">Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human.</p>
-            <div class="acc-list mt-8 border-t border-rail" role="tablist" aria-orientation="vertical">
+            <div class="acc-list border-t border-rail" role="tablist" aria-orientation="vertical">
               {stages.map((step, index) => {
                 const s = signalStyles[step.signal];
                 const panelId = `how-it-works-panel-${index}`;
