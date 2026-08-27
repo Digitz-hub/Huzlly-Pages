@@ -63,7 +63,8 @@ const stages = [
       <div id="how-it-works-sticky" class="lg:flex lg:items-center">
         <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
           <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-1/2 lg:shrink-0">
-            <div class="acc-list border-t border-rail" role="tablist" aria-orientation="vertical">
+            <div class="acc-list relative border-t border-rail" role="tablist" aria-orientation="vertical">
+              <div class="acc-line pointer-events-none absolute top-[38px] bottom-[38px] left-[18px] w-px -translate-x-1/2 bg-rail" aria-hidden="true"></div>
               {stages.map((step, index) => {
                 const s = signalStyles[step.signal];
                 const panelId = `how-it-works-panel-${index}`;
@@ -82,8 +83,8 @@ const stages = [
                       aria-expanded={index === 0 ? 'true' : 'false'}
                       aria-controls={panelId}
                     >
-                      <span class="acc-number shrink-0 font-mono text-sm text-ink/40 transition-colors duration-300">
-                        {step.number}.
+                      <span class="acc-badge relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-rail bg-white font-mono text-sm text-ink/40 transition-colors duration-300">
+                        {step.number}
                       </span>
                       <span class="flex flex-1 items-center justify-between gap-4">
                         <span class="acc-title font-display text-xl font-bold leading-snug tracking-[-0.01em] text-ink sm:text-2xl">
@@ -94,7 +95,7 @@ const stages = [
                     </button>
                     <div class="acc-panel" id={panelId}>
                       <div class="acc-panel-inner overflow-hidden">
-                        <p class="acc-desc max-w-md pb-6 pl-[calc(2rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
+                        <p class="acc-desc max-w-md pb-6 pl-[calc(2.25rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
                           {step.body}
                         </p>
                       </div>
@@ -166,8 +167,17 @@ const stages = [
     color: var(--accent, currentColor);
   }
 
-  .acc-item.is-active .acc-number {
-    color: var(--accent, currentColor);
+  .acc-badge {
+    transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+  }
+  .acc-item.is-active .acc-badge {
+    border-color: #2563eb;
+    background-color: #2563eb;
+    color: #fff;
+  }
+
+  .acc-line {
+    z-index: 0;
   }
 
   .stage-item {
