@@ -1,45 +1,20 @@
 ---
 // src/components/sections/HowItWorks.astro
 
-import {
-  FileText,
-  PenTool,
-  Rocket,
-  FolderKanban,
-  CheckSquare,
-  Clock,
-  Users,
-  Receipt,
-  CreditCard,
-  Package,
-  Archive,
-  Repeat,
-  ChevronDown,
-} from 'lucide-astro';
+import { ChevronDown } from 'lucide-astro';
 import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
 import WorkIllustration from './how-it-works/WorkIllustration.astro';
 import GetPaidIllustration from './how-it-works/GetPaidIllustration.astro';
 import GrowIllustration from './how-it-works/GrowIllustration.astro';
 
-
-const signalStyles: Record<string, { glow: string; glowPos: string; glowOpacity: string; icon: string; chipBg: string }> = {
-  blue: { glow: '#2563eb', glowPos: '34% 38%', glowOpacity: '0.28', icon: 'text-blue-600', chipBg: 'bg-blue-50' },
-  teal: { glow: '#0d9488', glowPos: '66% 30%', glowOpacity: '0.28', icon: 'text-teal-600', chipBg: 'bg-teal-50' },
-  amber: { glow: '#f59e0b', glowPos: '34% 66%', glowOpacity: '0.28', icon: 'text-amber-500', chipBg: 'bg-amber-50' },
-  green: { glow: '#16a34a', glowPos: '50% 50%', glowOpacity: '0.28', icon: 'text-green-600', chipBg: 'bg-green-50' },
+// Only the accent color is still read (for the accordion's active-state
+// --accent CSS variable) now that the illustrations are self-contained cards.
+const signalStyles: Record<string, { glow: string }> = {
+  blue: { glow: '#2563eb' },
+  teal: { glow: '#0d9488' },
+  amber: { glow: '#f59e0b' },
+  green: { glow: '#16a34a' },
 };
-
-const chipClasses =
-  'inline-flex items-center gap-1 sm:gap-1.5 whitespace-nowrap rounded-full border border-rail bg-white/90 px-2 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs font-[Outfit] font-semibold text-ink shadow-sm backdrop-blur-sm transition-transform duration-200 ease-out hover:scale-105';
-const chipIconWrapClasses = 'flex h-4 w-4 sm:h-5 sm:w-5 shrink-0 items-center justify-center rounded-full';
-const chipIconGlyphClasses = 'h-2.5 w-2.5 sm:h-3 sm:w-3';
-
-function splitChipPosition(position: string) {
-  const tokens = position.split(' ');
-  const transform = tokens.filter((t) => /^-?(translate|rotate|skew|scale)-/.test(t));
-  const offset = tokens.filter((t) => !transform.includes(t));
-  return { offset: offset.join(' '), transform: transform.join(' ') };
-}
 
 const stages = [
   {
@@ -49,11 +24,6 @@ const stages = [
     body: 'Create professional proposals, get agreements signed, and set everything up to start working with your client.',
     signal: 'blue',
     illustration: GetStartedIllustration,
-    chips: [
-      { icon: FileText, label: 'Proposal', position: 'left-3.5 top-3.5', delay: '0s' },
-      { icon: PenTool, label: 'Contract', position: 'right-4 top-16', delay: '0.6s' },
-      { icon: Rocket, label: 'Project Setup', position: 'bottom-4 left-10', delay: '1.2s' },
-    ],
   },
   {
     number: '02',
@@ -62,12 +32,6 @@ const stages = [
     body: 'Organize projects and tasks, track your time, and keep clients updated with their own dedicated portal.',
     signal: 'blue',
     illustration: WorkIllustration,
-    chips: [
-      { icon: FolderKanban, label: 'Projects', position: 'left-3.5 top-3.5', delay: '0s' },
-      { icon: CheckSquare, label: 'Tasks', position: 'right-4 top-12', delay: '0.4s' },
-      { icon: Clock, label: 'Time Tracking', position: 'bottom-14 left-3', delay: '0.9s' },
-      { icon: Users, label: 'Client Portal', position: 'bottom-4 right-8', delay: '1.3s' },
-    ],
   },
   {
     number: '03',
@@ -76,11 +40,6 @@ const stages = [
     body: 'Send invoices, collect payments, and keep your billing organized from project completion to payment.',
     signal: 'blue',
     illustration: GetPaidIllustration,
-    chips: [
-      { icon: Receipt, label: 'Invoice', position: 'right-4 top-3.5', delay: '0s' },
-      { icon: CreditCard, label: 'Payment', position: 'bottom-14 right-3.5', delay: '0.5s' },
-      { icon: Package, label: 'Delivery', position: 'bottom-4 left-4', delay: '1s' },
-    ],
   },
   {
     number: '04',
@@ -89,11 +48,6 @@ const stages = [
     body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
     signal: 'blue',
     illustration: GrowIllustration,
-    chips: [
-      { icon: Users, label: 'Clients', position: 'left-4 top-3.5', delay: '0s' },
-      { icon: Archive, label: 'Past Projects', position: 'right-5 top-4', delay: '0.5s' },
-      { icon: Repeat, label: 'Repeat Work', position: 'bottom-4 left-1/2 -translate-x-1/2', delay: '1s' },
-    ],
   },
 ];
 ---
@@ -149,9 +103,8 @@ const stages = [
           </div>
 
           <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
-            <div class="stage-box relative h-64 sm:h-72 lg:h-[26rem]">
+            <div class="stage-box relative h-[34rem] sm:h-[36rem] lg:h-[38rem]">
               {stages.map((step, index) => {
-                const s = signalStyles[step.signal];
                 const Illustration = step.illustration;
 
                 return (
@@ -160,31 +113,7 @@ const stages = [
                     class:list={[index === 0 && 'is-active']}
                     data-index={index}
                   >
-                    <div class="absolute inset-0">
-                      <span
-                        class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
-                        style={`background: radial-gradient(circle at ${s.glowPos}, ${s.glow} 0%, transparent 48%); opacity: ${s.glowOpacity};`}
-                        aria-hidden="true"
-                      ></span>
-
-                      <Illustration />
-                    </div>
-
-                    {step.chips.map((chip) => {
-                      const { offset, transform } = splitChipPosition(chip.position);
-                      return (
-                        <div class:list={['pointer-events-none absolute', offset]}>
-                          <div class="chip-float-el inline-block" style={`animation-delay: ${chip.delay}`}>
-                            <div class:list={[chipClasses, transform]}>
-                              <span class:list={[chipIconWrapClasses, s.chipBg, s.icon]}>
-                                <chip.icon class={chipIconGlyphClasses} stroke-width="2.2" />
-                              </span>
-                              {chip.label}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <Illustration />
                   </div>
                 );
               })}
