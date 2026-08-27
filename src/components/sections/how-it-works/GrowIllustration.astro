@@ -1,6 +1,6 @@
 ---
 // src/components/sections/how-it-works/GrowIllustration.astro
-// Ported from reference mockup: card-4-client-hub.html
+// Ported from reference mockup: card-4-client-directory.html
 ---
 
 <div class="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
@@ -9,93 +9,121 @@
   >
     <!-- Header -->
     <div class="mb-6 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5">
+      <div class="flex min-w-0 items-center gap-2.5">
         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-emerald-50">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0 text-emerald-600">
-            <path d="M3 7.5V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v1.5"/>
-            <path d="M3 7.5 4.5 19a1 1 0 0 0 1 .9h13a1 1 0 0 0 1-.9L21 7.5"/>
-            <path d="M9 12h6"/>
+            <path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 5 18.5V20"/>
+            <circle cx="9.5" cy="8" r="3.25"/>
+            <path d="M16 8.2a3 3 0 1 1 2.4 5.4"/>
+            <path d="M19 20v-1.3a3.3 3.3 0 0 0-1.9-3"/>
           </svg>
         </span>
-        <span class="font-display text-[15px] font-semibold tracking-[-0.01em] text-slate-900">Client hub &amp; history</span>
+        <span class="font-display text-[15px] font-semibold tracking-[-0.01em] text-slate-900">Client relationships</span>
       </div>
       <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 py-[5px] pl-2.5 pr-3 text-[11.5px] font-semibold text-emerald-600">
         <span class="hiw-card4-pill-dot"></span>
-        Ongoing relationship
+        Directory &amp; history
       </span>
     </div>
 
     <!-- Body -->
     <div class="flex flex-col gap-5">
-      <!-- Section A: client profile -->
-      <div class="flex items-center gap-3">
-        <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[11px] bg-gradient-to-br from-slate-900 to-slate-700 font-sans text-[13px] font-semibold tracking-[-0.02em] text-white">
-          AC
-        </div>
-        <div class="flex min-w-0 flex-col gap-0.5">
-          <div class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Acme Corporation</div>
-          <div class="text-[12.5px] leading-relaxed text-slate-500">Design &amp; Branding partner</div>
+      <!-- Section A: client directory selector -->
+      <div>
+        <div class="mb-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-slate-500">Client directory</div>
+        <div class="flex flex-wrap gap-2" id="hiwC4ClientStrip" role="tablist" aria-label="Select a client">
+          <button
+            type="button"
+            class="hiw-card4-client-pill is-active inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 font-sans text-[12.5px] font-semibold tracking-[-0.005em] text-slate-500"
+            data-client="acme"
+            role="tab"
+            aria-selected="true"
+          >
+            <svg class="hiw-card4-check h-[13px] w-[13px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Acme Corp
+          </button>
+          <button
+            type="button"
+            class="hiw-card4-client-pill inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 font-sans text-[12.5px] font-semibold tracking-[-0.005em] text-slate-500"
+            data-client="nexus"
+            role="tab"
+            aria-selected="false"
+          >
+            <svg class="hiw-card4-check h-[13px] w-[13px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Nexus Labs
+          </button>
+          <button
+            type="button"
+            class="hiw-card4-client-pill inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 font-sans text-[12.5px] font-semibold tracking-[-0.005em] text-slate-500"
+            data-client="loomis"
+            role="tab"
+            aria-selected="false"
+          >
+            <svg class="hiw-card4-check h-[13px] w-[13px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            Loomis Co.
+          </button>
         </div>
       </div>
 
-      <!-- Metrics grid -->
-      <div class="grid grid-cols-3 gap-2.5">
-        <div class="hiw-card4-metric rounded-[10px] border border-[#EDF1F5] bg-slate-50 px-2 py-2.5 text-center transition-colors duration-200">
-          <div class="font-sans text-sm font-semibold tabular-nums tracking-[-0.02em] leading-[1.3] text-slate-900">2</div>
-          <div class="mt-[3px] text-[11px] leading-[1.3] text-slate-500">Completed Projects</div>
+      <!-- Section B: selected client context -->
+      <div class="flex flex-col gap-3.5 rounded-[14px] border border-slate-200 bg-[#FBFCFE] p-4" id="hiwC4ContextBox" aria-live="polite">
+        <div class="flex items-center gap-2.5">
+          <div
+            class="hiw-card4-avatar flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-slate-900 to-slate-700 font-sans text-[12px] font-semibold tracking-[-0.02em] text-white"
+            id="hiwC4CtxAvatar"
+          >
+            AC
+          </div>
+          <div class="flex min-w-0 flex-col gap-0.5">
+            <span class="text-[14px] font-semibold tracking-[-0.01em] text-slate-900" id="hiwC4CtxName">Acme Corp</span>
+            <span class="text-[12px] text-slate-500" id="hiwC4CtxProjects">2 completed projects</span>
+          </div>
         </div>
-        <div class="hiw-card4-metric rounded-[10px] border border-[#EDF1F5] bg-slate-50 px-2 py-2.5 text-center transition-colors duration-200">
-          <div class="font-sans text-sm font-semibold tabular-nums tracking-[-0.02em] leading-[1.3] text-slate-900">$9,600</div>
-          <div class="mt-[3px] text-[11px] leading-[1.3] text-slate-500">Total Billed</div>
-        </div>
-        <div class="hiw-card4-metric rounded-[10px] border border-[#EDF1F5] bg-slate-50 px-2 py-2.5 text-center transition-colors duration-200">
-          <div class="font-sans text-sm font-semibold tabular-nums tracking-[-0.02em] leading-[1.3] text-slate-900">100%</div>
-          <div class="mt-[3px] text-[11px] leading-[1.3] text-slate-500">On-time Delivery</div>
-        </div>
-      </div>
 
-      <!-- Section B: archive list -->
-      <div class="flex flex-col gap-2">
-        <div class="hiw-card4-archive-item flex items-start gap-2.5 rounded-[10px] border border-[#EDF1F5] bg-white px-3 py-2.5 transition-[border-color,background,transform] duration-200">
-          <span class="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-600">
+        <div class="text-[12.5px] leading-relaxed text-slate-500">
+          <span class="font-sans text-[12px] font-semibold tabular-nums text-slate-900" id="hiwC4CtxBilled">$9,600</span> total billed &middot; <span id="hiwC4CtxTerms">Standard Net-15 terms on file</span>
+        </div>
+
+        <div class="flex items-center gap-2.5 text-[12.5px] text-slate-900">
+          <span class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-600">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-[11px] w-[11px]">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </span>
-          <div class="flex min-w-0 flex-col gap-0.5">
-            <div class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Brand Redesign &amp; Design Tokens</div>
-            <div class="text-[12.5px] leading-relaxed text-slate-500">All deliverables, signed contracts, &amp; invoices archived in 1 click</div>
-          </div>
-        </div>
-        <div class="hiw-card4-archive-item flex items-start gap-2.5 rounded-[10px] border border-[#EDF1F5] bg-white px-3 py-2.5 transition-[border-color,background,transform] duration-200">
-          <span class="mt-px flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-600">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-[11px] w-[11px]">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </span>
-          <div class="flex min-w-0 flex-col gap-0.5">
-            <div class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Q3 Marketing Assets</div>
-            <div class="text-[12.5px] leading-relaxed text-slate-500">Approved runbooks &amp; client preferences saved</div>
-          </div>
+          <span class="min-w-0 flex-1 truncate font-medium" id="hiwC4CtxDeliverable">Brand Identity &amp; Design System</span>
+          <span class="shrink-0 whitespace-nowrap text-slate-500">&middot; Archived</span>
         </div>
       </div>
 
-      <!-- Section C: repeat work node -->
-      <div class="flex items-start gap-3 rounded-xl border border-emerald-600/[0.18] bg-emerald-50 p-3.5 transition-colors duration-200">
-        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-emerald-600/20 bg-white text-emerald-600">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
-            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
-            <path d="M21 3v5h-5"/>
-            <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
-            <path d="M3 21v-5h5"/>
+      <!-- Section C: next step action -->
+      <div class="flex flex-col gap-2.5">
+        <div class="flex items-center gap-1.5 text-[12.5px] font-semibold text-slate-900">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-3.5 w-3.5 shrink-0 text-emerald-600">
+            <path d="M13 2 3 14h7l-1 8 11-14h-8l1-6z"/>
           </svg>
-        </span>
-        <div class="flex min-w-0 flex-1 flex-col gap-[3px]">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Ready for next scope</span>
-            <span class="whitespace-nowrap rounded-full border border-emerald-600/25 bg-white px-[7px] py-0.5 text-[11px] font-semibold tracking-[0.01em] text-emerald-600">Quick start</span>
+          <span id="hiwC4NextStepHead">Start next project with Acme</span>
+        </div>
+        <div class="hiw-card4-action-strip flex items-center gap-3 rounded-xl border border-emerald-600/[0.18] bg-emerald-50 py-3.5 pl-4 pr-3.5">
+          <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+            <div class="truncate text-[13px] font-semibold tracking-[-0.005em] text-slate-900">New Scope &middot; Retainer / Phase 2</div>
+            <div class="text-[11.5px] leading-snug text-slate-500">Pre-filled client details &amp; rates</div>
           </div>
-          <div class="text-[12.5px] leading-relaxed text-slate-500">Start new proposal with Acme's pre-filled terms and history</div>
+          <button
+            type="button"
+            class="hiw-card4-draft-btn inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[9px] border border-emerald-600 bg-emerald-600 px-3.5 py-2.5 font-sans text-[12px] font-semibold text-white"
+            id="hiwC4DraftBtn"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[13px] w-[13px] shrink-0">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Draft proposal
+          </button>
         </div>
       </div>
     </div>
@@ -104,9 +132,9 @@
     <div class="mt-6 shrink-0 border-t border-[#EDF1F5] pt-4">
       <div class="mb-1.5 flex items-center gap-2">
         <span class="hiw-card4-glow-dot"></span>
-        <span class="text-[13px] font-semibold text-slate-900">Turn past projects into long-term assets</span>
+        <span class="text-[13px] font-semibold text-slate-900">Existing relationships, ready for new scopes</span>
       </div>
-      <div class="pl-[15px] text-[12.5px] leading-relaxed text-slate-500">Organized history, saved files, and client context ready for your next engagement.</div>
+      <div class="pl-[15px] text-[12.5px] leading-relaxed text-slate-500">Client preferences, history, and payment terms saved for seamless repeat work.</div>
     </div>
   </div>
 </div>
@@ -120,17 +148,6 @@
     transform: translateY(-2px);
   }
 
-  .hiw-card4-metric:hover {
-    border-color: #e2e8f0;
-    background: #f1f5f9;
-  }
-
-  .hiw-card4-archive-item:hover {
-    border-color: #e2e8f0;
-    background: #fafbfc;
-    transform: translateX(1px);
-  }
-
   .hiw-card4-pill-dot {
     width: 6px;
     height: 6px;
@@ -139,6 +156,67 @@
     flex-shrink: 0;
     display: inline-block;
     box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  }
+
+  /* Client selector pills */
+  .hiw-card4-client-pill {
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.15s ease;
+  }
+
+  .hiw-card4-client-pill:hover {
+    border-color: #cbd5e1;
+    background: #fafbfc;
+    transform: translateY(-1px);
+  }
+
+  .hiw-card4-client-pill:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .hiw-card4-client-pill.is-active {
+    border-color: rgba(5, 150, 105, 0.35);
+    background: #ecfdf5;
+    color: #047857;
+  }
+
+  .hiw-card4-check {
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+  .hiw-card4-client-pill.is-active .hiw-card4-check {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Selected-client context avatar recolors on switch */
+  .hiw-card4-avatar {
+    transition: background 0.2s ease;
+  }
+
+  /* Next-step action strip */
+  .hiw-card4-action-strip {
+    transition: border-color 0.2s ease;
+  }
+  .hiw-card4-action-strip:hover {
+    border-color: rgba(5, 150, 105, 0.32);
+  }
+
+  .hiw-card4-draft-btn {
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.15);
+    transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+  }
+  .hiw-card4-draft-btn:hover {
+    background: #047857;
+    border-color: #047857;
+    box-shadow: 0 4px 10px -2px rgba(5, 150, 105, 0.4);
+    transform: translateY(-1px);
+  }
+  .hiw-card4-draft-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
   }
 
   .hiw-card4-glow-dot {
@@ -167,9 +245,107 @@
       animation: none;
     }
     .hiw-card4-card,
-    .hiw-card4-metric,
-    .hiw-card4-archive-item {
+    .hiw-card4-client-pill,
+    .hiw-card4-check,
+    .hiw-card4-avatar,
+    .hiw-card4-action-strip,
+    .hiw-card4-draft-btn {
       transition: none;
     }
   }
 </style>
+
+<script>
+  (function () {
+    type ClientKey = 'acme' | 'nexus' | 'loomis';
+
+    interface ClientInfo {
+      name: string;
+      avatar: string;
+      projects: string;
+      billed: string;
+      terms: string;
+      deliverable: string;
+    }
+
+    const clients: Record<ClientKey, ClientInfo> = {
+      acme: {
+        name: 'Acme Corp',
+        avatar: 'AC',
+        projects: '2 completed projects',
+        billed: '$9,600',
+        terms: 'Standard Net-15 terms on file',
+        deliverable: 'Brand Identity &amp; Design System',
+      },
+      nexus: {
+        name: 'Nexus Labs',
+        avatar: 'NL',
+        projects: '1 completed project',
+        billed: '$3,200',
+        terms: 'Net-30 terms on file',
+        deliverable: 'Website Refresh',
+      },
+      loomis: {
+        name: 'Loomis Co.',
+        avatar: 'LC',
+        projects: '3 completed projects',
+        billed: '$14,750',
+        terms: 'Standard Net-15 terms on file',
+        deliverable: 'Marketing Campaign Assets',
+      },
+    };
+
+    const strip = document.getElementById('hiwC4ClientStrip');
+    const ctxAvatar = document.getElementById('hiwC4CtxAvatar');
+    const ctxName = document.getElementById('hiwC4CtxName');
+    const ctxProjects = document.getElementById('hiwC4CtxProjects');
+    const ctxBilled = document.getElementById('hiwC4CtxBilled');
+    const ctxTerms = document.getElementById('hiwC4CtxTerms');
+    const ctxDeliverable = document.getElementById('hiwC4CtxDeliverable');
+    const ctxNextStepHead = document.getElementById('hiwC4NextStepHead');
+    const draftBtn = document.getElementById('hiwC4DraftBtn');
+
+    if (
+      strip &&
+      ctxAvatar &&
+      ctxName &&
+      ctxProjects &&
+      ctxBilled &&
+      ctxTerms &&
+      ctxDeliverable &&
+      ctxNextStepHead
+    ) {
+      const pills = Array.from(strip.querySelectorAll<HTMLButtonElement>('.hiw-card4-client-pill'));
+
+      const selectClient = (key: string) => {
+        const client = clients[key as ClientKey];
+        if (!client) return;
+
+        pills.forEach((pill) => {
+          const active = pill.getAttribute('data-client') === key;
+          pill.classList.toggle('is-active', active);
+          pill.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+
+        ctxAvatar.textContent = client.avatar;
+        ctxName.textContent = client.name;
+        ctxProjects.textContent = client.projects;
+        ctxBilled.textContent = client.billed;
+        ctxTerms.textContent = client.terms;
+        ctxDeliverable.innerHTML = client.deliverable;
+        ctxNextStepHead.textContent = 'Start next project with ' + client.name.split(' ')[0];
+      };
+
+      pills.forEach((pill) => {
+        pill.addEventListener('click', () => {
+          const key = pill.getAttribute('data-client');
+          if (key) selectClient(key);
+        });
+      });
+    }
+
+    draftBtn?.addEventListener('click', () => {
+      draftBtn.blur();
+    });
+  })();
+</script>
