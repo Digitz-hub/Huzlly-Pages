@@ -5,32 +5,34 @@
 
 <div class="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
   <div
-    class="hiw-card2-card flex w-full max-w-[420px] flex-col overflow-y-auto rounded-[20px] border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.12)] transition-[box-shadow,transform] duration-300 ease-out"
+    class="hiw-card2-card flex h-full w-full max-w-[420px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-10px_rgba(15,23,42,0.10)] transition-[box-shadow,transform] duration-300 ease-out"
     role="region"
     aria-label="Project delivery and execution workspace"
   >
     <!-- Header -->
-    <div class="mb-5 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0 text-slate-900">
-          <path d="M3 7C3 5.89543 3.89543 5 5 5H9.58579C9.851 5 10.1054 5.10536 10.2929 5.29289L11.7071 6.70711C11.8946 6.89464 12.149 7 12.4142 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-        </svg>
-        <span class="font-display text-[15px] font-bold tracking-[-0.01em] text-slate-900">Project hub</span>
+    <div class="mb-6 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-slate-100">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0 text-slate-700">
+            <path d="M3 7C3 5.89543 3.89543 5 5 5H9.58579C9.851 5 10.1054 5.10536 10.2929 5.29289L11.7071 6.70711C11.8946 6.89464 12.149 7 12.4142 7H19C20.1046 7 21 7.89543 21 9V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="font-display text-[15px] font-semibold tracking-[-0.01em] text-slate-900">Project hub</span>
       </div>
-      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 py-[5px] pl-2 pr-2.5 font-sans text-xs tabular-nums font-semibold tracking-[-0.01em] text-emerald-700">
+      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 py-[5px] pl-2.5 pr-3 text-[11.5px] font-semibold text-emerald-600">
         <span class="hiw-card2-dot-pulse"></span>
         Live sync
       </span>
     </div>
 
     <!-- Project row -->
-    <div class="mb-4">
+    <div class="mb-5">
       <div class="mb-2 font-display text-base font-bold tracking-[-0.01em] text-slate-900">
         Acme Corp <span class="mx-0.5 font-normal text-slate-500">·</span> Brand System
       </div>
       <div class="mb-1.5 flex items-center justify-between">
         <span class="text-[12.5px] font-medium text-slate-500">Milestones</span>
-        <span class="font-sans text-xs tabular-nums text-slate-900">3 of 5 complete</span>
+        <span class="font-sans text-[12.5px] tabular-nums text-slate-900">3 of 5 complete</span>
       </div>
       <div class="relative h-1.5 w-full overflow-hidden rounded-full bg-[#EEF2F6]">
         <div class="hiw-card2-progress-fill h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600"></div>
@@ -50,8 +52,8 @@
       </div>
       <div class="mt-0.5 flex items-center gap-2.5 rounded-[10px] px-1 py-2 transition-colors duration-150 hover:bg-slate-900/[0.02]">
         <span class="hiw-card2-checkbox-progress"></span>
-        <span class="min-w-0 flex-1 truncate text-[13.5px] font-medium text-slate-900">Figma UI components</span>
-        <span class="hiw-card2-timer-pill inline-flex shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-[3px] font-sans text-[11.5px] tabular-nums font-semibold text-emerald-700">
+        <span class="min-w-0 flex-1 truncate text-[13.5px] font-semibold text-slate-900">Figma UI components</span>
+        <span class="hiw-card2-timer-pill inline-flex shrink-0 items-center gap-[5px] whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-[3px] font-sans text-[11px] tabular-nums font-semibold text-emerald-700">
           03:42:15
         </span>
       </div>
@@ -59,7 +61,7 @@
 
     <!-- Client portal node -->
     <div class="hiw-card2-client-node relative rounded-2xl border border-emerald-100 bg-gradient-to-b from-[#FBFDFC] to-[#F6FBF9] px-3.5 py-3">
-      <div class="mb-2.5 flex items-center gap-1.5 text-[11.5px] font-semibold uppercase tracking-[0.03em] text-slate-500">
+      <div class="mb-2.5 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-slate-500">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-emerald-600">
           <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
           <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
@@ -69,20 +71,20 @@
       <div class="flex items-center gap-2.5">
         <span class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 font-sans text-xs font-bold text-white">SK</span>
         <div class="min-w-0 flex-1">
-          <div class="text-[13px] font-semibold text-slate-900">Sarah K.</div>
-          <div class="truncate text-xs text-slate-500">Viewed latest prototype 12m ago</div>
+          <div class="text-[13.5px] font-semibold text-slate-900">Sarah K.</div>
+          <div class="truncate text-[12.5px] leading-relaxed text-slate-500">Viewed latest prototype 12m ago</div>
         </div>
-        <span class="shrink-0 whitespace-nowrap rounded-full bg-emerald-100 px-2 py-[3px] text-[10.5px] font-semibold text-emerald-700">Auto-updated</span>
+        <span class="shrink-0 whitespace-nowrap rounded-full bg-emerald-100 px-2 py-[3px] text-[11px] font-semibold text-emerald-700">Auto-updated</span>
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="mt-auto shrink-0 border-t border-[#EDF1F5] pt-3.5">
-      <div class="mb-[5px] flex items-center gap-2">
+    <div class="mt-auto shrink-0 border-t border-[#EDF1F5] pt-4">
+      <div class="mb-1.5 flex items-center gap-2">
         <span class="hiw-card2-glow-dot"></span>
-        <span class="text-[12.5px] font-semibold text-slate-900">Your entire project, in sync</span>
+        <span class="text-[13px] font-semibold text-slate-900">Your entire project, in sync</span>
       </div>
-      <p class="pl-[15px] text-xs leading-relaxed text-slate-500">Organize work, log hours, and keep clients in sync automatically.</p>
+      <p class="pl-[15px] text-[12.5px] leading-relaxed text-slate-500">Organize work, log hours, and keep clients in sync automatically.</p>
     </div>
   </div>
 </div>
@@ -92,7 +94,7 @@
     max-height: 100%;
   }
   .hiw-card2-card:hover {
-    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 16px 32px -14px rgba(15, 23, 42, 0.16);
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 20px 40px -12px rgba(15, 23, 42, 0.14);
     transform: translateY(-2px);
   }
 
@@ -213,7 +215,7 @@
     height: 7px;
     border-radius: 50%;
     background: #059669;
-    box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.6);
+    box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.55);
     flex-shrink: 0;
     display: inline-block;
   }
