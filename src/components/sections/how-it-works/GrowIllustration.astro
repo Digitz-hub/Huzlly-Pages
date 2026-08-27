@@ -30,7 +30,6 @@
     <div class="flex flex-col gap-5">
       <!-- Section A: client directory selector -->
       <div>
-        <div class="mb-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-slate-500">Client directory</div>
         <div class="flex flex-wrap gap-2" id="hiwC4ClientStrip" role="tablist" aria-label="Select a client">
           <button
             type="button"
@@ -72,7 +71,7 @@
       </div>
 
       <!-- Section B: selected client context -->
-      <div class="flex flex-col gap-3.5 rounded-[14px] border border-slate-200 bg-[#FBFCFE] p-4" id="hiwC4ContextBox" aria-live="polite">
+      <div class="flex flex-col gap-2.5 rounded-[14px] border border-slate-200 bg-[#FBFCFE] py-3.5 px-4" id="hiwC4ContextBox" aria-live="polite">
         <div class="flex items-center gap-2.5">
           <div
             class="hiw-card4-avatar flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-slate-900 to-slate-700 font-sans text-[12px] font-semibold tracking-[-0.02em] text-white"
@@ -89,30 +88,19 @@
         <div class="text-[12.5px] leading-relaxed text-slate-500">
           <span class="font-sans text-[12px] font-semibold tabular-nums text-slate-900" id="hiwC4CtxBilled">$9,600</span> total billed &middot; <span id="hiwC4CtxTerms">Standard Net-15 terms on file</span>
         </div>
-
-        <div class="flex items-center gap-2.5 text-[12.5px] text-slate-900">
-          <span class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-600">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-[11px] w-[11px]">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-          </span>
-          <span class="min-w-0 flex-1 truncate font-medium" id="hiwC4CtxDeliverable">Brand Identity &amp; Design System</span>
-          <span class="shrink-0 whitespace-nowrap text-slate-500">&middot; Archived</span>
-        </div>
       </div>
 
       <!-- Section C: next step action -->
       <div class="flex flex-col gap-2.5">
-        <div class="flex items-center gap-1.5 text-[12.5px] font-semibold text-slate-900">
-          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-3.5 w-3.5 shrink-0 text-emerald-600">
-            <path d="M13 2 3 14h7l-1 8 11-14h-8l1-6z"/>
-          </svg>
-          <span id="hiwC4NextStepHead">Start next project with Acme</span>
-        </div>
-        <div class="hiw-card4-action-strip flex items-center gap-3 rounded-xl border border-emerald-600/[0.18] bg-emerald-50 py-3.5 pl-4 pr-3.5">
+        <div class="hiw-card4-action-strip flex items-center gap-3 rounded-xl border border-emerald-600/[0.18] bg-emerald-50 py-3 px-[13px]">
+          <div class="hiw-card4-action-icon flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[9px] border border-emerald-600/20 bg-white text-emerald-600">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-3.5 w-3.5">
+              <path d="M13 2 3 14h7l-1 8 11-14h-8l1-6z"/>
+            </svg>
+          </div>
           <div class="flex min-w-0 flex-1 flex-col gap-0.5">
             <div class="truncate text-[13px] font-semibold tracking-[-0.005em] text-slate-900">New Scope &middot; Retainer / Phase 2</div>
-            <div class="text-[11.5px] leading-snug text-slate-500">Pre-filled client details &amp; rates</div>
+            <div class="text-[11.5px] leading-snug text-slate-500" id="hiwC4CtxActionSub">Start next project with Acme &mdash; pre-filled details &amp; rates</div>
           </div>
           <button
             type="button"
@@ -265,7 +253,6 @@
       projects: string;
       billed: string;
       terms: string;
-      deliverable: string;
     }
 
     const clients: Record<ClientKey, ClientInfo> = {
@@ -275,7 +262,6 @@
         projects: '2 completed projects',
         billed: '$9,600',
         terms: 'Standard Net-15 terms on file',
-        deliverable: 'Brand Identity &amp; Design System',
       },
       nexus: {
         name: 'Nexus Labs',
@@ -283,7 +269,6 @@
         projects: '1 completed project',
         billed: '$3,200',
         terms: 'Net-30 terms on file',
-        deliverable: 'Website Refresh',
       },
       loomis: {
         name: 'Loomis Co.',
@@ -291,7 +276,6 @@
         projects: '3 completed projects',
         billed: '$14,750',
         terms: 'Standard Net-15 terms on file',
-        deliverable: 'Marketing Campaign Assets',
       },
     };
 
@@ -301,8 +285,7 @@
     const ctxProjects = document.getElementById('hiwC4CtxProjects');
     const ctxBilled = document.getElementById('hiwC4CtxBilled');
     const ctxTerms = document.getElementById('hiwC4CtxTerms');
-    const ctxDeliverable = document.getElementById('hiwC4CtxDeliverable');
-    const ctxNextStepHead = document.getElementById('hiwC4NextStepHead');
+    const ctxActionSub = document.getElementById('hiwC4CtxActionSub');
     const draftBtn = document.getElementById('hiwC4DraftBtn');
 
     if (
@@ -312,8 +295,7 @@
       ctxProjects &&
       ctxBilled &&
       ctxTerms &&
-      ctxDeliverable &&
-      ctxNextStepHead
+      ctxActionSub
     ) {
       const pills = Array.from(strip.querySelectorAll<HTMLButtonElement>('.hiw-card4-client-pill'));
 
@@ -332,8 +314,7 @@
         ctxProjects.textContent = client.projects;
         ctxBilled.textContent = client.billed;
         ctxTerms.textContent = client.terms;
-        ctxDeliverable.innerHTML = client.deliverable;
-        ctxNextStepHead.textContent = 'Start next project with ' + client.name.split(' ')[0];
+        ctxActionSub.textContent = 'Start next project with ' + client.name.split(' ')[0] + ' — pre-filled details & rates';
       };
 
       pills.forEach((pill) => {
