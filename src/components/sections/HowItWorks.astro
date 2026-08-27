@@ -1,7 +1,7 @@
 ---
 // src/components/sections/HowItWorks.astro
 
-import { ChevronDown } from 'lucide-astro';
+import { ChevronDown, Check } from 'lucide-astro';
 import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
 import WorkIllustration from './how-it-works/WorkIllustration.astro';
 import GetPaidIllustration from './how-it-works/GetPaidIllustration.astro';
@@ -20,8 +20,12 @@ const stages = [
   {
     number: '01',
     stage: 'Get Started',
-    headline: 'Turn prospects into projects.',
-    body: 'Create professional proposals, get agreements signed, and set everything up to start working with your client.',
+    headline: "It tracks the yes, so you don't have to.",
+    bodyItems: [
+      'Tracks who accepted your proposal',
+      'Sends the contract you set up',
+      'Creates the project in your dashboard',
+    ],
     signal: 'blue',
     illustration: GetStartedIllustration,
   },
@@ -95,9 +99,20 @@ const stages = [
                     </button>
                     <div class="acc-panel" id={panelId}>
                       <div class="acc-panel-inner overflow-hidden">
-                        <p class="acc-desc max-w-md pb-6 pl-[calc(2.25rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
-                          {step.body}
-                        </p>
+                        {step.bodyItems ? (
+                          <ul class="acc-desc max-w-md space-y-2 pb-6 pl-[calc(2.25rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
+                            {step.bodyItems.map((item) => (
+                              <li class="flex items-start gap-2.5">
+                                <Check class="mt-[3px] h-4 w-4 shrink-0 text-[var(--accent,currentColor)]" stroke-width="2.5" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p class="acc-desc max-w-md pb-6 pl-[calc(2.25rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
+                            {step.body}
+                          </p>
+                        )}
                       </div>
                     </div>
                     {index !== stages.length - 1 && (
