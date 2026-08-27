@@ -16,7 +16,6 @@ import {
   Repeat,
   ChevronDown,
 } from 'lucide-astro';
-import SectionHeader from '../ui/SectionHeader.astro';
 import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
 import WorkIllustration from './how-it-works/WorkIllustration.astro';
 import GetPaidIllustration from './how-it-works/GetPaidIllustration.astro';
@@ -101,18 +100,13 @@ const stages = [
 
 <section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
-    <SectionHeader eyebrow="How it works"
-      title="Four stages. Zero handoffs."
-      subtitle="Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human."
-      titleClass="text-4xl sm:text-5xl lg:text-6xl"
-      maxWidthClass="max-w-5xl"
-    />
-
     <div id="how-it-works-track" class="mt-14">
       <div id="how-it-works-sticky" class="lg:flex lg:items-center">
         <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
           <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
-            <div class="acc-list border-t border-rail" role="tablist" aria-orientation="vertical">
+            <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink">Four stages. Zero handoffs.</h2>
+            <p class="mt-4 max-w-md font-[Outfit] text-base text-ink/70">Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human.</p>
+            <div class="acc-list mt-10 border-t border-rail" role="tablist" aria-orientation="vertical">
               {stages.map((step, index) => {
                 const s = signalStyles[step.signal];
                 const panelId = `how-it-works-panel-${index}`;
@@ -131,7 +125,7 @@ const stages = [
                       aria-expanded={index === 0 ? 'true' : 'false'}
                       aria-controls={panelId}
                     >
-                      <span class="acc-number shrink-0 font-[Outfit] text-[64px] font-[800] leading-none text-transparent [-webkit-text-stroke:1.5px_#14110f4d] sm:text-[80px]">
+                      <span class="acc-number shrink-0 font-mono text-sm text-ink/40 transition-colors duration-300">
                         {step.number}.
                       </span>
                       <span class="flex flex-1 items-center justify-between gap-4">
@@ -143,7 +137,7 @@ const stages = [
                     </button>
                     <div class="acc-panel" id={panelId}>
                       <div class="acc-panel-inner overflow-hidden">
-                        <p class="acc-desc max-w-md pb-7 pl-[calc(64px+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70 sm:pl-[calc(80px+1.25rem)]">
+                        <p class="acc-desc max-w-md pb-7 pl-[calc(2rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
                           {step.body}
                         </p>
                       </div>
@@ -241,7 +235,7 @@ const stages = [
   }
 
   .acc-item.is-active .acc-number {
-    -webkit-text-stroke-color: var(--accent, #14110f4d);
+    color: var(--accent, currentColor);
   }
 
   .stage-item {
