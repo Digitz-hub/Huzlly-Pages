@@ -108,53 +108,9 @@ const stages = [
       maxWidthClass="max-w-5xl"
     />
 
-    {/*
-      v4 "how it works" restructure. Replaces the v3 "4 stacked rows"
-      layout with a scroll-driven left-accordion / right-sticky-stage
-      pattern (interaction ported from a reference mockup; visuals are
-      this project's own — no reference colors/fonts/content).
-
-      `stages`, `signalStyles`, and the chip helpers above are all
-      unchanged from v3 — same data, same illustration imports, same
-      chip logic. Only the layout/animation wrapping them changed:
-      instead of one full-width row per stage, every stage's text now
-      lives in one accordion item on the left (`.acc-item`, only one
-      expanded at a time) and every stage's illustration now lives in
-      one absolutely-stacked layer on the right (`.stage-item`, only
-      one visible at a time), cross-fading as the accordion selection
-      changes.
-
-      `#how-it-works-track` / `#how-it-works-sticky` implement the
-      scroll-hijack: at `lg:` and up, the track is a tall (220vh)
-      wrapper and the sticky inner element pins to the viewport while
-      wheel ticks step the active stage one at a time (see the
-      `<script>` at the bottom of this file); below `lg:`, none of
-      that height/sticky styling applies (Tailwind's responsive
-      classes simply don't kick in), so the section sits in normal
-      document flow as a plain click-to-expand accordion with the
-      illustration stage stacked above it — same mobile-first
-      `order-1`/`order-2` convention the old row layout used for its
-      text/illustration stacking order.
-
-      Illustration layer markup (glow span + `<Illustration />` +
-      floating chips) is copied as-is from the old per-row version,
-      just moved from "one per row" to "one per stacked `.stage-item`
-      layer" — see the comment further down for specifics. No card
-      border/background/shadow/padding was added around it, per
-      direction: it still just floats with its glow, same as before.
-    */}
-    <div id="how-it-works-track" class="mt-14 lg:h-[220vh]">
-      {/* Sticky inner wrapper. `lg:overflow-hidden` keeps the
-          cross-fading stage layers from ever peeking past this box
-          while pinned; everything below `lg:` is unaffected (no
-          sticky, no fixed height, no overflow clipping). */}
-      <div id="how-it-works-sticky" class="lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center lg:overflow-hidden">
+    <div id="how-it-works-track" class="mt-14">
+      <div id="how-it-works-sticky" class="lg:flex lg:items-center">
         <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
-          {/* Left column: accordion. Mobile-first `order-2` (below the
-              stage on small screens) / `lg:order-1` (left column on
-              desktop) — the reverse of the stage column below, same
-              convention the old row layout used for text vs.
-              illustration ordering. */}
           <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
             <div class="acc-list border-t border-rail" role="tablist" aria-orientation="vertical">
               {stages.map((step, index) => {
@@ -198,10 +154,6 @@ const stages = [
             </div>
           </div>
 
-          {/* Right column: sticky illustration stage. Mobile-first
-              `order-1` (above the accordion on small screens) /
-              `lg:order-2` (right column on desktop) — matches the old
-              row layout's illustration-above-text mobile ordering. */}
           <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
             <div class="stage-box relative h-64 sm:h-72 lg:h-[26rem]">
               {stages.map((step, index) => {
@@ -214,10 +166,6 @@ const stages = [
                     class:list={[index === 0 && 'is-active']}
                     data-index={index}
                   >
-                    {/* Illustration wrapper: `absolute inset-0` fills
-                        this layer exactly like the old per-row
-                        version's own inner wrapper did — same glow
-                        span + `<Illustration />` pairing, unchanged. */}
                     <div class="absolute inset-0">
                       <span
                         class="glow-pulse-el pointer-events-none absolute inset-[-10%] z-0 rounded-full blur-[46px]"
@@ -228,9 +176,6 @@ const stages = [
                       <Illustration />
                     </div>
 
-                    {/* Chips: siblings of the illustration wrapper,
-                        same 3-nested-layer split as before, just
-                        scoped to this stacked layer instead of a row. */}
                     {step.chips.map((chip) => {
                       const { offset, transform } = splitChipPosition(chip.position);
                       return (
@@ -258,8 +203,6 @@ const stages = [
 </section>
 
 <style>
-  /* ---------- Accordion: collapse/expand ---------- */
-
   .acc-trigger {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -270,8 +213,6 @@ const stages = [
     border-radius: 8px;
   }
 
-  /* grid-rows 0fr -> 1fr collapse/expand technique, same as the
-     reference mockup this interaction was ported from. */
   .acc-panel {
     display: grid;
     grid-template-rows: 0fr;
@@ -299,13 +240,9 @@ const stages = [
     color: var(--accent, currentColor);
   }
 
-  /* Each stage's own signalStyles color accents its own number, not a
-     single fixed accent — `--accent` is set per `.acc-item` above. */
   .acc-item.is-active .acc-number {
     -webkit-text-stroke-color: var(--accent, #14110f4d);
   }
-
-  /* ---------- Sticky stage: cross-fade between layers ---------- */
 
   .stage-item {
     opacity: 0;
@@ -331,22 +268,6 @@ const stages = [
 </style>
 
 <script>
-  // Ports the reference mockup's wheel-driven "scroll-hijack" behavior:
-  // while `#how-it-works-track` is pinned in the viewport (desktop
-  // only), each wheel tick steps the active accordion item/stage layer
-  // one at a time; scrolling past the first or last item releases the
-  // page to scroll normally again. Clicking an accordion item always
-  // activates it directly and, on desktop, smooth-scrolls the section
-  // into its pinned position if it isn't already there.
-  //
-  // Compatibility note: this site runs Lenis (see src/scripts/lenis.ts)
-  // for sitewide smooth-wheel scrolling, which also listens for native
-  // `wheel` events on `window`. To keep the two from fighting over the
-  // same event when a step is being consumed here, this handler is
-  // registered with `capture: true` and calls `stopPropagation()` only
-  // on the ticks it actually intercepts — every other tick (off-screen,
-  // mobile, or at the first/last item) is left completely alone and
-  // reaches Lenis exactly as it would if this component didn't exist.
   (function () {
     const track = document.getElementById('how-it-works-track');
     if (!track) return;
@@ -356,13 +277,7 @@ const stages = [
     const stepCount = items.length;
     if (stepCount === 0) return;
 
-    const LOCK_MS = 400;
-    const desktopQuery = window.matchMedia('(min-width: 1024px)');
-    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-
     let activeIndex = 0;
-    let isDesktop = desktopQuery.matches;
-    let isLocked = false;
 
     function setActive(index: number) {
       index = Math.min(stepCount - 1, Math.max(0, index));
@@ -381,72 +296,12 @@ const stages = [
       });
     }
 
-    // ---- Is the sticky section currently pinned in view? ----
-
-    function isEngaged() {
-      const rect = track.getBoundingClientRect();
-      return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
-    }
-
-    function getTrackTop() {
-      const rect = track.getBoundingClientRect();
-      return rect.top + window.scrollY;
-    }
-
-    // ---- Wheel-driven single-step-per-tick snapping ----
-
-    function onWheel(e: WheelEvent) {
-      if (!isDesktop) return;
-      if (!isEngaged()) return; // outside the pinned range: let Lenis/the page scroll normally
-
-      const goingDown = e.deltaY > 0;
-      const atLastStep = activeIndex === stepCount - 1;
-      const atFirstStep = activeIndex === 0;
-
-      // at either edge, release control so the page can continue
-      // scrolling past (or above) the section instead of trapping the user
-      if (goingDown && atLastStep) return;
-      if (!goingDown && atFirstStep) return;
-
-      e.preventDefault();
-      e.stopPropagation(); // keep this tick from also reaching Lenis's own wheel handler
-
-      if (isLocked) return;
-      isLocked = true;
-      setActive(activeIndex + (goingDown ? 1 : -1));
-      setTimeout(() => {
-        isLocked = false;
-      }, LOCK_MS);
-    }
-
-    window.addEventListener('wheel', onWheel, { passive: false, capture: true });
-
-    // ---- Click-to-select with manual override ----
-
-    function ensureEngaged() {
-      if (!isDesktop) return;
-      if (isEngaged()) return;
-      const targetY = getTrackTop() + 1;
-      window.scrollTo({ top: targetY, behavior: reducedMotionQuery.matches ? 'auto' : 'smooth' });
-    }
-
     items.forEach((item, i) => {
       const trigger = item.querySelector('.acc-trigger');
       trigger?.addEventListener('click', () => {
         setActive(i);
-        ensureEngaged();
       });
     });
-
-    function handleDesktopChange(e: MediaQueryListEvent) {
-      isDesktop = e.matches;
-    }
-    if (typeof desktopQuery.addEventListener === 'function') {
-      desktopQuery.addEventListener('change', handleDesktopChange);
-    } else {
-      // Safari < 14 fallback
-      desktopQuery.addListener(handleDesktopChange);
-    }
 
     setActive(0);
   })();
