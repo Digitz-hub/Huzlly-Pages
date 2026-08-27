@@ -56,11 +56,11 @@ const stages = [
   <div class="mx-auto max-w-5xl">
     <div id="how-it-works-track" class="mt-14">
       <div id="how-it-works-sticky" class="lg:flex lg:items-center">
-        <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-16">
+        <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
           <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-[60%] lg:shrink-0">
             <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink">Four stages. Zero handoffs.</h2>
             <p class="mt-4 max-w-md font-[Outfit] text-base text-ink/70">Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human.</p>
-            <div class="acc-list mt-10 border-t border-rail" role="tablist" aria-orientation="vertical">
+            <div class="acc-list mt-8 border-t border-rail" role="tablist" aria-orientation="vertical">
               {stages.map((step, index) => {
                 const s = signalStyles[step.signal];
                 const panelId = `how-it-works-panel-${index}`;
@@ -74,7 +74,7 @@ const stages = [
                   >
                     <button
                       type="button"
-                      class="acc-trigger group flex w-full items-center gap-5 py-6 text-left"
+                      class="acc-trigger group flex w-full items-center gap-5 py-5 text-left"
                       role="tab"
                       aria-expanded={index === 0 ? 'true' : 'false'}
                       aria-controls={panelId}
@@ -91,7 +91,7 @@ const stages = [
                     </button>
                     <div class="acc-panel" id={panelId}>
                       <div class="acc-panel-inner overflow-hidden">
-                        <p class="acc-desc max-w-md pb-7 pl-[calc(2rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
+                        <p class="acc-desc max-w-md pb-6 pl-[calc(2rem+1.25rem)] font-[Outfit] text-[15.5px] leading-[1.65] text-ink/70">
                           {step.body}
                         </p>
                       </div>
@@ -103,7 +103,7 @@ const stages = [
           </div>
 
           <div class="order-1 lg:order-2 lg:w-[40%] lg:shrink-0">
-            <div class="stage-box relative h-[34rem] sm:h-[36rem] lg:h-[38rem]">
+            <div class="stage-box relative h-[32rem] sm:h-[34rem] lg:h-[36rem]">
               {stages.map((step, index) => {
                 const Illustration = step.illustration;
 
