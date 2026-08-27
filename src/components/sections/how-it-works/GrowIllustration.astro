@@ -5,34 +5,36 @@
 
 <div class="absolute inset-0 flex items-center justify-center p-3 sm:p-4">
   <div
-    class="hiw-card4-card flex w-full max-w-[420px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_1px_8px_rgba(15,23,42,0.03)] transition-[box-shadow,transform] duration-300 ease-out"
+    class="hiw-card4-card flex h-full w-full max-w-[420px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-10px_rgba(15,23,42,0.10)] transition-[box-shadow,transform] duration-300 ease-out"
   >
     <!-- Header -->
-    <div class="flex shrink-0 items-center justify-between border-b border-[#EDF1F5] px-5 py-[18px]">
-      <div class="flex items-center gap-[9px] font-display text-[14.5px] font-semibold tracking-[-0.01em] text-slate-900">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-[17px] w-[17px] shrink-0 text-emerald-600">
-          <path d="M3 7.5V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v1.5"/>
-          <path d="M3 7.5 4.5 19a1 1 0 0 0 1 .9h13a1 1 0 0 0 1-.9L21 7.5"/>
-          <path d="M9 12h6"/>
-        </svg>
-        Client hub &amp; history
+    <div class="mb-6 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-emerald-50">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0 text-emerald-600">
+            <path d="M3 7.5V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v1.5"/>
+            <path d="M3 7.5 4.5 19a1 1 0 0 0 1 .9h13a1 1 0 0 0 1-.9L21 7.5"/>
+            <path d="M9 12h6"/>
+          </svg>
+        </span>
+        <span class="font-display text-[15px] font-semibold tracking-[-0.01em] text-slate-900">Client hub &amp; history</span>
       </div>
-      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-600/15 bg-emerald-50 py-[5px] pl-2 pr-2.5 text-[11.5px] font-semibold text-emerald-600">
+      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 py-[5px] pl-2.5 pr-3 text-[11.5px] font-semibold text-emerald-600">
         <span class="hiw-card4-pill-dot"></span>
         Ongoing relationship
       </span>
     </div>
 
     <!-- Body -->
-    <div class="flex flex-col gap-[18px] p-5">
+    <div class="flex flex-col gap-5">
       <!-- Section A: client profile -->
       <div class="flex items-center gap-3">
         <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[11px] bg-gradient-to-br from-slate-900 to-slate-700 font-sans text-[13px] font-semibold tracking-[-0.02em] text-white">
           AC
         </div>
         <div class="flex min-w-0 flex-col gap-0.5">
-          <div class="text-[14.5px] font-semibold tracking-[-0.01em] text-slate-900">Acme Corporation</div>
-          <div class="text-[12.5px] text-slate-500">Design &amp; Branding partner</div>
+          <div class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Acme Corporation</div>
+          <div class="text-[12.5px] leading-relaxed text-slate-500">Design &amp; Branding partner</div>
         </div>
       </div>
 
@@ -40,15 +42,15 @@
       <div class="grid grid-cols-3 gap-2.5">
         <div class="hiw-card4-metric rounded-[10px] border border-[#EDF1F5] bg-slate-50 px-2 py-2.5 text-center transition-colors duration-200">
           <div class="font-sans text-sm font-semibold tabular-nums tracking-[-0.02em] leading-[1.3] text-slate-900">2</div>
-          <div class="mt-[3px] text-[10px] leading-[1.3] text-slate-500">Completed Projects</div>
+          <div class="mt-[3px] text-[11px] leading-[1.3] text-slate-500">Completed Projects</div>
         </div>
         <div class="hiw-card4-metric rounded-[10px] border border-[#EDF1F5] bg-slate-50 px-2 py-2.5 text-center transition-colors duration-200">
           <div class="font-sans text-sm font-semibold tabular-nums tracking-[-0.02em] leading-[1.3] text-slate-900">$9,600</div>
-          <div class="mt-[3px] text-[10px] leading-[1.3] text-slate-500">Total Billed</div>
+          <div class="mt-[3px] text-[11px] leading-[1.3] text-slate-500">Total Billed</div>
         </div>
         <div class="hiw-card4-metric rounded-[10px] border border-[#EDF1F5] bg-slate-50 px-2 py-2.5 text-center transition-colors duration-200">
           <div class="font-sans text-sm font-semibold tabular-nums tracking-[-0.02em] leading-[1.3] text-slate-900">100%</div>
-          <div class="mt-[3px] text-[10px] leading-[1.3] text-slate-500">On-time Delivery</div>
+          <div class="mt-[3px] text-[11px] leading-[1.3] text-slate-500">On-time Delivery</div>
         </div>
       </div>
 
@@ -61,8 +63,8 @@
             </svg>
           </span>
           <div class="flex min-w-0 flex-col gap-0.5">
-            <div class="text-[13px] font-semibold tracking-[-0.01em] text-slate-900">Brand Redesign &amp; Design Tokens</div>
-            <div class="text-[11.5px] leading-relaxed text-slate-500">All deliverables, signed contracts, &amp; invoices archived in 1 click</div>
+            <div class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Brand Redesign &amp; Design Tokens</div>
+            <div class="text-[12.5px] leading-relaxed text-slate-500">All deliverables, signed contracts, &amp; invoices archived in 1 click</div>
           </div>
         </div>
         <div class="hiw-card4-archive-item flex items-start gap-2.5 rounded-[10px] border border-[#EDF1F5] bg-white px-3 py-2.5 transition-[border-color,background,transform] duration-200">
@@ -72,16 +74,16 @@
             </svg>
           </span>
           <div class="flex min-w-0 flex-col gap-0.5">
-            <div class="text-[13px] font-semibold tracking-[-0.01em] text-slate-900">Q3 Marketing Assets</div>
-            <div class="text-[11.5px] leading-relaxed text-slate-500">Approved runbooks &amp; client preferences saved</div>
+            <div class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Q3 Marketing Assets</div>
+            <div class="text-[12.5px] leading-relaxed text-slate-500">Approved runbooks &amp; client preferences saved</div>
           </div>
         </div>
       </div>
 
       <!-- Section C: repeat work node -->
       <div class="flex items-start gap-3 rounded-xl border border-emerald-600/[0.18] bg-emerald-50 p-3.5 transition-colors duration-200">
-        <span class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px] border border-emerald-600/20 bg-white text-emerald-600">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[17px] w-[17px]">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-emerald-600/20 bg-white text-emerald-600">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
             <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
             <path d="M21 3v5h-5"/>
             <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
@@ -90,21 +92,21 @@
         </span>
         <div class="flex min-w-0 flex-1 flex-col gap-[3px]">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="text-[13.5px] font-semibold tracking-[-0.01em] text-slate-900">Ready for next scope</span>
-            <span class="whitespace-nowrap rounded-full border border-emerald-600/25 bg-white px-[7px] py-0.5 text-[10px] font-semibold tracking-[0.01em] text-emerald-600">Quick start</span>
+            <span class="text-[13.5px] font-semibold tracking-[-0.005em] text-slate-900">Ready for next scope</span>
+            <span class="whitespace-nowrap rounded-full border border-emerald-600/25 bg-white px-[7px] py-0.5 text-[11px] font-semibold tracking-[0.01em] text-emerald-600">Quick start</span>
           </div>
-          <div class="text-[11.5px] leading-relaxed text-slate-500">Start new proposal with Acme's pre-filled terms and history</div>
+          <div class="text-[12.5px] leading-relaxed text-slate-500">Start new proposal with Acme's pre-filled terms and history</div>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="flex shrink-0 flex-col gap-[5px] border-t border-[#EDF1F5] px-5 pb-[18px] pt-3.5">
-      <div class="flex items-center gap-2 text-[12.5px] font-semibold text-slate-900">
+    <div class="mt-6 shrink-0 border-t border-[#EDF1F5] pt-4">
+      <div class="mb-1.5 flex items-center gap-2">
         <span class="hiw-card4-glow-dot"></span>
-        Turn past projects into long-term assets
+        <span class="text-[13px] font-semibold text-slate-900">Turn past projects into long-term assets</span>
       </div>
-      <div class="pl-[15px] text-[11.5px] leading-relaxed text-slate-500">Organized history, saved files, and client context ready for your next engagement.</div>
+      <div class="pl-[15px] text-[12.5px] leading-relaxed text-slate-500">Organized history, saved files, and client context ready for your next engagement.</div>
     </div>
   </div>
 </div>
@@ -114,8 +116,8 @@
     max-height: 100%;
   }
   .hiw-card4-card:hover {
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07), 0 2px 4px rgba(15, 23, 42, 0.04);
-    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 20px 40px -12px rgba(15, 23, 42, 0.14);
+    transform: translateY(-2px);
   }
 
   .hiw-card4-metric:hover {
@@ -144,7 +146,7 @@
     height: 7px;
     border-radius: 50%;
     background: #059669;
-    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15), 0 0 8px rgba(5, 150, 105, 0.5);
+    box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.55);
     flex-shrink: 0;
     display: inline-block;
     animation: hiw-card4-pulse 2.2s ease-in-out infinite;
@@ -153,10 +155,10 @@
   @keyframes hiw-card4-pulse {
     0%,
     100% {
-      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15), 0 0 8px rgba(5, 150, 105, 0.5);
+      box-shadow: 0 0 0 3px #ecfdf5, 0 0 8px rgba(5, 150, 105, 0.55);
     }
     50% {
-      box-shadow: 0 0 0 5px rgba(5, 150, 105, 0.1), 0 0 12px rgba(5, 150, 105, 0.65);
+      box-shadow: 0 0 0 5px #ecfdf5, 0 0 12px rgba(5, 150, 105, 0.7);
     }
   }
 
