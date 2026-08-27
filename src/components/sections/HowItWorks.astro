@@ -55,7 +55,7 @@ const stages = [
 <section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-5xl">
     <div class="max-w-2xl">
-      <h2 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink">Four stages. Zero handoffs.</h2>
+      <h2 class="font-display text-3xl sm:text-4xl font-medium tracking-tight text-ink">Four stages. Zero handoffs.</h2>
       <p class="mt-4 max-w-md font-[Outfit] text-base text-ink/70">Each stage of your client relationship flows into the next automatically — you only touch what actually needs a human.</p>
     </div>
 
@@ -63,7 +63,7 @@ const stages = [
       <div id="how-it-works-sticky" class="lg:flex lg:items-center">
         <div class="flex w-full flex-col gap-10 lg:flex-row lg:items-center lg:gap-12">
           <div class="order-2 flex flex-col justify-center lg:order-1 lg:w-1/2 lg:shrink-0">
-            <div class="acc-list relative border-t border-rail" role="tablist" aria-orientation="vertical">
+            <div class="acc-list relative" role="tablist" aria-orientation="vertical">
               <div class="acc-line pointer-events-none absolute top-[38px] bottom-[38px] left-[18px] w-px -translate-x-1/2 bg-rail" aria-hidden="true"></div>
               {stages.map((step, index) => {
                 const s = signalStyles[step.signal];
@@ -71,7 +71,7 @@ const stages = [
 
                 return (
                   <div
-                    class="acc-item border-b border-rail"
+                    class="acc-item"
                     class:list={[index === 0 && 'is-active']}
                     data-index={index}
                     style={`--accent: ${s.glow};`}
@@ -100,6 +100,9 @@ const stages = [
                         </p>
                       </div>
                     </div>
+                    {index !== stages.length - 1 && (
+                      <div class="ml-[calc(2.25rem+1.25rem)] border-b border-rail" aria-hidden="true"></div>
+                    )}
                   </div>
                 );
               })}
