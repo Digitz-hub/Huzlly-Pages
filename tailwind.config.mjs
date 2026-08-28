@@ -13,12 +13,12 @@ export default {
       },
       fontFamily: {
         
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         
-        // Outfit — used on headings via the `font-display` class
-        display: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // Poppins — used on headings via the `font-display` class
+        display: ['"Poppins"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         
-        mono: ['"Outfit"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['Roboto', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },
