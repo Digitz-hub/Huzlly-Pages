@@ -10,8 +10,8 @@
     <!-- Header -->
     <div class="mb-6 flex items-center justify-between gap-3">
       <div class="flex min-w-0 items-center gap-2.5">
-        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-emerald-50">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0 text-emerald-600">
+        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-electric/10">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 shrink-0 text-electric">
             <path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 5 18.5V20"/>
             <circle cx="9.5" cy="8" r="3.25"/>
             <path d="M16 8.2a3 3 0 1 1 2.4 5.4"/>
@@ -20,7 +20,7 @@
         </span>
         <span class="font-display text-[15px] font-semibold tracking-[-0.01em] text-slate-900">Client relationships</span>
       </div>
-      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-emerald-100 bg-emerald-50 py-[5px] pl-2.5 pr-3 text-[11.5px] font-semibold text-emerald-600">
+      <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-electric/20 bg-electric/10 py-[5px] pl-2.5 pr-3 text-[11.5px] font-semibold text-electric">
         <span class="hiw-card4-pill-dot"></span>
         Directory &amp; history
       </span>
@@ -92,8 +92,8 @@
 
       <!-- Section C: next step action -->
       <div class="flex flex-col gap-2.5">
-        <div class="hiw-card4-action-strip flex items-center gap-3 rounded-xl border border-emerald-600/[0.18] bg-emerald-50 py-3 px-[13px]">
-          <div class="hiw-card4-action-icon flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[9px] border border-emerald-600/20 bg-white text-emerald-600">
+        <div class="hiw-card4-action-strip flex items-center gap-3 rounded-xl border border-electric/[0.18] bg-electric/10 py-3 px-[13px]">
+          <div class="hiw-card4-action-icon flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[9px] border border-electric/20 bg-white text-electric">
             <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-3.5 w-3.5">
               <path d="M13 2 3 14h7l-1 8 11-14h-8l1-6z"/>
             </svg>
@@ -104,7 +104,7 @@
           </div>
           <button
             type="button"
-            class="hiw-card4-draft-btn inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[9px] border border-emerald-600 bg-emerald-600 px-3.5 py-2.5 font-sans text-[12px] font-semibold text-white"
+            class="hiw-card4-draft-btn inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-[9px] border border-electric bg-electric px-3.5 py-2.5 font-sans text-[12px] font-semibold text-white"
             id="hiwC4DraftBtn"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[13px] w-[13px] shrink-0">
@@ -132,10 +132,10 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #059669;
+    background: #3B4EFF;
     flex-shrink: 0;
     display: inline-block;
-    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    box-shadow: 0 0 0 3px rgba(59, 78, 255, 0.15);
   }
 
   /* Client selector pills */
@@ -155,9 +155,9 @@
   }
 
   .hiw-card4-client-pill.is-active {
-    border-color: rgba(5, 150, 105, 0.35);
-    background: #ecfdf5;
-    color: #047857;
+    border-color: rgba(59, 78, 255, 0.35);
+    background: #EEF0FF;
+    color: #2A3ACC;
   }
 
   .hiw-card4-check {
@@ -180,23 +180,23 @@
     transition: border-color 0.2s ease;
   }
   .hiw-card4-action-strip:hover {
-    border-color: rgba(5, 150, 105, 0.32);
+    border-color: rgba(59, 78, 255, 0.32);
   }
 
   .hiw-card4-draft-btn {
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.15);
+    box-shadow: 0 1px 2px rgba(59, 78, 255, 0.15);
     transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
   }
   .hiw-card4-draft-btn:hover {
-    background: #047857;
-    border-color: #047857;
-    box-shadow: 0 4px 10px -2px rgba(5, 150, 105, 0.4);
+    background: #2A3ACC;
+    border-color: #2A3ACC;
+    box-shadow: 0 4px 10px -2px rgba(59, 78, 255, 0.4);
     transform: translateY(-1px);
   }
   .hiw-card4-draft-btn:active {
     transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.2);
+    box-shadow: 0 1px 2px rgba(59, 78, 255, 0.2);
   }
 
   @media (prefers-reduced-motion: reduce) {
