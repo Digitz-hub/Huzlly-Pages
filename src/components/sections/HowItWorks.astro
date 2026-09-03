@@ -72,6 +72,8 @@ const stages = [
     illustration: GrowIllustration,
   },
 ];
+
+export const stageSummaries = stages.map(({ stage, headline }) => ({ stage, headline }));
 ---
 
 <section id="how-it-works" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
