@@ -109,9 +109,14 @@ const stages = [
                         {step.number}
                       </span>
                       <span class="flex flex-1 items-center justify-between gap-4">
-                        <h3 class="acc-title m-0 font-display text-xl font-semibold leading-snug tracking-[-0.01em] text-ink sm:text-2xl">
-                          {step.headline}
-                        </h3>
+                        <span class="flex flex-col">
+                          <p class="font-mono text-xs uppercase tracking-widest text-blue-600 mb-1">
+                            {step.stage}
+                          </p>
+                          <h3 class="acc-title m-0 font-display text-xl font-semibold leading-snug tracking-[-0.01em] text-ink sm:text-2xl">
+                            {step.headline}
+                          </h3>
+                        </span>
                         <ChevronDown class="acc-chevron h-5 w-5 shrink-0 text-ink/30" stroke-width="2.2" />
                       </span>
                     </button>
