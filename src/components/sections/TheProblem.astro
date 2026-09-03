@@ -2,6 +2,7 @@
 // src/components/sections/TheProblem.astro
 
 import DashboardPreview from '../ui/DashboardPreview.astro';
+import { ArrowRight } from 'lucide-astro';
 
 ---
 
@@ -22,10 +23,13 @@ import DashboardPreview from '../ui/DashboardPreview.astro';
       Friction points quietly eat your time, your money, and your focus before a single invoice gets paid.
     </p>
 
-    <a href="#how-it-works" class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-[#3f5ce0] hover:underline">
-      See how Huzlly fixes this →
-    </a>
-
     <DashboardPreview class="mt-14 mx-auto max-w-5xl" />
+
+    <div class="mt-10 text-center">
+      <a href="#how-it-works" class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 rounded-md">
+        See how Huzlly fixes this
+        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+      </a>
+    </div>
   </div>
 </section>
