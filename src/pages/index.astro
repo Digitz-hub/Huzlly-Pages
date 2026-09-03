@@ -4,7 +4,7 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/sections/Hero.astro';
 import TheProblem from '../components/sections/TheProblem.astro';
-import HowItWorks from '../components/sections/HowItWorks.astro';
+import HowItWorks, { stageSummaries } from '../components/sections/HowItWorks.astro';
 import WhyLean from '../components/sections/WhyLean.astro';
 import WaitlistForm from '../components/sections/WaitlistForm.astro';
 
@@ -30,6 +30,18 @@ const softwareSchema = {
     description: 'Free tier available; single flat-rate paid upgrade.',
   },
 };
+
+const howItWorksSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'How Huzlly works',
+  itemListElement: stageSummaries.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: s.stage,
+    description: s.headline,
+  })),
+};
 ---
 
 <Layout
@@ -44,5 +56,6 @@ const softwareSchema = {
     <WhyLean />
     <WaitlistForm />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(howItWorksSchema)} />
   </main>
 </Layout>
