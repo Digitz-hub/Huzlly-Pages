@@ -3,7 +3,20 @@
 // Ported from reference mockup: card-1-workflow-onboarding.html
 ---
 
-<div class="absolute inset-0 flex items-start justify-center p-3 sm:p-4" style="transform: scale(0.8); transform-origin: top center;">
+<!--
+  Desktop (lg) sizing note: the outer "relative" box in HowItWorks.astro is now sized,
+  at lg only, to the ACTUAL VISIBLE size of this card after the 0.8 scale below
+  (24rem x 28.8rem = 480px x 36rem, each times 0.8). To make that possible, this
+  canvas is given fixed lg-only dimensions matching the PRE-scale size (30rem x 36rem,
+  i.e. 480px x 576px — unchanged from before) instead of stretching to fill its parent
+  via inset-0, and is anchored/scaled from the top-left corner (origin-top-left) so it
+  scales down to exactly fill the smaller lg box with no leftover space. Mobile/sm keep
+  the original inset-0 + origin-top (top center) behavior untouched.
+-->
+<div
+  class="absolute inset-0 lg:inset-auto lg:top-0 lg:left-0 lg:h-[36rem] lg:w-[30rem] flex items-start justify-center p-3 sm:p-4 origin-top lg:origin-top-left"
+  style="transform: scale(0.8);"
+>
   <div
     class="hiw-card1-flow-card flex h-full w-full max-w-[480px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 transition-[box-shadow,transform] duration-300 ease-out"
     tabindex="0"
