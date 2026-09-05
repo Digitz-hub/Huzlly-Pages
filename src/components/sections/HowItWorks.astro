@@ -1,7 +1,7 @@
 ---
 // src/components/sections/HowItWorks.astro
 
-import { Check, ArrowRight } from 'lucide-astro';
+import { Check, ArrowUpRight } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 import Button from '../ui/Button.astro';
 import GetStartedIllustration from './how-it-works/GetStartedIllustration.astro';
@@ -104,7 +104,7 @@ export const stageSummaries = stages.map(({ stage, headline }) => ({ stage, head
             <div class:list={['flex flex-col gap-10 lg:gap-16', isEven ? 'lg:flex-row' : 'lg:flex-row-reverse']}>
               {/* Text side */}
               <div class="flex flex-col lg:w-1/2 lg:shrink-0 lg:min-h-[28.8rem]">
-                <div class="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#d7deff] bg-[#eef1ff] py-1 pl-1 pr-4">
+                <div class="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#d7deff] bg-[#eef1ff] pr-4">
                   <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 font-mono text-[11px] font-semibold text-white">
                     {step.number}
                   </span>
@@ -156,7 +156,7 @@ export const stageSummaries = stages.map(({ stage, headline }) => ({ stage, head
                 <div class="mt-6">
                   <Button href="/features" variant="accent" size="sm">
                     Learn More
-                    <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+                    <ArrowUpRight class="w-4 h-4" stroke-width="1.75" />
                   </Button>
                 </div>
               </div>
@@ -190,7 +190,7 @@ export const stageSummaries = stages.map(({ stage, headline }) => ({ stage, head
     <div class="mt-10 text-center">
       <a href="/features" class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 rounded-md">
         See the full feature breakdown
-        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        <ArrowUpRight class="w-4 h-4" stroke-width="1.75" />
       </a>
     </div>
   </div>
