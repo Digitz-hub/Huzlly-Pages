@@ -104,8 +104,8 @@ export const stageSummaries = stages.map(({ stage, headline }) => ({ stage, head
             <div class:list={['flex flex-col gap-10 lg:gap-16', isEven ? 'lg:flex-row' : 'lg:flex-row-reverse']}>
               {/* Text side */}
               <div class="flex flex-col lg:w-1/2 lg:shrink-0 lg:min-h-[28.8rem]">
-                <div class="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#d7deff] bg-[#eef1ff] pr-4">
-                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 font-mono text-[11px] font-semibold text-white">
+                <div class="inline-flex w-fit items-center gap-2.5 rounded-full bg-[#eef1ff] pr-4">
+                  <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 font-mono text-sm font-semibold text-white">
                     {step.number}
                   </span>
                   <span class="font-mono text-xs uppercase tracking-widest text-ink/70">
@@ -156,7 +156,6 @@ export const stageSummaries = stages.map(({ stage, headline }) => ({ stage, head
                 <div class="mt-6">
                   <Button href="/features" variant="accent" size="sm">
                     Learn More
-                    <ArrowUpRight class="w-4 h-4" stroke-width="1.75" />
                   </Button>
                 </div>
               </div>
