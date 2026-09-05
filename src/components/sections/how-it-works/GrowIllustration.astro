@@ -6,12 +6,16 @@
 <!--
   Mobile-only (below sm) width fix: the card used to be capped at max-w-[480px] and
   uniformly scaled 0.8x on every breakpoint, which left empty space on the left/right
-  on phones (where the container is already narrower than 480px). Below sm, the card's
-  max-width cap is dropped (see max-w override below) and the horizontal scale is set
-  to 100% (scale-x-100) so the card renders edge-to-edge; the vertical scale stays at
-  0.8 (scale-y-[0.8]) so the fixed mobile box height and existing bottom gap are
-  unchanged. From sm upward, both axes go back to the original uniform 0.8 scale
-  (sm:scale-x-[0.8] sm:scale-y-[0.8]), so sm/lg behavior is untouched.
+  on phones (where the container is already narrower than 480px). A later attempt to
+  fix this applied a NON-UNIFORM scale on mobile (scale-x-100 scale-y-[0.8]) to get
+  full width without changing the fixed mobile box height, but that stretched the
+  card's content horizontally while compressing it vertically, causing a distorted
+  look. Below sm, the card is no longer scaled at all: the max-width cap is dropped
+  (see max-w override below) so the card's own w-full/h-full naturally fills the
+  fixed-height outer box at its true, undistorted proportions — no transform is
+  applied at this breakpoint. From sm upward, both axes go back to the original
+  uniform 0.8 scale (sm:scale-x-[0.8] sm:scale-y-[0.8]), so sm/lg behavior is
+  untouched.
 
   Desktop (lg) sizing note: the outer "relative" box in HowItWorks.astro is now sized,
   at lg only, to the ACTUAL VISIBLE size of this card after the 0.8 scale below
@@ -23,7 +27,7 @@
   the original inset-0 + origin-top (top center) behavior untouched.
 -->
 <div
-  class="absolute inset-0 lg:inset-auto lg:top-0 lg:left-0 lg:h-[36rem] lg:w-[30rem] flex items-start justify-center p-3 sm:p-4 origin-top lg:origin-top-left scale-x-100 scale-y-[0.8] sm:scale-x-[0.8] sm:scale-y-[0.8]"
+  class="absolute inset-0 lg:inset-auto lg:top-0 lg:left-0 lg:h-[36rem] lg:w-[30rem] flex items-start justify-center p-3 sm:p-4 origin-top lg:origin-top-left sm:scale-x-[0.8] sm:scale-y-[0.8]"
 >
   <div
     class="hiw-card4-card flex h-full w-full sm:max-w-[480px] flex-col overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 transition-[box-shadow,transform] duration-300 ease-out"
