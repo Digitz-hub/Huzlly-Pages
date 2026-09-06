@@ -1,7 +1,7 @@
 ---
 // src/components/sections/WhyUs.astro
 
-import { Feather, Zap, Tag, Layers, FileText, Lock, LayoutDashboard } from 'lucide-astro';
+import { Feather, Clock, MessageCircle, Layers, FileText, Lock, LayoutDashboard } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 import Card from '../ui/Card.astro';
 
@@ -25,8 +25,8 @@ const reasons = [
 
 const quickWins = [
   { icon: Feather, label: 'Nothing you don\u2019t use' },
-  { icon: Zap, label: 'Live in minutes' },
-  { icon: Tag, label: 'One flat price' },
+  { icon: Clock, label: 'More time for the actual work' },
+  { icon: MessageCircle, label: 'Fewer back-and-forth emails' },
   { icon: Layers, label: 'Everything in one place' },
 ];
 ---
@@ -63,7 +63,7 @@ const quickWins = [
       <div class="lg:col-span-2">
         <div class="inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">
           <Icon name="ph:check-circle-duotone" class="text-base" aria-hidden="true" />
-          Keep it simple
+          Built to stay simple
         </div>
         <h2 class="font-display mt-4 text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
           Simple enough for one person to run their whole business
