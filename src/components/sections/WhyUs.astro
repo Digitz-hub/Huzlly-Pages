@@ -1,7 +1,8 @@
 ---
 // src/components/sections/WhyUs.astro
 
-import { Feather, Zap, Tag, Layers, FileText, Lock, LayoutDashboard, CheckCircle } from 'lucide-astro';
+import { Feather, Zap, Tag, Layers, FileText, Lock, LayoutDashboard } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
 import Card from '../ui/Card.astro';
 
 const reasons = [
@@ -60,10 +61,10 @@ const quickWins = [
   <div class="mx-auto max-w-6xl">
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-5 lg:gap-12">
       <div class="lg:col-span-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 ring-1 ring-inset ring-blue-600/10">
-          <CheckCircle class="h-3.5 w-3.5 text-blue-600" stroke-width="1.75" />
-          <span class="font-mono text-xs uppercase tracking-widest text-blue-600">Keep it simple</span>
-        </span>
+        <div class="inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">
+          <Icon name="ph:check-circle-duotone" class="text-base" aria-hidden="true" />
+          Keep it simple
+        </div>
         <h2 class="font-display mt-4 text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
           Simple enough for one person to run their whole business
         </h2>
