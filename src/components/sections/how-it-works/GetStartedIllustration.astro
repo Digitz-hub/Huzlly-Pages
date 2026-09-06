@@ -106,38 +106,43 @@
      the containing block here) so the card's own background/border/shadow
      declarations stay untouched.
 
-     A box-shadow (rather than a radial-gradient) is used here because a
-     shadow's blur radius spreads uniformly outward from every edge of a
-     box, regardless of that box's aspect ratio - which is what makes the
-     glow read as even on all four sides of this rectangular card instead
-     of a lopsided circular blob. The pseudo-element itself is inset by
-     the same padding as the card (p-3 / sm:p-4) and capped to the card's
-     own max-width (480px), centered the same way, so its box tracks the
-     card's actual footprint rather than the wrapper's own box. */
+     Rather than one uniform box-shadow (which reads as a mechanically
+     even ring), the glow is built from several overlapping radial-gradient
+     blobs, each offset to a different corner/edge with its own size and
+     opacity, plus a blur filter to soften them into one another. This
+     makes the halo bulge a bit more in some spots than others - like a
+     soft, hand-placed light source - while keeping the same blue hue and
+     roughly the same overall lightness as the previous even glow. The box
+     itself is inset slightly past the card's own edges (rather than
+     exactly matching its padding) so the blobs have room to spread beyond
+     the card outline on all sides. */
   .hiw-card1-glow-wrap::before {
     content: '';
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    bottom: 0.75rem;
-    left: 0.75rem;
-    max-width: 480px;
+    top: -0.5rem;
+    right: -0.75rem;
+    bottom: -0.75rem;
+    left: -0.5rem;
+    max-width: 500px;
     margin: 0 auto;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     z-index: 0;
     pointer-events: none;
-    background: transparent;
-    box-shadow:
-      0 0 60px 20px rgba(59, 78, 255, 0.22),
-      0 0 110px 45px rgba(59, 78, 255, 0.1);
+    background:
+      radial-gradient(circle at 22% 20%, rgba(59, 78, 255, 0.18) 0%, rgba(59, 78, 255, 0) 58%),
+      radial-gradient(circle at 80% 14%, rgba(59, 78, 255, 0.13) 0%, rgba(59, 78, 255, 0) 55%),
+      radial-gradient(circle at 88% 72%, rgba(59, 78, 255, 0.19) 0%, rgba(59, 78, 255, 0) 60%),
+      radial-gradient(circle at 16% 84%, rgba(59, 78, 255, 0.12) 0%, rgba(59, 78, 255, 0) 55%),
+      radial-gradient(circle at 52% 50%, rgba(59, 78, 255, 0.09) 0%, rgba(59, 78, 255, 0) 68%);
+    filter: blur(26px);
   }
 
   @media (min-width: 640px) {
     .hiw-card1-glow-wrap::before {
-      top: 1rem;
-      right: 1rem;
-      bottom: 1rem;
-      left: 1rem;
+      top: -0.75rem;
+      right: -1rem;
+      bottom: -1rem;
+      left: -0.75rem;
     }
   }
 
