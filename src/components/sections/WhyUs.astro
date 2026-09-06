@@ -1,24 +1,24 @@
 ---
 // src/components/sections/WhyUs.astro
 
-import { Feather, Zap, Tag, Layers } from 'lucide-astro';
+import { Feather, Zap, Tag, Layers, FileText, Lock, LayoutDashboard } from 'lucide-astro';
 import Card from '../ui/Card.astro';
 
 const reasons = [
   {
-    icon: Feather,
-    title: 'Nothing you don\u2019t use',
-    body: 'Built for one freelancer running one flow, not a scaled-down version of enterprise software.',
+    icon: FileText,
+    title: 'Look professional before the work even starts',
+    body: "Send a proposal and contract that make you look established - not like you're piecing things together from templates you found online.",
   },
   {
-    icon: Zap,
-    title: 'Live in minutes',
-    body: 'No consultant, no onboarding call. Connect your flow and it runs the same day.',
+    icon: Lock,
+    title: 'You get paid before they get the files',
+    body: "Client files stay locked until the invoice is paid - so you're never left chasing payment after the work's already delivered.",
   },
   {
-    icon: Tag,
-    title: 'One flat price',
-    body: 'No per-seat fees, no usage tiers to track. What you see is what you pay.',
+    icon: LayoutDashboard,
+    title: 'Clients stop asking "any updates?"',
+    body: "Give clients their own portal to check project status, documents, and invoices - so you're not stuck answering the same email every week.",
   },
 ];
 
