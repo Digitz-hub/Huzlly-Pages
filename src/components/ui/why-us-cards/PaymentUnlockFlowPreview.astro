@@ -2,36 +2,43 @@
 // src/components/ui/why-us-cards/PaymentUnlockFlowPreview.astro
 //
 // Compact "invoice paid -> automation rule -> files unlocked" workflow
-// preview, ported from a user-supplied HTML/CSS reference (Invoice #1084 /
-// Paid trigger card -> "If Paid -> Unlock Files" rule pill -> unlocked
-// asset card, connected by elbow-shaped lines). The reference canvas was a
-// 640x300 SVG viewBox with three nodes staggered in a shallow "V" (trigger
-// bottom-left, rule top-center, target bottom-right) and its own
-// tablet/mobile stacking breakpoints.
+// preview, ported from a user-supplied HTML/CSS reference (invoice/paid
+// trigger card -> automation rule pill -> unlocked-asset card, connected
+// by lines). The original reference used an absolute-%-positioned canvas
+// (~640x300) with an SVG-overlay for the connector lines, sized on the
+// assumption that its container would match that canvas's aspect ratio.
 //
-// Same scaling approach as ProposalFlowPreview.astro: this always lives
-// inside a short, fixed-height box (h-32 sm:h-40 - see WhyUs.astro) that's
-// wide relative to its height at every breakpoint, so rather than
-// reproducing the reference's own <560px vertical-stack breakpoint, the
-// staggered "V" layout is kept at every width and everything (node sizes,
-// fonts, padding, connector strokes) is scaled down + made proportionally
-// smaller on mobile (below sm) via Tailwind's sm: prefix, matching
-// ProposalFlowPreview's pattern exactly. Nodes are positioned with
-// percentage-based absolute placement (mirroring the reference's own
-// left/top percentages) so the whole "V" shape scales cleanly with the
-// container instead of needing separate breakpoint-specific coordinates.
+// FIX: this component always lives inside a short, fixed-height box
+// (h-32 sm:h-40 - see WhyUs.astro) whose actual rendered width does not
+// reliably match that assumed aspect ratio, so the absolute-%-positioned
+// rightmost node (anchored at left-[86%], with a fixed pixel width
+// extending further right) could overflow past the container's right
+// edge and get clipped by its overflow-hidden, with text inside it (and
+// the center pill) truncating mid-word instead of wrapping/eliding
+// cleanly. Rebuilt here using the same real horizontal flex layout as
+// the sibling ProposalFlowPreview.astro in this folder: a flex row of
+// shrink-0 node children plus small flex-child connector elements (dot +
+// line) in between, instead of absolute % positioning + an SVG overlay.
+// A real flex flow always occupies exactly the space its children need
+// relative to the actual container width, at any breakpoint, so there's
+// no clipping risk tied to an assumed aspect ratio. All three nodes get
+// proportionally smaller widths/fonts/paddings on mobile (below sm)
+// rather than restacking vertically, matching ProposalFlowPreview's own
+// convention, so the whole flow still reads as one continuous pipeline
+// no matter how narrow the card gets. `truncate` / `flex-wrap` are used
+// throughout instead of unconstrained/`nowrap` text so that any tight
+// fit elides or wraps gracefully instead of cutting words off mid-word.
 //
-// The connector SVG reuses the reference's original 640x300 viewBox with
-// preserveAspectRatio="none" - that combination stretches to fill
-// whatever box it's placed in regardless of aspect ratio, so the exact
-// elbow-path coordinates from the reference can be kept as-is here without
-// recalculating them for the smaller card.
-//
-// Styling follows ProposalFlowPreview.astro's convention (slate-900/
-// slate-500/slate-200 neutrals + the electric brand blue for the
-// automation-rule accent, matching the reference's --hf-brand). Emerald is
-// kept as-is for the paid/unlocked status, since that's the reference's
-// core semantic color and the sitewide token set has no equivalent.
+// Styling follows ProposalFlowPreview.astro's precedent (slate-900/
+// slate-500/slate-200 + the electric brand blue for the "app-UI mockup"
+// card/badge/connector treatment), with emerald kept as the semantic
+// "paid / live / unlocked" status color from the original reference,
+// since neither concept exists in the sitewide token set and the
+// reference relies on that color distinction to read correctly. The
+// first connector (trigger -> rule) is styled as the "live" paid segment
+// (emerald dot + dashed line) and the second (rule -> target) as the
+// neutral segment (slate dot + solid line), mirroring how the original
+// reference visually distinguished the two segments.
 
 export interface Props {
   class?: string;
@@ -41,94 +48,79 @@ const { class: className } = Astro.props;
 ---
 
 <div
-  class:list={['relative h-full w-full', className]}
+  class:list={['flex h-full w-full items-center justify-center gap-1 px-1.5 sm:gap-2 sm:px-3', className]}
   aria-hidden="true"
 >
-  <!-- Connector lines: original reference coordinates + viewBox, kept
-       as-is - preserveAspectRatio="none" stretches them to fit this
-       smaller box without needing recalculated paths. -->
-  <svg
-    class="absolute inset-0 h-full w-full"
-    viewBox="0 0 640 300"
-    preserveAspectRatio="none"
-    aria-hidden="true"
-  >
-    <!-- trigger -> rule (elbow, live/paid segment) -->
-    <path
-      d="M 183 192 L 200 192 Q 210 192 210 182 L 210 106 Q 210 96 220 96 L 236 96"
-      fill="none"
-      stroke="#10b981"
-      stroke-opacity="0.55"
-      stroke-width="3"
-      stroke-dasharray="6 6"
-    />
-    <circle cx="183" cy="192" r="5" fill="#ffffff" stroke="#10b981" stroke-width="3" />
-    <circle cx="236" cy="96" r="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" />
-
-    <!-- rule -> target (elbow) -->
-    <path
-      d="M 404 96 L 410 96 Q 420 96 420 106 L 420 182 Q 420 192 430 192 L 436 192"
-      fill="none"
-      stroke="#cbd5e1"
-      stroke-width="3"
-    />
-    <circle cx="404" cy="96" r="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" />
-    <circle cx="436" cy="192" r="5" fill="#ffffff" stroke="#cbd5e1" stroke-width="3" />
-  </svg>
-
   <!-- Node 1: Trigger (Invoice, paid) -->
-  <div class="absolute left-[14%] top-[64%] w-[72px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-slate-200 bg-white px-2 py-1.5 shadow-sm sm:w-[96px] sm:rounded-xl sm:px-2.5 sm:py-2">
-    <div class="text-[5.5px] font-bold uppercase leading-none tracking-wide text-slate-400 sm:text-[7px]">Trigger</div>
-    <div class="mt-1 truncate text-[7px] font-semibold leading-tight text-slate-900 sm:text-[9px]">Invoice #1084</div>
-    <div class="truncate text-[6px] font-medium leading-tight text-slate-500 sm:text-[7.5px]">$1,850.00</div>
-    <div class="my-1 h-px bg-slate-100 sm:my-1.5"></div>
-    <span class="inline-flex items-center gap-0.5 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 py-[1px] text-[5.5px] font-semibold text-emerald-600 sm:text-[7px]">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="h-[5px] w-[5px] shrink-0 sm:h-[6px] sm:w-[6px]">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-      Paid
-    </span>
+  <div class="flex w-[72px] shrink-0 flex-col rounded-lg border border-slate-200 bg-white px-2 py-1.5 shadow-sm sm:w-[104px] sm:rounded-xl sm:px-2.5 sm:py-2">
+    <span class="text-[6px] font-bold uppercase leading-none tracking-wide text-slate-400 sm:text-[7.5px]">Trigger</span>
+    <span class="mt-1 truncate text-[7.5px] font-semibold leading-tight text-slate-900 sm:mt-1.5 sm:text-[9.5px]">Invoice #1084</span>
+    <span class="truncate text-[6.5px] font-medium leading-tight text-slate-500 sm:text-[8px]">$1,850.00</span>
+    <div class="mt-1.5 border-t border-slate-100 pt-1.5 sm:mt-2 sm:pt-2">
+      <span class="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 py-[2px] text-[6.5px] font-semibold text-emerald-600 sm:px-2 sm:py-[3px] sm:text-[8px]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="h-[6px] w-[6px] shrink-0 sm:h-[8px] sm:w-[8px]">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Paid
+      </span>
+    </div>
+  </div>
+
+  <!-- Connector: trigger -> rule (live / paid segment) -->
+  <div class="flex shrink-0 items-center">
+    <span class="h-1 w-1 shrink-0 rounded-full bg-emerald-500 sm:h-1.5 sm:w-1.5"></span>
+    <span class="h-0 w-2.5 shrink-0 border-t border-dashed border-emerald-500/50 sm:w-5"></span>
   </div>
 
   <!-- Node 2: Automation rule (center pill) -->
-  <div class="absolute left-1/2 top-[28%] flex w-[64px] -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[88px] sm:gap-1.5 sm:px-2 sm:py-1.5">
-    <span class="flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-electric/10 text-electric sm:h-4 sm:w-4">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[6px] w-[6px] sm:h-2 sm:w-2">
+  <div class="flex w-[76px] shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm sm:w-[112px] sm:gap-1.5 sm:px-2.5 sm:py-2">
+    <span class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric sm:h-5 sm:w-5">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-2 w-2 sm:h-3 sm:w-3">
         <polyline points="23 4 23 10 17 10"/>
         <polyline points="1 20 1 14 7 14"/>
         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
       </svg>
     </span>
-    <span class="min-w-0 leading-tight">
-      <span class="block text-[4.5px] font-semibold uppercase leading-none tracking-wide text-slate-400 sm:text-[6px]">Automation</span>
-      <span class="block truncate text-[5.5px] font-semibold leading-tight text-slate-900 sm:text-[7.5px]">If Paid &rarr; Unlock</span>
+    <span class="flex min-w-0 flex-col">
+      <span class="text-[6px] font-semibold uppercase leading-none tracking-wide text-slate-400 sm:text-[7px]">Automation</span>
+      <span class="mt-0.5 line-clamp-2 text-[6.5px] font-semibold leading-tight text-slate-900 sm:text-[8.5px]">If Paid &rarr; Unlock Files</span>
     </span>
   </div>
 
-  <!-- Node 3: Target (unlocked asset) -->
-  <div class="absolute left-[86%] top-[64%] w-[92px] -translate-x-1/2 -translate-y-1/2 rounded-lg border border-emerald-200 bg-white px-2 py-1.5 shadow-md sm:w-[122px] sm:rounded-xl sm:px-2.5 sm:py-2">
+  <!-- Connector: rule -> target (neutral segment) -->
+  <div class="flex shrink-0 items-center">
+    <span class="h-1 w-1 shrink-0 rounded-full border border-slate-300 bg-white sm:h-1.5 sm:w-1.5"></span>
+    <span class="h-px w-2.5 shrink-0 bg-slate-200 sm:w-5"></span>
+  </div>
+
+  <!-- Node 3: Target outcome (unlocked asset) -->
+  <div class="flex w-[96px] shrink-0 flex-col rounded-lg border border-emerald-200 bg-white px-2 py-1.5 shadow-md sm:w-[138px] sm:rounded-xl sm:px-2.5 sm:py-2">
     <div class="flex items-start gap-1 sm:gap-1.5">
-      <span class="relative flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] bg-emerald-50 text-emerald-600 sm:h-5 sm:w-5 sm:rounded-md">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[7px] w-[7px] sm:h-2.5 sm:w-2.5">
+      <span class="relative flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[5px] bg-emerald-50 text-emerald-600 sm:h-5 sm:w-5 sm:rounded-md">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-2 w-2 sm:h-3 sm:w-3">
           <rect x="3" y="11" width="18" height="10" rx="2"/>
           <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
         </svg>
-        <span class="absolute -bottom-1 -right-1 flex h-2 w-2 items-center justify-center rounded-[3px] border border-emerald-200 bg-white text-emerald-600 sm:h-2.5 sm:w-2.5">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-[4px] w-[4px] sm:h-[5px] sm:w-[5px]">
+        <span class="absolute -bottom-[3px] -right-[3px] flex h-2 w-2 items-center justify-center rounded-[3px] border border-emerald-200 bg-white text-emerald-600 sm:h-2.5 sm:w-2.5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[6px] w-[6px] sm:h-[7px] sm:w-[7px]">
             <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>
           </svg>
         </span>
       </span>
-      <span class="min-w-0">
-        <div class="truncate text-[6.5px] font-bold leading-tight text-slate-900 sm:text-[8.5px]">Brand_Assets_Final.zip</div>
-        <div class="truncate text-[5.5px] font-semibold leading-tight text-emerald-600 sm:text-[7px]">Access Granted</div>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate text-[7px] font-bold leading-tight text-slate-900 sm:text-[9px]">Brand_Assets_Final.zip</span>
+        <span class="mt-0.5 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[6px] font-semibold leading-none text-emerald-600 sm:text-[7.5px]">
+          <span>Access Granted</span>
+          <span class="h-[3px] w-[3px] shrink-0 rounded-full bg-emerald-500/60"></span>
+          <span>Download Active</span>
+        </span>
       </span>
     </div>
-    <div class="mt-1 flex items-center gap-1 border-t border-slate-100 pt-1 sm:mt-1.5 sm:pt-1.5">
-      <span class="relative h-1 w-1 shrink-0 rounded-full bg-emerald-500 sm:h-1.5 sm:w-1.5">
-        <span class="absolute -inset-1 rounded-full bg-emerald-500 opacity-20"></span>
+    <div class="mt-1.5 flex items-center gap-1 border-t border-slate-100 pt-1.5 sm:mt-2 sm:pt-2">
+      <span class="relative h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500 sm:h-2 sm:w-2">
+        <span class="absolute -inset-1 rounded-full bg-emerald-500/20"></span>
       </span>
-      <span class="truncate text-[5.5px] font-semibold leading-none text-slate-500 sm:text-[7px]">Unlocked automatically</span>
+      <span class="truncate text-[6px] font-semibold leading-none text-slate-500 sm:text-[7.5px]">Unlocked automatically</span>
     </div>
   </div>
 </div>
