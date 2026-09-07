@@ -5,6 +5,7 @@ import { Feather, Clock, MessageCircle, Layers, FileText, Lock, LayoutDashboard 
 import { Icon } from 'astro-icon/components';
 import Card from '../ui/Card.astro';
 import ProposalFlowPreview from '../ui/why-us-cards/ProposalFlowPreview.astro';
+import PaymentUnlockFlowPreview from '../ui/why-us-cards/PaymentUnlockFlowPreview.astro';
 
 const reasons = [
   {
@@ -97,6 +98,8 @@ const quickWins = [
                 ></span>
                 {index === 0 ? (
                   <ProposalFlowPreview class="relative z-10" />
+                ) : index === 1 ? (
+                  <PaymentUnlockFlowPreview class="relative z-10" />
                 ) : (
                   <span class="relative z-10 flex h-full items-center justify-center">
                     <span class="flex h-12 w-12 items-center justify-center rounded-xl bg-ink text-paper">
