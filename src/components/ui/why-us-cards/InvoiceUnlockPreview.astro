@@ -1,0 +1,123 @@
+---
+// src/components/ui/why-us-cards/InvoiceUnlockPreview.astro
+//
+// Compact "invoice paid -> automation rule -> files locked" workflow
+// preview, ported from a user-supplied HTML/CSS reference
+// (huzlly-payment-lock-preview.html): an invoice/paid trigger card,
+// connected to a center "If Paid -> Unlock Files" automation rule pill,
+// connected (via a live/active emerald connector carrying a small
+// spinning "processing" badge) to a locked-asset target card showing
+// "Access Locked" / "Locked until client pays". The original reference
+// used an absolute-%-positioned ~640x300 canvas with an SVG connector
+// overlay and a below-560px breakpoint that restacked the three nodes
+// vertically.
+//
+// Ported the same way as the sibling ProposalFlowPreview.astro /
+// PaymentUnlockFlowPreview.astro in this folder: a real horizontal flex
+// row of shrink-0 node children with small flex-child connector elements
+// (dot + line) in between, instead of absolute % positioning + an SVG
+// overlay. This always occupies exactly the space its children need
+// relative to the actual container width, so there's no clipping risk
+// tied to an assumed aspect ratio, and it stays strictly horizontal at
+// every breakpoint (no vertical restacking) since this component always
+// lives inside a short, fixed-height box (h-32 sm:h-40 - see
+// WhyUs.astro) that's wide relative to its height at every breakpoint.
+// All three nodes + connectors get proportionally smaller
+// widths/fonts/paddings on mobile (below sm) rather than restacking.
+//
+// Styling follows the established slate-900/slate-500/slate-200 +
+// electric brand-blue base palette from ProposalFlowPreview.astro, with
+// emerald kept as the semantic "paid / actively running" status color
+// (paid badge + the live connector/processing badge) and amber kept as
+// the semantic "locked / pending" status color for the target card -
+// mirroring the reference's own --hf-emerald vs --hf-locked (amber)
+// distinction, since neither concept exists in the sitewide token set
+// and the reference relies on that color contrast to read correctly.
+// The spinning processing icon is kept (Tailwind's built-in
+// `animate-spin`, no custom CSS) since it's the visual detail that reads
+// as "automation actively running" - the concept the whole card is
+// selling.
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={['flex h-full w-full items-center justify-center gap-1 px-1.5 sm:gap-2 sm:px-3', className]}
+  aria-hidden="true"
+>
+  <!-- Node 1: Trigger (Invoice, paid) -->
+  <div class="flex w-[72px] shrink-0 flex-col rounded-lg border border-slate-200 bg-white px-2 py-1.5 shadow-sm sm:w-[104px] sm:rounded-xl sm:px-2.5 sm:py-2">
+    <span class="text-[6px] font-bold uppercase leading-none tracking-wide text-slate-400 sm:text-[7.5px]">Trigger</span>
+    <span class="mt-1 truncate text-[7.5px] font-semibold leading-tight text-slate-900 sm:mt-1.5 sm:text-[9.5px]">Invoice #1084</span>
+    <span class="truncate text-[6.5px] font-medium leading-tight text-slate-500 sm:text-[8px]">$1,850.00</span>
+    <div class="mt-1.5 border-t border-slate-100 pt-1.5 sm:mt-2 sm:pt-2">
+      <span class="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-1.5 py-[2px] text-[6.5px] font-semibold text-emerald-600 sm:px-2 sm:py-[3px] sm:text-[8px]">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="h-[6px] w-[6px] shrink-0 sm:h-[8px] sm:w-[8px]">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Paid
+      </span>
+    </div>
+  </div>
+
+  <!-- Connector: trigger -> rule (neutral segment) -->
+  <div class="flex shrink-0 items-center">
+    <span class="h-1 w-1 shrink-0 rounded-full border border-slate-300 bg-white sm:h-1.5 sm:w-1.5"></span>
+    <span class="h-px w-2.5 shrink-0 bg-slate-200 sm:w-5"></span>
+  </div>
+
+  <!-- Node 2: Automation rule (center pill) -->
+  <div class="flex w-[76px] shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1.5 shadow-sm sm:w-[112px] sm:gap-1.5 sm:px-2.5 sm:py-2">
+    <span class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric sm:h-5 sm:w-5">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-2 w-2 sm:h-3 sm:w-3">
+        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
+      </svg>
+    </span>
+    <span class="flex min-w-0 flex-col">
+      <span class="text-[6px] font-semibold uppercase leading-none tracking-wide text-slate-400 sm:text-[7px]">Automation</span>
+      <span class="mt-0.5 line-clamp-2 text-[6.5px] font-semibold leading-tight text-slate-900 sm:text-[8.5px]">If Paid &rarr; Unlock Files</span>
+    </span>
+  </div>
+
+  <!-- Connector: rule -> target (live segment, automation actively running) -->
+  <div class="relative flex shrink-0 items-center">
+    <span class="h-1 w-1 shrink-0 rounded-full bg-emerald-500 sm:h-1.5 sm:w-1.5"></span>
+    <span class="h-0 w-3 shrink-0 border-t border-dashed border-emerald-500/50 sm:w-6"></span>
+    <span class="absolute left-1/2 top-1/2 flex h-3 w-3 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-200 bg-white shadow-sm sm:h-4 sm:w-4">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-1.5 w-1.5 shrink-0 animate-spin text-emerald-600 sm:h-2 sm:w-2">
+        <polyline points="23 4 23 10 17 10"/>
+        <polyline points="1 20 1 14 7 14"/>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg>
+    </span>
+  </div>
+
+  <!-- Node 3: Target outcome (locked asset) -->
+  <div class="flex w-[96px] shrink-0 flex-col rounded-lg border border-amber-200 bg-white px-2 py-1.5 shadow-md sm:w-[138px] sm:rounded-xl sm:px-2.5 sm:py-2">
+    <div class="flex items-start gap-1 sm:gap-1.5">
+      <span class="relative flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[5px] bg-amber-50 text-amber-600 sm:h-5 sm:w-5 sm:rounded-md">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-2 w-2 sm:h-3 sm:w-3">
+          <rect x="3" y="11" width="18" height="10" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span class="absolute -bottom-[3px] -right-[3px] flex h-2 w-2 items-center justify-center rounded-[3px] border border-amber-200 bg-white text-amber-600 sm:h-2.5 sm:w-2.5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[6px] w-[6px] sm:h-[7px] sm:w-[7px]">
+            <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>
+          </svg>
+        </span>
+      </span>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate text-[7px] font-bold leading-tight text-slate-900 sm:text-[9px]">Brand_Assets_Final.zip</span>
+        <span class="mt-0.5 block truncate text-[6px] font-semibold leading-none text-amber-600 sm:text-[7.5px]">Access Locked</span>
+      </span>
+    </div>
+    <div class="mt-1.5 flex items-center gap-1 border-t border-slate-100 pt-1.5 sm:mt-2 sm:pt-2">
+      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 sm:h-2 sm:w-2"></span>
+      <span class="truncate text-[6px] font-semibold leading-none text-slate-500 sm:text-[7.5px]">Locked until client pays</span>
+    </div>
+  </div>
+</div>
