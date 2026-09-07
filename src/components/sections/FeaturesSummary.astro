@@ -21,10 +21,10 @@ import {
 } from 'lucide-astro';
 import SectionHeader from '../ui/SectionHeader.astro';
 import Card from '../ui/Card.astro';
-import GetStartedIllustration from '../ui/how-it-works-cards/HowItWorksGetStarted.astro';
-import WorkIllustration from '../ui/how-it-works-cards/HowItWorksWork.astro';
-import GetPaidIllustration from '../ui/how-it-works-cards/HowItWorksGetPaid.astro';
-import GrowIllustration from '../ui/how-it-works-cards/HowItWorksGrow.astro';
+import Stage1GetStarted from '../ui/how-it-works-cards/Stage1GetStarted.astro';
+import Stage2Work from '../ui/how-it-works-cards/Stage2Work.astro';
+import Stage3GetPaid from '../ui/how-it-works-cards/Stage3GetPaid.astro';
+import Stage4Grow from '../ui/how-it-works-cards/Stage4Grow.astro';
 
 // Full literal class strings per signal (Tailwind JIT needs literal
 // substrings to detect classes — no template-literal color interpolation).
@@ -110,7 +110,7 @@ const stages = [
     headline: 'Turn prospects into projects.',
     body: 'Create professional proposals, get agreements signed, and set everything up to start working with your client.',
     signal: 'blue',
-    illustration: GetStartedIllustration,
+    illustration: Stage1GetStarted,
     chips: [
       { icon: FileText, label: 'Proposal', position: 'left-3.5 top-3.5', delay: '0s' },
       { icon: PenTool, label: 'Contract', position: 'right-4 top-16', delay: '0.6s' },
@@ -123,7 +123,7 @@ const stages = [
     headline: 'Manage every project in one place.',
     body: 'Organize projects and tasks, track your time, and keep clients updated with their own dedicated portal.',
     signal: 'teal',
-    illustration: WorkIllustration,
+    illustration: Stage2Work,
     chips: [
       { icon: FolderKanban, label: 'Projects', position: 'left-3.5 top-3.5', delay: '0s' },
       { icon: CheckSquare, label: 'Tasks', position: 'right-4 top-12', delay: '0.4s' },
@@ -137,7 +137,7 @@ const stages = [
     headline: 'Finish the work. Get paid.',
     body: 'Send invoices, collect payments, and keep your billing organized from project completion to payment.',
     signal: 'amber',
-    illustration: GetPaidIllustration,
+    illustration: Stage3GetPaid,
     chips: [
       { icon: Receipt, label: 'Invoice', position: 'right-4 top-3.5', delay: '0s' },
       { icon: CreditCard, label: 'Payment', position: 'bottom-14 right-3.5', delay: '0.5s' },
@@ -150,7 +150,7 @@ const stages = [
     headline: 'Turn great work into repeat business.',
     body: 'Keep your client relationships, projects, and history organized so you can stay focused on growing your freelance business.',
     signal: 'green',
-    illustration: GrowIllustration,
+    illustration: Stage4Grow,
     chips: [
       { icon: Users, label: 'Clients', position: 'left-4 top-3.5', delay: '0s' },
       { icon: Archive, label: 'Past Projects', position: 'right-5 top-4', delay: '0.5s' },
