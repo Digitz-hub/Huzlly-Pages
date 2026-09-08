@@ -1,35 +1,41 @@
 ---
 // src/components/ui/why-us-cards/InvoiceUnlockPreview.astro
 //
-// Compact "invoice paid -> automation rule -> files locked" workflow
-// preview, ported from a user-supplied HTML/CSS reference
+// "Invoice paid -> automation rule -> files locked" workflow preview,
+// ported from a user-supplied HTML/CSS reference
 // (huzlly-payment-lock-preview.html): an invoice/paid trigger card,
-// connected to a center "If Paid -> Unlock Files" automation rule pill,
+// connected to an "If Paid -> Unlock Files" automation rule pill,
 // connected (via a live/active emerald connector carrying a small
 // spinning "processing" badge) to a locked-asset target card showing
-// "Access Locked" / "Locked until client pays". The original reference
-// used an absolute-%-positioned ~640x300 canvas with an SVG connector
-// overlay and a below-560px breakpoint that restacked the three nodes
-// vertically.
+// "Access Locked" / "Locked until client pays".
 //
-// Ported the same way as the sibling ProposalFlowPreview.astro /
-// PaymentUnlockFlowPreview.astro in this folder: a real horizontal flex
-// row of shrink-0 node children with small flex-child connector elements
-// (dot + line) in between, instead of absolute % positioning + an SVG
-// overlay. This always occupies exactly the space its children need
-// relative to the actual container width, so there's no clipping risk
-// tied to an assumed aspect ratio, and it stays strictly horizontal at
-// every breakpoint (no vertical restacking) since this component always
-// lives inside a short, fixed-height box (h-32 sm:h-40 - see
-// WhyUs.astro) that's wide relative to its height at every breakpoint.
-// All three nodes + connectors get proportionally smaller
-// widths/fonts/paddings on mobile (below sm) rather than restacking.
+// Layout matches the original reference's branching/L-shaped canvas
+// rather than a flat horizontal row: automation sits top-left, the
+// trigger sits top-right (connected to automation via a bent
+// up-then-left connector), and the locked-asset target sits bottom-left
+// directly under automation (connected via a straight vertical
+// connector carrying the processing badge). This is done with
+// percentage-based absolute positioning for the three node boxes plus
+// an inline SVG overlay (viewBox 0 0 100 100, preserveAspectRatio
+// "none") for the two connector paths - the same idea as the original
+// reference's %-positioned canvas + SVG connector overlay, just scaled
+// down to fit inside this component's fixed-height box (h-32 sm:h-40 -
+// see WhyUs.astro).
 //
-// Node widths/connectors/paddings/font sizes are sized so the total
-// rendered width (nodes + connectors + gaps + padding) stays within the
-// same budget as ProposalFlowPreview.astro's own width at each
-// breakpoint - that sibling component is the known-good reference for
-// what fits inside the h-32 sm:h-40 box without clipping.
+// Because every position is a percentage of the container (not a fixed
+// px offset), this scales down proportionally at any width without a
+// separate mobile breakpoint that restacks the nodes differently - it
+// stays the same branching shape from the smallest width up, exactly
+// like the previous flat layout stayed strictly horizontal at every
+// width instead of restacking vertically.
+//
+// Node widths/paddings/font sizes are untouched from the previous
+// version of this component - this is purely a positioning/connector
+// change, not a content or styling-palette change. Automation sits
+// noticeably shorter (a compact pill) than the trigger and target
+// cards, which is what keeps the automation -> target vertical gap
+// comfortable even inside the h-32 mobile box; see the delivery note
+// for the fit-risk assessment at that height.
 //
 // Styling follows the established slate-900/slate-500/slate-200 +
 // electric brand-blue base palette from ProposalFlowPreview.astro, with
@@ -51,12 +57,55 @@ export interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div
-  class:list={['flex h-full w-full items-center justify-center gap-1 px-1.5 sm:gap-2 sm:px-3', className]}
-  aria-hidden="true"
->
-  <!-- Node 1: Trigger (Invoice, paid) -->
-  <div class="flex w-[68px] shrink-0 flex-col rounded-lg border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[92px] sm:rounded-xl sm:px-2 sm:py-1.5">
+<div class:list={['relative h-full w-full', className]} aria-hidden="true">
+  <!-- Connector overlay: trigger -> automation (bent, up-then-left) and
+       automation -> target (straight vertical, live segment). Coordinate
+       space is percentage-of-container on both axes (preserveAspectRatio
+       "none"), matching the node positions below 1:1. Sits behind the
+       node boxes (z-0) so line ends simply run under the opaque node
+       backgrounds instead of needing to be trimmed to exact edges. -->
+  <svg
+    class="absolute inset-0 z-0 h-full w-full"
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <!-- trigger (80,50) up to automation's row (80,24), then left into automation (26,24) -->
+    <path
+      d="M 80 50 L 80 24 L 26 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      vector-effect="non-scaling-stroke"
+      class="text-slate-300"
+    />
+    <!-- automation (26,24) straight down into target (26,74) -->
+    <path
+      d="M 26 24 L 26 74"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-dasharray="4 3"
+      vector-effect="non-scaling-stroke"
+      class="text-emerald-500/60"
+    />
+  </svg>
+
+  <!-- Node 2: Automation rule (top-left) -->
+  <div class="absolute left-[26%] top-[24%] z-10 flex w-[70px] shrink-0 -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-full border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[96px] sm:gap-1 sm:px-2 sm:py-1.5">
+    <span class="flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric sm:h-4 sm:w-4">
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5">
+        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
+      </svg>
+    </span>
+    <span class="flex min-w-0 flex-col">
+      <span class="text-[5.5px] font-semibold uppercase leading-none tracking-wide text-slate-400 sm:text-[6.5px]">Automation</span>
+      <span class="mt-0.5 line-clamp-2 text-[6px] font-semibold leading-tight text-slate-900 sm:text-[8px]">If Paid &rarr; Unlock Files</span>
+    </span>
+  </div>
+
+  <!-- Node 1: Trigger (top-right, Invoice paid) -->
+  <div class="absolute left-[80%] top-[50%] z-10 flex w-[68px] shrink-0 -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[92px] sm:rounded-xl sm:px-2 sm:py-1.5">
     <span class="text-[5.5px] font-bold uppercase leading-none tracking-wide text-slate-400 sm:text-[7px]">Trigger</span>
     <span class="mt-0.5 truncate text-[7px] font-semibold leading-tight text-slate-900 sm:mt-1 sm:text-[9px]">Invoice #1084</span>
     <span class="truncate text-[6px] font-medium leading-tight text-slate-500 sm:text-[7.5px]">$1,850.00</span>
@@ -70,40 +119,17 @@ const { class: className } = Astro.props;
     </div>
   </div>
 
-  <!-- Connector: trigger -> rule (neutral segment) -->
-  <div class="flex shrink-0 items-center">
-    <span class="h-1 w-1 shrink-0 rounded-full border border-slate-300 bg-white sm:h-1.5 sm:w-1.5"></span>
-    <span class="h-px w-2 shrink-0 bg-slate-200 sm:w-4"></span>
-  </div>
+  <!-- Processing badge: sits on the automation -> target segment -->
+  <span class="absolute left-[26%] top-[49%] z-10 flex h-3 w-3 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-200 bg-white shadow-sm sm:h-4 sm:w-4">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-1.5 w-1.5 shrink-0 animate-spin text-emerald-600 sm:h-2 sm:w-2">
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </svg>
+  </span>
 
-  <!-- Node 2: Automation rule (center pill) -->
-  <div class="flex w-[70px] shrink-0 items-center gap-0.5 rounded-full border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[96px] sm:gap-1 sm:px-2 sm:py-1.5">
-    <span class="flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric sm:h-4 sm:w-4">
-      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5">
-        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>
-      </svg>
-    </span>
-    <span class="flex min-w-0 flex-col">
-      <span class="text-[5.5px] font-semibold uppercase leading-none tracking-wide text-slate-400 sm:text-[6.5px]">Automation</span>
-      <span class="mt-0.5 line-clamp-2 text-[6px] font-semibold leading-tight text-slate-900 sm:text-[8px]">If Paid &rarr; Unlock Files</span>
-    </span>
-  </div>
-
-  <!-- Connector: rule -> target (live segment, automation actively running) -->
-  <div class="relative flex shrink-0 items-center">
-    <span class="h-1 w-1 shrink-0 rounded-full bg-emerald-500 sm:h-1.5 sm:w-1.5"></span>
-    <span class="h-0 w-2 shrink-0 border-t border-dashed border-emerald-500/50 sm:w-4"></span>
-    <span class="absolute left-1/2 top-1/2 flex h-3 w-3 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-200 bg-white shadow-sm sm:h-4 sm:w-4">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-1.5 w-1.5 shrink-0 animate-spin text-emerald-600 sm:h-2 sm:w-2">
-        <polyline points="23 4 23 10 17 10"/>
-        <polyline points="1 20 1 14 7 14"/>
-        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-      </svg>
-    </span>
-  </div>
-
-  <!-- Node 3: Target outcome (locked asset) -->
-  <div class="flex w-[90px] shrink-0 flex-col rounded-lg border border-amber-200 bg-white px-1.5 py-1 shadow-md sm:w-[124px] sm:rounded-xl sm:px-2 sm:py-1.5">
+  <!-- Node 3: Target outcome (bottom-left, locked asset) -->
+  <div class="absolute left-[26%] top-[74%] z-10 flex w-[90px] shrink-0 -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-amber-200 bg-white px-1.5 py-1 shadow-md sm:w-[124px] sm:rounded-xl sm:px-2 sm:py-1.5">
     <div class="flex items-start gap-0.5 sm:gap-1">
       <span class="relative flex h-3 w-3 shrink-0 items-center justify-center rounded-[5px] bg-amber-50 text-amber-600 sm:h-4 sm:w-4 sm:rounded-md">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5">
