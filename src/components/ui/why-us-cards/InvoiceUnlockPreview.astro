@@ -1,55 +1,4 @@
 ---
-// src/components/ui/why-us-cards/InvoiceUnlockPreview.astro
-//
-// "Invoice paid -> automation rule -> files locked" workflow preview,
-// ported from a user-supplied HTML/CSS reference
-// (huzlly-payment-lock-preview.html): an invoice/paid trigger card,
-// connected to an "If Paid -> Unlock Files" automation rule pill,
-// connected (via a live/active emerald connector carrying a small
-// spinning "processing" badge) to a locked-asset target card showing
-// "Access Locked" / "Locked until client pays".
-//
-// Layout matches the original reference's branching/L-shaped canvas
-// rather than a flat horizontal row: automation sits top-left, the
-// trigger sits top-right (connected to automation via a bent
-// up-then-left connector), and the locked-asset target sits bottom-left
-// directly under automation (connected via a straight vertical
-// connector carrying the processing badge). This is done with
-// percentage-based absolute positioning for the three node boxes plus
-// an inline SVG overlay (viewBox 0 0 100 100, preserveAspectRatio
-// "none") for the two connector paths - the same idea as the original
-// reference's %-positioned canvas + SVG connector overlay, just scaled
-// down to fit inside this component's fixed-height box (h-32 sm:h-40 -
-// see WhyUs.astro).
-//
-// Because every position is a percentage of the container (not a fixed
-// px offset), this scales down proportionally at any width without a
-// separate mobile breakpoint that restacks the nodes differently - it
-// stays the same branching shape from the smallest width up, exactly
-// like the previous flat layout stayed strictly horizontal at every
-// width instead of restacking vertically.
-//
-// Node widths/paddings/font sizes are untouched from the previous
-// version of this component - this is purely a positioning/connector
-// change, not a content or styling-palette change. Automation sits
-// noticeably shorter (a compact pill) than the trigger and target
-// cards, which is what keeps the automation -> target vertical gap
-// comfortable even inside the h-32 mobile box; see the delivery note
-// for the fit-risk assessment at that height.
-//
-// Styling follows the established slate-900/slate-500/slate-200 +
-// electric brand-blue base palette from ProposalFlowPreview.astro, with
-// emerald kept as the semantic "paid / actively running" status color
-// (paid badge + the live connector/processing badge) and amber kept as
-// the semantic "locked / pending" status color for the target card -
-// mirroring the reference's own --hf-emerald vs --hf-locked (amber)
-// distinction, since neither concept exists in the sitewide token set
-// and the reference relies on that color contrast to read correctly.
-// The spinning processing icon is kept (Tailwind's built-in
-// `animate-spin`, no custom CSS) since it's the visual detail that reads
-// as "automation actively running" - the concept the whole card is
-// selling.
-
 export interface Props {
   class?: string;
 }
@@ -58,56 +7,12 @@ const { class: className } = Astro.props;
 ---
 
 <div class:list={['relative h-full w-full', className]} aria-hidden="true">
-  <!-- Connector overlay: trigger -> automation (bent, up-then-left) and
-       automation -> target (straight vertical, live segment). Coordinate
-       space is percentage-of-container on both axes (preserveAspectRatio
-       "none"), matching the node positions below 1:1. Sits behind the
-       node boxes (z-0) so line ends simply run under the opaque node
-       backgrounds instead of needing to be trimmed to exact edges. -->
   <svg
     class="absolute inset-0 z-0 h-full w-full"
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
     aria-hidden="true"
   >
-    <!-- trigger's RIGHT edge (vertical center) squiggling into automation:
-         a cubic Bezier with two control points placed to create a genuine
-         two-bend "S"/squiggle rather than one uniform bow - it leaves the
-         trigger's right edge curving up and to the left (control point 1,
-         pulled up and left of the start), then bends the opposite way,
-         dipping back down before finally rising up and to the left into
-         automation (control point 2, pulled down and right of the end
-         point) - matching the hand-drawn reference sketch's squiggle shape.
-         Start point is the trigger's right edge: trigger is centered at
-         left-[80%] with a fixed sm:w-[92px] box, so its right edge sits at
-         80% plus half that width as a percentage of this preview box's
-         actual rendered width - not a fixed 68/92px offset, since this
-         SVG's coordinate space is percentage-of-container while the node
-         width is a fixed px value. Using the real WhyUs.astro grid math
-         (max-w-6xl container, lg:grid-cols-5 + lg:gap-12, inner
-         sm:grid-cols-2 + gap-5, Card.astro's p-6), the preview box renders
-         at ~273px wide at a representative desktop width, putting the
-         trigger's right edge at 80 + (46/273 * 100) ≈ 97 on this 0-100
-         scale. End point (26,24) - visually into automation - is unchanged
-         from before.
-
-         NOTE on stroke rendering (bug fix): this path intentionally does
-         NOT use vector-effect="non-scaling-stroke", unlike the
-         automation -> target path below. That attribute, combined with
-         this SVG's non-uniform scale (preserveAspectRatio="none" on a
-         viewBox that's stretched much wider than tall to fill a ~273x160
-         box), hits a known cross-engine SVG rendering edge case where a
-         diagonal/curved non-scaling-stroke path fails to compute its
-         render box and simply doesn't paint - while a purely
-         axis-aligned line (like the straight vertical connector below)
-         is unaffected, since its screen-space box under a non-uniform
-         scale stays well-defined. That's exactly why only this curve
-         went invisible while the vertical dashed line kept rendering
-         fine. Fix: drop vector-effect here and pre-compensate
-         stroke-width (0.75 instead of 1.5) so that once the SVG's own
-         non-uniform scale stretches the stroke back out, the rendered
-         thickness still lands close to the intended ~1.5px/1.5-unit
-         line weight used elsewhere in this overlay. -->
     <path
       d="M 97 50 C 85 20 45 55 26 24"
       fill="none"
@@ -115,7 +20,6 @@ const { class: className } = Astro.props;
       stroke-width="0.75"
       class="text-slate-300"
     />
-    <!-- automation (26,24) straight down into target (26,74) -->
     <path
       d="M 26 24 L 26 74"
       fill="none"
@@ -127,7 +31,6 @@ const { class: className } = Astro.props;
     />
   </svg>
 
-  <!-- Node 2: Automation rule (top-left) -->
   <div class="absolute left-[26%] top-[24%] z-10 flex w-[70px] shrink-0 -translate-x-1/2 -translate-y-1/2 items-center gap-0.5 rounded-full border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[96px] sm:gap-1 sm:px-2 sm:py-1.5">
     <span class="flex h-3 w-3 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric sm:h-4 sm:w-4">
       <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="h-1.5 w-1.5 sm:h-2.5 sm:w-2.5">
@@ -140,7 +43,6 @@ const { class: className } = Astro.props;
     </span>
   </div>
 
-  <!-- Node 1: Trigger (top-right, Invoice paid) -->
   <div class="absolute left-[80%] top-[50%] z-10 flex w-[68px] shrink-0 -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-slate-200 bg-white px-1.5 py-1 shadow-sm sm:w-[92px] sm:rounded-xl sm:px-2 sm:py-1.5">
     <span class="text-[5.5px] font-bold uppercase leading-none tracking-wide text-slate-400 sm:text-[7px]">Trigger</span>
     <span class="mt-0.5 truncate text-[7px] font-semibold leading-tight text-slate-900 sm:mt-1 sm:text-[9px]">Invoice #1084</span>
@@ -155,7 +57,6 @@ const { class: className } = Astro.props;
     </div>
   </div>
 
-  <!-- Processing badge: sits on the automation -> target segment -->
   <span class="absolute left-[26%] top-[49%] z-10 flex h-3 w-3 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-emerald-200 bg-white shadow-sm sm:h-4 sm:w-4">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="h-1.5 w-1.5 shrink-0 animate-spin text-emerald-600 sm:h-2 sm:w-2">
       <polyline points="23 4 23 10 17 10"/>
@@ -164,7 +65,6 @@ const { class: className } = Astro.props;
     </svg>
   </span>
 
-  <!-- Node 3: Target outcome (bottom-left, locked asset) -->
   <div class="absolute left-[26%] top-[74%] z-10 flex w-[90px] shrink-0 -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg border border-amber-200 bg-white px-1.5 py-1 shadow-md sm:w-[124px] sm:rounded-xl sm:px-2 sm:py-1.5">
     <div class="flex items-start gap-0.5 sm:gap-1">
       <span class="relative flex h-3 w-3 shrink-0 items-center justify-center rounded-[5px] bg-amber-50 text-amber-600 sm:h-4 sm:w-4 sm:rounded-md">
