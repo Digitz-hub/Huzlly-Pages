@@ -70,24 +70,25 @@ const { class: className } = Astro.props;
     preserveAspectRatio="none"
     aria-hidden="true"
   >
-    <!-- trigger's left edge (not its center) curving up and over into
-         automation, as a smooth quadratic Bezier rather than a hard-angle
-         elbow: same start point (63,50) and end point (26,24) as before, with
-         a single control point at the old corner (63,24) so the curve leaves
-         the trigger heading straight up and arrives at automation heading in
-         flat from the right, just rounded through the turn instead of
-         cornering sharply. Trigger is centered at left-[80%] with a fixed
-         sm:w-[92px] box, so its left edge sits at 80% minus half that width
-         as a percentage of this preview box's actual rendered width - not a
-         fixed 68/92px offset, since this SVG's coordinate space is
-         percentage-of-container while the node width is a fixed px value.
-         Using the real WhyUs.astro grid math (max-w-6xl container,
-         lg:grid-cols-5 + lg:gap-12, inner sm:grid-cols-2 + gap-5, Card.astro's
-         p-6), the preview box renders at ~273px wide at a representative
-         desktop width, putting the trigger's left edge at
+    <!-- trigger's left edge (not its center) flowing into automation as an
+         S-curve: a cubic Bezier with two control points at the vertical
+         midpoint between the two nodes (63,37) and (26,37) - each sharing its
+         x-coordinate with the endpoint it's nearest to (trigger's x=63,
+         automation's x=26). That pulls the curve one way near the trigger
+         end and the opposite way near the automation end, giving it an
+         inflection point in the middle instead of one uniform bow. Same
+         start (63,50) and end (26,24) as before. Trigger is centered at
+         left-[80%] with a fixed sm:w-[92px] box, so its left edge sits at
+         80% minus half that width as a percentage of this preview box's
+         actual rendered width - not a fixed 68/92px offset, since this SVG's
+         coordinate space is percentage-of-container while the node width is
+         a fixed px value. Using the real WhyUs.astro grid math (max-w-6xl
+         container, lg:grid-cols-5 + lg:gap-12, inner sm:grid-cols-2 +
+         gap-5, Card.astro's p-6), the preview box renders at ~273px wide at
+         a representative desktop width, putting the trigger's left edge at
          80 - (46/273 * 100) ≈ 63 on this 0-100 scale. -->
     <path
-      d="M 63 50 Q 63 24 26 24"
+      d="M 63 50 C 63 37 26 37 26 24"
       fill="none"
       stroke="currentColor"
       stroke-width="1.5"
