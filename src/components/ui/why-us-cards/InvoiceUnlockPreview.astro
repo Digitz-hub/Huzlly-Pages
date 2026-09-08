@@ -89,13 +89,30 @@ const { class: className } = Astro.props;
          at ~273px wide at a representative desktop width, putting the
          trigger's right edge at 80 + (46/273 * 100) ≈ 97 on this 0-100
          scale. End point (26,24) - visually into automation - is unchanged
-         from before. -->
+         from before.
+
+         NOTE on stroke rendering (bug fix): this path intentionally does
+         NOT use vector-effect="non-scaling-stroke", unlike the
+         automation -> target path below. That attribute, combined with
+         this SVG's non-uniform scale (preserveAspectRatio="none" on a
+         viewBox that's stretched much wider than tall to fill a ~273x160
+         box), hits a known cross-engine SVG rendering edge case where a
+         diagonal/curved non-scaling-stroke path fails to compute its
+         render box and simply doesn't paint - while a purely
+         axis-aligned line (like the straight vertical connector below)
+         is unaffected, since its screen-space box under a non-uniform
+         scale stays well-defined. That's exactly why only this curve
+         went invisible while the vertical dashed line kept rendering
+         fine. Fix: drop vector-effect here and pre-compensate
+         stroke-width (0.75 instead of 1.5) so that once the SVG's own
+         non-uniform scale stretches the stroke back out, the rendered
+         thickness still lands close to the intended ~1.5px/1.5-unit
+         line weight used elsewhere in this overlay. -->
     <path
       d="M 97 50 C 85 20 45 55 26 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="1.5"
-      vector-effect="non-scaling-stroke"
+      stroke-width="0.75"
       class="text-slate-300"
     />
     <!-- automation (26,24) straight down into target (26,74) -->
