@@ -19,17 +19,13 @@ const {
 
 <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <Card variant="highlighted" class="p-8 sm:p-12 text-center relative overflow-hidden !bg-transparent">
-      <div class="pointer-events-none absolute -z-[1] inset-0" aria-hidden="true">
-        <canvas data-waitlist-cloudsky class="block h-full w-full"></canvas>
-      </div>
+    <Card variant="highlighted" class="p-8 sm:p-12 text-center !bg-gradient-to-br !from-paper !to-rail/40">
+      <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
 
-      <Badge variant="beta" class="mx-auto !bg-white/90 !text-ink !ring-white/40">50 spots this cohort</Badge>
-
-      <h2 class="mt-5 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
+      <h2 class="mt-5 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
         {heading}
       </h2>
-      <p class="mt-4 text-white/80 leading-relaxed max-w-md mx-auto">
+      <p class="mt-4 text-ink/70 leading-relaxed max-w-md mx-auto">
         {subheading}
       </p>
 
@@ -42,12 +38,3 @@ const {
     </Card>
   </div>
 </section>
-
-<script>
-  import { initCloudSky } from '../../scripts/cloudsky';
-
-  const canvas = document.querySelector<HTMLCanvasElement>('[data-waitlist-cloudsky]');
-  if (canvas) {
-    initCloudSky(canvas);
-  }
-</script>
