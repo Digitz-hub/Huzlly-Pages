@@ -3,18 +3,15 @@
 
 import { ArrowRight } from 'lucide-astro';
 import Card from '../ui/Card.astro';
-import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
 import BlobDecoration from '../ui/BlobDecoration.astro';
 
 export interface Props {
   heading?: string;
-  subheading?: string;
 }
 
 const {
-  heading = 'Get early access',
-  subheading = "Huzlly is in closed beta. Join the waitlist and we'll email you when a spot opens — no sales calls, no spam, unsubscribe any time.",
+  heading = "Let's Get Your Freelance Business Management Organized",
 } = Astro.props;
 ---
 
@@ -24,17 +21,12 @@ const {
       <BlobDecoration />
 
       <div class="relative z-10">
-        <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
-
-        <h2 class="mt-5 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
           {heading}
         </h2>
-        <p class="mt-4 text-ink/70 leading-relaxed max-w-md mx-auto">
-          {subheading}
-        </p>
 
         <div class="mt-8">
-          <Button href="/waitlist" size="lg" motion>
+          <Button href="/waitlist" size="lg" motion class="!bg-white !text-ink hover:!bg-white">
             Join the waitlist
             <ArrowRight class="w-4 h-4" stroke-width="1.75" />
           </Button>
