@@ -6,7 +6,7 @@ import SectionHeader from '../components/ui/SectionHeader.astro';
 import Card from '../components/ui/Card.astro';
 import Badge from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
-import WaitlistForm from '../components/sections/WaitlistForm.astro';
+import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 import FAQAccordion from '../components/sections/FAQAccordion.astro';
 import type { FAQItem } from '../components/sections/FAQAccordion.astro';
 import { ArrowRight, Gift, Tag, SlidersHorizontal } from 'lucide-astro';
@@ -132,7 +132,7 @@ const pricingFaq: FAQItem[] = [
       </div>
     </section>
 
-    <WaitlistForm
+    <WaitlistCTA
       heading="Get pricing the moment it's live"
       subheading="Join the waitlist and you'll hear about pricing before it's public anywhere else — no sales calls, no spam."
     />
