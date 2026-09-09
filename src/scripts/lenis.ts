@@ -48,6 +48,17 @@ export function initLenis(): () => void {
     touchMultiplier: 1,
   });
 
+  // On a page refresh, the browser may restore the previous scroll position
+  // (native scroll restoration) before/while Lenis's rAF loop kicks in.
+  // Lenis's own internal scroll state starts at 0 regardless of where the
+  // document actually is, so without this sync its rAF loop fights the
+  // restored position and pulls the page back toward the top. Force Lenis's
+  // internal state to match the real `window.scrollY` immediately —
+  // `immediate` skips the animation and `force` applies it even though
+  // Lenis hasn't been scrolled yet, so this is an instant, invisible sync,
+  // not a smooth-scroll animation.
+  lenis.scrollTo(window.scrollY, { immediate: true, force: true });
+
   let rafId: number;
 
   const raf = (time: number) => {
