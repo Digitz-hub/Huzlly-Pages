@@ -44,10 +44,24 @@ const organizationSchema = {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Disable native scroll restoration as early as physically possible,
+         before the browser gets a chance to restore scroll on its own.
+         src/scripts/lenis.ts takes over restoration manually instead (see
+         its module-level doc comment), which is what actually fixes the
+         "reload snaps to top" bug: this script must stay a plain,
+         non-module, non-deferred inline script — `is:inline` tells Astro
+         not to bundle/hoist/defer it — placed first in <head>, so it always
+         runs before the deferred module script below and before any native
+         restoration attempt. -->
+    <script is:inline>
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+    </script>
     <!-- Sitewide smooth-scroll, powered by Lenis. Initialized once here
          (the only file that owns <body>/the document shell) so every page
          gets the same inertia-scroll feel. See src/scripts/lenis.ts for
-         the reduced-motion guard and cleanup details. -->
+         the scroll-restoration, reduced-motion-guard, and cleanup details. -->
     <script>
       import { initLenis } from '../scripts/lenis';
       initLenis();
