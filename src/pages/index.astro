@@ -6,7 +6,7 @@ import Hero from '../components/sections/Hero.astro';
 import TheProblem from '../components/sections/TheProblem.astro';
 import HowItWorks, { stageSummaries } from '../components/sections/HowItWorks.astro';
 import WhyUs from '../components/sections/WhyUs.astro';
-import WaitlistForm from '../components/sections/WaitlistForm.astro';
+import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 
 
 const softwareSchema = {
@@ -58,7 +58,7 @@ const howItWorksSchema = {
     <TheProblem />
     <HowItWorks />
     <WhyUs />
-    <WaitlistForm />
+    <WaitlistCTA />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(howItWorksSchema)} />
   </main>
