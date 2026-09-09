@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-astro';
 import Card from '../ui/Card.astro';
 import Badge from '../ui/Badge.astro';
 import Button from '../ui/Button.astro';
+import BlobDecoration from '../ui/BlobDecoration.astro';
 
 export interface Props {
   heading?: string;
@@ -19,21 +20,25 @@ const {
 
 <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <Card variant="highlighted" class="p-8 sm:p-12 text-center !bg-gradient-to-br !from-paper !to-rail/40">
-      <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
+    <Card variant="highlighted" class="relative overflow-hidden p-8 sm:p-12 text-center !bg-electric">
+      <BlobDecoration />
 
-      <h2 class="mt-5 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
-        {heading}
-      </h2>
-      <p class="mt-4 text-ink/70 leading-relaxed max-w-md mx-auto">
-        {subheading}
-      </p>
+      <div class="relative z-10">
+        <Badge variant="beta" class="mx-auto">50 spots this cohort</Badge>
 
-      <div class="mt-8">
-        <Button href="/waitlist" size="lg" motion>
-          Join the waitlist
-          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-        </Button>
+        <h2 class="mt-5 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+          {heading}
+        </h2>
+        <p class="mt-4 text-ink/70 leading-relaxed max-w-md mx-auto">
+          {subheading}
+        </p>
+
+        <div class="mt-8">
+          <Button href="/waitlist" size="lg" motion>
+            Join the waitlist
+            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+        </div>
       </div>
     </Card>
   </div>
