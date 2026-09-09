@@ -1,6 +1,7 @@
 ---
 // src/components/sections/WaitlistCTA.astro
 
+import { ShieldCheck } from 'lucide-astro';
 import Card from '../ui/Card.astro';
 import Button from '../ui/Button.astro';
 import BlobDecoration from '../ui/BlobDecoration.astro';
@@ -39,11 +40,8 @@ const trustBadges = ['Free to join', 'No Spam', 'Early access'];
 
         <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           {trustBadges.map((label) => (
-            <span class="inline-flex items-center gap-1.5 text-sm text-white/90">
-              <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2.5l7 2.5v5.2c0 5-3 8.9-7 10.3-4-1.4-7-5.3-7-10.3V5l7-2.5z" fill="white" />
-                <path d="M8.5 12.2l2.4 2.4 4.6-4.9" stroke="#3B4EFF" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
+            <span class="inline-flex items-center gap-1.5 text-sm text-white/80">
+              <ShieldCheck class="w-4 h-4" stroke-width="1.75" />
               {label}
             </span>
           ))}
