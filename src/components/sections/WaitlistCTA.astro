@@ -1,18 +1,22 @@
 ---
 // src/components/sections/WaitlistCTA.astro
 
-import { ArrowRight } from 'lucide-astro';
+import { ShieldCheck } from 'lucide-astro';
 import Card from '../ui/Card.astro';
 import Button from '../ui/Button.astro';
 import BlobDecoration from '../ui/BlobDecoration.astro';
 
 export interface Props {
   heading?: string;
+  subheading?: string;
 }
 
 const {
-  heading = "Let's Get Your Freelance Business Management Organized",
+  heading = "Let's Make the Business Behind Your Work Simpler",
+  subheading = 'Spend less time managing the business and more time doing the work you love. Huzlly keeps everything organized, connected, and moving in the right direction.',
 } = Astro.props;
+
+const trustBadges = ['Free to join', 'No Spam', 'Early access'];
 ---
 
 <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
@@ -24,12 +28,23 @@ const {
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
           {heading}
         </h2>
+        <p class="mt-4 text-white/80 leading-relaxed max-w-md mx-auto">
+          {subheading}
+        </p>
 
         <div class="mt-8">
           <Button href="/waitlist" size="lg" motion class="!bg-white !text-ink hover:!bg-white">
-            Join the waitlist
-            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+            Join the Waitlist
           </Button>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          {trustBadges.map((label) => (
+            <span class="inline-flex items-center gap-1.5 text-sm text-white/80">
+              <ShieldCheck class="w-4 h-4" stroke-width="1.75" />
+              {label}
+            </span>
+          ))}
         </div>
       </div>
     </Card>
