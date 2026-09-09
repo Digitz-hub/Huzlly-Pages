@@ -1,0 +1,78 @@
+---
+// src/components/ui/BlobDecoration.astro
+// Subtle layered blob / rounded-square texture, meant to sit behind card
+// content on top of a solid color background (e.g. bg-electric).
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div
+  class:list={['pointer-events-none absolute inset-0 z-0 overflow-hidden', className]}
+  aria-hidden="true"
+>
+  <svg
+    class="h-full w-full"
+    viewBox="0 0 800 500"
+    preserveAspectRatio="xMidYMid slice"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <!-- soft light blob, upper-left -->
+    <path
+      d="M -60 40
+         C 60 -60, 220 -40, 260 60
+         C 300 160, 220 220, 120 210
+         C 20 200, -120 160, -60 40 Z"
+      fill="#FFFFFF"
+      opacity="0.08"
+    />
+
+    <!-- darker rounded-square, lower-right -->
+    <rect
+      x="560"
+      y="260"
+      width="320"
+      height="280"
+      rx="90"
+      fill="#1B2699"
+      opacity="0.22"
+      transform="rotate(12 720 400)"
+    />
+
+    <!-- soft light blob, right side -->
+    <path
+      d="M 560 40
+         C 700 0, 840 60, 830 170
+         C 820 280, 690 300, 610 240
+         C 530 180, 460 80, 560 40 Z"
+      fill="#FFFFFF"
+      opacity="0.06"
+    />
+
+    <!-- small darker rounded-square accent, upper-right -->
+    <rect
+      x="640"
+      y="-40"
+      width="180"
+      height="180"
+      rx="56"
+      fill="#1B2699"
+      opacity="0.16"
+      transform="rotate(-18 730 50)"
+    />
+
+    <!-- soft light blob, lower-left -->
+    <path
+      d="M -80 320
+         C 20 260, 160 280, 190 380
+         C 220 480, 100 540, 0 500
+         C -100 460, -160 380, -80 320 Z"
+      fill="#FFFFFF"
+      opacity="0.07"
+    />
+  </svg>
+</div>
