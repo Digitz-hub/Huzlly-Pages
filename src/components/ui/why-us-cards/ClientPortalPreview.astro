@@ -1,0 +1,115 @@
+---
+// src/components/ui/why-us-cards/ClientPortalPreview.astro
+//
+// "Client portal" hub preview, ported from a user-supplied HTML/CSS
+// reference (a 650x300 canvas with 4 corner icon badges - docs,
+// milestones, invoice, payments - surrounding a central portal hub
+// card, connected to it visually). That canvas's aspect ratio (~2.17:1)
+// is close enough to this component's actual home (the h-32 sm:h-40
+// visual box in WhyUs.astro, which renders at roughly 2:1-2.3:1
+// width:height at the breakpoints where this shows) that the reference's
+// percentage-based positions for the 4 badges and the hub card are kept
+// as-is rather than recalculated - only the absolute sizes (badge
+// dimensions, card padding, font sizes) are scaled down to fit this
+// component's much smaller footprint. Like InvoiceUnlockPreview.astro,
+// everything is placed with absolute/percentage positioning rather than
+// flex, since this is a freeform hub-and-spoke layout, not a linear one.
+// All sizes get proportionally smaller below `sm` rather than
+// restacking, matching the other two preview components in this folder.
+//
+// The reference had no explicit connector lines between the badges and
+// the hub (just proximity + shadows implied the relationship); a subtle
+// dashed-line SVG overlay is added here instead, using the same
+// technique as InvoiceUnlockPreview.astro's connector (a 0-100 viewBox
+// with preserveAspectRatio="none" so the lines stretch in lockstep with
+// the percentage-positioned nodes), so the "hub" concept reads clearly
+// at this small size.
+//
+// Styling follows the same app-UI mockup treatment as the other two
+// why-us-cards previews: slate-900/slate-500/slate-200 neutrals + the
+// sitewide `electric` blue are the base, with semantic accent colors
+// layered on top - here all 4 corner badges keep their own accent color
+// from the reference (indigo/coral/amber/emerald) rather than a single
+// accent, since the concept is "one hub, four different kinds of
+// content" and the reference relies on that color variety to read.
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['relative h-full w-full', className]} aria-hidden="true">
+  <svg
+    class="absolute inset-0 z-0 h-full w-full"
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <path d="M 25.38 18.33 L 50 50" fill="none" stroke="currentColor" stroke-width="0.75" stroke-dasharray="3 2.5" class="text-slate-300" />
+    <path d="M 74.62 18.33 L 50 50" fill="none" stroke="currentColor" stroke-width="0.75" stroke-dasharray="3 2.5" class="text-slate-300" />
+    <path d="M 74.62 81.67 L 50 50" fill="none" stroke="currentColor" stroke-width="0.75" stroke-dasharray="3 2.5" class="text-slate-300" />
+    <path d="M 25.38 81.67 L 50 50" fill="none" stroke="currentColor" stroke-width="0.75" stroke-dasharray="3 2.5" class="text-slate-300" />
+  </svg>
+
+  <!-- Corner badge: Docs -->
+  <div class="absolute left-[25.38%] top-[18.33%] z-10 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[10px] bg-white shadow-[0_0_0_6px_rgba(79,70,229,0.10),0_4px_10px_-3px_rgba(79,70,229,0.45)] sm:h-9 sm:w-9 sm:rounded-xl sm:shadow-[0_0_0_8px_rgba(79,70,229,0.10),0_6px_14px_-3px_rgba(79,70,229,0.45)]">
+    <svg viewBox="0 0 24 24" fill="none" class="h-3 w-3 sm:h-4 sm:w-4">
+      <path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H9l2 2.5h8.5A1.5 1.5 0 0 1 21 9v8.5A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5v-11Z" stroke="#4f46e5" stroke-width="1.5" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <!-- Corner badge: Milestones -->
+  <div class="absolute left-[74.62%] top-[18.33%] z-10 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[10px] bg-white shadow-[0_0_0_6px_rgba(244,63,94,0.10),0_4px_10px_-3px_rgba(244,63,94,0.45)] sm:h-9 sm:w-9 sm:rounded-xl sm:shadow-[0_0_0_8px_rgba(244,63,94,0.10),0_6px_14px_-3px_rgba(244,63,94,0.45)]">
+    <svg viewBox="0 0 24 24" fill="none" class="h-3 w-3 sm:h-4 sm:w-4">
+      <rect x="4" y="4" width="16" height="16" rx="3" stroke="#f43f5e" stroke-width="1.5" />
+      <path d="M8 12.5l2.3 2.3L16 9.5" stroke="#f43f5e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <!-- Corner badge: Invoice -->
+  <div class="absolute left-[74.62%] top-[81.67%] z-10 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[10px] bg-white shadow-[0_0_0_6px_rgba(245,158,11,0.10),0_4px_10px_-3px_rgba(245,158,11,0.45)] sm:h-9 sm:w-9 sm:rounded-xl sm:shadow-[0_0_0_8px_rgba(245,158,11,0.10),0_6px_14px_-3px_rgba(245,158,11,0.45)]">
+    <svg viewBox="0 0 24 24" fill="none" class="h-3 w-3 sm:h-4 sm:w-4">
+      <path d="M6 3h9l3 3v15H6V3Z" stroke="#f59e0b" stroke-width="1.5" stroke-linejoin="round" />
+      <path d="M9 9h6M9 13h6M9 17h4" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <!-- Corner badge: Payments -->
+  <div class="absolute left-[25.38%] top-[81.67%] z-10 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[10px] bg-white shadow-[0_0_0_6px_rgba(16,185,129,0.10),0_4px_10px_-3px_rgba(16,185,129,0.45)] sm:h-9 sm:w-9 sm:rounded-xl sm:shadow-[0_0_0_8px_rgba(16,185,129,0.10),0_6px_14px_-3px_rgba(16,185,129,0.45)]">
+    <svg viewBox="0 0 24 24" fill="none" class="h-3 w-3 sm:h-4 sm:w-4">
+      <circle cx="12" cy="12" r="9" stroke="#10b981" stroke-width="1.5" />
+      <path d="M12 6.5v11M15 9.2c0-1.1-1.34-2-3-2s-3 .9-3 2 1.34 2 3 2 3 .9 3 2-1.34 2-3 2-3-.9-3-2" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </div>
+
+  <!-- Central hub card -->
+  <div class="absolute left-[30%] top-[26%] z-20 flex w-[40%] -translate-y-0 flex-col gap-1 rounded-lg border border-slate-200 bg-white px-1.5 py-1.5 shadow-md sm:gap-1.5 sm:rounded-xl sm:px-2.5 sm:py-2">
+    <div class="flex items-center gap-1 sm:gap-1.5">
+      <span class="flex h-4 w-4 shrink-0 items-center justify-center rounded-[5px] border border-slate-200 bg-slate-100 text-[5px] font-bold leading-none text-slate-900 sm:h-6 sm:w-6 sm:rounded-md sm:text-[8px]">AS</span>
+      <span class="min-w-0 flex-1">
+        <span class="block truncate text-[6.5px] font-bold leading-tight text-slate-900 sm:text-[9.5px]">Client Portal</span>
+        <span class="block truncate text-[5.5px] font-medium leading-tight text-slate-400 sm:text-[8px]">Acme Studio</span>
+      </span>
+    </div>
+
+    <div class="flex items-center justify-between gap-1 rounded-md border border-slate-100 bg-slate-50 px-1 py-0.5 sm:rounded-lg sm:px-1.5 sm:py-1">
+      <span class="flex min-w-0 items-center gap-0.5 sm:gap-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="h-[6px] w-[6px] shrink-0 text-slate-500 sm:h-[8px] sm:w-[8px]">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+        </svg>
+        <span class="truncate text-[5px] font-semibold leading-none text-slate-500 sm:text-[7px]">Allow Access</span>
+      </span>
+      <span class="relative h-[8px] w-[14px] shrink-0 rounded-full bg-emerald-500 sm:h-[10px] sm:w-[18px]">
+        <span class="absolute right-[1px] top-[1px] h-[6px] w-[6px] rounded-full bg-white shadow-sm sm:h-[8px] sm:w-[8px]"></span>
+      </span>
+    </div>
+
+    <div class="flex items-center gap-0.5 text-[5px] leading-none text-slate-400 sm:text-[6.5px]">
+      <span>Last accessed:</span>
+      <span class="font-medium text-slate-500">12m ago</span>
+    </div>
+  </div>
+</div>
