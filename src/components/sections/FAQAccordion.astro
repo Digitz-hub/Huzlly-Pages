@@ -17,7 +17,7 @@ const { items } = Astro.props;
 
 <div>
   {items.map((item) => (
-    <details class="group rounded-2xl bg-rail/10 hover:bg-rail/20 border border-rail p-5 sm:p-6 mb-4 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
+    <details class="group rounded-2xl bg-blue-50/50 hover:bg-blue-50/80 p-5 sm:p-6 mb-4 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
       <summary class="flex items-center justify-between text-left font-semibold text-ink text-base sm:text-lg gap-4 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
         <span>
           {item.question}
