@@ -25,7 +25,7 @@ const groupId = crypto.randomUUID();
     const panelId = `faq-panel-${groupId}-${index}`;
 
     return (
-      <div class="faq-item mb-4 overflow-hidden rounded-2xl bg-blue-50/50 transition-colors duration-200 ease-in-out hover:bg-blue-50/80" data-expanded="false">
+      <div class="faq-item mb-4 overflow-hidden rounded-2xl bg-blue-50 transition-colors duration-200 ease-in-out hover:bg-blue-100" data-expanded="false">
         <button type="button"
           id={triggerId}
           class="faq-trigger flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl p-5 text-left font-semibold text-ink text-base sm:p-6 sm:text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
@@ -53,6 +53,10 @@ const groupId = crypto.randomUUID();
 </div>
 
 <style>
+  .faq-item[data-expanded='true'] {
+    background-color: theme('colors.blue.100');
+  }
+
   .faq-panel {
     grid-template-rows: 0fr;
     transition: grid-template-rows 300ms ease-in-out;
