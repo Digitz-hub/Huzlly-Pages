@@ -53,26 +53,26 @@ const items: FAQItem[] = [
         <p class="mt-4 text-lg text-ink/70">
           From managing your work to getting paid, here's what you need to know about Huzlly.
         </p>
-
-        <Card variant="highlighted" class="mt-10 !bg-blue-50/50">
-          <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-ink font-display">Have More Questions?</h3>
-          <p class="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">Find more answers about Huzlly, its features, and how it works.</p>
-          <div class="mt-6">
-            <Button
-              href="/faq"
-              variant="primary"
-              class="!border-0 !bg-blue-600 !text-white hover:!bg-blue-700 active:!bg-blue-700"
-            >
-              View FAQs
-              <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-            </Button>
-          </div>
-        </Card>
       </div>
 
       <div>
         <FAQAccordion items={items} />
       </div>
     </div>
+
+    <Card variant="highlighted" class="mt-10 !bg-blue-50/50">
+      <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-ink font-display">Have More Questions?</h3>
+      <p class="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">Find more answers about Huzlly, its features, and how it works.</p>
+      <div class="mt-6">
+        <Button
+          href="/faq"
+          variant="primary"
+          class="!border-0 !bg-blue-600 !text-white hover:!bg-blue-700 active:!bg-blue-700"
+        >
+          View FAQs
+          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        </Button>
+      </div>
+    </Card>
   </div>
 </section>
