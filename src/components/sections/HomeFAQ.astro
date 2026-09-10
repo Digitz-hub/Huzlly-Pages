@@ -7,40 +7,41 @@ import Button from '../ui/Button.astro';
 import FAQAccordion from './FAQAccordion.astro';
 import type { FAQItem } from './FAQAccordion.astro';
 
-// Curated, homepage-specific subset — distinct from the full category
-// breakdown on /faq (see faq.astro). Short list aimed at the handful of
-// questions someone lands on the homepage still holding, before they've
-// even reached the waitlist CTA above.
 const items: FAQItem[] = [
   {
-    question: 'What exactly does Huzlly do?',
+    question: 'What is Huzlly?',
     answer:
-      'Huzlly connects the client workflow freelancers usually piece together by hand — proposals, contracts, invoicing, and project setup — into one automated flow, so approval triggers the contract and signing triggers the invoice and project automatically.',
+      'Huzlly is an all-in-one platform for managing your freelance business. You can manage clients, projects, tasks, contracts, invoices, payments, and client communication from one place.',
   },
   {
-    question: 'Is Huzlly only for agencies or teams?',
+    question: 'Who is Huzlly for?',
     answer:
-      'No. Huzlly is built single-user first for solo freelancers — designers, writers, consultants, coaches — not for agencies or teams that need multi-seat collaboration or approval chains.',
+      'Huzlly is built for freelancers and independent professionals who want a simpler way to manage the business side of their work - without juggling everything manually.',
   },
   {
-    question: 'How much does Huzlly cost?',
+    question: 'What can I manage with Huzlly?',
     answer:
-      'Huzlly runs on a free tier plus one flat-rate paid upgrade, with no per-seat fees or hidden tiers. See <a href="/pricing">pricing for lean freelance software</a> for the full breakdown.',
+      'You can manage the workflow around your freelance work, including clients, projects, tasks, proposals, contracts, invoices, payments, client portals, and more.',
   },
   {
-    question: 'Can clients see their project status without emailing me?',
+    question: 'Does Huzlly automate repetitive work?',
     answer:
-      'Yes — the client portal is off by default and controlled per client, and freelancers choose whether each client can view project and task progress, message them directly, or view and download their contracts, proposals, and invoices.',
+      'Yes. Huzlly is designed to automate parts of your workflow, such as moving work forward after a client accepts, sending payment reminders, and keeping clients updated - so you spend less time on admin.',
   },
   {
-    question: 'When can I actually start using Huzlly?',
+    question: 'Can my clients use Huzlly too?',
     answer:
-      'Huzlly is currently pre-launch in a closed beta with an initial cohort of 50 freelancers. Join the waitlist to get early access as new spots open up.',
+      'Yes. Huzlly includes a client portal where clients can access relevant project information, documents, invoices, and updates without needing access to your entire workspace.',
+  },
+  {
+    question: 'Is Huzlly free?',
+    answer:
+      'Huzlly is currently in closed beta. You can join the waitlist to get access as beta availability opens up.',
   },
 ];
 ---
 
-<section id="faq" class="scroll-mt-20 border-t border-rail bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+<section id="faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-3xl">
     <SectionHeader
       eyebrow="FAQ"
