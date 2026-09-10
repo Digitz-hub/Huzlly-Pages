@@ -2,7 +2,8 @@
 // src/components/sections/HomeFAQ.astro
 
 import { ArrowRight } from 'lucide-astro';
-import SectionHeader from '../ui/SectionHeader.astro';
+import Badge from '../ui/Badge.astro';
+import Card from '../ui/Card.astro';
 import Button from '../ui/Button.astro';
 import FAQAccordion from './FAQAccordion.astro';
 import type { FAQItem } from './FAQAccordion.astro';
@@ -42,22 +43,32 @@ const items: FAQItem[] = [
 ---
 
 <section id="faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-  <div class="mx-auto max-w-3xl">
-    <SectionHeader
-      eyebrow="FAQ"
-      title="Questions? We've Got Answers."
-      subtitle="From managing your work to getting paid, here's what you need to know about Huzlly."
-    />
+  <div class="mx-auto max-w-6xl">
+    <div class="grid grid-cols-1 gap-y-10 lg:grid-cols-2 lg:gap-x-12">
+      <div class="text-left">
+        <Badge variant="beta">FAQ</Badge>
+        <h2 class="font-display mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
+          Questions? We've Got Answers.
+        </h2>
+        <p class="mt-4 text-lg text-ink/70">
+          From managing your work to getting paid, here's what you need to know about Huzlly.
+        </p>
 
-    <div class="mt-10">
-      <FAQAccordion items={items} />
-    </div>
+        <Card variant="elevated" class="mt-10">
+          <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-ink font-display">Have More Questions?</h3>
+          <p class="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">Find more answers about Huzlly, its features, and how it works.</p>
+          <div class="mt-6">
+            <Button href="/faq" variant="outline">
+              View FAQs
+              <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+            </Button>
+          </div>
+        </Card>
+      </div>
 
-    <div class="mt-8 text-center">
-      <Button href="/faq" variant="outline">
-        View all FAQs
-        <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-      </Button>
+      <div>
+        <FAQAccordion items={items} />
+      </div>
     </div>
   </div>
 </section>
