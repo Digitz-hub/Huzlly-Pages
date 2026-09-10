@@ -13,23 +13,101 @@ export interface Props {
 }
 
 const { items } = Astro.props;
+
+// Unique per render so multiple FAQAccordion instances on the same page
+// (e.g. one per category on /faq) never collide on id references.
+const groupId = crypto.randomUUID();
 ---
 
-<div>
-  {items.map((item) => (
-    <details class="group rounded-2xl bg-blue-50/50 hover:bg-blue-50/80 p-5 sm:p-6 mb-4 transition-all duration-200 cursor-pointer [&::-webkit-details-marker]:hidden">
-      <summary class="flex items-center justify-between text-left font-semibold text-ink text-base sm:text-lg gap-4 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">
-        <span>
-          {item.question}
-        </span>
-        <span class="flex-shrink-0">
-          <Plus class="w-5 h-5 text-blue-600 flex-shrink-0 group-open:hidden" stroke-width="1.75" />
-          <Minus class="w-5 h-5 text-blue-600 flex-shrink-0 hidden group-open:block" stroke-width="1.75" />
-        </span>
-      </summary>
-      <div class="mt-3 text-sm sm:text-base text-ink/70 leading-relaxed font-normal [&_a]:text-blue-600 [&_a]:hover:text-blue-700 [&_a]:font-semibold [&_a]:transition-colors [&_a]:duration-200 [&_a]:ease-in-out [&_a]:focus-visible:outline [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-2 [&_a]:focus-visible:outline-ink"
-        set:html={item.answer}
-      />
-    </details>
-  ))}
+<div class="faq-accordion">
+  {items.map((item, index) => {
+    const triggerId = `faq-trigger-${groupId}-${index}`;
+    const panelId = `faq-panel-${groupId}-${index}`;
+
+    return (
+      <div class="faq-item mb-4 overflow-hidden rounded-2xl bg-blue-50/50 transition-colors duration-200 ease-in-out hover:bg-blue-50/80" data-expanded="false">
+        <button type="button"
+          id={triggerId}
+          class="faq-trigger flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl p-5 text-left font-semibold text-ink text-base sm:p-6 sm:text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          aria-expanded="false"
+          aria-controls={panelId}
+        >
+          <span>
+            {item.question}
+          </span>
+          <span class="flex-shrink-0">
+            <Plus class="faq-icon-plus w-5 h-5 text-blue-600 flex-shrink-0" stroke-width="1.75" />
+            <Minus class="faq-icon-minus w-5 h-5 text-blue-600 flex-shrink-0" stroke-width="1.75" />
+          </span>
+        </button>
+        <div class="faq-panel grid" id={panelId} role="region" aria-labelledby={triggerId}>
+          <div class="overflow-hidden">
+            <div class="faq-panel-inner px-5 pb-5 pt-0 text-sm sm:px-6 sm:pb-6 sm:text-base text-ink/70 leading-relaxed font-normal [&_a]:text-blue-600 [&_a]:hover:text-blue-700 [&_a]:font-semibold [&_a]:transition-colors [&_a]:duration-200 [&_a]:ease-in-out [&_a]:focus-visible:outline [&_a]:focus-visible:outline-2 [&_a]:focus-visible:outline-offset-2 [&_a]:focus-visible:outline-ink"
+              set:html={item.answer}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  })}
 </div>
+
+<style>
+  .faq-panel {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 300ms ease-in-out;
+  }
+  .faq-item[data-expanded='true'] .faq-panel {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-panel-inner {
+    opacity: 0;
+    transition: opacity 250ms ease-in-out;
+  }
+  .faq-item[data-expanded='true'] .faq-panel-inner {
+    opacity: 1;
+  }
+
+  .faq-icon-minus {
+    display: none;
+  }
+  .faq-item[data-expanded='true'] .faq-icon-plus {
+    display: none;
+  }
+  .faq-item[data-expanded='true'] .faq-icon-minus {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-panel,
+    .faq-panel-inner {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.faq-accordion').forEach((accordion) => {
+    const items = Array.from(accordion.querySelectorAll<HTMLElement>('.faq-item'));
+
+    items.forEach((item) => {
+      const trigger = item.querySelector<HTMLButtonElement>('.faq-trigger');
+      if (!trigger) return;
+
+      trigger.addEventListener('click', () => {
+        const isOpen = item.getAttribute('data-expanded') === 'true';
+
+        items.forEach((other) => {
+          other.setAttribute('data-expanded', 'false');
+          other.querySelector('.faq-trigger')?.setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isOpen) {
+          item.setAttribute('data-expanded', 'true');
+          trigger.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  });
+</script>
