@@ -59,13 +59,15 @@ const items: FAQItem[] = [
     </div>
 
     <Card variant="highlighted" class="mt-10 !bg-blue-600">
-      <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-white font-display">Have More Questions?</h3>
-      <p class="mt-2 text-sm sm:text-base leading-relaxed text-white/70">Find more answers about Huzlly, its features, and how it works.</p>
-      <div class="mt-6">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-white font-display">Have More Questions?</h3>
+          <p class="mt-2 text-sm sm:text-base leading-relaxed text-white/70">Find more answers about Huzlly, its features, and how it works.</p>
+        </div>
         <Button
           href="/faq"
           variant="primary"
-          class="!border-0 !bg-white !text-blue-600 hover:!bg-blue-50 active:!bg-blue-100"
+          class="!border-0 !bg-white !text-blue-600 hover:!bg-blue-50 active:!bg-blue-100 flex-shrink-0"
         >
           View FAQs
           <ArrowRight class="w-4 h-4" stroke-width="1.75" />
