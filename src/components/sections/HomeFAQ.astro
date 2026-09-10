@@ -43,7 +43,7 @@ const items: FAQItem[] = [
 
 <section id="faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <div class="grid grid-cols-1 gap-y-10 lg:grid-cols-2 lg:gap-x-12 lg:items-stretch">
+    <div class="grid grid-cols-1 gap-y-10 lg:grid-cols-2 lg:gap-x-12 lg:items-start">
       <div class="flex flex-col text-left">
         <h2 class="font-display mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
           Questions? We've Got Answers.
@@ -51,26 +51,26 @@ const items: FAQItem[] = [
         <p class="mt-4 text-lg text-ink/70">
           From managing your work to getting paid, here's what you need to know about Huzlly.
         </p>
-
-        <Card variant="highlighted" class="mt-10 !bg-blue-600 lg:mt-auto">
-          <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-white font-display">Have More Questions?</h3>
-          <p class="mt-2 text-sm sm:text-base leading-relaxed text-white/70">Find more answers about Huzlly, its features, and how it works.</p>
-          <div class="mt-6">
-            <Button
-              href="/faq"
-              variant="primary"
-              class="!border-0 !bg-white !text-blue-600 hover:!bg-blue-50 active:!bg-blue-100"
-            >
-              View FAQs
-              <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-            </Button>
-          </div>
-        </Card>
       </div>
 
       <div>
         <FAQAccordion items={items} />
       </div>
     </div>
+
+    <Card variant="highlighted" class="mt-10 !bg-blue-600">
+      <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-white font-display">Have More Questions?</h3>
+      <p class="mt-2 text-sm sm:text-base leading-relaxed text-white/70">Find more answers about Huzlly, its features, and how it works.</p>
+      <div class="mt-6">
+        <Button
+          href="/faq"
+          variant="primary"
+          class="!border-0 !bg-white !text-blue-600 hover:!bg-blue-50 active:!bg-blue-100"
+        >
+          View FAQs
+          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        </Button>
+      </div>
+    </Card>
   </div>
 </section>
