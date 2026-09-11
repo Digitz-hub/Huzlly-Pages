@@ -39,14 +39,14 @@ const isActive = (href: string) => {
       <nav aria-label="Primary" class="hidden md:flex md:items-center md:gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
-            class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+            class={`px-4 py-2 text-sm font-medium transition-colors duration-200 ${
               isHome
                 ? isActive(link.href)
-                  ? 'bg-white text-blue-700'
-                  : 'text-paper hover:bg-white/[0.06]'
+                  ? 'text-blue-400'
+                  : 'text-paper hover:text-blue-400'
                 : isActive(link.href)
-                  ? 'bg-blue-600 text-white'
-                  : 'text-ink hover:bg-black/[0.06]'
+                  ? 'text-blue-600'
+                  : 'text-ink hover:text-blue-600'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
@@ -76,22 +76,22 @@ const isActive = (href: string) => {
     </div>
 
     <div id="mobile-menu"
-      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-white/15 bg-gradient-to-b from-blue-500 via-blue-600 to-blue-700 p-3 shadow-xl shadow-black/40 md:hidden"
+      class="absolute inset-x-0 top-full mt-2 hidden rounded-3xl border border-black/10 bg-white p-3 shadow-xl shadow-black/10 md:hidden"
     >
       <nav aria-label="Mobile primary" class="flex flex-col gap-1">
         {navLinks.map((link) => (
           <a href={link.href}
             class={`rounded-2xl px-4 py-3 text-sm font-medium transition-colors duration-200 ${
               isActive(link.href)
-                ? 'bg-white text-blue-700'
-                : 'text-paper hover:bg-white/[0.06]'
+                ? 'text-blue-600'
+                : 'text-ink hover:text-blue-600'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
             {link.label}
           </a>
         ))}
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-white/15 hover:!bg-white/25 !text-white !shadow-none mt-1.5 w-full">
+        <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 hover:!bg-blue-700 !text-white !shadow-none mt-1.5 w-full">
           Join Waitlist
         </Button>
       </nav>
