@@ -1,7 +1,7 @@
 ---
 // src/components/layout/Footer.astro
 
-import { ArrowRight } from 'lucide-astro';
+import { ArrowRight, X as XIcon, Instagram as InstagramIcon } from 'lucide-astro';
 import Button from '../ui/Button.astro';
 
 const usefulLinks = [
@@ -12,38 +12,61 @@ const usefulLinks = [
   { href: '/about', label: 'About' },
 ];
 
+const supportLinks = [
+  { href: '/privacy', label: 'Privacy Policy' },
+  { href: '/terms', label: 'Terms & Conditions' },
+];
+
 const socialLinks = [
   { href: 'https://x.com/huzlly', label: 'X' },
   { href: 'https://instagram.com/huzllyofficial', label: 'Instagram' },
 ];
 
+// Maps a social link's label to its lucide icon. Falls back to XIcon so an
+// unrecognised label still renders something reasonable instead of breaking.
+const socialIcons: Record<string, typeof XIcon> = {
+  X: XIcon,
+  Instagram: InstagramIcon,
+};
+
 const year = new Date().getFullYear();
 ---
 
 <footer class="px-4 pb-4 pt-10 sm:px-6 sm:pb-6 sm:pt-14">
-  <div class="mx-auto max-w-7xl rounded-3xl border border-black/5 bg-white/80 shadow-lg shadow-black/5 backdrop-blur-xl">
+  <div class="mx-auto max-w-7xl rounded-3xl border border-white/10 bg-ink shadow-lg shadow-black/20">
     <div class="grid grid-cols-1 gap-10 p-8 sm:grid-cols-2 sm:p-10 lg:grid-cols-4 lg:p-12">
       <div>
         <a href="/"
-          class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
           Huzlly
         </a>
-        <p class="mt-4 text-sm leading-relaxed text-ink/50">
+        <p class="mt-4 text-sm leading-relaxed text-white/50">
           Lean, clutter-free workflow automation for freelancers — no enterprise bloat, no
           per-seat pricing.
         </p>
+
+        <div class="mt-6">
+          <p class="text-sm font-medium text-white">Join our waitlist</p>
+          <p class="mt-2 text-sm leading-relaxed text-white/50">
+            Be the first to know when we launch.
+          </p>
+          <Button href="/waitlist" size="default" variant="outline" class="!rounded-full !shadow-none mt-4">
+            Join Waitlist
+            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+        </div>
       </div>
 
       <div>
-        <p class="text-sm font-medium text-ink">Useful Links</p>
+        <p class="text-xs font-semibold uppercase tracking-wider text-white/40">Main</p>
         <ul class="mt-4 space-y-3">
           {
             usefulLinks.map((link) => (
               <li>
                 <a href={link.href}
-                  class="text-sm text-ink/50 transition-colors duration-200 ease-in-out hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                  class="text-sm text-white/50 transition-colors duration-200 ease-in-out hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   {link.label}
                 </a>
@@ -54,17 +77,15 @@ const year = new Date().getFullYear();
       </div>
 
       <div>
-        <p class="text-sm font-medium text-ink">Follow Us</p>
+        <p class="text-xs font-semibold uppercase tracking-wider text-white/40">Support</p>
         <ul class="mt-4 space-y-3">
           {
-            socialLinks.map((social) => (
+            supportLinks.map((link) => (
               <li>
-                <a href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-sm text-ink/50 transition-colors duration-200 ease-in-out hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                <a href={link.href}
+                  class="text-sm text-white/50 transition-colors duration-200 ease-in-out hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
-                  {social.label}
+                  {link.label}
                 </a>
               </li>
             ))
@@ -73,32 +94,32 @@ const year = new Date().getFullYear();
       </div>
 
       <div>
-        <p class="text-sm font-medium text-ink">Join our waitlist</p>
-        <p class="mt-4 text-sm leading-relaxed text-ink/50">
-          Be the first to know when we launch.
-        </p>
-        <Button href="/waitlist" size="default" class="!rounded-full !shadow-none mt-4">
-          Join Waitlist
-          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-        </Button>
+        <p class="text-xs font-semibold uppercase tracking-wider text-white/40">Socials</p>
+        <ul class="mt-4 flex items-center gap-3">
+          {
+            socialLinks.map((social) => {
+              const Icon = socialIcons[social.label] ?? XIcon;
+              return (
+                <li>
+                  <a href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Follow us on ${social.label}`}
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors duration-200 ease-in-out hover:bg-white/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    <Icon class="h-4 w-4" stroke-width="1.75" aria-hidden="true" />
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
       </div>
     </div>
 
-    <div class="flex flex-col gap-3 border-t border-black/5 px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-12">
-      <p class="text-sm text-ink/40">Copyright &copy; {year} Huzlly.</p>
-      <div class="flex items-center gap-4">
-        <a href="/privacy"
-          class="text-sm text-ink/40 transition-colors duration-200 ease-in-out hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
-          Privacy
-        </a>
-        <a href="/terms"
-          class="text-sm text-ink/40 transition-colors duration-200 ease-in-out hover:text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-        >
-          Terms
-        </a>
-        <p class="text-sm text-ink/40">All rights reserved.</p>
-      </div>
+    <div class="flex flex-col gap-3 border-t border-white/10 px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-12">
+      <p class="text-sm text-white/40">Copyright &copy; {year} Huzlly.</p>
+      <p class="text-sm text-white/40">All rights reserved.</p>
     </div>
   </div>
 </footer>
