@@ -12,6 +12,7 @@ const navLinks = [
 ];
 
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isHome = currentPath === '/';
 
 const isActive = (href: string) => {
   if (href === '/') return currentPath === '/';
@@ -21,9 +22,15 @@ const isActive = (href: string) => {
 
 <header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out will-change-transform">
   <div class="relative">
-    <div id="site-header-bar" class="flex h-16 items-center justify-between bg-black/80 backdrop-blur-lg px-[44px] border-b-[0.5px] border-white/10 sm:h-[60px] sm:px-[100px]">
+    <div id="site-header-bar" class={`flex h-16 items-center justify-between px-[44px] border-b-[0.5px] sm:h-[60px] sm:px-[100px] ${
+      isHome
+        ? 'bg-black/80 backdrop-blur-lg border-white/10'
+        : 'bg-white border-black/10'
+    }`}>
       <a href="/"
-        class="flex items-center gap-2 font-display text-xl font-bold tracking-tight text-paper transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-2xl"
+        class={`flex items-center gap-2 font-display text-xl font-bold tracking-tight transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-2xl ${
+          isHome ? 'text-paper' : 'text-ink'
+        }`}
       >
         <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
         Huzlly
@@ -33,9 +40,13 @@ const isActive = (href: string) => {
         {navLinks.map((link) => (
           <a href={link.href}
             class={`rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-              isActive(link.href)
-                ? 'bg-white text-blue-700'
-                : 'text-paper hover:bg-white/[0.06]'
+              isHome
+                ? isActive(link.href)
+                  ? 'bg-white text-blue-700'
+                  : 'text-paper hover:bg-white/[0.06]'
+                : isActive(link.href)
+                  ? 'bg-blue-600 text-white'
+                  : 'text-ink hover:bg-black/[0.06]'
             }`}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
@@ -52,7 +63,9 @@ const isActive = (href: string) => {
 
       <button id="nav-toggle"
         type="button"
-        class="inline-flex items-center justify-center rounded-full p-2.5 text-paper hover:bg-white/[0.08] transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 md:hidden"
+        class={`inline-flex items-center justify-center rounded-full p-2.5 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 md:hidden ${
+          isHome ? 'text-paper hover:bg-white/[0.08]' : 'text-ink hover:bg-black/[0.08]'
+        }`}
         aria-controls="mobile-menu"
         aria-expanded="false"
         aria-label="Toggle navigation menu"
