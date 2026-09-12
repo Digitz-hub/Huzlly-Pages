@@ -6,10 +6,23 @@ export default {
       colors: {
         
         ink: '#14110F',
-        paper: '#FCFBF8',
+        paper: '#FFFFFF',
         rail: '#E4E0D8',
         
         electric: '#3B4EFF',
+
+        blue: {
+          50: '#F5F6FF',
+          100: '#E7EAFF',
+          200: '#CCD1FF',
+          300: '#ADB5FF',
+          400: '#8591FF',
+          500: '#5E6EFF',
+          600: '#3B4EFF',
+          700: '#3242D9',
+          800: '#2937B2',
+          900: '#202B8C',
+        },
       },
       fontFamily: {
         
