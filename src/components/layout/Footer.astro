@@ -1,127 +1,78 @@
 ---
-// src/components/layout/Footer.astro
+// src/components/sections/HomeFAQ.astro
 
-import { ArrowRight, X as XIcon, Instagram as InstagramIcon } from 'lucide-astro';
+import { ArrowRight } from 'lucide-astro';
+import Card from '../ui/Card.astro';
 import Button from '../ui/Button.astro';
+import FAQAccordion from './FAQAccordion.astro';
+import type { FAQItem } from './FAQAccordion.astro';
 
-const usefulLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/features', label: 'Features' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/faq', label: 'FAQ' },
-  { href: '/about', label: 'About' },
+const items: FAQItem[] = [
+  {
+    question: 'What is Huzlly?',
+    answer:
+      'Huzlly is an all-in-one platform for managing your freelance business. You can manage clients, projects, tasks, contracts, invoices, payments, and client communication from one place.',
+  },
+  {
+    question: 'Who is Huzlly for?',
+    answer:
+      'Huzlly is built for freelancers and independent professionals who want a simpler way to manage the business side of their work - without juggling everything manually.',
+  },
+  {
+    question: 'What can I manage with Huzlly?',
+    answer:
+      'You can manage the workflow around your freelance work, including clients, projects, tasks, proposals, contracts, invoices, payments, client portals, and more.',
+  },
+  {
+    question: 'Does Huzlly automate repetitive work?',
+    answer:
+      'Yes. Huzlly is designed to automate parts of your workflow, such as moving work forward after a client accepts, sending payment reminders, and keeping clients updated - so you spend less time on admin.',
+  },
+  {
+    question: 'Can my clients use Huzlly too?',
+    answer:
+      'Yes. Huzlly includes a client portal where clients can access relevant project information, documents, invoices, and updates without needing access to your entire workspace.',
+  },
+  {
+    question: 'Is Huzlly free?',
+    answer:
+      'Huzlly is currently in closed beta. You can join the waitlist to get access as beta availability opens up.',
+  },
 ];
-
-const supportLinks = [
-  { href: '/privacy', label: 'Privacy Policy' },
-  { href: '/terms', label: 'Terms & Conditions' },
-];
-
-const socialLinks = [
-  { href: 'https://x.com/huzlly', label: 'X' },
-  { href: 'https://instagram.com/huzllyofficial', label: 'Instagram' },
-];
-
-// Maps a social link's label to its lucide icon. Falls back to XIcon so an
-// unrecognised label still renders something reasonable instead of breaking.
-const socialIcons: Record<string, typeof XIcon> = {
-  X: XIcon,
-  Instagram: InstagramIcon,
-};
-
-const year = new Date().getFullYear();
 ---
 
-<footer class="pt-10 sm:pt-14 bg-ink">
-  <div class="mx-auto max-w-7xl">
-    <div class="grid grid-cols-1 gap-10 p-8 sm:grid-cols-2 sm:p-10 lg:grid-cols-4 lg:p-12">
-      <div>
-        <a href="/"
-          class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-        >
-          <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
-          Huzlly
-        </a>
-        <p class="mt-4 text-sm leading-relaxed text-white/50">
-          Lean, clutter-free workflow automation for freelancers — no enterprise bloat, no
-          per-seat pricing.
+<section id="faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+  <div class="mx-auto max-w-6xl">
+    <div class="grid grid-cols-1 gap-y-10 lg:grid-cols-2 lg:gap-x-12 lg:items-start">
+      <div class="flex flex-col text-left">
+        <h2 class="font-display mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
+          Questions? We've Got Answers.
+        </h2>
+        <p class="mt-4 text-lg text-ink/70">
+          From managing your work to getting paid, here's what you need to know about Huzlly.
         </p>
+      </div>
 
-        <div class="mt-6">
-          <p class="text-sm font-medium text-white">Join our waitlist</p>
-          <p class="mt-2 text-sm leading-relaxed text-white/50">
-            Be the first to know when we launch.
-          </p>
-          <Button href="/waitlist" size="default" variant="outline" class="!rounded-full !shadow-none mt-4">
-            Join Waitlist
-            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-          </Button>
+      <div>
+        <FAQAccordion items={items} />
+      </div>
+    </div>
+
+    <Card variant="highlighted" class="mt-10 !bg-gray-200">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-ink font-display">Have More Questions?</h3>
+          <p class="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">Find more answers about Huzlly, its features, and how it works.</p>
         </div>
+        <Button
+          href="/faq"
+          variant="primary"
+          class="!border-0 !bg-white !text-blue-600 hover:!bg-blue-50 active:!bg-blue-100 flex-shrink-0"
+        >
+          View FAQs
+          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+        </Button>
       </div>
-
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wider text-white/40">Main</p>
-        <ul class="mt-4 space-y-3">
-          {
-            usefulLinks.map((link) => (
-              <li>
-                <a href={link.href}
-                  class="text-sm text-white/50 transition-colors duration-200 ease-in-out hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wider text-white/40">Support</p>
-        <ul class="mt-4 space-y-3">
-          {
-            supportLinks.map((link) => (
-              <li>
-                <a href={link.href}
-                  class="text-sm text-white/50 transition-colors duration-200 ease-in-out hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
-      <div>
-        <p class="text-xs font-semibold uppercase tracking-wider text-white/40">Socials</p>
-        <ul class="mt-4 flex items-center gap-3">
-          {
-            socialLinks.map((social) => {
-              const Icon = socialIcons[social.label] ?? XIcon;
-              return (
-                <li>
-                  <a href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Follow us on ${social.label}`}
-                    class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors duration-200 ease-in-out hover:bg-white/20 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                  >
-                    <Icon class="h-4 w-4" stroke-width="1.75" aria-hidden="true" />
-                  </a>
-                </li>
-              );
-            })
-          }
-        </ul>
-      </div>
-    </div>
+    </Card>
   </div>
-
-  <div class="border-t border-white/10">
-    <div class="mx-auto flex max-w-7xl flex-col gap-3 px-8 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-12">
-      <p class="text-sm text-white/40">Copyright &copy; {year} Huzlly.</p>
-      <p class="text-sm text-white/40">All rights reserved.</p>
-    </div>
-  </div>
-</footer>
+</section>
