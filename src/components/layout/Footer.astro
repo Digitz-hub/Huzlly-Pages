@@ -25,18 +25,18 @@ const year = new Date().getFullYear();
 <footer class="pt-10 sm:pt-14 bg-ink">
   <div class="mx-auto max-w-7xl">
     <div class="grid grid-cols-1 gap-10 p-8 sm:grid-cols-2 sm:p-10 lg:grid-cols-10 lg:p-12">
-      <div class="lg:col-span-2">
+      <div class="lg:col-span-4">
         <a href="/"
           class="flex items-center gap-2 font-display text-lg font-semibold tracking-tight text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           <span class="inline-block h-2 w-2 rounded-full bg-blue-600" aria-hidden="true"></span>
           Huzlly
         </a>
-        <p class="mt-4 text-sm leading-relaxed text-white/50">
+        <p class="mt-4 max-w-md text-sm leading-relaxed text-white/50">
           Everything you need to organize your freelance business, stay on top of your work, and
           get paid with confidence.
         </p>
-        <ul class="mt-4 flex items-center gap-3">
+        <ul class="mt-4 flex items-center gap-5">
           {
             socialLinks.map((social) => {
               return (
@@ -45,7 +45,7 @@ const year = new Date().getFullYear();
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Follow us on ${social.label}`}
-                    class="inline-flex items-center justify-center text-white transition-opacity duration-200 ease-in-out hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-opacity duration-200 ease-in-out hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     {social.label === 'X' ? (
                       <svg class="h-4 w-4" viewBox="0 0 1200 1227" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -64,7 +64,7 @@ const year = new Date().getFullYear();
         </ul>
       </div>
 
-      <div class="contents lg:grid lg:col-start-7 lg:col-span-4 lg:grid-cols-2 lg:gap-16">
+      <div class="contents lg:grid lg:col-start-6 lg:col-span-5 lg:grid-cols-2 lg:gap-16">
       <div>
         <p class="text-xs font-semibold uppercase tracking-wider text-white">Main</p>
         <ul class="mt-4 space-y-3">
