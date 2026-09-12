@@ -1,10 +1,9 @@
 ---
 // src/components/sections/WhyUs.astro
 
-import { Feather, Clock, MessageCircle, Layers, FileText, Lock, LayoutDashboard, ArrowRight } from 'lucide-astro';
+import { Feather, Clock, MessageCircle, Layers, FileText, Lock, LayoutDashboard, ArrowUpRight } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 import Card from '../ui/Card.astro';
-import Button from '../ui/Button.astro';
 import ProposalFlowPreview from '../ui/why-us-cards/ProposalFlowPreview.astro';
 import InvoiceUnlockPreview from '../ui/why-us-cards/InvoiceUnlockPreview.astro';
 import ClientPortalPreview from '../ui/why-us-cards/ClientPortalPreview.astro';
@@ -125,21 +124,11 @@ const quickWins = [
       ))}
     </div>
 
-    <Card variant="highlighted" class="mt-10 !bg-gray-100 !shadow-none">
-      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 class="text-xl sm:text-2xl font-semibold leading-snug text-ink font-display">Want to See Everything Huzlly Can Do?</h3>
-          <p class="mt-2 text-sm sm:text-base leading-relaxed text-ink/70">Explore the full feature set - from proposals and contracts to invoicing and client portals.</p>
-        </div>
-        <Button
-          href="/features"
-          variant="primary"
-          class="!border-0 !bg-blue-600 !text-white hover:!bg-blue-700 active:!bg-blue-800 flex-shrink-0"
-        >
-          Explore Features
-          <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-        </Button>
-      </div>
-    </Card>
+    <div class="mt-10 text-center">
+      <a href="/features" class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 rounded-md">
+        Explore the full feature breakdown
+        <ArrowUpRight class="w-4 h-4" stroke-width="1.75" />
+      </a>
+    </div>
   </div>
 </section>
