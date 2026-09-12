@@ -1,6 +1,7 @@
 ---
 // src/components/sections/HomeFAQ.astro
 
+import { Icon } from 'astro-icon/components';
 import { ArrowRight } from 'lucide-astro';
 import Card from '../ui/Card.astro';
 import Button from '../ui/Button.astro';
@@ -45,8 +46,12 @@ const items: FAQItem[] = [
   <div class="mx-auto max-w-6xl">
     <div class="grid grid-cols-1 gap-y-10 lg:grid-cols-2 lg:gap-x-12 lg:items-start">
       <div class="flex flex-col text-left">
-        <h2 class="font-display mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
+        <div class="inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">
+          <Icon name="ph:question-duotone" class="text-base" aria-hidden="true" />
           Questions? We've Got Answers.
+        </div>
+        <h2 class="font-display mt-2 text-3xl sm:text-4xl font-semibold tracking-tight text-ink">
+          Frequently Asked Questions
         </h2>
         <p class="mt-4 text-lg text-ink/70">
           From managing your work to getting paid, here's what you need to know about Huzlly.
