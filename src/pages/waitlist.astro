@@ -161,14 +161,18 @@ import CloudSkyDecoration from '../components/ui/CloudSkyDecoration.astro';
   // `border-red-500` rather than stacking a second border-color utility on
   // top — two classes setting the same property at equal specificity is
   // exactly what broke the split-card/next-steps toggle earlier, so this
-  // always removes the one it's not using.
+  // always removes the one it's not using. The outline classes are swapped
+  // the same way (added as a set on invalid, removed as a set otherwise) so
+  // the error state shows the same dual-ring look (solid border + soft
+  // outline) as the focus-visible state, just in red instead of blue, and
+  // so it stays visible even when the input isn't focused.
   function setEmailInvalid(invalid: boolean) {
     if (!emailInput) return;
     if (invalid) {
       emailInput.classList.remove('border-white/50');
-      emailInput.classList.add('border-red-500');
+      emailInput.classList.add('border-red-500', 'outline', 'outline-2', 'outline-offset-2', 'outline-red-500/20');
     } else {
-      emailInput.classList.remove('border-red-500');
+      emailInput.classList.remove('border-red-500', 'outline', 'outline-2', 'outline-offset-2', 'outline-red-500/20');
       emailInput.classList.add('border-white/50');
     }
   }
