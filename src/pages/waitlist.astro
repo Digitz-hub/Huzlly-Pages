@@ -153,7 +153,7 @@ import CloudSkyDecoration from '../components/ui/CloudSkyDecoration.astro';
   // Initial page-load state, driven by the "joined" cookie. No animation —
   // instant switch before the visitor interacts with anything.
   if (alreadyJoined) {
-    showNextSteps("You're already on the list.");
+    showNextSteps("You're on the waitlist.");
   } else {
     showSplitCard();
   }
@@ -223,7 +223,7 @@ import CloudSkyDecoration from '../components/ui/CloudSkyDecoration.astro';
   }
 
   function showSuccess(duplicate: boolean) {
-    showNextSteps(duplicate ? "You're already on the list." : "You're on the list.");
+    showNextSteps("You're on the waitlist.");
   }
 
   form?.addEventListener('submit', async (event) => {
