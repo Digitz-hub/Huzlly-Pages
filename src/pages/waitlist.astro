@@ -157,18 +157,19 @@ import CloudSkyDecoration from '../components/ui/CloudSkyDecoration.astro';
     showSplitCard();
   }
 
-  // Swap `border-rail` <-> `border-red-500` rather than stacking a second
-  // border-color utility on top — two classes setting the same property at
-  // equal specificity is exactly what broke the split-card/next-steps
-  // toggle earlier, so this always removes the one it's not using.
+  // Swap `border-white/50` (the input's actual glass-card base border) <->
+  // `border-red-500` rather than stacking a second border-color utility on
+  // top — two classes setting the same property at equal specificity is
+  // exactly what broke the split-card/next-steps toggle earlier, so this
+  // always removes the one it's not using.
   function setEmailInvalid(invalid: boolean) {
     if (!emailInput) return;
     if (invalid) {
-      emailInput.classList.remove('border-rail');
+      emailInput.classList.remove('border-white/50');
       emailInput.classList.add('border-red-500');
     } else {
       emailInput.classList.remove('border-red-500');
-      emailInput.classList.add('border-rail');
+      emailInput.classList.add('border-white/50');
     }
   }
 
