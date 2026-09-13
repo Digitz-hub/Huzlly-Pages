@@ -13,6 +13,7 @@ export interface Props {
   noindex?: boolean;
   hideChrome?: boolean;
   navTransparentBg?: boolean;
+  hideJoinWaitlist?: boolean;
 }
 
 const {
@@ -23,6 +24,7 @@ const {
   noindex = false,
   hideChrome = false,
   navTransparentBg = false,
+  hideJoinWaitlist = false,
 } = Astro.props;
 
 const siteUrl = 'https://huzlly.com';
@@ -104,7 +106,7 @@ const organizationSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
   </head>
   <body class="bg-paper text-ink antialiased">
-    {!hideChrome && <Nav transparentBg={navTransparentBg} />}
+    {!hideChrome && <Nav transparentBg={navTransparentBg} hideJoinWaitlist={hideJoinWaitlist} />}
     <slot />
     {!hideChrome && <Footer />}
   </body>
