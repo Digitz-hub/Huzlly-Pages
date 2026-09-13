@@ -12,6 +12,7 @@ export interface Props {
   canonicalPath: string;
   noindex?: boolean;
   hideChrome?: boolean;
+  navTransparentBg?: boolean;
 }
 
 const {
@@ -21,6 +22,7 @@ const {
   canonicalPath,
   noindex = false,
   hideChrome = false,
+  navTransparentBg = false,
 } = Astro.props;
 
 const siteUrl = 'https://huzlly.com';
@@ -102,7 +104,7 @@ const organizationSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
   </head>
   <body class="bg-paper text-ink antialiased">
-    {!hideChrome && <Nav />}
+    {!hideChrome && <Nav transparentBg={navTransparentBg} />}
     <slot />
     {!hideChrome && <Footer />}
   </body>
