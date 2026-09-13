@@ -6,9 +6,10 @@ import Button from '../ui/Button.astro';
 
 export interface Props {
   transparentBg?: boolean;
+  hideJoinWaitlist?: boolean;
 }
 
-const { transparentBg = false } = Astro.props;
+const { transparentBg = false, hideJoinWaitlist = false } = Astro.props;
 
 const navLinks = [
   { label: 'Features', href: '/features' },
@@ -63,11 +64,15 @@ const isActive = (href: string) => {
         ))}
       </nav>
 
-      <div class="hidden md:flex md:items-center">
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-white/15 hover:!bg-white/25 !text-white !shadow-none">
-          Join Waitlist
-        </Button>
-      </div>
+      {!hideJoinWaitlist && (
+        <div class="hidden md:flex md:items-center">
+          <Button href="/waitlist" size="default" class={`!rounded-full !shadow-none !text-white ${
+            isHome ? '!bg-white/15 hover:!bg-white/25' : '!bg-blue-600 hover:!bg-blue-700'
+          }`}>
+            Join Waitlist
+          </Button>
+        </div>
+      )}
 
       <button id="nav-toggle"
         type="button"
@@ -99,9 +104,11 @@ const isActive = (href: string) => {
             {link.label}
           </a>
         ))}
-        <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 hover:!bg-blue-700 !text-white !shadow-none mt-1.5 w-full">
-          Join Waitlist
-        </Button>
+        {!hideJoinWaitlist && (
+          <Button href="/waitlist" size="default" class="!rounded-full !bg-blue-600 hover:!bg-blue-700 !text-white !shadow-none mt-1.5 w-full">
+            Join Waitlist
+          </Button>
+        )}
       </nav>
     </div>
   </div>
