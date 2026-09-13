@@ -4,6 +4,7 @@
 import Layout from '../layouts/Layout.astro';
 import WaitlistFormCard from '../components/sections/WaitlistFormCard.astro';
 import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmationCard.astro';
+import CloudSkyDecoration from '../components/ui/CloudSkyDecoration.astro';
 ---
 
 <Layout title="Join the Waitlist | Huzlly"
@@ -12,50 +13,11 @@ import WaitlistConfirmationCard from '../components/sections/WaitlistConfirmatio
   hideChrome={true}
 >
   <main class="relative flex min-h-[100dvh] flex-col items-center bg-gradient-to-tr from-blue-700 via-indigo-600 to-sky-400 px-6 py-6 sm:px-10 sm:py-8 lg:h-[100dvh] lg:justify-center lg:overflow-hidden lg:px-16 lg:py-10">
-    <!-- Layered radial mesh wash for extra depth on top of the base gradient -->
-    <div
-      class="pointer-events-none absolute inset-0 -z-30"
-      aria-hidden="true"
-      style="background-image: radial-gradient(45% 40% at 10% 5%, rgba(196,181,253,0.6), transparent 65%), radial-gradient(40% 38% at 95% 8%, rgba(103,232,249,0.55), transparent 65%);"
-    ></div>
-
-    <!-- Soft ambient blur orbs — smaller + more saturated/contrasting so they read as distinct shapes in the thin visible margin, not just extra gradient -->
-    <div class="pointer-events-none absolute -left-10 -top-10 -z-10 h-40 w-40 rounded-full bg-fuchsia-300/50 blur-2xl sm:h-56 sm:w-56" aria-hidden="true"></div>
-    <div class="pointer-events-none absolute -right-8 -top-14 -z-10 h-36 w-36 rounded-full bg-cyan-200/60 blur-2xl sm:h-48 sm:w-48" aria-hidden="true"></div>
-    <div class="pointer-events-none absolute -bottom-14 -left-10 -z-10 h-44 w-44 rounded-full bg-violet-400/40 blur-2xl sm:h-60 sm:w-60" aria-hidden="true"></div>
-    <div class="pointer-events-none absolute -bottom-10 -right-10 -z-10 h-40 w-40 rounded-full bg-sky-300/50 blur-2xl sm:h-56 sm:w-56" aria-hidden="true"></div>
-
-    <!-- Ribbon-wave motif: dense, edge-hugging flowing lines (top-right + bottom-left),
-         kept close to the actual visible margin band — the card covers most of the
-         viewport here, so curves are anchored near the true edges rather than the
-         wider corner spread that would work on a page with more visible background. -->
-    <svg
-      class="pointer-events-none absolute inset-0 -z-10 h-full w-full"
-      viewBox="0 0 1440 900"
-      preserveAspectRatio="xMidYMid slice"
-      fill="none"
-      aria-hidden="true"
-    >
-      <!-- Top-right cluster -->
-      <g stroke="white" stroke-linecap="round">
-        <path d="M900 -60 C 1080 20, 1200 -70, 1360 10 S 1620 0, 1720 90" stroke-width="2" opacity="0.6" />
-        <path d="M880 10 C 1060 90, 1180 0, 1340 80 S 1600 70, 1700 160" stroke-width="1.75" opacity="0.5" />
-        <path d="M860 80 C 1040 160, 1160 70, 1320 150 S 1580 140, 1680 230" stroke-width="1.5" opacity="0.38" />
-        <path d="M840 150 C 1020 230, 1140 140, 1300 220 S 1560 210, 1660 300" stroke-width="1.5" opacity="0.26" />
-      </g>
-
-      <!-- Bottom-left cluster (mirrored) -->
-      <g stroke="white" stroke-linecap="round">
-        <path d="M-100 780 C 20 700, 140 800, 280 720 S 460 730, 560 650" stroke-width="2" opacity="0.55" />
-        <path d="M-120 840 C 0 760, 120 860, 260 780 S 440 790, 540 710" stroke-width="1.75" opacity="0.44" />
-        <path d="M-140 900 C -20 820, 100 920, 240 840 S 420 850, 520 770" stroke-width="1.5" opacity="0.3" />
-      </g>
-
-      <!-- Scattered dot accents, close to the visible edges -->
-      <circle cx="120" cy="60" r="5" fill="white" opacity="0.6" />
-      <circle cx="1360" cy="420" r="4.5" fill="white" opacity="0.5" />
-      <circle cx="60" cy="480" r="4" fill="white" opacity="0.5" />
-    </svg>
+    <!-- Animated CloudSky WebGL background, full-bleed behind the card stage.
+         The bg-gradient-to-tr utility classes on <main> above stay in place
+         as a fallback color in case WebGL fails to initialize — the canvas
+         paints over them on top. -->
+    <CloudSkyDecoration />
 
     <!-- Card stage — no overflow-hidden here, so the card's drop-shadow can
          spread/fade naturally instead of getting clipped at this wrapper's edge.
