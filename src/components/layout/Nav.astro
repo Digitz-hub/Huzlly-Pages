@@ -28,12 +28,9 @@ const isActive = (href: string) => {
         : 'bg-white border-black/10'
     }`}>
       <a href="/"
-        class={`flex items-center gap-2 font-display text-xl font-bold tracking-tight transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-2xl ${
-          isHome ? 'text-paper' : 'text-ink'
-        }`}
+        class="flex items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
       >
-        <img src={isHome ? '/Favicon-white.svg' : '/Favicon-Black.svg'} alt="Huzlly" class="h-5 w-5" />
-        Huzlly
+        <img src={isHome ? '/Logo-White.svg' : '/Logo-Black.svg'} alt="Huzlly" class="h-5" />
       </a>
 
       <nav aria-label="Primary" class="hidden md:flex md:items-center md:gap-1">
