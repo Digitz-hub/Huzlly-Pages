@@ -18,7 +18,11 @@ const navLinks = [
   { label: 'About', href: '/about' },
 ];
 
-const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const currentPath =
+  Astro.url.pathname
+    .replace(/\/index\.html$/, '')
+    .replace(/\.html$/, '')
+    .replace(/\/$/, '') || '/';
 const isHome = currentPath === '/';
 
 const isActive = (href: string) => {
