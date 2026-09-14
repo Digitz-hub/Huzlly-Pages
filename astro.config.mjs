@@ -7,6 +7,9 @@ import icon from 'astro-icon';
 export default defineConfig({
   site: 'https://huzlly.com',
   trailingSlash: 'never',
+  build: {
+    format: 'file',
+  },
   integrations: [
     sitemap(),
     tailwind({
