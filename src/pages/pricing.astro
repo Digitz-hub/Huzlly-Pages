@@ -4,12 +4,10 @@
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import Card from '../components/ui/Card.astro';
-import Badge from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 import FAQAccordion from '../components/sections/FAQAccordion.astro';
 import type { FAQItem } from '../components/sections/FAQAccordion.astro';
-import { Icon } from 'astro-icon/components';
 import { ArrowRight, ArrowUpRight, Gift, Tag, SlidersHorizontal } from 'lucide-astro';
 
 const promises = [
@@ -59,26 +57,19 @@ const pricingFaq: FAQItem[] = [
   <main>
     <!-- Hero + What's already decided -->
     <section class="bg-white px-4 pt-28 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
-      <div class="mx-auto max-w-3xl text-center">
-        <Badge variant="beta" class="mx-auto">Closed beta &middot; pricing not yet public</Badge>
-
+      <div class="mx-auto max-w-6xl">
         <SectionHeader
           as="h1"
           title="Simple Pricing for a Business That's Anything But Simple"
           subtitle="Huzlly's plans are taking shape. Join the waitlist to get early access and be the first to hear when pricing is announced."
           maxWidthClass="max-w-5xl"
-          class="mt-6"
+          class="!mx-0 !text-left"
         />
       </div>
 
       <div class="mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch">
         <Card variant="elevated" class="flex flex-col justify-center lg:col-span-5">
-          <div class="inline-flex w-fit items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">
-            <Icon name="ph:check-circle-duotone" class="text-base" aria-hidden="true" />
-            What we can tell you now
-          </div>
-
-          <h2 class="font-display mt-6 text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl">
+          <h2 class="font-display text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl">
             The number isn't set. The shape of it already is.
           </h2>
 
@@ -125,12 +116,7 @@ const pricingFaq: FAQItem[] = [
     <section id="pricing-faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-3xl">
         <div class="mx-auto max-w-2xl text-center">
-          <div class="mx-auto inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">
-            <Icon name="ph:question-duotone" class="text-base" aria-hidden="true" />
-            Pricing FAQ
-          </div>
-
-          <h2 class="font-display mt-6 text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+          <h2 class="font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
             Questions people ask before there's a number
           </h2>
         </div>
