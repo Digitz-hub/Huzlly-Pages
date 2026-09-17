@@ -55,18 +55,20 @@ const pricingFaq: FAQItem[] = [
 >
   <main>
     <!-- Hero + What's already decided -->
-    <section class="bg-white px-4 pt-28 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
-      <div class="mx-auto max-w-6xl">
+    <section class="gradient-irodori px-4 pt-28 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
+      <div class="absolute inset-0 bg-ink/50 pointer-events-none"></div>
+
+      <div class="relative mx-auto max-w-6xl">
         <SectionHeader
           as="h1"
           title="Simple Pricing for a Business That's Anything But Simple"
           subtitle="Huzlly's plans are taking shape. Join the waitlist to get early access and be the first to hear when pricing is announced."
           maxWidthClass="max-w-5xl"
-          class="!mx-0 !text-left"
+          class="!mx-0 !text-left [&>h1]:!text-white [&>p]:!text-white/80"
         />
       </div>
 
-      <div class="mx-auto mt-14 grid max-w-6xl grid-cols-1 overflow-hidden rounded-2xl shadow-sm lg:grid-cols-12 lg:items-stretch">
+      <div class="relative mx-auto mt-14 grid max-w-6xl grid-cols-1 overflow-hidden rounded-2xl shadow-sm lg:grid-cols-12 lg:items-stretch">
         <div class="flex flex-col justify-center bg-paper p-6 sm:p-8 lg:col-span-5">
           <h2 class="font-display text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl">
             The number isn't set. The shape of it already is.
