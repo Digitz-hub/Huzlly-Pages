@@ -85,14 +85,14 @@ const pricingFaq: FAQItem[] = [
         <div class="p-8 text-paper sm:p-10 lg:col-span-7">
           <div class="flex h-full flex-col justify-center gap-4">
             {promises.map((promise) => (
-              <div class="rounded-full bg-white/10 px-6 py-5">
+              <div class="rounded-xl bg-white px-6 py-5">
                 <div class="flex items-center gap-4">
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20 text-paper">
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-electric/10 text-electric">
                     <promise.icon class="w-4 h-4" stroke-width="1.75" />
                   </span>
-                  <h3 class="font-display text-base font-semibold leading-snug tracking-tight text-paper">{promise.title}</h3>
+                  <h3 class="font-display text-base font-semibold leading-snug tracking-tight text-ink">{promise.title}</h3>
                 </div>
-                <p class="mt-2.5 text-sm leading-relaxed text-paper/60">{promise.body}</p>
+                <p class="mt-2.5 text-sm leading-relaxed text-ink/70">{promise.body}</p>
               </div>
             ))}
           </div>
