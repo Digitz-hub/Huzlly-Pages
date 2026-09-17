@@ -2,6 +2,7 @@
 
 @import './float-animation.css';
 @import './card-illustration.css';
+@import './gradient-irodori.css';
 
 @tailwind base;
 @tailwind components;
