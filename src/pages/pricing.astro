@@ -7,19 +7,20 @@ import Button from '../components/ui/Button.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 import FAQAccordion from '../components/sections/FAQAccordion.astro';
 import type { FAQItem } from '../components/sections/FAQAccordion.astro';
-import { ArrowRight, ArrowUpRight, TrendingUp, Wallet, CheckCircle } from 'lucide-astro';
+import { ArrowRight, ArrowUpRight } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
 
 const promises = [
   {
-    icon: TrendingUp,
+    icon: 'ph:trend-up-duotone',
     title: 'Start free, grow at your own pace',
   },
   {
-    icon: Wallet,
+    icon: 'ph:wallet-duotone',
     title: 'Pricing that fits your freelance business',
   },
   {
-    icon: CheckCircle,
+    icon: 'ph:check-circle-duotone',
     title: 'Simple to understand, easy to choose',
   },
 ];
@@ -84,7 +85,7 @@ const pricingFaq: FAQItem[] = [
               <div class="rounded-xl bg-gray-100 px-6 py-5 shadow-sm ring-1 ring-ink/5">
                 <div class="flex items-center gap-4">
                   <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-electric/10 text-electric">
-                    <promise.icon class="w-4 h-4" stroke-width="1.75" />
+                    <Icon name={promise.icon} class="w-4 h-4 text-electric" aria-hidden="true" />
                   </span>
                   <h3 class="font-display text-base font-semibold leading-snug tracking-tight text-ink">{promise.title}</h3>
                 </div>
