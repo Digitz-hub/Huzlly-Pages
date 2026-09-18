@@ -13,17 +13,14 @@ const promises = [
   {
     icon: Gift,
     title: 'Free, not just a trial',
-    body: "This isn't a 14-day countdown. There's a genuinely free way to use Huzlly, whatever the paid plans look like.",
   },
   {
     icon: Tag,
     title: 'No hidden fees, ever',
-    body: 'What you see is what you pay - no setup costs, no surprise charges tacked on later.',
   },
   {
     icon: SlidersHorizontal,
     title: 'One workspace, one bill',
-    body: 'Clients, projects, invoices, contracts - all under one plan, not billed as separate add-ons.',
   },
 ];
 
@@ -91,7 +88,6 @@ const pricingFaq: FAQItem[] = [
                   </span>
                   <h3 class="font-display text-base font-semibold leading-snug tracking-tight text-ink">{promise.title}</h3>
                 </div>
-                <p class="mt-2.5 text-sm leading-relaxed text-ink/70">{promise.body}</p>
               </div>
             ))}
           </div>
@@ -141,6 +137,6 @@ const pricingFaq: FAQItem[] = [
   }
 
   :global(.hero-title h1) {
-    line-height: 1.2 !important;
+    line-height: 1.3 !important;
   }
 </style>
