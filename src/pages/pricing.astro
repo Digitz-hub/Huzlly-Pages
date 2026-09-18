@@ -7,7 +7,7 @@ import Button from '../components/ui/Button.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 import FAQAccordion from '../components/sections/FAQAccordion.astro';
 import type { FAQItem } from '../components/sections/FAQAccordion.astro';
-import { ArrowRight, ArrowUpRight } from 'lucide-astro';
+import { ArrowUpRight } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 
 const promises = [
@@ -73,9 +73,12 @@ const pricingFaq: FAQItem[] = [
             Huzlly's pricing is being designed to stay simple, transparent, and accessible for freelancers at every stage.
           </p>
 
-          <Button href="/waitlist" size="lg" variant="primary" motion class="mt-10 w-fit">
+          <Button href="/waitlist" size="lg" variant="primary" class="mt-10 w-fit group">
             Get notified when pricing lands
-            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+            <span class="relative inline-flex h-4 w-4">
+              <Icon name="ph:caret-right" class="w-4 h-4 transition-all duration-200 ease-in-out group-hover:opacity-0 group-hover:translate-x-1" aria-hidden="true" />
+              <Icon name="ph:caret-double-right" class="w-4 h-4 absolute inset-0 opacity-0 transition-all duration-200 ease-in-out group-hover:opacity-100 group-hover:translate-x-1" aria-hidden="true" />
+            </span>
           </Button>
         </div>
 
