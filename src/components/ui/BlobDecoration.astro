@@ -5,9 +5,10 @@
 
 export interface Props {
   class?: string;
+  accentColor?: string;
 }
 
-const { class: className } = Astro.props;
+const { class: className, accentColor = '#1B2699' } = Astro.props;
 ---
 
 <div
@@ -38,7 +39,7 @@ const { class: className } = Astro.props;
       width="320"
       height="280"
       rx="90"
-      fill="#1B2699"
+      fill={accentColor}
       opacity="0.22"
       transform="rotate(12 720 400)"
     />
@@ -60,7 +61,7 @@ const { class: className } = Astro.props;
       width="180"
       height="180"
       rx="56"
-      fill="#1B2699"
+      fill={accentColor}
       opacity="0.16"
       transform="rotate(-18 730 50)"
     />
