@@ -8,20 +8,33 @@ import BlobDecoration from '../ui/BlobDecoration.astro';
 export interface Props {
   heading?: string;
   subheading?: string;
+  variant?: 'electric' | 'dark';
 }
 
 const {
   heading = "Let's Make the Business Behind Your Work Simpler",
   subheading = 'Spend less time managing the business and more time doing the work you love. Huzlly keeps everything organized, connected, and moving in the right direction.',
+  variant = 'electric',
 } = Astro.props;
 
 const trustBadges = ['Free to join', 'No Spam', 'Early access'];
+
+const isDark = variant === 'dark';
+// Card background: electric-blue (default, unchanged) vs. near-black "ink" for the dark variant.
+const cardBgClass = isDark ? '!bg-ink' : '!bg-electric';
+// Trust-badge checkmark: on the dark variant, match the card's own ink tone instead of
+// electric blue, so the badge icon reads as intentional rather than a leftover blue accent.
+const checkColor = isDark ? '#14110F' : '#3B4EFF';
+// BlobDecoration's rounded-square accents default to an indigo tied to the electric-blue
+// background; on the dark variant, use a subtle charcoal so the decoration still reads as
+// depth on black rather than an unrelated blue tint.
+const blobAccentColor = isDark ? '#2A2A2A' : '#1B2699';
 ---
 
 <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
   <div class="mx-auto max-w-6xl">
-    <Card variant="highlighted" class="relative overflow-hidden p-8 sm:p-12 text-center !bg-electric">
-      <BlobDecoration />
+    <Card variant="highlighted" class:list={['relative overflow-hidden p-8 sm:p-12 text-center', cardBgClass]}>
+      <BlobDecoration accentColor={blobAccentColor} />
 
       <div class="relative z-10">
         <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white max-w-2xl mx-auto">
@@ -42,7 +55,7 @@ const trustBadges = ['Free to join', 'No Spam', 'Early access'];
             <span class="inline-flex items-center gap-1.5 text-sm text-white/80">
               <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" fill="white" />
-                <path d="m9 12 2 2 4-4" stroke="#3B4EFF" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="m9 12 2 2 4-4" stroke={checkColor} stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               {label}
             </span>
