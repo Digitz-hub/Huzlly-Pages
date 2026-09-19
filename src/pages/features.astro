@@ -175,16 +175,16 @@ const softwareApplicationSchema = {
            (the three items need ~855px in one line, too tight for the 960px container at lg), one row with
            dividers from xl up. -->
       <div class="relative z-10 mx-auto mt-32 max-w-6xl">
-        <ul class="mx-auto flex w-fit max-w-full flex-col items-start gap-4 xl:w-auto xl:flex-row xl:items-center xl:justify-center xl:gap-x-6">
+        <ul class="mx-auto flex w-fit max-w-full flex-col items-start gap-3 xl:w-auto xl:flex-row xl:items-center xl:justify-center xl:gap-x-5">
           {heroTrustPoints.map((point, i) => (
             <li class="flex items-center">
               {i > 0 && (
-                <span class="mr-6 hidden h-6 w-px bg-gray-200 xl:block" aria-hidden="true"></span>
+                <span class="mr-5 hidden h-5 w-px bg-gray-200 xl:block" aria-hidden="true"></span>
               )}
-              <span class={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
-                <Icon name={point.icon} class="h-4 w-4" aria-hidden="true" />
+              <span class={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
+                <Icon name={point.icon} class="h-3.5 w-3.5" aria-hidden="true" />
               </span>
-              <span class="ml-3 text-[13px] font-normal text-ink/70 xl:whitespace-nowrap">{point.label}</span>
+              <span class="ml-2 text-xs font-normal text-ink/70 xl:whitespace-nowrap">{point.label}</span>
             </li>
           ))}
         </ul>
@@ -192,17 +192,18 @@ const softwareApplicationSchema = {
 
       <!-- Decorative dashed connector (left: Proposal -> Contract). Sits behind the cards (z-[-1]) and is locked to the
            left card wrappers: same origin, scale and horizontal anchoring, box top/height derived from the
-           wrapper offsets + 288x116.8 card box + card rotations. The path starts on the BOTTOM edge of the Proposal
-           card (25% across) and ends on the TOP edge of the Contract card (50% across), both taken on the rotated
-           cards. The Proposal wrapper sits above the H1 (H1 top = 218px from the section top) and is inset 48px from
-           the section edge (xl:left-[48px], 2xl:left-[80px]), while this SVG box keeps its own anchoring (left-0 /
-           left-8), so the start x is shifted by 48 real px (64 local units at xl, 48 at 2xl). The Contract wrapper
-           has not moved, so the end point stays at page x~102 / y~460 (xl) and x~187 / y~460 (2xl). At xl the
-           start ends up ~2.5px right of the end, so that path is a near-vertical line with a very slight S. The
-           wrappers' offsets are not scaled, so the gap in local units differs at xl (scale-75) vs 2xl (scale-100):
-           one path per state. -->
+           wrapper offsets + 288x116.8 card box + card rotations. The Contract card (+2.5deg) sits in the TOP wrapper
+           and the Proposal card (-3deg) in the BOTTOM one, so the path runs upward: it starts on the TOP edge of the
+           Proposal card (50% across) and ends on the BOTTOM edge of the Contract card (25% across), both taken on the
+           rotated cards. The top wrapper sits above the H1 (H1 top = 218px from the section top) and is inset 48px
+           from the section edge (xl:left-[48px], 2xl:left-[80px]), while this SVG box keeps its own anchoring (left-0 /
+           left-8), so the end x is shifted by 48 real px (64 local units at xl, 48 at 2xl). The bottom wrapper has not
+           moved, so the start point is at page x~98 / y~460 (xl) and x~181 / y~460 (2xl). At xl the end ends up ~2.4px
+           right of the start, so that path is a near-vertical line with a very slight S. The wrappers' offsets are not
+           scaled, so the gap in local units differs at xl (scale-75) vs 2xl (scale-100): one path per state. Dash and
+           gap are set so each path ends on a full dash. -->
       <svg
-        class="pointer-events-none absolute z-[-1] hidden origin-top-left overflow-visible xl:block xl:left-0 xl:top-[215px] xl:h-[329px] xl:w-[288px] xl:scale-75 2xl:left-8 2xl:top-[214px] 2xl:h-[249px] 2xl:scale-100"
+        class="pointer-events-none absolute z-[-1] hidden origin-top-left overflow-visible xl:block xl:left-0 xl:top-[210px] xl:h-[336px] xl:w-[288px] xl:scale-75 2xl:left-8 2xl:top-[207px] 2xl:h-[256px] 2xl:scale-100"
         fill="none"
         stroke="#a5b4fc"
         stroke-width="1.75"
@@ -210,41 +211,44 @@ const softwareApplicationSchema = {
         aria-hidden="true"
         focusable="false"
       >
-        <path class="2xl:hidden" d="M139.16 0.22 C139.16 163.47 135.88 163.47 135.88 326.72" stroke-dasharray="4.91 5.81" />
-        <path class="hidden 2xl:inline" d="M123.16 0.23 C123.16 123.14 154.55 123.14 154.55 246.06" stroke-dasharray="5.1 5.97" />
+        <path class="2xl:hidden" d="M130.28 333.41 C130.28 166.71 133.52 166.71 133.52 0" stroke-dasharray="4.94 6.01" />
+        <path class="hidden 2xl:inline" d="M148.94 253.08 C148.94 126.71 117.52 126.71 117.52 0.34" stroke-dasharray="4.93 5.96" />
       </svg>
 
-      <!-- Decorative hero side cards (left): Proposal above Contract, staggered. The Proposal wrapper's top is set per
-           scale (offsets are not scaled) so the lowest point of the rotated card touches the H1's top edge
-           (218px from the section top) and no part of it sits below that line. It is inset 48px toward the centre
-           (left-[48px] at xl, left-[80px] at 2xl; real px at both breakpoints, offsets are not scaled). -->
+      <!-- Decorative hero side cards (left): Contract above Proposal, staggered. The top wrapper's offset is set per
+           scale (offsets are not scaled) so that the lowest point of a rotated card touches the H1's top edge
+           (218px from the section top); it was tuned for the -3deg Proposal card that used to sit here, so with the
+           +2.5deg Contract card in it the lowest point ends ~1.2px above that line at 2xl (~0.9px at xl) and no part
+           of it sits below the line. It is inset 48px toward the centre (left-[48px] at xl, left-[80px] at 2xl; real
+           px at both breakpoints, offsets are not scaled). -->
       <div class="contents" aria-hidden="true">
         <div
           class="pointer-events-none absolute z-0 hidden origin-top-left xl:block xl:left-[48px] xl:top-[124.8px] xl:scale-75 2xl:left-[80px] 2xl:top-[93.74px] 2xl:scale-100"
           aria-hidden="true"
         >
-          <ProposalCard />
+          <ContractCard />
         </div>
         <div
           class="pointer-events-none absolute z-0 hidden origin-top-left xl:block xl:-left-2 xl:top-[460px] xl:scale-75 2xl:left-10 2xl:scale-100"
           aria-hidden="true"
         >
-          <ContractCard />
+          <ProposalCard />
         </div>
       </div>
 
       <!-- Decorative dashed connector (right: Invoice -> Project). Sits behind the cards (z-[-1]) and is locked to the
            right card wrappers: same origin, scale and horizontal anchoring, box top/height derived from the
-           wrapper offsets + 288x116.8 card box + card rotations. The path starts on the BOTTOM edge of the Invoice
-           card (60% across) and ends on the TOP edge of the Project card (30% across), both taken on the rotated
-           cards. The Invoice wrapper sits above the H1 (H1 top = 218px from the section top) and is inset 48px from
-           the section edge (xl:right-[48px], 2xl:right-[80px]), while this SVG box keeps its own anchoring (right-0 /
-           right-8), so the start x is shifted by 48 real px (64 local units at xl, 48 at 2xl). The Project wrapper
-           has not moved, so the end point stays at page y~462 (xl and 2xl), 145px (xl) / 244px (2xl) inside the
-           right edge. The wrappers' offsets are not scaled, so the gap in local units differs at xl (scale-75) vs
-           2xl (scale-100): one path per state. -->
+           wrapper offsets + 288x116.8 card box + card rotations. The Project card (-2.5deg) sits in the TOP wrapper
+           and the Invoice card (+2deg) in the BOTTOM one, so the path runs upward: it starts on the TOP edge of the
+           Invoice card (30% across) and ends on the BOTTOM edge of the Project card (60% across), both taken on the
+           rotated cards. The top wrapper sits above the H1 (H1 top = 218px from the section top) and is inset 48px
+           from the section edge (xl:right-[48px], 2xl:right-[80px]), while this SVG box keeps its own anchoring
+           (right-0 / right-8), so the end x is shifted by 48 real px (64 local units at xl, 48 at 2xl). The bottom
+           wrapper has not moved, so the start point is at page y~458.5 (xl) / ~458 (2xl), 142px (xl) / 240px (2xl)
+           inside the right edge. The wrappers' offsets are not scaled, so the gap in local units differs at xl
+           (scale-75) vs 2xl (scale-100): one path per state. Dash and gap are set so each path ends on a full dash. -->
       <svg
-        class="pointer-events-none absolute z-[-1] hidden origin-top-right overflow-visible xl:block xl:right-0 xl:top-[214px] xl:h-[333px] xl:w-[288px] xl:scale-75 2xl:right-8 2xl:top-[213px] 2xl:h-[252px] 2xl:scale-100"
+        class="pointer-events-none absolute z-[-1] hidden origin-top-right overflow-visible xl:block xl:right-0 xl:top-[213px] xl:h-[330px] xl:w-[288px] xl:scale-75 2xl:right-8 2xl:top-[211px] 2xl:h-[250px] 2xl:scale-100"
         fill="none"
         stroke="#a5b4fc"
         stroke-width="1.75"
@@ -252,49 +256,54 @@ const softwareApplicationSchema = {
         aria-hidden="true"
         focusable="false"
       >
-        <path class="2xl:hidden" d="M106.74 1.3 C106.74 165.94 94.57 165.94 94.57 330.57" stroke-dasharray="5.09 6.1" />
-        <path class="hidden 2xl:inline" d="M122.74 0.98 C122.74 125.27 75.91 125.27 75.91 249.57" stroke-dasharray="4.94 5.92" />
+        <path class="2xl:hidden" d="M99.14 327.36 C99.14 163.86 111.32 163.86 111.32 0.35" stroke-dasharray="4.85 5.9" />
+        <path class="hidden 2xl:inline" d="M80.47 247.03 C80.47 123.86 127.32 123.86 127.32 0.7" stroke-dasharray="5.09 6.16" />
       </svg>
 
-      <!-- Decorative hero side cards (right): Invoice above Project, staggered. The Invoice wrapper's top is set per
-           scale (offsets are not scaled) so the lowest point of the rotated card touches the H1's top edge
-           (218px from the section top) and no part of it sits below that line. It is inset 48px toward the centre
-           (right-[48px] at xl, right-[80px] at 2xl; real px at both breakpoints, offsets are not scaled). -->
+      <!-- Decorative hero side cards (right): Project above Invoice, staggered. The top wrapper's offset is set per
+           scale (offsets are not scaled) so that the lowest point of a rotated card touches the H1's top edge
+           (218px from the section top); it was tuned for the +2deg Invoice card that used to sit here, so with the
+           -2.5deg Project card in it the lowest point ends ~1.2px below that line at 2xl (~0.9px at xl), which is
+           still clear of the H1 text. It is inset 48px toward the centre (right-[48px] at xl, right-[80px] at 2xl;
+           real px at both breakpoints, offsets are not scaled). -->
       <div class="contents" aria-hidden="true">
         <div
           class="pointer-events-none absolute z-0 hidden origin-top-right xl:block xl:right-[48px] xl:top-[126.65px] xl:scale-75 2xl:right-[80px] 2xl:top-[96.21px] 2xl:scale-100"
           aria-hidden="true"
         >
-          <InvoiceCard />
+          <ProjectCard />
         </div>
         <div
           class="pointer-events-none absolute z-0 hidden origin-top-right xl:block xl:-right-2 xl:top-[460px] xl:scale-75 2xl:right-10 2xl:scale-100"
           aria-hidden="true"
         >
-          <ProjectCard />
+          <InvoiceCard />
         </div>
       </div>
 
       <!-- Decorative dashed connector (centre: Contract -> Invoice), completing Proposal -> Contract -> Invoice ->
-           Project. It leaves the RIGHT-edge midpoint of the Contract card and enters the LEFT-edge midpoint of the
-           Invoice card (both taken on the rotated 288x116.8 cards: Contract +2.5deg, Invoice +2deg, including each
-           wrapper's scale and offsets). Behind the cards AND behind the text column (z-[-1] vs z-0 / z-10); it stays
-           fully visible where it crosses the H1 and paragraph, by design.
+           Project. It leaves the RIGHT-edge midpoint of the Contract card (top-left slot) and enters the LEFT-edge
+           midpoint of the Invoice card (bottom-right slot), both taken on the rotated 288x116.8 cards: Contract
+           +2.5deg, Invoice +2deg, including each wrapper's scale and offsets. Behind the cards AND behind the text
+           column (z-[-1] vs z-0 / z-10). Its stroke is a gradient (the <linearGradient> below): fully visible for the
+           first and last ~10%, fading out smoothly and invisible between ~28% and ~72%, so it shows near the two
+           cards and stays out of the way of the H1 and paragraph.
            Anchoring: the Contract end is fixed px from the section's LEFT edge and the Invoice end fixed px from its
            RIGHT edge, so the horizontal gap changes with viewport width. The SVG box therefore starts at the
            Contract end (left) and is calc(100% - left - Invoice distance from the right edge) wide; its top is the
-           Invoice end y and its height the y difference. xl (cards at scale-75): start x=207.9, end
-           263.93px from the right, y 166.68 -> 508.51. 2xl (scale-100): start
-           x=327.86, end 367.91px from the right, y 149.58 -> 524.68.
+           Contract end y and its height the y difference. xl (cards at scale-75): start x=263.9, end
+           207.93px from the right edge, y 173.31 -> 500.03. 2xl (scale-100): start x=367.86, end
+           327.91px from the right edge, y 158.42 -> 513.37.
            Inside, a normalised 100x100 viewBox with preserveAspectRatio="none" stretches one cubic S-curve with
-           HORIZONTAL tangents at both ends (control points at mid-width, same y as their endpoint) to the box, and
-           vector-effect="non-scaling-stroke" keeps stroke width and dash lengths in real screen px. The box is in
-           page px, so no scale-* class. Because the stroke is not scaled, stroke widths and dashes are set to the
-           on-screen values of the other connectors: xl 1.31px (1.75 x 0.75) with a 3.68/4.48 dash,
-           2xl 1.75px with a 5.02/6.06 dash (tuned so the pattern ends on a full dash at 1280/1440
-           and 1536/1920px; at other widths the last dash may be shorter). One path per state. -->
+           HORIZONTAL tangents at both ends (control points at mid-width, same y as their endpoint) to the box; it
+           runs from the top-left corner (Contract) to the bottom-right corner (Invoice). vector-effect=
+           "non-scaling-stroke" keeps stroke width and dash lengths in real screen px. The box is in page px, so no
+           scale-* class. Because the stroke is not scaled, stroke widths and dashes are set to the on-screen values
+           of the other connectors: xl 1.31px (1.75 x 0.75) with a 3.68/4.49 dash, 2xl 1.75px with a 5.02/5.81 dash
+           (tuned so the pattern ends within ~0.5px of a full dash at 1280/1440 and 1536/1920px; at other widths the
+           last dash may be shorter). One path per state. -->
       <svg
-        class="pointer-events-none absolute z-[-1] hidden overflow-visible xl:block xl:left-[207.9px] xl:top-[166.68px] xl:h-[341.83px] xl:w-[calc(100%-471.83px)] 2xl:left-[327.86px] 2xl:top-[149.58px] 2xl:h-[375.1px] 2xl:w-[calc(100%-695.78px)]"
+        class="pointer-events-none absolute z-[-1] hidden overflow-visible xl:block xl:left-[263.9px] xl:top-[173.31px] xl:h-[326.72px] xl:w-[calc(100%-471.83px)] 2xl:left-[367.86px] 2xl:top-[158.42px] 2xl:h-[354.95px] 2xl:w-[calc(100%-695.77px)]"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
         fill="none"
@@ -313,8 +322,8 @@ const softwareApplicationSchema = {
             <stop offset="100%" stop-color="#a5b4fc" stop-opacity="1" />
           </linearGradient>
         </defs>
-        <path class="2xl:hidden" d="M0 100 C50 100 50 0 100 0" stroke="url(#contract-invoice-connector-fade)" stroke-width="1.31" stroke-dasharray="3.68 4.48" vector-effect="non-scaling-stroke" />
-        <path class="hidden 2xl:inline" d="M0 100 C50 100 50 0 100 0" stroke="url(#contract-invoice-connector-fade)" stroke-dasharray="5.02 6.06" vector-effect="non-scaling-stroke" />
+        <path class="2xl:hidden" d="M0 0 C50 0 50 100 100 100" stroke="url(#contract-invoice-connector-fade)" stroke-width="1.31" stroke-dasharray="3.68 4.49" vector-effect="non-scaling-stroke" />
+        <path class="hidden 2xl:inline" d="M0 0 C50 0 50 100 100 100" stroke="url(#contract-invoice-connector-fade)" stroke-dasharray="5.02 5.81" vector-effect="non-scaling-stroke" />
       </svg>
     </section>
 
