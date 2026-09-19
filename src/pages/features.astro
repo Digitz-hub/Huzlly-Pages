@@ -1,327 +1,154 @@
 ---
-// src/pages/features.astro
+// src/pages/pricing.astro
 
 import Layout from '../layouts/Layout.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
-import Card from '../components/ui/Card.astro';
-import Badge from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
-import {
-  ArrowRight,
-  FileText,
-  Receipt,
-  ListChecks,
-  Users,
-  Check,
-  X,
-  User,
-  Layers,
-  Settings2,
-  Mail,
-  ShieldCheck,
-} from 'lucide-astro';
+import FAQAccordion from '../components/sections/FAQAccordion.astro';
+import type { FAQItem } from '../components/sections/FAQAccordion.astro';
+import { ArrowUpRight } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
 
-const steps = [
+const promises = [
   {
-    icon: FileText,
-    title: 'Proposal to Contract, Automatically',
-    chips: ['Auto-sends on approval', 'Confirmation email to both sides'],
-    trigger:
-      "Your client approves a proposal — right from the page you sent, no login or account for them to create.",
-    controls:
-      'Attach your contract template to a proposal and switch on automation once. Every proposal that gets approved from then on follows the same rule — you never have to remember to send the contract yourself.',
-    outcome:
-      "You and your client both get an instant confirmation email the moment the proposal is approved. If automation is on, the contract goes out in that same instant, pre-filled with the scope and pricing they just approved.",
-    next: 'A signed contract is what releases the invoice and creates the project.',
+    icon: 'ph:trend-up-duotone',
+    title: 'Start free, grow at your own pace',
   },
   {
-    icon: Receipt,
-    title: 'Contract Acceptance Creates the Invoice and the Project',
-    chips: ['Invoice auto-sent on acceptance', 'Project created automatically'],
-    trigger:
-      'Your client reads the contract and accepts or rejects it — no separate e-signature app to open.',
-    controls:
-      "Set which invoice is linked to a contract ahead of time. Acceptance is what fires it, so you're never stuck manually raising an invoice right after a client signs.",
-    outcome:
-      'Either decision is confirmed by email to both of you. On acceptance, the linked invoice lands in your client\'s inbox immediately, and Huzlly creates a new project for that client at the same time — scoped and ready to work in.',
-    next: "The project is live. You're logging real work in it within the same minute the contract was signed.",
+    icon: 'ph:wallet-duotone',
+    title: 'Pricing that fits your freelance business',
   },
   {
-    icon: ListChecks,
-    title: 'Tasks and Time Tracking Inside Every Project',
-    chips: ['Per-task timers', 'Auto-rolled project totals'],
-    trigger:
-      'A project exists — created the moment a contract was accepted, or started manually anytime.',
-    controls:
-      "Break the work into tasks as you go, and track time against each task individually while you're actually doing it, not reconstructed from memory at the end of the week.",
-    outcome:
-      "Every task's tracked time rolls up automatically into a single project total — no adding it up yourself. The full breakdown lives in your timesheet, so you always know exactly where a project's hours went.",
-    next: "This is the time you'll bill against — no separate time-tracking app to keep in sync.",
-  },
-  {
-    icon: Users,
-    title: 'A Client Portal You Fully Control',
-    chips: ['Off by default', 'Set per client, not sitewide'],
-    trigger:
-      "You decide to give a specific client portal access — nothing is shared until you turn it on.",
-    controls:
-      'Control access per client rather than sitewide: project visibility, task visibility, and direct communication can each be switched on or off independently for every client.',
-    outcome:
-      "Whatever you've allowed, your client can see: their proposals, contracts, and invoices to view or download, plus live project progress and task status. Where you've enabled communication, they can message you directly from the portal to request a change to a task or project.",
-    next: "The client sees exactly as much as you choose to share, and nothing more.",
+    icon: 'ph:check-circle-duotone',
+    title: 'Simple to understand, easy to choose',
   },
 ];
 
-const forYou = [
-  'You\u2019re a solo freelancer, consultant, coach, or designer running your own client pipeline.',
-  'You send proposals, contracts, and invoices yourself, and want project and time tracking in the same place.',
-  'You want one flat price instead of a bill that grows with every seat you add.',
-  'You want something that works the day you sign up, not after weeks of setup.',
-];
-
-const notForYou = [
-  'Agencies or studios that need multiple logins, roles, or approval chains.',
-  'Teams that need shared pipelines across several staff members.',
-  'Businesses wanting a fully custom, build-your-own-CRM platform.',
-  'Anyone who needs multi-seat collaboration on a single client account.',
-];
-
-const comparisons = [
+const pricingFaq: FAQItem[] = [
   {
-    icon: Layers,
-    title: 'vs. Bonsai',
-    body: 'Bonsai started lean but has grown into a fuller business-management suite, with team seats and enterprise-style add-ons layered on top of the core flow. Huzlly keeps proposal-to-project — including task and time tracking — in one connected flow, at a lower flat price, without the extra layers.',
+    question: 'How much will Huzlly cost?',
+    answer:
+      "Huzlly's pricing is still being finalized. We're working towards plans that are simple, transparent, and accessible for freelancers.",
   },
   {
-    icon: Users,
-    title: 'vs. HoneyBook',
-    body: 'HoneyBook is built with studios and small teams in mind — its pricing and features assume more than one person working a pipeline. Huzlly skips the team layer entirely: one flat rate, built for the person actually doing the client work.',
+    question: 'Will Huzlly have a free plan?',
+    answer:
+      "We're exploring a free plan so freelancers can get started without a large upfront commitment. More details will be shared when our plans are officially announced.",
   },
   {
-    icon: Settings2,
-    title: 'vs. Dubsado',
-    body: 'Dubsado is capable once it’s fully configured — but that configuration is the catch. Workflows, forms, and templates all need building before it does anything for you. Huzlly’s flow already exists, so you’re automating from day one, not week three.',
+    question: 'Will there be any hidden fees?',
+    answer:
+      'We believe pricing should be straightforward. Our goal is to keep plans transparent, with no confusing charges or unexpected surprises.',
+  },
+  {
+    question: 'Will early users get special pricing?',
+    answer:
+      "We're still deciding what early access benefits may look like. Join the waitlist to stay informed about any special pricing or early-user offers.",
+  },
+  {
+    question: 'When will Huzlly pricing be announced?',
+    answer:
+      'Pricing will be announced closer to launch. Join the waitlist to receive updates and be among the first to know when our plans are available.',
   },
 ];
-
-
-const featureList = [
-  'Automated proposal-to-contract handoff with email confirmation to both freelancer and client',
-  'Automated contract-to-invoice and project creation on contract acceptance',
-  'Per-task time tracking with automatic project-level totals and timesheets',
-  'Permission-controlled client portal for documents, project progress, and direct communication',
-];
-
-const softwareApplicationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Huzlly',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
-  description:
-    'Huzlly automates client onboarding, contracts, and payments for freelancers and solopreneurs in a single lean workflow, replacing bloated enterprise software.',
-  featureList,
-};
 ---
 
-<Layout title="Features | Huzlly"
-  description="Explore Huzlly's core features: automated contracts, invoicing, projects, and time tracking for freelancers who want less software, not more."
-  canonicalPath="/features"
-  ogImage="/og/og-features.png"
+<Layout
+  title="Pricing | Huzlly"
+  description="Huzlly's pricing isn't public yet — we're pricing after closed beta, not before it. Here's what's already decided, and how to hear the number first."
+  canonicalPath="/pricing"
+  ogImage="/og/og-pricing.png"
+  keywords="Huzlly pricing"
 >
   <main>
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareApplicationSchema)} />
-
-    <!-- Hero -->
-    <section class="relative overflow-hidden bg-paper px-4 pt-24 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
-      <!-- Dot-grid texture — this hero's one accent, per DESIGN_SYSTEM.md
-           Section 4. Not combined with an ambient glow in the same area. -->
-      <div class="pointer-events-none absolute inset-0 -z-10 opacity-40
-                  [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)]
-                  [background-size:24px_24px]" aria-hidden="true"></div>
-
-      <div class="mx-auto max-w-3xl text-center">
-        <p class="font-mono text-xs uppercase tracking-widest text-blue-600">Features</p>
-        <h1 class="mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
-          One flow, from proposal to <span class="text-blue-600">a running project.</span>
-        </h1>
-        <p class="mt-6 text-lg sm:text-xl text-ink/70 leading-relaxed max-w-2xl mx-auto">
-          Proposal approval, contract signing, invoicing, and project setup — connected so each
-          step starts the next one on its own. Here's exactly what happens at every stage, who
-          gets notified, and what your client can see along the way.
-        </p>
-        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button href="/waitlist" size="lg" motion>
-            Join the waitlist
-            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
-          </Button>
-          <Button href="#comparisons" variant="outline" size="lg">
-            See how it compares
-          </Button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Is this for you -->
-    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-      <div class="mx-auto max-w-5xl">
-        <SectionHeader eyebrow="Who it's for"
-          title="Built for the person doing the work, not a team"
-          subtitle="Huzlly is intentionally single-user first. That shapes everything below, so it's worth being upfront about it."
-        />
-
-        <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Card variant="elevated" class="p-8">
-            <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <User class="w-5 h-5" stroke-width="1.75" />
-              </span>
-              <h3 class="text-lg font-semibold text-ink font-display">Huzlly is for you if</h3>
-            </div>
-            <ul class="mt-6 space-y-4">
-              {forYou.map((item) => (
-                <li class="flex items-start gap-3">
-                  <Check class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" stroke-width="2" />
-                  <span class="text-sm text-ink/70 leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-
-          <Card variant="flat" class="p-8">
-            <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-rail/30 text-ink/50">
-                <Users class="w-5 h-5" stroke-width="1.75" />
-              </span>
-              <h3 class="text-lg font-semibold text-ink font-display">Not built for</h3>
-            </div>
-            <ul class="mt-6 space-y-4">
-              {notForYou.map((item) => (
-                <li class="flex items-start gap-3">
-                  <X class="mt-0.5 h-4 w-4 flex-shrink-0 text-ink/40" stroke-width="2" />
-                  <span class="text-sm text-ink/70 leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
-        </div>
-      </div>
-    </section>
-
-    <!-- The flow, in full -->
-    <section class="bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-      <div class="mx-auto max-w-5xl">
-        <SectionHeader eyebrow="The flow"
-          title="From an approved proposal to a running project."
-          subtitle="Each step triggers the next one automatically. Here's what starts it, what you control, and what happens for you and your client."
-        />
-
-        <div class="mt-14 flex flex-col gap-6">
-          {steps.map((step, i) => (
-            <Card variant="flat-lift" tick class="p-6 sm:p-8">
-              <div class="flex flex-wrap items-center gap-4">
-                <span class="font-mono text-xs text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-paper shadow-sm">
-                  <step.icon class="w-5 h-5" stroke-width="1.75" />
-                </span>
-                <h3 class="text-xl font-semibold text-ink font-display">{step.title}</h3>
-                <div class="flex flex-wrap gap-2 sm:ml-auto">
-                  {step.chips.map((chip) => (
-                    <Badge variant="neutral">{chip}</Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div class="mt-6 grid grid-cols-1 gap-6 border-t border-rail pt-6 sm:grid-cols-3">
-                <div>
-                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">Triggered by</p>
-                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.trigger}</p>
-                </div>
-                <div>
-                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">You control</p>
-                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.controls}</p>
-                </div>
-                <div>
-                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">What happens</p>
-                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.outcome}</p>
-                </div>
-              </div>
-
-              <p class="mt-6 flex items-start gap-2 border-t border-rail pt-6 text-sm font-medium text-blue-600">
-                <ArrowRight class="mt-0.5 h-4 w-4 flex-shrink-0" stroke-width="2" />
-                {step.next}
-              </p>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Confirmation emails + client portal control, called out separately -->
-    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-      <div class="mx-auto max-w-5xl">
-        <SectionHeader eyebrow="Along the way"
-          title="You're always in the loop. Your client only sees what you allow."
-          subtitle="Two things run underneath every step above — worth calling out on their own."
-        />
-
-        <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Card variant="elevated" class="p-8">
-            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-              <Mail class="w-5 h-5" stroke-width="1.75" />
-            </span>
-            <h3 class="mt-4 text-lg font-semibold text-ink font-display">Confirmation on every decision</h3>
-            <p class="mt-2 text-sm text-ink/70 leading-relaxed">
-              Every time a client approves a proposal, or accepts or rejects a contract, both of
-              you get an email confirming exactly what happened. You never have to open Huzlly
-              just to check whether a client has responded yet.
-            </p>
-          </Card>
-
-          <Card variant="elevated" class="p-8">
-            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-              <ShieldCheck class="w-5 h-5" stroke-width="1.75" />
-            </span>
-            <h3 class="mt-4 text-lg font-semibold text-ink font-display">Client access, on your terms</h3>
-            <p class="mt-2 text-sm text-ink/70 leading-relaxed">
-              The client portal is off by default and set per client, not sitewide. You choose
-              whether each client can see project and task progress, and whether they can message
-              you directly from the portal — independently, for every client you work with.
-            </p>
-          </Card>
-        </div>
-      </div>
-    </section>
-
-    <!-- Comparisons -->
-    <section id="comparisons" class="scroll-mt-20 bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <!-- Hero + What's already decided -->
+    <section class="bg-white px-4 pt-28 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
       <div class="mx-auto max-w-6xl">
-        <SectionHeader eyebrow="Comparisons"
-          title="How Huzlly stacks up"
-          subtitle="Bonsai, HoneyBook, and Dubsado all do parts of this. Here's specifically where Huzlly is different."
+        <SectionHeader
+          as="h1"
+          title={`Pricing built for the person\ndoing the work`}
+          maxWidthClass="max-w-5xl"
+          class="whitespace-pre-line hero-title"
         />
+      </div>
 
-        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          {comparisons.map((c) => (
-            <Card variant="elevated" class="text-left">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
-                <c.icon class="w-5 h-5" stroke-width="1.75" />
-              </span>
-              <h3 class="mt-4 text-base font-semibold text-ink font-display">{c.title}</h3>
-              <p class="mt-2 text-sm text-ink/70 leading-relaxed">{c.body}</p>
-            </Card>
-          ))}
+      <div class="pricing-mesh-card mx-auto mt-24 grid max-w-6xl grid-cols-1 overflow-hidden rounded-2xl lg:grid-cols-12 lg:items-stretch">
+        <div class="flex flex-col justify-center p-8 sm:p-10 lg:col-span-5">
+          <h2 class="font-display text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl">
+            Simple pricing for the way you work.
+          </h2>
+
+          <p class="mt-5 text-base leading-relaxed text-ink/70">
+            Huzlly's pricing is being designed to stay simple, transparent, and accessible for freelancers at every stage.
+          </p>
+
+          <Button href="/waitlist" size="lg" variant="primary" class="mt-10 w-fit group !bg-electric hover:!bg-electric">
+            Get notified when pricing lands
+            <Icon name="ph:caret-right" class="w-4 h-4 transition-transform duration-200 ease-in-out group-hover:translate-x-1" aria-hidden="true" />
+          </Button>
         </div>
 
-        <p class="mt-10 text-center text-sm text-ink/70">
-          Curious what it costs? <a href="/pricing" class="font-medium text-blue-600 hover:text-blue-700">See pricing for lean freelance software &rarr;</a>
-        </p>
+        <div class="p-8 sm:p-10 lg:col-span-7">
+          <div class="flex h-full flex-col justify-center gap-4">
+            {promises.map((promise) => (
+              <div class="rounded-xl bg-gray-100 px-6 py-5 ring-1 ring-ink/5">
+                <div class="flex items-center gap-4">
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white ring-1 ring-ink/5">
+                    <Icon name={promise.icon} class="w-5 h-5 text-electric" aria-hidden="true" />
+                  </span>
+                  <h3 class="font-display text-base font-semibold leading-snug tracking-tight text-ink">{promise.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10 text-center">
+        <Button href="#pricing-faq" variant="outline" size="lg">
+          Read the pricing FAQ
+        </Button>
       </div>
     </section>
 
-    <WaitlistCTA heading="See the flow in action"
-      subheading="Join the waitlist and we'll walk you through how each step fits your workflow — no sales calls, no pressure."
+    <WaitlistCTA
+      heading="Get the inside track on Huzlly pricing"
+      subheading="Be among the first to hear about our plans, pricing, and what's coming next."
+      variant="dark"
     />
+
+    <!-- Pricing FAQ -->
+    <section id="pricing-faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="mt-14">
+          <FAQAccordion items={pricingFaq} />
+        </div>
+
+        <div class="mt-10 text-center">
+          <Button variant="accent" href="/faq">
+            Check the full FAQ
+            <ArrowUpRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+        </div>
+      </div>
+    </section>
   </main>
 </Layout>
+
+<style>
+  .pricing-mesh-card {
+    background-color: #ffffff;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  :global(.hero-title h1) {
+    line-height: 1.3 !important;
+  }
+</style>
