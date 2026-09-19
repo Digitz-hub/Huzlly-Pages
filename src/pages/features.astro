@@ -202,8 +202,10 @@ const softwareApplicationSchema = {
              system — no per-breakpoint scaling. Its three cubic paths were computed by rotating each card's
              fixed 288x116.8 box about its own centre by its CSS rotation (Proposal -3deg, Contract 2.5deg,
              Invoice 2deg, Project -2.5deg) with a throwaway script (not part of the repo), landing the path
-             ends on the rotated bottom/top edges; each curve uses vertical tangents at both ends (control
-             points directly above/below their endpoint). Between 1024 and ~1100px, if this column ever gets
+             ends on each card's inner attach point (34%/66% across, toward the horizontal overlap zone
+             between the two columns — not the outer 66%/34% points) so each curve stays a short gentle S
+             instead of a long sweep; each curve uses vertical tangents at both ends (control points
+             directly above/below their endpoint). Between 1024 and ~1100px, if this column ever gets
              squeezed below the cluster's own width, the ".hero-cluster" rule at the bottom of this file
              scales the whole box down as one unit rather than reworking these coordinates. -->
         <div
@@ -219,12 +221,12 @@ const softwareApplicationSchema = {
             stroke-linecap="round"
             focusable="false"
           >
-            <!-- Proposal (bottom, 66% across; card now in the right column) -> Contract (top, 34% across; left column) -->
-            <path d="M349.07 124.31 C349.07 146.68 108.51 146.68 108.51 169.05" stroke-dasharray="5 6" />
-            <!-- Contract (bottom, 34% across; left column) -> Invoice (top, 66% across; right column) -->
-            <path d="M103.42 285.73 C103.42 309.68 348.09 309.69 348.09 333.64" stroke-dasharray="5 6" />
-            <!-- Invoice (bottom, 66% across; right column) -> Project (top, 34% across; left column) -->
-            <path d="M344.01 450.37 C344.01 472.72 103.42 472.72 103.42 495.07" stroke-dasharray="5 6" />
+            <!-- Proposal (bottom, 34% across; inner side, toward the left column) -> Contract (top, 66% across; inner side, toward the right column) -->
+            <path d="M257.04 129.13 C257.04 151.10 200.58 151.10 200.58 173.07" stroke-dasharray="5 6" />
+            <!-- Contract (bottom, 66% across; inner side, toward the right column) -> Invoice (top, 34% across; inner side, toward the left column) -->
+            <path d="M195.49 289.75 C195.49 310.09 255.99 310.09 255.99 330.43" stroke-dasharray="5 6" />
+            <!-- Invoice (bottom, 34% across; inner side, toward the left column) -> Project (top, 66% across; inner side, toward the right column) -->
+            <path d="M251.91 447.16 C251.91 469.10 195.49 469.10 195.49 491.05" stroke-dasharray="5 6" />
           </svg>
 
           <div class="lg:absolute" style="left:156px; top:10px;">
