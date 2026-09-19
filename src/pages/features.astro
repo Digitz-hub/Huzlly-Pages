@@ -102,7 +102,7 @@ const featureList = [
   'Permission-controlled client portal for documents, project progress, and direct communication',
 ];
 
-// Presentation-only helpers (visual classes and the decorative hero strip).
+// Presentation-only helpers (visual classes).
 const pillBadge =
   'inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]';
 const softShadow = 'shadow-[0_10px_26px_-16px_rgba(20,24,43,0.14)]';
@@ -111,11 +111,11 @@ const liftHover =
 const glow =
   'pointer-events-none absolute inset-[-10%] rounded-full blur-[46px] opacity-[0.18] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
 
-const flowStrip = [
-  { icon: 'ph:file-text-duotone', label: 'Proposal' },
-  { icon: 'ph:signature-duotone', label: 'Contract' },
-  { icon: 'ph:receipt-duotone', label: 'Invoice' },
-  { icon: 'ph:folder-open-duotone', label: 'Project' },
+// Hero trust points (real content). Class strings are written out in full so Tailwind's JIT can see them.
+const heroTrustPoints = [
+  { icon: 'ph:check-bold', label: 'End-to-end freelancer workflow', badge: 'bg-green-100 text-green-600' },
+  { icon: 'ph:lightning-duotone', label: 'Smart automation between steps', badge: 'bg-blue-100 text-blue-600' },
+  { icon: 'ph:users-duotone', label: 'A better experience for your clients', badge: 'bg-violet-100 text-violet-600' },
 ];
 
 const softwareApplicationSchema = {
@@ -168,26 +168,24 @@ const softwareApplicationSchema = {
             See how it compares
           </Button>
         </div>
+      </div>
 
-        <!-- Decorative flow strip -->
-        <ul class="mx-auto mt-14 grid max-w-3xl grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-center sm:gap-2" aria-hidden="true">
-          {flowStrip.map((item, i) => (
-            <>
-              <li class="flex items-center gap-3 rounded-2xl border border-[#e8e9f0] bg-white px-3.5 py-3 text-left shadow-[0_10px_26px_-16px_rgba(20,24,43,0.14)]">
-                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-electric">
-                  <Icon name={item.icon} class="h-5 w-5" aria-hidden="true" />
-                </span>
-                <span class="text-sm font-semibold text-ink">{item.label}</span>
-                {(i === 0 || i === 2) && (
-                  <Icon name="ph:arrow-right-bold" class="ml-auto h-4 w-4 text-blue-300 sm:hidden" aria-hidden="true" />
-                )}
-              </li>
-              {i < flowStrip.length - 1 && (
-                <li class="hidden text-blue-300 sm:flex">
-                  <Icon name="ph:arrow-right-bold" class="h-4 w-4" aria-hidden="true" />
-                </li>
+      <!-- Hero trust points. Real content (semantic list, not aria-hidden). Wider than the text column, so it is
+           its own container; relative z-10 keeps it above the side cards and connectors. Stacked below xl
+           (the three items need ~1055px in one line, which does not fit the container at lg), one row with
+           dividers from xl up. -->
+      <div class="relative z-10 mx-auto mt-14 max-w-6xl">
+        <ul class="mx-auto flex w-fit max-w-full flex-col items-start gap-4 xl:w-auto xl:flex-row xl:items-center xl:justify-center xl:gap-x-8">
+          {heroTrustPoints.map((point, i) => (
+            <li class="flex items-center">
+              {i > 0 && (
+                <span class="mr-8 hidden h-6 w-px bg-gray-200 xl:block" aria-hidden="true"></span>
               )}
-            </>
+              <span class={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
+                <Icon name={point.icon} class="h-5 w-5" aria-hidden="true" />
+              </span>
+              <span class="ml-3 text-base font-normal text-ink/70 xl:whitespace-nowrap">{point.label}</span>
+            </li>
           ))}
         </ul>
       </div>
