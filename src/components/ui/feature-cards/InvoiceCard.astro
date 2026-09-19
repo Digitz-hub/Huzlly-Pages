@@ -1,0 +1,107 @@
+---
+// src/components/ui/feature-cards/InvoiceCard.astro
+// Ported from reference mockup: huzlly-invoice-card.html
+//
+// The reference HTML was a full standalone page (its own <body> centered
+// the card with flex + 64px/48px padding and set a page-level font-family).
+// Only the <article class="card"> itself is kept here; the page-level
+// rules are dropped so this component doesn't leak a background, min-height
+// or font override into the real site. The card already inherits the
+// sitewide Inter font from body (see src/styles/global.css), so no
+// font-family is declared here.
+//
+// The :root custom properties from the reference are moved onto .card so
+// they're scoped to this component instead of being declared globally.
+// The SVG gradient id is renamed to feature-card-grad-invoice (unique per
+// card in this folder) since all 4 reference files reused the same
+// id="grad", which would collide if multiple cards render on one page.
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<article class:list={['card', className]} aria-label="Invoice: Paid">
+  <div class="icon">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <defs>
+        <linearGradient id="feature-card-grad-invoice" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="var(--blue)"/>
+          <stop offset="1" stop-color="var(--violet)"/>
+        </linearGradient>
+      </defs>
+      <path d="M5 21v-16a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16l-3-2l-2 2l-2-2l-2 2l-2-2l-3 2"/><path d="M14 8h-2.5a1.5 1.5 0 0 0 0 3h1a1.5 1.5 0 0 1 0 3h-2.5"/><path d="M12 7v1m0 6v1"/>
+    </svg>
+  </div>
+  <div class="body">
+    <div class="head">
+      <h2 class="title">Invoice</h2>
+      <span class="pill green">Paid</span>
+    </div>
+    <div class="line" style="width:100%"></div>
+    <div class="line" style="width:86%"></div>
+    <div class="line" style="width:52%"></div>
+  </div>
+</article>
+
+<style>
+  .card {
+    --ink: #1e1b3a;
+    --line: #e9eaf2;
+    --border: rgba(110, 100, 220, 0.13);
+    --blue: #3b82f6;
+    --violet: #7c5cf0;
+
+    width: 320px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 22px;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(250,250,255,.92));
+    border: 1px solid var(--border);
+    box-shadow:
+      0 18px 40px -12px rgba(99,102,241,.22),
+      0 4px 12px rgba(30,27,75,.05),
+      inset 0 1px 0 rgba(255,255,255,.9);
+    transform: rotate(2deg);
+    box-sizing: border-box;
+  }
+  .card * {
+    box-sizing: border-box;
+  }
+  .icon {
+    flex: none;
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    background: linear-gradient(145deg, #eaf2ff, #f0eaff);
+    border: 1px solid var(--border);
+    box-shadow: inset 0 1px 0 #fff;
+  }
+  .icon svg {
+    width: 24px; height: 24px;
+    fill: none;
+    stroke: url(#feature-card-grad-invoice);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .body { flex: 1; min-width: 0; }
+  .head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; margin-bottom: 14px;
+  }
+  .title { margin: 0; font-size: 15px; font-weight: 500; color: var(--ink); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 999px;
+    font-size: 12px; font-weight: 500; line-height: 1.4;
+  }
+  .pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .pill.green { background: #e8f7ee; color: #15803d; }
+  .line { height: 6px; border-radius: 3px; background: var(--line); margin-bottom: 8px; }
+  .line:last-child { margin-bottom: 0; }
+</style>
