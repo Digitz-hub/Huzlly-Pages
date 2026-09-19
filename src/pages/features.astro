@@ -2,29 +2,14 @@
 // src/pages/features.astro
 
 import Layout from '../layouts/Layout.astro';
-import SectionHeader from '../components/ui/SectionHeader.astro';
-import Card from '../components/ui/Card.astro';
-import Badge from '../components/ui/Badge.astro';
 import Button from '../components/ui/Button.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
-import {
-  ArrowRight,
-  FileText,
-  Receipt,
-  ListChecks,
-  Users,
-  Check,
-  X,
-  User,
-  Layers,
-  Settings2,
-  Mail,
-  ShieldCheck,
-} from 'lucide-astro';
+import { ArrowRight } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
 
 const steps = [
   {
-    icon: FileText,
+    icon: 'ph:file-text-duotone',
     title: 'Proposal to Contract, Automatically',
     chips: ['Auto-sends on approval', 'Confirmation email to both sides'],
     trigger:
@@ -36,7 +21,7 @@ const steps = [
     next: 'A signed contract is what releases the invoice and creates the project.',
   },
   {
-    icon: Receipt,
+    icon: 'ph:receipt-duotone',
     title: 'Contract Acceptance Creates the Invoice and the Project',
     chips: ['Invoice auto-sent on acceptance', 'Project created automatically'],
     trigger:
@@ -48,7 +33,7 @@ const steps = [
     next: "The project is live. You're logging real work in it within the same minute the contract was signed.",
   },
   {
-    icon: ListChecks,
+    icon: 'ph:list-checks-duotone',
     title: 'Tasks and Time Tracking Inside Every Project',
     chips: ['Per-task timers', 'Auto-rolled project totals'],
     trigger:
@@ -60,7 +45,7 @@ const steps = [
     next: "This is the time you'll bill against — no separate time-tracking app to keep in sync.",
   },
   {
-    icon: Users,
+    icon: 'ph:users-duotone',
     title: 'A Client Portal You Fully Control',
     chips: ['Off by default', 'Set per client, not sitewide'],
     trigger:
@@ -89,17 +74,17 @@ const notForYou = [
 
 const comparisons = [
   {
-    icon: Layers,
+    icon: 'ph:stack-duotone',
     title: 'vs. Bonsai',
     body: 'Bonsai started lean but has grown into a fuller business-management suite, with team seats and enterprise-style add-ons layered on top of the core flow. Huzlly keeps proposal-to-project — including task and time tracking — in one connected flow, at a lower flat price, without the extra layers.',
   },
   {
-    icon: Users,
+    icon: 'ph:users-duotone',
     title: 'vs. HoneyBook',
     body: 'HoneyBook is built with studios and small teams in mind — its pricing and features assume more than one person working a pipeline. Huzlly skips the team layer entirely: one flat rate, built for the person actually doing the client work.',
   },
   {
-    icon: Settings2,
+    icon: 'ph:gear-six-duotone',
     title: 'vs. Dubsado',
     body: 'Dubsado is capable once it’s fully configured — but that configuration is the catch. Workflows, forms, and templates all need building before it does anything for you. Huzlly’s flow already exists, so you’re automating from day one, not week three.',
   },
@@ -111,6 +96,22 @@ const featureList = [
   'Automated contract-to-invoice and project creation on contract acceptance',
   'Per-task time tracking with automatic project-level totals and timesheets',
   'Permission-controlled client portal for documents, project progress, and direct communication',
+];
+
+// Presentation-only helpers (visual classes and the decorative hero strip).
+const pillBadge =
+  'inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]';
+const softShadow = 'shadow-[0_10px_26px_-16px_rgba(20,24,43,0.14)]';
+const liftHover =
+  'transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-16px_rgba(20,24,43,0.20)] motion-reduce:transition-none motion-reduce:hover:translate-y-0';
+const glow =
+  'pointer-events-none absolute inset-[-10%] rounded-full blur-[46px] opacity-[0.18] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
+
+const flowStrip = [
+  { icon: 'ph:file-text-duotone', label: 'Proposal' },
+  { icon: 'ph:signature-duotone', label: 'Contract' },
+  { icon: 'ph:receipt-duotone', label: 'Invoice' },
+  { icon: 'ph:folder-open-duotone', label: 'Project' },
 ];
 
 const softwareApplicationSchema = {
@@ -134,16 +135,19 @@ const softwareApplicationSchema = {
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareApplicationSchema)} />
 
     <!-- Hero -->
-    <section class="relative overflow-hidden bg-paper px-4 pt-24 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
-      <!-- Dot-grid texture — this hero's one accent, per DESIGN_SYSTEM.md
-           Section 4. Not combined with an ambient glow in the same area. -->
-      <div class="pointer-events-none absolute inset-0 -z-10 opacity-40
-                  [background-image:radial-gradient(theme(colors.rail)_1px,transparent_1px)]
-                  [background-size:24px_24px]" aria-hidden="true"></div>
+    <section class="relative isolate overflow-hidden bg-white px-4 pt-24 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
+      <!-- Soft blue glow at the top (CSS only), replaces the old dot-grid. -->
+      <div
+        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(59,78,255,0.14),transparent_70%)]"
+        aria-hidden="true"
+      ></div>
 
       <div class="mx-auto max-w-3xl text-center">
-        <p class="font-mono text-xs uppercase tracking-widest text-blue-600">Features</p>
-        <h1 class="mt-2 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
+        <div class={pillBadge}>
+          <Icon name="ph:sparkle-duotone" class="text-base" aria-hidden="true" />
+          Features
+        </div>
+        <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
           One flow, from proposal to <span class="text-blue-600">a running project.</span>
         </h1>
         <p class="mt-6 text-lg sm:text-xl text-ink/70 leading-relaxed max-w-2xl mx-auto">
@@ -160,162 +164,254 @@ const softwareApplicationSchema = {
             See how it compares
           </Button>
         </div>
+
+        <!-- Decorative flow strip -->
+        <ul class="mx-auto mt-14 grid max-w-3xl grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-center sm:gap-2" aria-hidden="true">
+          {flowStrip.map((item, i) => (
+            <>
+              <li class="flex items-center gap-3 rounded-2xl border border-[#e8e9f0] bg-white px-3.5 py-3 text-left shadow-[0_10px_26px_-16px_rgba(20,24,43,0.14)]">
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-electric">
+                  <Icon name={item.icon} class="h-5 w-5" aria-hidden="true" />
+                </span>
+                <span class="text-sm font-semibold text-ink">{item.label}</span>
+                {(i === 0 || i === 2) && (
+                  <Icon name="ph:arrow-right-bold" class="ml-auto h-4 w-4 text-blue-300 sm:hidden" aria-hidden="true" />
+                )}
+              </li>
+              {i < flowStrip.length - 1 && (
+                <li class="hidden text-blue-300 sm:flex">
+                  <Icon name="ph:arrow-right-bold" class="h-4 w-4" aria-hidden="true" />
+                </li>
+              )}
+            </>
+          ))}
+        </ul>
       </div>
     </section>
 
     <!-- Is this for you -->
-    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-5xl">
-        <SectionHeader eyebrow="Who it's for"
-          title="Built for the person doing the work, not a team"
-          subtitle="Huzlly is intentionally single-user first. That shapes everything below, so it's worth being upfront about it."
-        />
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:user-circle-duotone" class="text-base" aria-hidden="true" />
+            Who it's for
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            Built for the person doing the work, not a team
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Huzlly is intentionally single-user first. That shapes everything below, so it's worth being upfront about it.
+          </p>
+        </div>
 
         <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <Card variant="elevated" class="p-8">
+          <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-8 ${softShadow}`}>
             <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <User class="w-5 h-5" stroke-width="1.75" />
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                <Icon name="ph:user-circle-duotone" class="h-6 w-6" aria-hidden="true" />
               </span>
               <h3 class="text-lg font-semibold text-ink font-display">Huzlly is for you if</h3>
             </div>
             <ul class="mt-6 space-y-4">
               {forYou.map((item) => (
                 <li class="flex items-start gap-3">
-                  <Check class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" stroke-width="2" />
-                  <span class="text-sm text-ink/70 leading-relaxed">{item}</span>
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric">
+                    <Icon name="ph:check-bold" class="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span class="text-base text-ink/70 leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
-          </Card>
+          </div>
 
-          <Card variant="flat" class="p-8">
+          <div class="rounded-2xl bg-gray-100 p-8">
             <div class="flex items-center gap-3">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-rail/30 text-ink/50">
-                <Users class="w-5 h-5" stroke-width="1.75" />
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-ink/50">
+                <Icon name="ph:users-three-duotone" class="h-6 w-6" aria-hidden="true" />
               </span>
-              <h3 class="text-lg font-semibold text-ink font-display">Not built for</h3>
+              <h3 class="text-lg font-semibold text-ink/80 font-display">Not built for</h3>
             </div>
             <ul class="mt-6 space-y-4">
               {notForYou.map((item) => (
                 <li class="flex items-start gap-3">
-                  <X class="mt-0.5 h-4 w-4 flex-shrink-0 text-ink/40" stroke-width="2" />
-                  <span class="text-sm text-ink/70 leading-relaxed">{item}</span>
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink/40">
+                    <Icon name="ph:x-bold" class="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span class="text-base text-ink/60 leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
-          </Card>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- The flow, in full -->
-    <section class="bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-5xl">
-        <SectionHeader eyebrow="The flow"
-          title="From an approved proposal to a running project."
-          subtitle="Each step triggers the next one automatically. Here's what starts it, what you control, and what happens for you and your client."
-        />
-
-        <div class="mt-14 flex flex-col gap-6">
-          {steps.map((step, i) => (
-            <Card variant="flat-lift" tick class="p-6 sm:p-8">
-              <div class="flex flex-wrap items-center gap-4">
-                <span class="font-mono text-xs text-blue-600/70">{String(i + 1).padStart(2, '0')}</span>
-                <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-paper shadow-sm">
-                  <step.icon class="w-5 h-5" stroke-width="1.75" />
-                </span>
-                <h3 class="text-xl font-semibold text-ink font-display">{step.title}</h3>
-                <div class="flex flex-wrap gap-2 sm:ml-auto">
-                  {step.chips.map((chip) => (
-                    <Badge variant="neutral">{chip}</Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div class="mt-6 grid grid-cols-1 gap-6 border-t border-rail pt-6 sm:grid-cols-3">
-                <div>
-                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">Triggered by</p>
-                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.trigger}</p>
-                </div>
-                <div>
-                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">You control</p>
-                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.controls}</p>
-                </div>
-                <div>
-                  <p class="font-mono text-xs uppercase tracking-widest text-ink/50">What happens</p>
-                  <p class="mt-2 text-sm text-ink/70 leading-relaxed">{step.outcome}</p>
-                </div>
-              </div>
-
-              <p class="mt-6 flex items-start gap-2 border-t border-rail pt-6 text-sm font-medium text-blue-600">
-                <ArrowRight class="mt-0.5 h-4 w-4 flex-shrink-0" stroke-width="2" />
-                {step.next}
-              </p>
-            </Card>
-          ))}
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:flow-arrow-duotone" class="text-base" aria-hidden="true" />
+            The flow
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            From an approved proposal to a running project.
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Each step triggers the next one automatically. Here's what starts it, what you control, and what happens for you and your client.
+          </p>
         </div>
+
+        <ol class="relative mt-14 flex flex-col gap-6">
+          <!-- Timeline rail (lg only) -->
+          <div class="pointer-events-none absolute bottom-0 left-[21px] top-10 hidden w-px bg-gradient-to-b from-blue-200 via-blue-100 to-transparent lg:block" aria-hidden="true"></div>
+
+          {steps.map((step, i) => (
+            <li class="relative lg:pl-20">
+              <!-- Timeline node (lg only) -->
+              <span class="absolute left-0 top-8 hidden h-11 w-11 items-center justify-center rounded-full bg-blue-600 font-mono text-sm font-semibold text-white lg:flex" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+                <span class="mb-4 inline-flex h-7 items-center rounded-full bg-blue-600 px-3 font-mono text-xs font-semibold text-white lg:hidden" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                <div class="flex flex-wrap items-center gap-4">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                    <Icon name={step.icon} class="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <h3 class="text-xl font-semibold text-ink font-display">{step.title}</h3>
+                  <div class="flex flex-wrap gap-2 sm:ml-auto">
+                    {step.chips.map((chip) => (
+                      <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">{chip}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div class="rounded-xl bg-gray-50 p-4">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-electric">
+                        <Icon name="ph:lightning-duotone" class="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p class="text-sm font-semibold text-ink">Triggered by</p>
+                    </div>
+                    <p class="mt-3 text-sm text-ink/70 leading-relaxed">{step.trigger}</p>
+                  </div>
+                  <div class="rounded-xl bg-blue-50 p-4">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-electric">
+                        <Icon name="ph:sliders-horizontal-duotone" class="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p class="text-sm font-semibold text-ink">You control</p>
+                    </div>
+                    <p class="mt-3 text-sm text-ink/70 leading-relaxed">{step.controls}</p>
+                  </div>
+                  <div class="rounded-xl bg-blue-100/60 p-4">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-electric">
+                        <Icon name="ph:check-circle-duotone" class="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p class="text-sm font-semibold text-ink">What happens</p>
+                    </div>
+                    <p class="mt-3 text-sm text-ink/70 leading-relaxed">{step.outcome}</p>
+                  </div>
+                </div>
+
+                <p class="mt-6 flex w-full items-start gap-3 rounded-xl bg-[#eef1ff] px-4 py-3 text-sm font-medium text-blue-700">
+                  <Icon name="ph:arrow-right-bold" class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span>{step.next}</span>
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
 
     <!-- Confirmation emails + client portal control, called out separately -->
-    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-5xl">
-        <SectionHeader eyebrow="Along the way"
-          title="You're always in the loop. Your client only sees what you allow."
-          subtitle="Two things run underneath every step above — worth calling out on their own."
-        />
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:seal-check-duotone" class="text-base" aria-hidden="true" />
+            Along the way
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            You're always in the loop. Your client only sees what you allow.
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Two things run underneath every step above — worth calling out on their own.
+          </p>
+        </div>
 
         <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <Card variant="elevated" class="p-8">
-            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-              <Mail class="w-5 h-5" stroke-width="1.75" />
-            </span>
-            <h3 class="mt-4 text-lg font-semibold text-ink font-display">Confirmation on every decision</h3>
+          <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+            <div class="relative flex h-28 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-blue-50 to-white sm:h-32">
+              <span class={glow} aria-hidden="true"></span>
+              <span class="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-electric">
+                <Icon name="ph:envelope-simple-duotone" class="h-7 w-7" aria-hidden="true" />
+              </span>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-ink font-display">Confirmation on every decision</h3>
             <p class="mt-2 text-sm text-ink/70 leading-relaxed">
               Every time a client approves a proposal, or accepts or rejects a contract, both of
               you get an email confirming exactly what happened. You never have to open Huzlly
               just to check whether a client has responded yet.
             </p>
-          </Card>
+          </div>
 
-          <Card variant="elevated" class="p-8">
-            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-              <ShieldCheck class="w-5 h-5" stroke-width="1.75" />
-            </span>
-            <h3 class="mt-4 text-lg font-semibold text-ink font-display">Client access, on your terms</h3>
+          <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+            <div class="relative flex h-28 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-blue-50 to-white sm:h-32">
+              <span class={glow} aria-hidden="true"></span>
+              <span class="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-electric">
+                <Icon name="ph:shield-check-duotone" class="h-7 w-7" aria-hidden="true" />
+              </span>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-ink font-display">Client access, on your terms</h3>
             <p class="mt-2 text-sm text-ink/70 leading-relaxed">
               The client portal is off by default and set per client, not sitewide. You choose
               whether each client can see project and task progress, and whether they can message
               you directly from the portal — independently, for every client you work with.
             </p>
-          </Card>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Comparisons -->
-    <section id="comparisons" class="scroll-mt-20 bg-paper px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+    <section id="comparisons" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-6xl">
-        <SectionHeader eyebrow="Comparisons"
-          title="How Huzlly stacks up"
-          subtitle="Bonsai, HoneyBook, and Dubsado all do parts of this. Here's specifically where Huzlly is different."
-        />
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:scales-duotone" class="text-base" aria-hidden="true" />
+            Comparisons
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            How Huzlly stacks up
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Bonsai, HoneyBook, and Dubsado all do parts of this. Here's specifically where Huzlly is different.
+          </p>
+        </div>
 
         <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {comparisons.map((c) => (
-            <Card variant="elevated" class="text-left">
-              <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-ink text-paper">
-                <c.icon class="w-5 h-5" stroke-width="1.75" />
+            <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 text-left ${softShadow} ${liftHover}`}>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                <Icon name={c.icon} class="h-6 w-6" aria-hidden="true" />
               </span>
-              <h3 class="mt-4 text-base font-semibold text-ink font-display">{c.title}</h3>
+              <h3 class="mt-4 text-lg font-semibold text-ink font-display">{c.title}</h3>
               <p class="mt-2 text-sm text-ink/70 leading-relaxed">{c.body}</p>
-            </Card>
+            </div>
           ))}
         </div>
 
         <p class="mt-10 text-center text-sm text-ink/70">
-          Curious what it costs? <a href="/pricing" class="font-medium text-blue-600 hover:text-blue-700">See pricing for lean freelance software &rarr;</a>
+          Curious what it costs? <a href="/pricing" class="rounded-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">See pricing for lean freelance software &rarr;</a>
         </p>
       </div>
     </section>
