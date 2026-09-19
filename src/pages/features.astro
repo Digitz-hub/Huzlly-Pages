@@ -274,6 +274,39 @@ const softwareApplicationSchema = {
           <ProjectCard />
         </div>
       </div>
+
+      <!-- Decorative dashed connector (centre: Contract -> Invoice), completing Proposal -> Contract -> Invoice ->
+           Project. It leaves the RIGHT-edge midpoint of the Contract card and enters the LEFT-edge midpoint of the
+           Invoice card (both taken on the rotated 288x116.8 cards: Contract +2.5deg, Invoice +2deg, including each
+           wrapper's scale and offsets). Behind the cards AND behind the text column (z-[-1] vs z-0 / z-10); it stays
+           fully visible where it crosses the H1 and paragraph, by design.
+           Anchoring: the Contract end is fixed px from the section's LEFT edge and the Invoice end fixed px from its
+           RIGHT edge, so the horizontal gap changes with viewport width. The SVG box therefore starts at the
+           Contract end (left) and is calc(100% - left - Invoice distance from the right edge) wide; its top is the
+           Invoice end y and its height the y difference. xl (cards at scale-75): start x=207.9, end
+           263.93px from the right, y 166.68 -> 508.51. 2xl (scale-100): start
+           x=327.86, end 367.91px from the right, y 149.58 -> 524.68.
+           Inside, a normalised 100x100 viewBox with preserveAspectRatio="none" stretches one cubic S-curve with
+           HORIZONTAL tangents at both ends (control points at mid-width, same y as their endpoint) to the box, and
+           vector-effect="non-scaling-stroke" keeps stroke width and dash lengths in real screen px. The box is in
+           page px, so no scale-* class. Because the stroke is not scaled, stroke widths and dashes are set to the
+           on-screen values of the other connectors: xl 1.31px (1.75 x 0.75) with a 3.68/4.48 dash,
+           2xl 1.75px with a 5.02/6.06 dash (tuned so the pattern ends on a full dash at 1280/1440
+           and 1536/1920px; at other widths the last dash may be shorter). One path per state. -->
+      <svg
+        class="pointer-events-none absolute z-[-1] hidden overflow-visible xl:block xl:left-[207.9px] xl:top-[166.68px] xl:h-[341.83px] xl:w-[calc(100%-471.83px)] 2xl:left-[327.86px] 2xl:top-[149.58px] 2xl:h-[375.1px] 2xl:w-[calc(100%-695.78px)]"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        fill="none"
+        stroke="#a5b4fc"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path class="2xl:hidden" d="M0 100 C50 100 50 0 100 0" stroke-width="1.31" stroke-dasharray="3.68 4.48" vector-effect="non-scaling-stroke" />
+        <path class="hidden 2xl:inline" d="M0 100 C50 100 50 0 100 0" stroke-dasharray="5.02 6.06" vector-effect="non-scaling-stroke" />
+      </svg>
     </section>
 
     <!-- Is this for you -->
