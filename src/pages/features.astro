@@ -172,19 +172,19 @@ const softwareApplicationSchema = {
 
       <!-- Hero trust points. Real content (semantic list, not aria-hidden). Wider than the text column, so it is
            its own container; relative z-10 keeps it above the side cards and connectors. Stacked below xl
-           (the three items need ~945px in one line, too tight for the 960px container at lg), one row with
+           (the three items need ~855px in one line, too tight for the 960px container at lg), one row with
            dividers from xl up. -->
-      <div class="relative z-10 mx-auto mt-20 max-w-6xl">
-        <ul class="mx-auto flex w-fit max-w-full flex-col items-start gap-4 xl:w-auto xl:flex-row xl:items-center xl:justify-center xl:gap-x-8">
+      <div class="relative z-10 mx-auto mt-32 max-w-6xl">
+        <ul class="mx-auto flex w-fit max-w-full flex-col items-start gap-4 xl:w-auto xl:flex-row xl:items-center xl:justify-center xl:gap-x-6">
           {heroTrustPoints.map((point, i) => (
             <li class="flex items-center">
               {i > 0 && (
-                <span class="mr-8 hidden h-6 w-px bg-gray-200 xl:block" aria-hidden="true"></span>
+                <span class="mr-6 hidden h-6 w-px bg-gray-200 xl:block" aria-hidden="true"></span>
               )}
-              <span class={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
-                <Icon name={point.icon} class="h-[18px] w-[18px]" aria-hidden="true" />
+              <span class={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
+                <Icon name={point.icon} class="h-4 w-4" aria-hidden="true" />
               </span>
-              <span class="ml-3 text-sm font-normal text-ink/70 xl:whitespace-nowrap">{point.label}</span>
+              <span class="ml-3 text-[13px] font-normal text-ink/70 xl:whitespace-nowrap">{point.label}</span>
             </li>
           ))}
         </ul>
