@@ -298,14 +298,23 @@ const softwareApplicationSchema = {
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
         fill="none"
-        stroke="#a5b4fc"
         stroke-width="1.75"
         stroke-linecap="round"
         aria-hidden="true"
         focusable="false"
       >
-        <path class="2xl:hidden" d="M0 100 C50 100 50 0 100 0" stroke-width="1.31" stroke-dasharray="3.68 4.48" vector-effect="non-scaling-stroke" />
-        <path class="hidden 2xl:inline" d="M0 100 C50 100 50 0 100 0" stroke-dasharray="5.02 6.06" vector-effect="non-scaling-stroke" />
+        <defs>
+          <linearGradient id="contract-invoice-connector-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
+            <stop offset="0%" stop-color="#a5b4fc" stop-opacity="1" />
+            <stop offset="10%" stop-color="#a5b4fc" stop-opacity="1" />
+            <stop offset="28%" stop-color="#a5b4fc" stop-opacity="0" />
+            <stop offset="72%" stop-color="#a5b4fc" stop-opacity="0" />
+            <stop offset="90%" stop-color="#a5b4fc" stop-opacity="1" />
+            <stop offset="100%" stop-color="#a5b4fc" stop-opacity="1" />
+          </linearGradient>
+        </defs>
+        <path class="2xl:hidden" d="M0 100 C50 100 50 0 100 0" stroke="url(#contract-invoice-connector-fade)" stroke-width="1.31" stroke-dasharray="3.68 4.48" vector-effect="non-scaling-stroke" />
+        <path class="hidden 2xl:inline" d="M0 100 C50 100 50 0 100 0" stroke="url(#contract-invoice-connector-fade)" stroke-dasharray="5.02 6.06" vector-effect="non-scaling-stroke" />
       </svg>
     </section>
 
