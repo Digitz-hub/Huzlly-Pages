@@ -118,14 +118,6 @@ const heroTrustPoints = [
   { icon: 'ph:users-duotone', label: 'A better experience for your clients', badge: 'bg-violet-100 text-violet-600' },
 ];
 
-// Hero flow steps (Proposal -> Contract -> Invoice -> Project), rendered as a compact card row under the CTAs.
-const heroFlowSteps = [
-  { icon: 'ph:file-text-duotone', title: 'Proposal', subtitle: 'Send and get it signed' },
-  { icon: 'ph:signature-duotone', title: 'Contract', subtitle: 'Automate the next step' },
-  { icon: 'ph:receipt-duotone', title: 'Invoice', subtitle: 'Get paid on time' },
-  { icon: 'ph:kanban-duotone', title: 'Project', subtitle: 'Keep work moving' },
-];
-
 const softwareApplicationSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -176,34 +168,6 @@ const softwareApplicationSchema = {
             See how it compares
           </Button>
         </div>
-      </div>
-
-      <!-- Hero flow steps. Real content (semantic ordered list); the arrows are decorative separator items. Below xl a
-           2x2 grid with no arrows; from xl up one row of four cards with an arrow between each pair. relative z-10
-           keeps it above the side cards and connectors. -->
-      <div class="relative z-10 mx-auto mt-12 max-w-6xl">
-        <ol class="mx-auto grid max-w-xl grid-cols-2 gap-3 sm:gap-4 xl:flex xl:max-w-none xl:items-stretch xl:gap-0">
-          {heroFlowSteps.map((step, i) => (
-            <>
-              <li class="flex min-w-0 xl:flex-1">
-                <div class={`flex w-full items-start gap-3 rounded-2xl border border-[#e8e9f0] bg-white p-4 ${softShadow}`}>
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-electric">
-                    <Icon name={step.icon} class="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <div class="min-w-0">
-                    <p class="text-[15px] font-semibold text-ink">{step.title}</p>
-                    <p class="mt-0.5 text-[13px] leading-snug text-ink/60">{step.subtitle}</p>
-                  </div>
-                </div>
-              </li>
-              {i < heroFlowSteps.length - 1 && (
-                <li class="hidden shrink-0 items-center px-3 xl:flex" aria-hidden="true">
-                  <ArrowRight class="h-5 w-5 text-gray-400" stroke-width="1.75" />
-                </li>
-              )}
-            </>
-          ))}
-        </ol>
       </div>
 
       <!-- Hero trust points. Real content (semantic list, not aria-hidden). Wider than the text column, so it is
