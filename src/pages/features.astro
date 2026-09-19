@@ -192,6 +192,23 @@ const softwareApplicationSchema = {
         </ul>
       </div>
 
+      <!-- Decorative dashed connector (left: Proposal -> Contract). Sits behind the cards (z-[-1]) and is locked to the
+           left card wrappers: same origin, scale and horizontal anchoring, box top/height derived from the
+           wrapper offsets + 288x116.8 card box + card rotations. The wrappers' top offsets are not scaled, so
+           the gap in local units differs at xl (scale-75) vs 2xl (scale-100): one path per state. -->
+      <svg
+        class="pointer-events-none absolute z-[-1] hidden origin-top-left overflow-visible xl:block xl:left-0 xl:top-[310px] xl:h-[203px] xl:w-[288px] xl:scale-75 2xl:left-8 2xl:top-[340px] 2xl:h-[123px] 2xl:scale-100"
+        fill="none"
+        stroke="#a5b4fc"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path class="2xl:hidden" d="M75.16 0.49 C75.16 100.27 135.88 100.27 135.88 200.06" stroke-dasharray="4.95 5.94" />
+        <path class="hidden 2xl:inline" d="M75.16 0.49 C75.16 60.27 154.55 60.27 154.55 120.06" stroke-dasharray="5.07 6.08" />
+      </svg>
+
       <!-- Decorative hero side cards (left): Proposal above Contract, staggered. -->
       <div class="contents" aria-hidden="true">
         <div
@@ -207,6 +224,23 @@ const softwareApplicationSchema = {
           <ContractCard />
         </div>
       </div>
+
+      <!-- Decorative dashed connector (right: Invoice -> Project). Sits behind the cards (z-[-1]) and is locked to the
+           right card wrappers: same origin, scale and horizontal anchoring, box top/height derived from the
+           wrapper offsets + 288x116.8 card box + card rotations. The wrappers' top offsets are not scaled, so
+           the gap in local units differs at xl (scale-75) vs 2xl (scale-100): one path per state. -->
+      <svg
+        class="pointer-events-none absolute z-[-1] hidden origin-top-right overflow-visible xl:block xl:right-0 xl:top-[307.75px] xl:h-[208px] xl:w-[288px] xl:scale-75 2xl:right-8 2xl:top-[337px] 2xl:h-[128px] 2xl:scale-100"
+        fill="none"
+        stroke="#a5b4fc"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path class="2xl:hidden" d="M170.74 0.77 C170.74 103.17 94.57 103.17 94.57 205.57" stroke-dasharray="4.96 5.96" />
+        <path class="hidden 2xl:inline" d="M170.74 0.77 C170.74 63.17 75.91 63.17 75.91 125.57" stroke-dasharray="4.84 5.81" />
+      </svg>
 
       <!-- Decorative hero side cards (right): Invoice above Project, staggered. -->
       <div class="contents" aria-hidden="true">
