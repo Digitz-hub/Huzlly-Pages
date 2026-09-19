@@ -194,9 +194,10 @@ const softwareApplicationSchema = {
              centered flex column (a simplified stack with short dashed connectors between pairs); from lg
              up the same wrappers switch to "lg:absolute" and are placed by inline left/top (px, matching
              the geometry below) inside this relatively-positioned 452x624px box, cascading in a zigzag
-             (col A = 8px from the left, col B = 156px, i.e. 8px from the right; a constant 44.2px gap
-             between rows). Inline styles are used for these positions (not Tailwind classes) since they're
-             derived numbers, not part of the design system. The desktop connectors are a single SVG overlay
+             that alternates right, left, right, left (Proposal and Invoice sit in the right column at
+             left:156px, i.e. 8px from the right edge; Contract and Project sit in the left column at
+             left:8px; a constant 44.2px gap between rows). Inline styles are used for these positions (not
+             Tailwind classes) since they're derived numbers, not part of the design system. The desktop connectors are a single SVG overlay
              sized to the same 452x624 box (viewBox matches 1:1), so cards and paths share one coordinate
              system — no per-breakpoint scaling. Its three cubic paths were computed by rotating each card's
              fixed 288x116.8 box about its own centre by its CSS rotation (Proposal -3deg, Contract 2.5deg,
@@ -218,30 +219,30 @@ const softwareApplicationSchema = {
             stroke-linecap="round"
             focusable="false"
           >
-            <!-- Proposal (bottom, 66% across) -> Contract (top, 34% across) -->
-            <path d="M201.07 124.31 C201.07 146.68 256.51 146.68 256.51 169.05" stroke-dasharray="5 6" />
-            <!-- Contract (bottom, 34% across) -> Invoice (top, 66% across) -->
-            <path d="M251.42 285.73 C251.42 309.69 200.09 309.69 200.09 333.64" stroke-dasharray="5 6" />
-            <!-- Invoice (bottom, 66% across) -> Project (top, 34% across) -->
-            <path d="M196.01 450.37 C196.01 472.72 251.42 472.72 251.42 495.07" stroke-dasharray="5 6" />
+            <!-- Proposal (bottom, 66% across; card now in the right column) -> Contract (top, 34% across; left column) -->
+            <path d="M349.07 124.31 C349.07 146.68 108.51 146.68 108.51 169.05" stroke-dasharray="5 6" />
+            <!-- Contract (bottom, 34% across; left column) -> Invoice (top, 66% across; right column) -->
+            <path d="M103.42 285.73 C103.42 309.68 348.09 309.69 348.09 333.64" stroke-dasharray="5 6" />
+            <!-- Invoice (bottom, 66% across; right column) -> Project (top, 34% across; left column) -->
+            <path d="M344.01 450.37 C344.01 472.72 103.42 472.72 103.42 495.07" stroke-dasharray="5 6" />
           </svg>
 
-          <div class="lg:absolute" style="left:8px; top:10px;">
+          <div class="lg:absolute" style="left:156px; top:10px;">
             <ProposalCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:156px; top:171px;">
+          <div class="lg:absolute" style="left:8px; top:171px;">
             <ContractCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:8px; top:332px;">
+          <div class="lg:absolute" style="left:156px; top:332px;">
             <InvoiceCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:156px; top:493px;">
+          <div class="lg:absolute" style="left:8px; top:493px;">
             <ProjectCard />
           </div>
         </div>
