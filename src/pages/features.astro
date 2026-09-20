@@ -62,21 +62,18 @@ const steps = [
   },
 ];
 
-// Splits a string on the "**" markers; every odd-numbered segment is a bold phrase.
-const splitBold = (text: string) => text.split('**');
-
 const forYou = [
-  'You\u2019re a solo freelancer working as a **designer, developer, marketer, writer, or video editor**, managing your own clients and projects.',
-  'You handle **proposals, contracts, invoices, projects, and tasks** yourself and want them organized in one place.',
-  'You manage multiple client projects and want to keep **deadlines, tasks, payments, and client updates** easy to track.',
-  'You want to spend less time dealing with the **business side of freelancing** and keep your work organized from start to finish.',
+  'You\u2019re a solo freelancer working as a designer, developer, marketer, writer, or video editor, managing your own clients and projects.',
+  'You handle proposals, contracts, invoices, projects, and tasks yourself and want them organized in one place.',
+  'You manage multiple client projects and want to keep deadlines, tasks, payments, and client updates easy to track.',
+  'You want to spend less time dealing with the business side of freelancing and keep your work organized from start to finish.',
 ];
 
 const notForYou = [
-  'Agencies or studios that need **multiple users, roles, or approval workflows**.',
-  'Teams that need to **collaborate on projects with multiple team members** inside the same workspace.',
-  'Businesses looking for a **fully customizable CRM or team-management platform** rather than a freelance business workspace.',
-  'Businesses that need **multi-seat access and shared workflows** across a larger team.',
+  'Agencies or studios that need multiple users, roles, or approval workflows.',
+  'Teams that need to collaborate on projects with multiple team members inside the same workspace.',
+  'Businesses looking for a fully customizable CRM or team-management platform rather than a freelance business workspace.',
+  'Businesses that need multi-seat access and shared workflows across a larger team.',
 ];
 
 const comparisons = [
@@ -345,12 +342,8 @@ const softwareApplicationSchema = {
             <Icon name="ph:user-circle-duotone" class="text-base" aria-hidden="true" />
             Who it's for
           </div>
-          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
-            Built for the person doing the work, not a team
-          </h2>
-          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
-            Huzlly is intentionally single-user first. That shapes everything below, so it's worth being upfront about it.
-          </p>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">Built for the freelancer behind the work, not a team</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">Designed around the way individual freelancers work. See below who it’s for and if it’s right for you.</p>
         </div>
 
         <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -367,7 +360,7 @@ const softwareApplicationSchema = {
                   <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric">
                     <Icon name="ph:check-bold" class="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
-                  <span class="text-base text-ink/70 leading-relaxed">{splitBold(item).map((part, i) => (i % 2 === 1 ? <strong class="font-semibold text-ink">{part}</strong> : part))}</span>
+                  <span class="text-base text-ink/70 leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
@@ -386,7 +379,7 @@ const softwareApplicationSchema = {
                   <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink/40">
                     <Icon name="ph:x-bold" class="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
-                  <span class="text-base text-ink/60 leading-relaxed">{splitBold(item).map((part, i) => (i % 2 === 1 ? <strong class="font-semibold text-ink/80">{part}</strong> : part))}</span>
+                  <span class="text-base text-ink/60 leading-relaxed">{item}</span>
                 </li>
               ))}
             </ul>
