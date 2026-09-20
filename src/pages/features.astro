@@ -140,25 +140,33 @@ const softwareApplicationSchema = {
 
     <!-- Hero.
          A centered hero in three stacked parts, top to bottom: (1) the text block, (2) a decorative
-         flat, slightly U-shaped row of the four feature cards, (3) the trust points as a row of white chips.
+         flat, slightly U-shaped row of the four feature cards (desktop only: hidden below lg, so on
+         tablets and phones the hero is just the text block followed by the chips), (3) the trust
+         points as a row of white chips.
          Background: a full-bleed sky-blue vertical gradient on the section itself (CSS only, no image
          files). It stays deep blue from the top down to about 640px (a pixel stop, not a percentage, so
          the text zone is equally dark whatever the section height is at each breakpoint: white paragraph
          text needs >= 4.5:1 there), then lightens to pale sky at the very bottom, which only sits behind
-         the lower half of the card row and the chips. Five blurred white blobs (bg-white + blur-3xl, all
+         the lower half of the card row and the chips. Below lg the card row is gone and the hero is
+         only ~600-810px tall, so a px stop would cross the percentage stop and clamp into a hard step;
+         there the stops are percentages instead (deep blue down to 74%, which is below the buttons, pale sky by 100%), and the three upper
+         cloud blobs (the two large side ones and the centre one) are hidden: on the short hero they
+         would sit right behind the buttons and wash out the outline button's white text. The two
+         lower side blobs stay but are flattened (h-24, flush with the bottom) so they sit behind the
+         chips and stay clear of the buttons. Five blurred white blobs (bg-white + blur-3xl, all
          aria-hidden and pointer-events-none, -z-10) act as clouds, concentrated in the lower half and at
          the sides, and a short fade at the bottom edge blends into the next section's colour
          (bg-gray-50/70 over the white page = #fbfbfc) instead of ending on a hard line. The fixed white
          Nav overlays the top 60-64px; the section's top padding (pt-24 / sm:pt-28 / lg:pt-32) keeps the
          pill clear of it. -->
-    <section class="relative isolate overflow-hidden bg-[linear-gradient(180deg,#1a47cc_0px,#2557e2_640px,#5aa2ff_78%,#9fd0ff_100%)] px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:px-8 lg:pt-32 lg:pb-24">
+    <section class="relative isolate overflow-hidden bg-[linear-gradient(180deg,#1a47cc_0%,#2557e2_74%,#5aa2ff_92%,#9fd0ff_100%)] px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:bg-[linear-gradient(180deg,#1a47cc_0px,#2557e2_640px,#5aa2ff_78%,#9fd0ff_100%)] lg:px-8 lg:pt-32 lg:pb-24">
       <!-- Clouds -->
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        <div class="absolute -left-24 bottom-40 h-56 w-[26rem] rounded-full bg-white/40 blur-3xl"></div>
-        <div class="absolute -right-28 bottom-44 h-60 w-[28rem] rounded-full bg-white/40 blur-3xl"></div>
-        <div class="absolute left-[6%] bottom-4 h-44 w-[34rem] rounded-full bg-white/60 blur-3xl"></div>
-        <div class="absolute right-[5%] bottom-6 h-48 w-[36rem] rounded-full bg-white/60 blur-3xl"></div>
-        <div class="absolute left-1/2 bottom-24 h-40 w-[40rem] -translate-x-1/2 rounded-full bg-white/50 blur-3xl"></div>
+        <div class="absolute -left-24 bottom-40 hidden h-56 w-[26rem] rounded-full bg-white/40 blur-3xl lg:block"></div>
+        <div class="absolute -right-28 bottom-44 hidden h-60 w-[28rem] rounded-full bg-white/40 blur-3xl lg:block"></div>
+        <div class="absolute left-[6%] bottom-0 h-24 w-[34rem] lg:bottom-4 lg:h-44 rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute right-[5%] bottom-0 h-24 w-[36rem] lg:bottom-6 lg:h-48 rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute left-1/2 bottom-24 hidden h-40 w-[40rem] -translate-x-1/2 rounded-full bg-white/50 blur-3xl lg:block"></div>
       </div>
       <!-- Bottom fade into the next section -->
       <div
@@ -199,10 +207,10 @@ const softwareApplicationSchema = {
         <!-- Decorative card row (aria-hidden, pointer-events-none on the container). One wrapper
              structure per card, rendered exactly once (the cards' inline SVG gradients use fixed ids, so
              no duplicate copies): a single ".hero-arc-card" wrapper > the card component.
-             Below lg the outer wrappers are plain blocks in a centered flex column (a simplified
-             stack) with short white-ish dashed spans between cards, and the row/hover rules in
-             the <style> block below simply don't apply. From lg up the container becomes a relative
-             200px-tall "stage", and each outer wrapper is absolutely positioned from the stage's
+             The whole card row is desktop-only: the container is display:none below lg (under 1024px,
+             tablets included), so no card is laid out or painted there, and the row/hover rules in
+             the <style> block below (all inside lg+ media queries) simply don't apply. From lg up the
+             container is a relative 200px-tall "stage", and each outer wrapper is absolutely positioned from the stage's
              horizontal centre (left:50%) by CSS custom properties set inline here:
                --tx  horizontal offset from centre   --ty  vertical drop (the U)
                --rz  compensating z-rotation         --s   scale (1 for all four)
@@ -242,9 +250,10 @@ const softwareApplicationSchema = {
              <linearGradient> (userSpaceOnUse, from the start point to 66px straight up, unique ids
              hero-trail-*) fades the white stroke from 0.85 to 0. Not clipped, not animated; the
              trails never take the pointer (pointer-events-none) and stay still while a card is hovered
-             (the card lifts on top of them). Below lg the SVG is display:none. -->
+             (the card lifts on top of them). The trails need no rule of their own for
+             hiding: the whole stage (and so the SVG) is hidden below lg. -->
         <div
-          class="hero-stage pointer-events-none mt-14 flex flex-col items-center gap-8 lg:relative lg:mx-auto lg:mt-10 lg:block lg:w-full"
+          class="hero-stage pointer-events-none hidden lg:relative lg:mx-auto lg:mt-10 lg:block lg:w-full"
           aria-hidden="true"
         >
           <svg
@@ -287,18 +296,12 @@ const softwareApplicationSchema = {
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-468px; --ty:0px; --rz:9deg; --s:1; --z:1;">
             <ProposalCard />
           </div>
-          <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
-
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-157px; --ty:40px; --rz:-0.5deg; --s:1; --z:2;">
             <ContractCard />
           </div>
-          <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
-
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:157px; --ty:40px; --rz:-4deg; --s:1; --z:2;">
             <InvoiceCard />
           </div>
-          <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
-
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:468px; --ty:0px; --rz:-3.5deg; --s:1; --z:1;">
             <ProjectCard />
           </div>
@@ -308,7 +311,7 @@ const softwareApplicationSchema = {
              a centered, wrapping row of white chips (they carry their own light background, so the dark
              ink text stays readable over the light lower part of the gradient). Each chip keeps its
              coloured icon circle. Class strings are written out in full so Tailwind's JIT can see them. -->
-        <ul class="relative mt-10 flex flex-wrap justify-center gap-3 lg:mt-12">
+        <ul class="relative mt-12 flex flex-wrap justify-center gap-3 lg:mt-12">
           {heroTrustPoints.map((point) => (
             <li class="flex items-center gap-2.5 rounded-full bg-white/90 py-1.5 pl-1.5 pr-4 shadow-[0_8px_20px_-10px_rgba(20,24,43,0.35)]">
               <span class={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
@@ -322,7 +325,7 @@ const softwareApplicationSchema = {
     </section>
 
     <style>
-      /* Card row and hover (lg and up only; below lg the cards are a plain stack).
+      /* Card row and hover (lg and up only; the whole row is hidden below lg).
          Structure per card: .hero-arc-card (position + flat transform + hover transition)
                              > the card component.
          The stage also holds the decorative trails <svg> (first child, lg+ only, no z-index so it sits
