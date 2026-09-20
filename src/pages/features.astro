@@ -138,113 +138,207 @@ const softwareApplicationSchema = {
   <main>
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareApplicationSchema)} />
 
-    <!-- Hero -->
-    <section class="relative isolate overflow-hidden bg-white px-4 pt-24 pb-20 sm:px-6 sm:pt-28 sm:pb-24 lg:px-8 lg:py-28">
-      <!-- Soft blue glow at the top (CSS only), replaces the old dot-grid. -->
+    <!-- Hero.
+         A centered hero in three stacked parts, top to bottom: (1) the text block, (2) a decorative
+         cover-flow style arc of the four feature cards, (3) the trust points as a row of white chips.
+         Background: a full-bleed sky-blue vertical gradient on the section itself (CSS only, no image
+         files). It stays deep blue from the top down to about 640px (a pixel stop, not a percentage, so
+         the text zone is equally dark whatever the section height is at each breakpoint: white paragraph
+         text needs >= 4.5:1 there), then lightens to pale sky at the very bottom, which only sits behind
+         the lower half of the arc and the chips. Five blurred white blobs (bg-white + blur-3xl, all
+         aria-hidden and pointer-events-none, -z-10) act as clouds, concentrated in the lower half and at
+         the sides, and a short fade at the bottom edge blends into the next section's colour
+         (bg-gray-50/70 over the white page = #fbfbfc) instead of ending on a hard line. The fixed white
+         Nav overlays the top 60-64px; the section's top padding (pt-24 / sm:pt-28 / lg:pt-32) keeps the
+         pill clear of it. -->
+    <section class="relative isolate overflow-hidden bg-[linear-gradient(180deg,#1a47cc_0px,#2557e2_640px,#5aa2ff_78%,#9fd0ff_100%)] px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:px-8 lg:pt-32 lg:pb-24">
+      <!-- Clouds -->
+      <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div class="absolute -left-24 bottom-40 h-56 w-[26rem] rounded-full bg-white/40 blur-3xl"></div>
+        <div class="absolute -right-28 bottom-44 h-60 w-[28rem] rounded-full bg-white/40 blur-3xl"></div>
+        <div class="absolute left-[6%] bottom-4 h-44 w-[34rem] rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute right-[5%] bottom-6 h-48 w-[36rem] rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute left-1/2 bottom-24 h-40 w-[40rem] -translate-x-1/2 rounded-full bg-white/50 blur-3xl"></div>
+      </div>
+      <!-- Bottom fade into the next section -->
       <div
-        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(59,78,255,0.14),transparent_70%)]"
+        class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-16 bg-gradient-to-b from-transparent to-[#fbfbfc] sm:h-20 lg:h-24"
         aria-hidden="true"
       ></div>
 
-      <!-- Split layout from lg up: text column (flexible) + a fixed-width card
-           cluster column (452px wide, see below). Below lg, both children just
-           stack as normal block content (text, then the simplified card
-           stack), so no grid classes are needed outside lg. -->
-      <div class="relative z-10 mx-auto max-w-6xl lg:grid lg:grid-cols-[minmax(0,1fr)_452px] lg:items-center lg:gap-12 xl:gap-16">
-        <!-- Text column -->
-        <div class="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-none lg:text-left">
-          <div class={pillBadge}>
+      <div class="relative z-10 mx-auto max-w-6xl">
+        <!-- Text block: centered at every breakpoint. White on the deep-blue top of the gradient; the
+             pill is translucent white, and the H1 accent uses a pale sky tint (blue-600 would vanish on
+             blue). The outline button is restyled with "!" overrides because Button.astro just appends
+             the class prop after its own variant classes. -->
+        <div class="mx-auto max-w-4xl text-center">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-sm font-medium text-white backdrop-blur">
             <Icon name="ph:sparkle-duotone" class="text-base" aria-hidden="true" />
             Features
           </div>
-          <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-4xl xl:text-5xl font-semibold tracking-tight text-ink leading-[1.08]">
-            One flow, from proposal to <span class="text-blue-600">a running project.</span>
+          <h1 class="mx-auto mt-6 max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            One flow, from proposal to <span class="text-sky-200">a running project.</span>
           </h1>
-          <p class="mt-6 max-w-2xl text-lg text-ink/70 leading-relaxed sm:text-xl lg:mx-0 lg:max-w-md lg:text-base xl:max-w-lg xl:text-lg mx-auto">
+          <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">
             Proposal approval, contract signing, invoicing, and project setup — connected so each
             step starts the next one on its own. Here's exactly what happens at every stage, who
             gets notified, and what your client can see along the way.
           </p>
-          <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap lg:justify-start">
+          <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
             <Button href="/waitlist" size="lg" motion class="shrink-0 whitespace-nowrap">
               Join the waitlist
               <ArrowRight class="w-4 h-4" stroke-width="1.75" />
             </Button>
-            <Button href="#comparisons" variant="outline" size="lg" class="shrink-0 whitespace-nowrap">
+            <Button
+              href="#comparisons"
+              variant="outline"
+              size="lg"
+              class="shrink-0 whitespace-nowrap !border-white/40 !bg-white/10 !text-white backdrop-blur-sm hover:!border-white/60 hover:!bg-white/20 focus-visible:!outline-white"
+            >
               See how it compares
             </Button>
           </div>
-
-          <!-- Hero trust points. Real content (semantic list, not aria-hidden). A compact, always-vertical
-               list: mx-auto/w-fit centers the block itself below lg while items-start keeps each line
-               left-aligned within it; at lg the block just hugs the left edge instead. -->
-          <ul class="mx-auto mt-8 flex w-fit max-w-full flex-col items-start gap-3 lg:mx-0 lg:mt-10">
-            {heroTrustPoints.map((point) => (
-              <li class="flex items-center gap-3">
-                <span class={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
-                  <Icon name={point.icon} class="h-4 w-4" aria-hidden="true" />
-                </span>
-                <span class="text-[13px] font-normal text-ink/70">{point.label}</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        <!-- Decorative card cluster. One wrapper per card, rendered exactly once, in DOM order Proposal,
-             Contract, Invoice, Project. Below lg it's a plain centered flex column (a simplified stack with
-             short dashed connectors between pairs). From lg up the same wrappers switch to "lg:absolute" and
-             are placed by inline left/top (px) inside this relatively-positioned 452px wide, 404px tall box
-             as an overlapping "fanned deck": each card sits about 80px lower than the one before it (tops
-             24px, 104px, 184px, 264px), so it covers the lower part of the previous card while that card's
-             header row (icon, title and status pill) stays fully visible. The lefts alternate slightly
-             (Proposal 44px, Contract 118px, Invoice 60px, Project 124px) for a loose, organic deck look, and
-             keep the rotated deck roughly centred in the box with about 38-41px of free space on each
-             side. Every card keeps its own tilt (Proposal -3deg, Contract 2.5deg, Invoice 2deg, Project
-             -2.5deg, about its centre), so nothing is clipped at the box edges. Stacking simply follows DOM
-             order (later siblings paint on top, no z-index needed), which puts Project, the last step,
-             fully visible on top. The overlap itself conveys the order, so the desktop layout has no
-             connector lines. Inline styles are used for the positions (not Tailwind classes) since they're
-             derived numbers, not part of the design system. The box height (404px) fits the deck: the
-             rotated top of the first card and the rotated bottom of the last card each sit about 17px from
-             the box edges. The grid parent's "lg:items-center" centres the cluster vertically against the
-             text column. Between 1024 and ~1100px, if this column ever gets squeezed below the cluster's
-             own width, the ".hero-cluster" rule at the bottom of this file scales the whole box down as
-             one unit rather than reworking these coordinates. -->
+        <!-- Decorative card cluster (aria-hidden, pointer-events-none on the container). One wrapper
+             structure per card, rendered exactly once (the cards' inline SVG gradients use fixed ids, so
+             no duplicate copies): OUTER ".hero-arc-card" > INNER ".hero-arc-float" > the card component.
+             Below lg the outer wrappers are plain blocks in a centered flex column (a simplified
+             stack) with short white-ish dashed spans between cards, and the arc/float/hover rules in
+             the <style> block below simply don't apply. From lg up the container becomes a relative
+             240px-tall "stage" with perspective 1400px, and each outer wrapper is absolutely positioned
+             from the stage's horizontal centre (left:50%) by CSS custom properties set inline here:
+               --tx  horizontal offset from centre   --ty  extra drop     --s  scale
+               --ry  rotateY angle                   --z   stacking order (inner cards above outer)
+             Left to right: Proposal  -400px / +38deg, Contract -150px / +14deg, Invoice +150px / -14deg,
+             Project +400px / -38deg. The two outer cards are 30px lower and scaled 0.9; inner cards are
+             unscaled with no drop. A positive rotateY makes a card's right edge recede, so the left
+             cards turn toward the centre and the right cards turn toward it from the other side, which
+             gives the inward-curving arc; flipping the arc's curvature is just negating the four --ry
+             values. Each card keeps its own small z-rotation from its component. The outer wrapper owns
+             the 3D transform and the hover transition, the inner wrapper owns only the float animation,
+             so the two never fight over "transform". Below 1280px the whole stage is scaled as ONE unit
+             (see the <style> block) rather than reworking these numbers. -->
         <div
-          class="hero-cluster mt-14 flex flex-col items-center gap-8 pointer-events-none lg:relative lg:mt-0 lg:block lg:h-[404px] lg:w-[452px] lg:gap-0"
+          class="hero-stage pointer-events-none mt-14 flex flex-col items-center gap-8 lg:relative lg:mx-auto lg:mt-10 lg:block lg:w-full"
           aria-hidden="true"
         >
-          <div class="lg:absolute" style="left:44px; top:24px;">
-            <ProposalCard />
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[28px]" style="--tx:-400px; --ty:30px; --ry:38deg; --s:0.9; --z:1;">
+            <div class="hero-arc-float" style="--d:-1s;">
+              <ProposalCard />
+            </div>
           </div>
-          <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
+          <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:118px; top:104px;">
-            <ContractCard />
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[28px]" style="--tx:-150px; --ty:0px; --ry:14deg; --s:1; --z:2;">
+            <div class="hero-arc-float" style="--d:-3.5s;">
+              <ContractCard />
+            </div>
           </div>
-          <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
+          <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:60px; top:184px;">
-            <InvoiceCard />
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[28px]" style="--tx:150px; --ty:0px; --ry:-14deg; --s:1; --z:2;">
+            <div class="hero-arc-float" style="--d:-2s;">
+              <InvoiceCard />
+            </div>
           </div>
-          <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
+          <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:124px; top:264px;">
-            <ProjectCard />
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[28px]" style="--tx:400px; --ty:30px; --ry:-38deg; --s:0.9; --z:1;">
+            <div class="hero-arc-float" style="--d:-4.8s;">
+              <ProjectCard />
+            </div>
           </div>
         </div>
+
+        <!-- Hero trust points. Real content (a semantic list, NOT aria-hidden), placed after the cards:
+             a centered, wrapping row of white chips (they carry their own light background, so the dark
+             ink text stays readable over the light lower part of the gradient). Each chip keeps its
+             coloured icon circle. Class strings are written out in full so Tailwind's JIT can see them. -->
+        <ul class="relative mt-10 flex flex-wrap justify-center gap-3 lg:mt-12">
+          {heroTrustPoints.map((point) => (
+            <li class="flex items-center gap-2.5 rounded-full bg-white/90 py-1.5 pl-1.5 pr-4 shadow-[0_8px_20px_-10px_rgba(20,24,43,0.35)]">
+              <span class={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
+                <Icon name={point.icon} class="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+              <span class="text-[13px] font-medium text-ink/80">{point.label}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
 
     <style>
-      /* Safety net: the text column is a flexible (minmax(0,1fr)) grid track next to the fixed 452px
-         cluster, so at 1024px+ it already has ~460px+ to work with and this rule shouldn't normally fire.
-         If a narrower content width ever squeezes that column below the cluster's own footprint in the
-         1024-1099px range, shrink the whole cluster as one unit instead of touching its coordinates. */
-      @media (min-width: 1024px) and (max-width: 1099px) {
-        .hero-cluster {
-          transform: scale(0.88);
+      /* Card arc, float and hover (lg and up only; below lg the cards are a plain stack).
+         Structure per card: .hero-arc-card (position + 3D transform + hover transition)
+                             > .hero-arc-float (float keyframes only) > the card. */
+      @keyframes hero-arc-float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      @media (min-width: 1024px) {
+        /* Stage: perspective for the rotateY tilt, plus a single scale knob (--k) used below 1280px.
+           The negative margin-bottom hands back the layout height the scale removes (height * (k - 1)),
+           and transform-origin top center keeps the stage centred under the text. */
+        .hero-stage {
+          --h: 240px;
+          --k: 1;
+          height: var(--h);
+          perspective: 1400px;
+          transform: scale(var(--k));
           transform-origin: top center;
+          margin-bottom: calc(var(--h) * (var(--k) - 1));
+        }
+        .hero-arc-card {
+          z-index: var(--z);
+          transform: translate3d(calc(-50% + var(--tx)), var(--ty), 0) rotateY(var(--ry)) scale(var(--s));
+        }
+      }
+
+      /* 1024-1279px: shrink the whole stage as one unit (arc half-width is ~520px unscaled). */
+      @media (min-width: 1024px) and (max-width: 1279px) {
+        .hero-stage {
+          --k: 0.8;
+        }
+      }
+
+      /* Float: gentle 0 -> -8px -> 0, ~6s, staggered by each card's negative --d delay. Skipped
+         entirely for prefers-reduced-motion: reduce. */
+      @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+        .hero-arc-float {
+          animation: hero-arc-float 6s ease-in-out infinite;
+          animation-delay: var(--d, 0s);
+        }
+      }
+
+      /* Hover (mouse-like devices only, and never with reduced motion): the outer wrapper re-enables
+         pointer events (the stage itself stays pointer-events: none), and on hover the card lifts 10px,
+         its rotateY halves, it scales up 4% and rises above its neighbours. The ::after strip extends
+         the hover area 14px below the card, so the lift can't slide the card out from under a cursor
+         resting on its bottom edge and make it flicker. */
+      @media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+        .hero-arc-card {
+          pointer-events: auto;
+          transition: transform 0.38s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        .hero-arc-card::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 100%;
+          height: 14px;
+        }
+        .hero-arc-card:hover {
+          z-index: 10;
+          transform: translate3d(calc(-50% + var(--tx)), calc(var(--ty) - 10px), 0) rotateY(calc(var(--ry) * 0.5))
+            scale(calc(var(--s) * 1.04));
         }
       }
     </style>
