@@ -62,18 +62,21 @@ const steps = [
   },
 ];
 
+// Splits a string on the "**" markers; every odd-numbered segment is a bold phrase.
+const splitBold = (text: string) => text.split('**');
+
 const forYou = [
-  'You\u2019re a solo freelancer, consultant, coach, or designer running your own client pipeline.',
-  'You send proposals, contracts, and invoices yourself, and want project and time tracking in the same place.',
-  'You want one flat price instead of a bill that grows with every seat you add.',
-  'You want something that works the day you sign up, not after weeks of setup.',
+  'You\u2019re a solo freelancer working as a **designer, developer, marketer, writer, or video editor**, managing your own clients and projects.',
+  'You handle **proposals, contracts, invoices, projects, and tasks** yourself and want them organized in one place.',
+  'You manage multiple client projects and want to keep **deadlines, tasks, payments, and client updates** easy to track.',
+  'You want to spend less time dealing with the **business side of freelancing** and keep your work organized from start to finish.',
 ];
 
 const notForYou = [
-  'Agencies or studios that need multiple logins, roles, or approval chains.',
-  'Teams that need shared pipelines across several staff members.',
-  'Businesses wanting a fully custom, build-your-own-CRM platform.',
-  'Anyone who needs multi-seat collaboration on a single client account.',
+  'Agencies or studios that need **multiple users, roles, or approval workflows**.',
+  'Teams that need to **collaborate on projects with multiple team members** inside the same workspace.',
+  'Businesses looking for a **fully customizable CRM or team-management platform** rather than a freelance business workspace.',
+  'Businesses that need **multi-seat access and shared workflows** across a larger team.',
 ];
 
 const comparisons = [
@@ -364,7 +367,7 @@ const softwareApplicationSchema = {
                   <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric">
                     <Icon name="ph:check-bold" class="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
-                  <span class="text-base text-ink/70 leading-relaxed">{item}</span>
+                  <span class="text-base text-ink/70 leading-relaxed">{splitBold(item).map((part, i) => (i % 2 === 1 ? <strong class="font-semibold text-ink">{part}</strong> : part))}</span>
                 </li>
               ))}
             </ul>
@@ -383,7 +386,7 @@ const softwareApplicationSchema = {
                   <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink/40">
                     <Icon name="ph:x-bold" class="h-3.5 w-3.5" aria-hidden="true" />
                   </span>
-                  <span class="text-base text-ink/60 leading-relaxed">{item}</span>
+                  <span class="text-base text-ink/60 leading-relaxed">{splitBold(item).map((part, i) => (i % 2 === 1 ? <strong class="font-semibold text-ink/80">{part}</strong> : part))}</span>
                 </li>
               ))}
             </ul>
