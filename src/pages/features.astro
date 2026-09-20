@@ -202,9 +202,9 @@ const softwareApplicationSchema = {
 
         <!-- Decorative card row (aria-hidden, pointer-events-none on the container). One wrapper
              structure per card, rendered exactly once (the cards' inline SVG gradients use fixed ids, so
-             no duplicate copies): OUTER ".hero-arc-card" > INNER ".hero-arc-float" > the card component.
+             no duplicate copies): a single ".hero-arc-card" wrapper > the card component.
              Below lg the outer wrappers are plain blocks in a centered flex column (a simplified
-             stack) with short white-ish dashed spans between cards, and the row/float/hover rules in
+             stack) with short white-ish dashed spans between cards, and the row/hover rules in
              the <style> block below simply don't apply. From lg up the container becomes a relative
              200px-tall "stage", and each outer wrapper is absolutely positioned from the stage's
              horizontal centre (left:50%) by CSS custom properties set inline here:
@@ -223,8 +223,8 @@ const softwareApplicationSchema = {
              Invoice +2deg, Project -2.5deg), and the outer wrapper adds --rz on top, so the totals are
              mirror-symmetric and lean along the curve: Proposal -3 + 9 = +6deg, Contract 2.5 - 0.5 =
              +2deg, Invoice 2 - 4 = -2deg, Project -2.5 - 3.5 = -6deg (left cards clockwise, right cards
-             counter-clockwise). The outer wrapper owns the transform and the hover transition, the
-             inner wrapper owns only the float animation, so the two never fight over "transform".
+             counter-clockwise). The wrapper owns the position, tilt and hover transform and the hover
+             transition; the cards themselves are static (no ambient animation).
              The whole row is about 1234px wide, so below 1440px the stage is scaled as ONE unit (see
              the <style> block) rather than reworking these numbers. -->
         <div
@@ -232,30 +232,22 @@ const softwareApplicationSchema = {
           aria-hidden="true"
         >
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-468px; --ty:0px; --rz:9deg; --s:1; --z:1;">
-            <div class="hero-arc-float" style="--d:-1s;">
-              <ProposalCard />
-            </div>
+            <ProposalCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
 
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-157px; --ty:40px; --rz:-0.5deg; --s:1; --z:2;">
-            <div class="hero-arc-float" style="--d:-3.5s;">
-              <ContractCard />
-            </div>
+            <ContractCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
 
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:157px; --ty:40px; --rz:-4deg; --s:1; --z:2;">
-            <div class="hero-arc-float" style="--d:-2s;">
-              <InvoiceCard />
-            </div>
+            <InvoiceCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-white/50 lg:hidden" aria-hidden="true"></span>
 
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:468px; --ty:0px; --rz:-3.5deg; --s:1; --z:1;">
-            <div class="hero-arc-float" style="--d:-4.8s;">
-              <ProjectCard />
-            </div>
+            <ProjectCard />
           </div>
         </div>
 
@@ -277,24 +269,14 @@ const softwareApplicationSchema = {
     </section>
 
     <style>
-      /* Card row, float and hover (lg and up only; below lg the cards are a plain stack).
+      /* Card row and hover (lg and up only; below lg the cards are a plain stack).
          Structure per card: .hero-arc-card (position + flat transform + hover transition)
-                             > .hero-arc-float (float keyframes only) > the card. */
-      @keyframes hero-arc-float {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-8px);
-        }
-      }
-
+                             > the card component. */
       @media (min-width: 1024px) {
         /* Stage: a flat, ~1234px-wide row (centres at +-157px / +-468px, 288px cards, tilt overhang)
            plus a single scale knob (--k) used below 1440px. --h is the layout height: the inner cards
            sit 40px lower (top 20px + 40px drop + ~117px card + tilt overhang ends near 182px), leaving
-           room for the float and the hover lift. The negative margin-bottom hands back the layout
+           room for the hover lift. The negative margin-bottom hands back the layout
            height the scale removes (height * (k - 1)), and transform-origin top center keeps the
            stage centred under the text. */
         .hero-stage {
@@ -327,15 +309,6 @@ const softwareApplicationSchema = {
       @media (min-width: 1280px) and (max-width: 1439px) {
         .hero-stage {
           --k: 0.96;
-        }
-      }
-
-      /* Float: gentle 0 -> -8px -> 0, ~6s, staggered by each card's negative --d delay. Skipped
-         entirely for prefers-reduced-motion: reduce. */
-      @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
-        .hero-arc-float {
-          animation: hero-arc-float 6s ease-in-out infinite;
-          animation-delay: var(--d, 0s);
         }
       }
 
