@@ -193,21 +193,27 @@ const softwareApplicationSchema = {
         <!-- Decorative card cluster. One wrapper per card, rendered exactly once: below lg it's a plain
              centered flex column (a simplified stack with short dashed connectors between pairs); from lg
              up the same wrappers switch to "lg:absolute" and are placed by inline left/top (px, matching
-             the geometry below) inside this relatively-positioned 452x624px box, cascading in a zigzag
-             that alternates right, left, right, left (Proposal and Invoice sit in the right column at
-             left:156px, i.e. 8px from the right edge; Contract and Project sit in the left column at
-             left:8px; a constant 44.2px gap between rows). Inline styles are used for these positions (not
-             Tailwind classes) since they're derived numbers, not part of the design system. The desktop connectors are a single SVG overlay
-             sized to the same 452x624 box (viewBox matches 1:1), so cards and paths share one coordinate
-             system — no per-breakpoint scaling. Its three cubic paths were computed by rotating each card's
-             fixed 288x116.8 box about its own centre by its CSS rotation (Proposal -3deg, Contract 2.5deg,
-             Invoice 2deg, Project -2.5deg) with a throwaway script (not part of the repo), landing the path
-             ends on each card's inner attach point (34%/66% across, toward the horizontal overlap zone
-             between the two columns — not the outer 66%/34% points) so each curve stays a short gentle S
-             instead of a long sweep; each curve uses vertical tangents at both ends (control points
-             directly above/below their endpoint). Between 1024 and ~1100px, if this column ever gets
-             squeezed below the cluster's own width, the ".hero-cluster" rule at the bottom of this file
-             scales the whole box down as one unit rather than reworking these coordinates. -->
+             the geometry below) inside this relatively-positioned 452x624px box, stepping down and to the
+             right in a diagonal staircase from the top-left to the bottom-right (Proposal left:8px,
+             Contract left:57px, Invoice left:107px, Project left:156px, i.e. horizontal steps of about
+             49-50px; tops 10px / 171px / 332px / 493px, a constant 44.2px gap between rows, so cards
+             overlap horizontally but never vertically). The first card sits 8px from the left edge and
+             the last card 8px from the right edge of the box. Inline styles are used for these positions
+             (not Tailwind classes) since they're derived numbers, not part of the design system. The
+             desktop connectors are a single SVG overlay sized to the same 452x624 box (viewBox matches
+             1:1), so cards and paths share one coordinate system, with no per-breakpoint scaling. Its
+             three cubic paths were computed by rotating each card's fixed 288x116.8 box about its own
+             centre by its CSS rotation (Proposal -3deg, Contract 2.5deg, Invoice 2deg, Project -2.5deg)
+             with a throwaway script (not part of the repo). Each path leaves the rotated bottom edge of
+             card N and lands on the rotated top edge of card N+1, at the same 50% across point on both
+             cards of a pair (measured along each card's own local x axis before rotation), so every
+             connector is a short, gentle rightward S (about 48-55px across, 44px down) rather than a long
+             sweep. Each curve uses vertical tangents at both ends (control points directly below its
+             start and above its end, at the vertical midpoint between them). Dash gaps are fitted per
+             path (5.75-6.57 instead of a flat 6) so each connector starts and ends on a full dash.
+             Between 1024 and ~1100px, if this column ever gets squeezed below the cluster's own width,
+             the ".hero-cluster" rule at the bottom of this file scales the whole box down as one unit
+             rather than reworking these coordinates. -->
         <div
           class="hero-cluster mt-14 flex flex-col items-center gap-8 pointer-events-none lg:relative lg:mt-0 lg:block lg:h-[624px] lg:w-[452px] lg:gap-0"
           aria-hidden="true"
@@ -221,30 +227,30 @@ const softwareApplicationSchema = {
             stroke-linecap="round"
             focusable="false"
           >
-            <!-- Proposal (bottom, 34% across; inner side, toward the left column) -> Contract (top, 66% across; inner side, toward the right column) -->
-            <path d="M257.04 129.13 C257.04 151.10 200.58 151.10 200.58 173.07" stroke-dasharray="5 6" />
-            <!-- Contract (bottom, 66% across; inner side, toward the right column) -> Invoice (top, 34% across; inner side, toward the left column) -->
-            <path d="M195.49 289.75 C195.49 310.09 255.99 310.09 255.99 330.43" stroke-dasharray="5 6" />
-            <!-- Invoice (bottom, 34% across; inner side, toward the left column) -> Project (top, 66% across; inner side, toward the right column) -->
-            <path d="M251.91 447.16 C251.91 469.10 195.49 469.10 195.49 491.05" stroke-dasharray="5 6" />
+            <!-- Proposal (bottom edge, 50% across) -> Contract (top edge, 50% across): (155.06, 126.72) to (203.55, 171.06) -->
+            <path d="M155.06 126.72 C155.06 148.89 203.55 148.89 203.55 171.06" stroke-dasharray="5 5.76" />
+            <!-- Contract (bottom edge, 50% across) -> Invoice (top edge, 50% across): (198.45, 287.74) to (253.04, 332.04) -->
+            <path d="M198.45 287.74 C198.45 309.89 253.04 309.89 253.04 332.04" stroke-dasharray="5 6.57" />
+            <!-- Invoice (bottom edge, 50% across) -> Project (top edge, 50% across): (248.96, 448.76) to (297.45, 493.06) -->
+            <path d="M248.96 448.76 C248.96 470.91 297.45 470.91 297.45 493.06" stroke-dasharray="5 5.75" />
           </svg>
 
-          <div class="lg:absolute" style="left:156px; top:10px;">
+          <div class="lg:absolute" style="left:8px; top:10px;">
             <ProposalCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:8px; top:171px;">
+          <div class="lg:absolute" style="left:57px; top:171px;">
             <ContractCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:156px; top:332px;">
+          <div class="lg:absolute" style="left:107px; top:332px;">
             <InvoiceCard />
           </div>
           <span class="block h-8 w-0 border-l-2 border-dashed border-[#a5b4fc] lg:hidden" aria-hidden="true"></span>
 
-          <div class="lg:absolute" style="left:8px; top:493px;">
+          <div class="lg:absolute" style="left:156px; top:493px;">
             <ProjectCard />
           </div>
         </div>
