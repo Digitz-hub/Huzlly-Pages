@@ -236,22 +236,38 @@ const softwareApplicationSchema = {
              wrappers have --z 1-2). The <svg> is 1x1 with overflow visible and no viewBox, absolutely
              positioned at left:50% / top:0, so its user units are CSS px with the origin at the stage's
              horizontal centre and top edge; it lives inside the stage, so it scales with --k by itself.
-             Each trail is a cubic Bezier that starts at the midpoint of its card's TOP edge and heads
-             for the hero's top-centre (0, -300), so the four trails lean inward toward each other and
-             are mirror-symmetric. Start-point formula: card centre = (--tx, 20 + --ty + 58.4) (top
-             offset + half the 116.8px card height); with the card's TOTAL tilt theta (+6 / +2 / -2 /
-             -6deg, clockwise positive) the top-edge midpoint is the centre + (58.4 sin theta,
-             -58.4 cos theta), i.e. (-461.9, 20.3), (-155.0, 60.0), (155.0, 60.0), (461.9, 20.3). The
-             path starts 4px further in (54.4 instead of 58.4 along the card's inward axis) so the seam
-             is hidden behind the card, and its stroke-dashoffset (7 of the 11px "5 6" period) puts the
-             first dash exactly on the card edge. The first control point sits 80px (outer) / 60px
-             (inner) out along the card's own up axis (perpendicular to its top edge); the second one
-             pulls toward the centre. Only the first ~55-70px of each line is visible: a per-trail
-             <linearGradient> (userSpaceOnUse, from the start point to 66px straight up, unique ids
-             hero-trail-*) fades the white stroke from 0.85 to 0. Not clipped, not animated; the
-             trails never take the pointer (pointer-events-none) and stay still while a card is hovered
-             (the card lifts on top of them). The trails need no rule of their own for
-             hiding: the whole stage (and so the SVG) is hidden below lg. -->
+             Each trail is a cubic Bezier that starts at the midpoint of its card's TOP edge and is aimed
+             at the centre of the hero's H1: T = (0, -262), i.e. the H1's vertical centre measured in a
+             rendered page at 1440px (H1 centre 262px above the stage's top edge; the text block's centre
+             is at -210). T is ONE fixed value for every width: only the first ~60px of each line is ever
+             visible, so a few px of error in T is invisible (the H1 centre is at -273 / -340 in stage
+             units at 1280 / 1024px, where the stage is scaled by --k, which tilts the inner stubs by only
+             a few degrees), so the four trails point inward at the text and are mirror-symmetric.
+             Start-point formula: card centre = (--tx, 20 + --ty + 58.4) (top offset + half the 116.8px
+             card height); with the card's TOTAL tilt theta (+6 / +2 / -2 / -6deg, clockwise positive) the
+             top-edge midpoint is the centre + (58.4 sin theta, -58.4 cos theta), i.e. (-461.9, 20.3),
+             (-155.0, 60.0), (155.0, 60.0), (461.9, 20.3). The path starts 4px further in (54.4 instead of
+             58.4 along the card's inward axis) so the seam is hidden behind the card.
+             Control points: the line points at T from the very start instead of leaving the card
+             vertically. The first control point lies 80px (outer) / 64px (inner) from the start, on a
+             heading 7deg steeper than the straight start-to-T line; the second lies 160px (outer) /
+             115px (inner) before T, arriving 2deg flatter than that line. That gives an initial heading
+             of ~39deg (outer) / ~72deg (inner) above horizontal, turning by ~5deg over the visible 60px
+             (a gentle ~3.5px bow), against straight-line angles of ~32deg / ~65deg. Outer trails use
+             control points (+-399.9, -25.8) and (+-138.9, -182.6); inner (+-134.9, 3.3) and
+             (+-53.0, -159.9).
+             Seam: because a line now crosses the card's top edge at an angle, each path has its own
+             stroke-dashoffset: the distance along the path from its start to the top-edge crossing is
+             ~5.77px (outer) / ~4.16px (inner) and the offset is 11 minus that (5.2 / 6.8 of the 11px "5 6"
+             period), which puts the first dash's start exactly on the card edge.
+             Fade: only the first ~55-70px of each line is visible. A per-trail <linearGradient>
+             (userSpaceOnUse, unique ids hero-trail-*) runs from the start point 66px along the trail's
+             initial heading, so it is ~0 at 66px along the path. The white stroke
+             fades from 0.85 (mid stop 0.40) to 0 for the inner Contract / Invoice trails and from 0.90
+             (mid stop 0.45) to 0 for the outer Proposal / Project trails, which are slightly stronger.
+             Not clipped, not animated; the trails never take the pointer (pointer-events-none) and stay
+             still while a card is hovered (the card lifts on top of them). The trails need no rule of
+             their own for hiding: the whole stage (and so the SVG) is hidden below lg. -->
         <div
           class="hero-stage pointer-events-none hidden lg:relative lg:mx-auto lg:mt-10 lg:block lg:w-full"
           aria-hidden="true"
@@ -264,32 +280,32 @@ const softwareApplicationSchema = {
             focusable="false"
           >
             <defs>
-              <linearGradient id="hero-trail-proposal" gradientUnits="userSpaceOnUse" x1="-462.3" y1="24.3" x2="-462.3" y2="-41.7">
+              <linearGradient id="hero-trail-proposal" gradientUnits="userSpaceOnUse" x1="-462.3" y1="24.3" x2="-410.8" y2="-17">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-contract" gradientUnits="userSpaceOnUse" x1="-155.1" y1="64" x2="-134.3" y2="1.4">
                 <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
                 <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
                 <stop offset="1" stop-color="#fff" stop-opacity="0" />
               </linearGradient>
-              <linearGradient id="hero-trail-contract" gradientUnits="userSpaceOnUse" x1="-155.1" y1="64" x2="-155.1" y2="-2">
+              <linearGradient id="hero-trail-invoice" gradientUnits="userSpaceOnUse" x1="155.1" y1="64" x2="134.3" y2="1.4">
                 <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
                 <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
                 <stop offset="1" stop-color="#fff" stop-opacity="0" />
               </linearGradient>
-              <linearGradient id="hero-trail-invoice" gradientUnits="userSpaceOnUse" x1="155.1" y1="64" x2="155.1" y2="-2">
-                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
-                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
-                <stop offset="1" stop-color="#fff" stop-opacity="0" />
-              </linearGradient>
-              <linearGradient id="hero-trail-project" gradientUnits="userSpaceOnUse" x1="462.3" y1="24.3" x2="462.3" y2="-41.7">
-                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
-                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+              <linearGradient id="hero-trail-project" gradientUnits="userSpaceOnUse" x1="462.3" y1="24.3" x2="410.8" y2="-17">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.45" />
                 <stop offset="1" stop-color="#fff" stop-opacity="0" />
               </linearGradient>
             </defs>
-            <g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-dasharray="5 6" stroke-dashoffset="7">
-              <path d="M -462.3 24.3 C -454 -55.3, -323.6 -210, 0 -300" stroke="url(#hero-trail-proposal)" />
-              <path d="M -155.1 64 C -153 4.1, -7.8 -150, 0 -300" stroke="url(#hero-trail-contract)" />
-              <path d="M 155.1 64 C 153 4.1, 7.8 -150, 0 -300" stroke="url(#hero-trail-invoice)" />
-              <path d="M 462.3 24.3 C 454 -55.3, 323.6 -210, 0 -300" stroke="url(#hero-trail-project)" />
+            <g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-dasharray="5 6">
+              <path d="M -462.3 24.3 C -399.9 -25.8, -138.9 -182.6, 0 -262" stroke="url(#hero-trail-proposal)" stroke-dashoffset="5.2" />
+              <path d="M -155.1 64 C -134.9 3.3, -53 -159.9, 0 -262" stroke="url(#hero-trail-contract)" stroke-dashoffset="6.8" />
+              <path d="M 155.1 64 C 134.9 3.3, 53 -159.9, 0 -262" stroke="url(#hero-trail-invoice)" stroke-dashoffset="6.8" />
+              <path d="M 462.3 24.3 C 399.9 -25.8, 138.9 -182.6, 0 -262" stroke="url(#hero-trail-project)" stroke-dashoffset="5.2" />
             </g>
           </svg>
 
