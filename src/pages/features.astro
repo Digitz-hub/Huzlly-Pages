@@ -222,11 +222,68 @@ const softwareApplicationSchema = {
              counter-clockwise). The wrapper owns the position, tilt and hover transform and the hover
              transition; the cards themselves are static (no ambient animation).
              The whole row is about 1234px wide, so below 1440px the stage is scaled as ONE unit (see
-             the <style> block) rather than reworking these numbers. -->
+             the <style> block) rather than reworking these numbers.
+             Trails (lg and up only): the first child of the stage is one decorative SVG holding four
+             dashed "trail" lines, one per card, each behind its card (the SVG has no z-index, the card
+             wrappers have --z 1-2). The <svg> is 1x1 with overflow visible and no viewBox, absolutely
+             positioned at left:50% / top:0, so its user units are CSS px with the origin at the stage's
+             horizontal centre and top edge; it lives inside the stage, so it scales with --k by itself.
+             Each trail is a cubic Bezier that starts at the midpoint of its card's TOP edge and heads
+             for the hero's top-centre (0, -300), so the four trails lean inward toward each other and
+             are mirror-symmetric. Start-point formula: card centre = (--tx, 20 + --ty + 58.4) (top
+             offset + half the 116.8px card height); with the card's TOTAL tilt theta (+6 / +2 / -2 /
+             -6deg, clockwise positive) the top-edge midpoint is the centre + (58.4 sin theta,
+             -58.4 cos theta), i.e. (-461.9, 20.3), (-155.0, 60.0), (155.0, 60.0), (461.9, 20.3). The
+             path starts 4px further in (54.4 instead of 58.4 along the card's inward axis) so the seam
+             is hidden behind the card, and its stroke-dashoffset (7 of the 11px "5 6" period) puts the
+             first dash exactly on the card edge. The first control point sits 80px (outer) / 60px
+             (inner) out along the card's own up axis (perpendicular to its top edge); the second one
+             pulls toward the centre. Only the first ~55-70px of each line is visible: a per-trail
+             <linearGradient> (userSpaceOnUse, from the start point to 66px straight up, unique ids
+             hero-trail-*) fades the white stroke from 0.85 to 0. Not clipped, not animated; the
+             trails never take the pointer (pointer-events-none) and stay still while a card is hovered
+             (the card lifts on top of them). Below lg the SVG is display:none. -->
         <div
           class="hero-stage pointer-events-none mt-14 flex flex-col items-center gap-8 lg:relative lg:mx-auto lg:mt-10 lg:block lg:w-full"
           aria-hidden="true"
         >
+          <svg
+            class="pointer-events-none absolute left-1/2 top-0 hidden overflow-visible lg:block"
+            width="1"
+            height="1"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient id="hero-trail-proposal" gradientUnits="userSpaceOnUse" x1="-462.3" y1="24.3" x2="-462.3" y2="-41.7">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-contract" gradientUnits="userSpaceOnUse" x1="-155.1" y1="64" x2="-155.1" y2="-2">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-invoice" gradientUnits="userSpaceOnUse" x1="155.1" y1="64" x2="155.1" y2="-2">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-project" gradientUnits="userSpaceOnUse" x1="462.3" y1="24.3" x2="462.3" y2="-41.7">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-dasharray="5 6" stroke-dashoffset="7">
+              <path d="M -462.3 24.3 C -454 -55.3, -323.6 -210, 0 -300" stroke="url(#hero-trail-proposal)" />
+              <path d="M -155.1 64 C -153 4.1, -7.8 -150, 0 -300" stroke="url(#hero-trail-contract)" />
+              <path d="M 155.1 64 C 153 4.1, 7.8 -150, 0 -300" stroke="url(#hero-trail-invoice)" />
+              <path d="M 462.3 24.3 C 454 -55.3, 323.6 -210, 0 -300" stroke="url(#hero-trail-project)" />
+            </g>
+          </svg>
+
           <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-468px; --ty:0px; --rz:9deg; --s:1; --z:1;">
             <ProposalCard />
           </div>
@@ -267,7 +324,10 @@ const softwareApplicationSchema = {
     <style>
       /* Card row and hover (lg and up only; below lg the cards are a plain stack).
          Structure per card: .hero-arc-card (position + flat transform + hover transition)
-                             > the card component. */
+                             > the card component.
+         The stage also holds the decorative trails <svg> (first child, lg+ only, no z-index so it sits
+         under the cards). It needs no rules here: it is inside .hero-stage, so the --k scale below
+         applies to it, and it never reacts to hover. */
       @media (min-width: 1024px) {
         /* Stage: a flat, ~1234px-wide row (centres at +-157px / +-468px, 288px cards, tilt overhang)
            plus a single scale knob (--k) used below 1440px. --h is the layout height: the inner cards
