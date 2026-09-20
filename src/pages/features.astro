@@ -260,11 +260,13 @@ const softwareApplicationSchema = {
              stroke-dashoffset: the distance along the path from its start to the top-edge crossing is
              ~5.77px (outer) / ~4.16px (inner) and the offset is 11 minus that (5.2 / 6.8 of the 11px "5 6"
              period), which puts the first dash's start exactly on the card edge.
-             Fade: only the first ~55-70px of each line is visible. A per-trail <linearGradient>
-             (userSpaceOnUse, unique ids hero-trail-*) runs from the start point 66px along the trail's
-             initial heading, so it is ~0 at 66px along the path. The white stroke
-             fades from 0.85 (mid stop 0.40) to 0 for the inner Contract / Invoice trails and from 0.90
-             (mid stop 0.45) to 0 for the outer Proposal / Project trails, which are slightly stronger.
+             Fade: only the first ~55-75px of each line is visible. A per-trail <linearGradient>
+             (userSpaceOnUse, unique ids hero-trail-*) runs from the start point along the trail's
+             initial heading and reaches opacity 0 at its far end (the path bows only ~4px away from
+             that heading, so it is ~0 at the same distance along the path). The inner Contract / Invoice trails fade over
+             about 66px (end points (+-134.3, 1.4)), the white stroke going 0.85 -> 0.40 (mid stop) -> 0.
+             The outer Proposal / Project trails are slightly stronger and about 15% longer: they fade
+             over about 76px (end points (+-403.0, -23.3)), 0.90 -> 0.45 -> 0.
              Not clipped, not animated; the trails never take the pointer (pointer-events-none) and stay
              still while a card is hovered (the card lifts on top of them). The trails need no rule of
              their own for hiding: the whole stage (and so the SVG) is hidden below lg. -->
@@ -280,7 +282,7 @@ const softwareApplicationSchema = {
             focusable="false"
           >
             <defs>
-              <linearGradient id="hero-trail-proposal" gradientUnits="userSpaceOnUse" x1="-462.3" y1="24.3" x2="-410.8" y2="-17">
+              <linearGradient id="hero-trail-proposal" gradientUnits="userSpaceOnUse" x1="-462.3" y1="24.3" x2="-403" y2="-23.3">
                 <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
                 <stop offset="0.5" stop-color="#fff" stop-opacity="0.45" />
                 <stop offset="1" stop-color="#fff" stop-opacity="0" />
@@ -295,7 +297,7 @@ const softwareApplicationSchema = {
                 <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
                 <stop offset="1" stop-color="#fff" stop-opacity="0" />
               </linearGradient>
-              <linearGradient id="hero-trail-project" gradientUnits="userSpaceOnUse" x1="462.3" y1="24.3" x2="410.8" y2="-17">
+              <linearGradient id="hero-trail-project" gradientUnits="userSpaceOnUse" x1="462.3" y1="24.3" x2="403" y2="-23.3">
                 <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
                 <stop offset="0.5" stop-color="#fff" stop-opacity="0.45" />
                 <stop offset="1" stop-color="#fff" stop-opacity="0" />
