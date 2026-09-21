@@ -1,1 +1,645 @@
+---
+// src/pages/features.astro
 
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
+import ProposalCard from '../components/ui/feature-cards/ProposalCard.astro';
+import ContractCard from '../components/ui/feature-cards/ContractCard.astro';
+import InvoiceCard from '../components/ui/feature-cards/InvoiceCard.astro';
+import ProjectCard from '../components/ui/feature-cards/ProjectCard.astro';
+import { ArrowRight } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
+
+const steps = [
+  {
+    icon: 'ph:file-text-duotone',
+    title: 'Proposal to Contract, Automatically',
+    chips: ['Auto-sends on approval', 'Confirmation email to both sides'],
+    trigger:
+      "Your client approves the proposal.",
+    controls:
+      'Attach a contract template to your proposal and turn on automation once. When your client accepts the proposal, Huzlly sends the contract automatically, so you never have to remember to send it yourself.',
+    outcome:
+      "You and your client get an instant confirmation email when the proposal is approved. If automation is on, the contract is sent immediately, pre-filled with the approved scope and pricing.",
+    next: 'A signed contract is what releases the invoice and creates the project.',
+  },
+  {
+    icon: 'ph:receipt-duotone',
+    title: 'Contract Acceptance Creates the Invoice and the Project',
+    chips: ['Invoice auto-sent on acceptance', 'Project created automatically'],
+    trigger:
+      'Your client reads the contract and accepts or rejects it — no separate e-signature app to open.',
+    controls:
+      "Set which invoice is linked to a contract ahead of time. Acceptance is what fires it, so you're never stuck manually raising an invoice right after a client signs.",
+    outcome:
+      'Either decision is confirmed by email to both of you. On acceptance, the linked invoice lands in your client\'s inbox immediately, and Huzlly creates a new project for that client at the same time — scoped and ready to work in.',
+    next: "The project is live. You're logging real work in it within the same minute the contract was signed.",
+  },
+  {
+    icon: 'ph:list-checks-duotone',
+    title: 'Tasks and Time Tracking Inside Every Project',
+    chips: ['Per-task timers', 'Auto-rolled project totals'],
+    trigger:
+      'A project exists — created the moment a contract was accepted, or started manually anytime.',
+    controls:
+      "Break the work into tasks as you go, and track time against each task individually while you're actually doing it, not reconstructed from memory at the end of the week.",
+    outcome:
+      "Every task's tracked time rolls up automatically into a single project total — no adding it up yourself. The full breakdown lives in your timesheet, so you always know exactly where a project's hours went.",
+    next: "This is the time you'll bill against — no separate time-tracking app to keep in sync.",
+  },
+  {
+    icon: 'ph:users-duotone',
+    title: 'A Client Portal You Fully Control',
+    chips: ['Off by default', 'Set per client, not sitewide'],
+    trigger:
+      "You decide to give a specific client portal access — nothing is shared until you turn it on.",
+    controls:
+      'Control access per client rather than sitewide: project visibility, task visibility, and direct communication can each be switched on or off independently for every client.',
+    outcome:
+      "Whatever you've allowed, your client can see: their proposals, contracts, and invoices to view or download, plus live project progress and task status. Where you've enabled communication, they can message you directly from the portal to request a change to a task or project.",
+    next: "The client sees exactly as much as you choose to share, and nothing more.",
+  },
+];
+
+const forYou = [
+  'You\u2019re a solo freelancer working as a designer, developer, marketer, writer, or video editor, managing your own clients and projects.',
+  'You handle proposals, contracts, invoices, projects, and tasks yourself and want them organized in one place.',
+  'You manage multiple client projects and want to keep deadlines, tasks, payments, and client updates easy to track.',
+  'You want to spend less time dealing with the business side of freelancing and keep your work organized from start to finish.',
+];
+
+const notForYou = [
+  'Agencies or studios that need multiple users, roles, or approval workflows.',
+  'Teams that need to collaborate on projects with multiple team members inside the same workspace.',
+  'Businesses looking for a fully customizable CRM or team-management platform rather than a freelance business workspace.',
+  'Businesses that need multi-seat access and shared workflows across a larger team.',
+];
+
+const comparisons = [
+  {
+    icon: 'ph:stack-duotone',
+    title: 'vs. Bonsai',
+    body: 'Bonsai started lean but has grown into a fuller business-management suite, with team seats and enterprise-style add-ons layered on top of the core flow. Huzlly keeps proposal-to-project — including task and time tracking — in one connected flow, at a lower flat price, without the extra layers.',
+  },
+  {
+    icon: 'ph:users-duotone',
+    title: 'vs. HoneyBook',
+    body: 'HoneyBook is built with studios and small teams in mind — its pricing and features assume more than one person working a pipeline. Huzlly skips the team layer entirely: one flat rate, built for the person actually doing the client work.',
+  },
+  {
+    icon: 'ph:gear-six-duotone',
+    title: 'vs. Dubsado',
+    body: 'Dubsado is capable once it’s fully configured — but that configuration is the catch. Workflows, forms, and templates all need building before it does anything for you. Huzlly’s flow already exists, so you’re automating from day one, not week three.',
+  },
+];
+
+
+const featureList = [
+  'Automated proposal-to-contract handoff with email confirmation to both freelancer and client',
+  'Automated contract-to-invoice and project creation on contract acceptance',
+  'Per-task time tracking with automatic project-level totals and timesheets',
+  'Permission-controlled client portal for documents, project progress, and direct communication',
+];
+
+// Presentation-only helpers (visual classes).
+const pillBadge =
+  'inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]';
+const softShadow = 'shadow-[0_10px_26px_-16px_rgba(20,24,43,0.14)]';
+const liftHover =
+  'transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-16px_rgba(20,24,43,0.20)] motion-reduce:transition-none motion-reduce:hover:translate-y-0';
+const glow =
+  'pointer-events-none absolute inset-[-10%] rounded-full blur-[46px] opacity-[0.18] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
+
+// Hero trust points (real content). Class strings are written out in full so Tailwind's JIT can see them.
+const heroTrustPoints = [
+  { icon: 'ph:check-bold', label: 'End-to-end freelancer workflow', badge: 'bg-green-100 text-green-600' },
+  { icon: 'ph:lightning-duotone', label: 'Smart automation between steps', badge: 'bg-blue-100 text-blue-600' },
+  { icon: 'ph:users-duotone', label: 'A better experience for your clients', badge: 'bg-violet-100 text-violet-600' },
+];
+
+const softwareApplicationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Huzlly',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description:
+    'Huzlly automates client onboarding, contracts, and payments for freelancers and solopreneurs in a single lean workflow, replacing bloated enterprise software.',
+  featureList,
+};
+---
+
+<Layout title="Features | Huzlly"
+  description="Explore Huzlly's core features: automated contracts, invoicing, projects, and time tracking for freelancers who want less software, not more."
+  canonicalPath="/features"
+  ogImage="/og/og-features.png"
+>
+  <main>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareApplicationSchema)} />
+
+    <!-- Hero.
+         A centered hero in three stacked parts, top to bottom: (1) the text block, (2) a decorative
+         flat, slightly U-shaped row of the four feature cards (desktop only: hidden below lg, so on
+         tablets and phones the hero is just the text block followed by the chips), (3) the trust
+         points as a row of white chips.
+         Background: a full-bleed sky-blue vertical gradient on the section itself (CSS only, no image
+         files). It stays deep blue from the top down to about 640px (a pixel stop, not a percentage, so
+         the text zone is equally dark whatever the section height is at each breakpoint: white paragraph
+         text needs >= 4.5:1 there), then lightens to pale sky at the very bottom, which only sits behind
+         the lower half of the card row and the chips. Below lg the card row is gone and the hero is
+         only ~600-810px tall, so a px stop would cross the percentage stop and clamp into a hard step;
+         there the stops are percentages instead (deep blue down to 74%, which is below the buttons, pale sky by 100%), and the three upper
+         cloud blobs (the two large side ones and the centre one) are hidden: on the short hero they
+         would sit right behind the buttons and wash out the outline button's white text. The two
+         lower side blobs stay but are flattened (h-24, flush with the bottom) so they sit behind the
+         chips and stay clear of the buttons. Five blurred white blobs (bg-white + blur-3xl, all
+         aria-hidden and pointer-events-none, -z-10) act as clouds, concentrated in the lower half and at
+         the sides, and a short fade at the bottom edge blends into the next section's colour
+         (bg-gray-50/70 over the white page = #fbfbfc) instead of ending on a hard line. The fixed white
+         Nav overlays the top 60-64px; the section's top padding (pt-24 / sm:pt-28 / lg:pt-32) keeps the
+         pill clear of it. -->
+    <section class="relative isolate overflow-hidden bg-[linear-gradient(180deg,#1a47cc_0%,#2557e2_74%,#5aa2ff_92%,#9fd0ff_100%)] px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:bg-[linear-gradient(180deg,#1a47cc_0px,#2557e2_640px,#5aa2ff_78%,#9fd0ff_100%)] lg:px-8 lg:pt-32 lg:pb-24">
+      <!-- Clouds -->
+      <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+        <div class="absolute -left-24 bottom-40 hidden h-56 w-[26rem] rounded-full bg-white/40 blur-3xl lg:block"></div>
+        <div class="absolute -right-28 bottom-44 hidden h-60 w-[28rem] rounded-full bg-white/40 blur-3xl lg:block"></div>
+        <div class="absolute left-[6%] bottom-0 h-24 w-[34rem] lg:bottom-4 lg:h-44 rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute right-[5%] bottom-0 h-24 w-[36rem] lg:bottom-6 lg:h-48 rounded-full bg-white/60 blur-3xl"></div>
+        <div class="absolute left-1/2 bottom-24 hidden h-40 w-[40rem] -translate-x-1/2 rounded-full bg-white/50 blur-3xl lg:block"></div>
+      </div>
+      <!-- Bottom fade into the next section -->
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-16 bg-gradient-to-b from-transparent to-[#fbfbfc] sm:h-20 lg:h-24"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative z-10 mx-auto max-w-6xl">
+        <!-- Text block: centered at every breakpoint. White on the deep-blue top of the gradient; the
+             pill is translucent white, and the H1 accent uses a pale sky tint (blue-600 would vanish on
+             blue). The outline button is restyled with "!" overrides because Button.astro just appends
+             the class prop after its own variant classes. -->
+        <div class="mx-auto max-w-4xl text-center">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-sm font-medium text-white backdrop-blur">
+            <Icon name="ph:sparkle-duotone" class="text-base" aria-hidden="true" />
+            Features
+          </div>
+          <h1 class="mx-auto mt-6 max-w-4xl text-balance font-display text-4xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            One flow, from proposal to <span class="text-sky-200">a running project.</span>
+          </h1>
+          <p class="mx-auto mt-6 max-w-2xl text-balance text-lg leading-relaxed text-white/90 sm:text-xl">Everything you need to manage the business behind your freelance work, organized into one connected workspace.</p>
+          <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
+            <Button href="/waitlist" size="lg" motion class="shrink-0 whitespace-nowrap">
+              Join the waitlist
+              <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+            </Button>
+            <Button
+              href="#comparisons"
+              variant="outline"
+              size="lg"
+              class="shrink-0 whitespace-nowrap !border-white/40 !bg-white/10 !text-white backdrop-blur-sm hover:!border-white/60 hover:!bg-white/20 focus-visible:!outline-white"
+            >
+              See how it compares
+            </Button>
+          </div>
+        </div>
+
+        <!-- Decorative card row (aria-hidden, pointer-events-none on the container). One wrapper
+             structure per card, rendered exactly once (the cards' inline SVG gradients use fixed ids, so
+             no duplicate copies): a single ".hero-arc-card" wrapper > the card component.
+             The whole card row is desktop-only: the container is display:none below lg (under 1024px,
+             tablets included), so no card is laid out or painted there, and the row/hover rules in
+             the <style> block below (all inside lg+ media queries) simply don't apply. From lg up the
+             container is a relative 200px-tall "stage", and each outer wrapper is absolutely positioned from the stage's
+             horizontal centre (left:50%) by CSS custom properties set inline here:
+               --tx  horizontal offset from centre   --ty  vertical drop (the U)
+               --rz  compensating z-rotation         --s   scale (1 for all four)
+               --z   stacking order (only matters while a card is hovered)
+             The row is FLAT (no 3D): four unscaled cards facing the viewer, side by side, no overlap.
+             Left to right: Proposal -468px, Contract -157px, Invoice +157px, Project +468px. The inner
+             pair sits 157px either side of centre (314px centre-to-centre: 288px card + the corner
+             allowance of their +-2deg tilts + a ~22px gap); the outer cards are 311px further out
+             (centre-to-centre 311px against a neighbour tilted 4deg more), which was measured on the
+             rotated outlines so that all three VISIBLE gaps between nearest edges/corners come out
+             equal at ~22px. U shape: the outer cards (Proposal, Project) stay at --ty 0px and the inner
+             cards (Contract, Invoice) drop 40px, symmetric about the centre, a slight smooth U.
+             Tilt: each card component bakes in its own z-rotation (Proposal -3deg, Contract +2.5deg,
+             Invoice +2deg, Project -2.5deg), and the outer wrapper adds --rz on top, so the totals are
+             mirror-symmetric and lean along the curve: Proposal -3 + 9 = +6deg, Contract 2.5 - 0.5 =
+             +2deg, Invoice 2 - 4 = -2deg, Project -2.5 - 3.5 = -6deg (left cards clockwise, right cards
+             counter-clockwise). The wrapper owns the position, tilt and hover transform and the hover
+             transition; the cards themselves are static (no ambient animation).
+             The whole row is about 1234px wide, so below 1440px the stage is scaled as ONE unit (see
+             the <style> block) rather than reworking these numbers.
+             Trails (lg and up only): the first child of the stage is one decorative SVG holding four
+             dashed "trail" lines, one per card, each behind its card (the SVG has no z-index, the card
+             wrappers have --z 1-2). The <svg> is 1x1 with overflow visible and no viewBox, absolutely
+             positioned at left:50% / top:0, so its user units are CSS px with the origin at the stage's
+             horizontal centre and top edge; it lives inside the stage, so it scales with --k by itself.
+             Each trail is a cubic Bezier that starts at the midpoint of its card's TOP edge and is aimed
+             at the centre of the hero's H1: T = (0, -262), i.e. the H1's vertical centre measured in a
+             rendered page at 1440px (H1 centre 262px above the stage's top edge; the text block's centre
+             is at -210). T is ONE fixed value for every width: only the first ~60px of each line is ever
+             visible, so a few px of error in T is invisible (the H1 centre is at -273 / -340 in stage
+             units at 1280 / 1024px, where the stage is scaled by --k, which tilts the inner stubs by only
+             a few degrees), so the four trails point inward at the text and are mirror-symmetric.
+             Start-point formula: card centre = (--tx, 20 + --ty + 58.4) (top offset + half the 116.8px
+             card height); with the card's TOTAL tilt theta (+6 / +2 / -2 / -6deg, clockwise positive) the
+             top-edge midpoint is the centre + (58.4 sin theta, -58.4 cos theta), i.e. (-461.9, 20.3),
+             (-155.0, 60.0), (155.0, 60.0), (461.9, 20.3). The path starts 4px further in (54.4 instead of
+             58.4 along the card's inward axis) so the seam is hidden behind the card.
+             Control points: the line points at T from the very start instead of leaving the card
+             vertically. The first control point lies 80px (outer) / 64px (inner) from the start, on a
+             heading 7deg steeper than the straight start-to-T line; the second lies 160px (outer) /
+             115px (inner) before T, arriving 2deg flatter than that line. That gives an initial heading
+             of ~39deg (outer) / ~72deg (inner) above horizontal, turning by ~5deg over the visible 60px
+             (a gentle ~3.5px bow), against straight-line angles of ~32deg / ~65deg. Outer trails use
+             control points (+-399.9, -25.8) and (+-138.9, -182.6); inner (+-134.9, 3.3) and
+             (+-53.0, -159.9).
+             Seam: because a line now crosses the card's top edge at an angle, each path has its own
+             stroke-dashoffset: the distance along the path from its start to the top-edge crossing is
+             ~5.77px (outer) / ~4.16px (inner) and the offset is 11 minus that (5.2 / 6.8 of the 11px "5 6"
+             period), which puts the first dash's start exactly on the card edge.
+             Fade: only the first ~55-75px of each line is visible. A per-trail <linearGradient>
+             (userSpaceOnUse, unique ids hero-trail-*) runs from the start point along the trail's
+             initial heading and reaches opacity 0 at its far end (the path bows only ~4px away from
+             that heading, so it is ~0 at the same distance along the path). The inner Contract / Invoice trails fade over
+             about 66px (end points (+-134.3, 1.4)), the white stroke going 0.85 -> 0.40 (mid stop) -> 0.
+             The outer Proposal / Project trails are slightly stronger and about 15% longer: they fade
+             over about 76px (end points (+-403.0, -23.3)), 0.90 -> 0.45 -> 0.
+             Not clipped, not animated; the trails never take the pointer (pointer-events-none) and stay
+             still while a card is hovered (the card lifts on top of them). The trails need no rule of
+             their own for hiding: the whole stage (and so the SVG) is hidden below lg. -->
+        <div
+          class="hero-stage pointer-events-none hidden lg:relative lg:mx-auto lg:mt-10 lg:block lg:w-full"
+          aria-hidden="true"
+        >
+          <svg
+            class="pointer-events-none absolute left-1/2 top-0 hidden overflow-visible lg:block"
+            width="1"
+            height="1"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient id="hero-trail-proposal" gradientUnits="userSpaceOnUse" x1="-462.3" y1="24.3" x2="-403" y2="-23.3">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-contract" gradientUnits="userSpaceOnUse" x1="-155.1" y1="64" x2="-134.3" y2="1.4">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-invoice" gradientUnits="userSpaceOnUse" x1="155.1" y1="64" x2="134.3" y2="1.4">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.85" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.4" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="hero-trail-project" gradientUnits="userSpaceOnUse" x1="462.3" y1="24.3" x2="403" y2="-23.3">
+                <stop offset="0" stop-color="#fff" stop-opacity="0.9" />
+                <stop offset="0.5" stop-color="#fff" stop-opacity="0.45" />
+                <stop offset="1" stop-color="#fff" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-dasharray="5 6">
+              <path d="M -462.3 24.3 C -399.9 -25.8, -138.9 -182.6, 0 -262" stroke="url(#hero-trail-proposal)" stroke-dashoffset="5.2" />
+              <path d="M -155.1 64 C -134.9 3.3, -53 -159.9, 0 -262" stroke="url(#hero-trail-contract)" stroke-dashoffset="6.8" />
+              <path d="M 155.1 64 C 134.9 3.3, 53 -159.9, 0 -262" stroke="url(#hero-trail-invoice)" stroke-dashoffset="6.8" />
+              <path d="M 462.3 24.3 C 399.9 -25.8, 138.9 -182.6, 0 -262" stroke="url(#hero-trail-project)" stroke-dashoffset="5.2" />
+            </g>
+          </svg>
+
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-468px; --ty:0px; --rz:9deg; --s:1; --z:1;">
+            <ProposalCard />
+          </div>
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:-157px; --ty:40px; --rz:-0.5deg; --s:1; --z:2;">
+            <ContractCard />
+          </div>
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:157px; --ty:40px; --rz:-4deg; --s:1; --z:2;">
+            <InvoiceCard />
+          </div>
+          <div class="hero-arc-card lg:absolute lg:left-1/2 lg:top-[20px]" style="--tx:468px; --ty:0px; --rz:-3.5deg; --s:1; --z:1;">
+            <ProjectCard />
+          </div>
+        </div>
+
+        <!-- Hero trust points. Real content (a semantic list, NOT aria-hidden), placed after the cards:
+             a centered, wrapping row of white chips (they carry their own light background, so the dark
+             ink text stays readable over the light lower part of the gradient). Each chip keeps its
+             coloured icon circle. Class strings are written out in full so Tailwind's JIT can see them. -->
+        <ul class="relative mt-12 flex flex-wrap justify-center gap-3 lg:mt-12">
+          {heroTrustPoints.map((point) => (
+            <li class="flex items-center gap-2.5 rounded-full bg-white/90 py-1.5 pl-1.5 pr-4 shadow-[0_8px_20px_-10px_rgba(20,24,43,0.35)]">
+              <span class={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${point.badge}`}>
+                <Icon name={point.icon} class="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+              <span class="text-[13px] font-medium text-ink/80">{point.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <style>
+      /* Card row and hover (lg and up only; the whole row is hidden below lg).
+         Structure per card: .hero-arc-card (position + flat transform + hover transition)
+                             > the card component.
+         The stage also holds the decorative trails <svg> (first child, lg+ only, no z-index so it sits
+         under the cards). It needs no rules here: it is inside .hero-stage, so the --k scale below
+         applies to it, and it never reacts to hover. */
+      @media (min-width: 1024px) {
+        /* Stage: a flat, ~1234px-wide row (centres at +-157px / +-468px, 288px cards, tilt overhang)
+           plus a single scale knob (--k) used below 1440px. --h is the layout height: the inner cards
+           sit 40px lower (top 20px + 40px drop + ~117px card + tilt overhang ends near 182px), leaving
+           room for the hover lift. The negative margin-bottom hands back the layout
+           height the scale removes (height * (k - 1)), and transform-origin top center keeps the
+           stage centred under the text. */
+        .hero-stage {
+          --h: 200px;
+          --k: 1;
+          height: var(--h);
+          transform: scale(var(--k));
+          transform-origin: top center;
+          margin-bottom: calc(var(--h) * (var(--k) - 1));
+        }
+        /* Each card: centred on left:50% + --tx, dropped by --ty (the U), then rotated by --rz. The
+           wrapper shrink-wraps the 288px card, so it rotates about the card's own centre; --rz plus the
+           card's baked-in rotation gives the symmetric totals +6 / +2 / -2 / -6deg. */
+        .hero-arc-card {
+          z-index: var(--z);
+          transform: translate3d(calc(-50% + var(--tx)), var(--ty), 0) rotate(var(--rz)) scale(var(--s));
+        }
+      }
+
+      /* 1024-1439px: shrink the whole stage as one unit. The row is ~1234px wide unscaled, so at the
+         narrowest viewport of each tier it must fit with >= 24px free per side:
+         1024-1279px: k 0.77 -> ~950px wide, ~37px free per side at 1024px;
+         1280-1439px: k 0.96 -> ~1185px wide, ~47px free per side at 1280px.
+         From 1440px up: k 1 -> 1234px wide, ~103px free per side at 1440px. */
+      @media (min-width: 1024px) and (max-width: 1279px) {
+        .hero-stage {
+          --k: 0.77;
+        }
+      }
+      @media (min-width: 1280px) and (max-width: 1439px) {
+        .hero-stage {
+          --k: 0.96;
+        }
+      }
+
+      /* Hover (mouse-like devices only, and never with reduced motion): the outer wrapper re-enables
+         pointer events (the stage itself stays pointer-events: none), and on hover the card lifts 10px,
+         scales up 4% (its tilt stays as is) and rises above its neighbours. The ::after strip extends
+         the hover area 14px below the card, so the lift can't slide the card out from under a cursor
+         resting on its bottom edge and make it flicker. */
+      @media (min-width: 1024px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+        .hero-arc-card {
+          pointer-events: auto;
+          transition: transform 0.38s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        .hero-arc-card::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 100%;
+          height: 14px;
+        }
+        .hero-arc-card:hover {
+          z-index: 10;
+          transform: translate3d(calc(-50% + var(--tx)), calc(var(--ty) - 10px), 0) rotate(var(--rz))
+            scale(calc(var(--s) * 1.04));
+        }
+      }
+    </style>
+
+    <!-- Is this for you -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:user-circle-duotone" class="text-base" aria-hidden="true" />
+            Who it's for
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">Built for the freelancer behind the work, not a team</h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">Designed around the way individual freelancers work. See below who it’s for and if it’s right for you.</p>
+        </div>
+
+        <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-8 ${softShadow}`}>
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                <Icon name="ph:user-circle-duotone" class="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 class="text-lg font-semibold text-ink font-display">Huzlly is for you if</h3>
+            </div>
+            <ul class="mt-6 space-y-4">
+              {forYou.map((item) => (
+                <li class="flex items-start gap-3">
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-electric">
+                    <Icon name="ph:check-bold" class="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span class="text-base text-ink/70 leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="rounded-2xl bg-gray-100 p-8">
+            <div class="flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-ink/50">
+                <Icon name="ph:users-three-duotone" class="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 class="text-lg font-semibold text-ink/80 font-display">Not built for</h3>
+            </div>
+            <ul class="mt-6 space-y-4">
+              {notForYou.map((item) => (
+                <li class="flex items-start gap-3">
+                  <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-ink/40">
+                    <Icon name="ph:x-bold" class="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                  <span class="text-base text-ink/60 leading-relaxed">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The flow, in full -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:flow-arrow-duotone" class="text-base" aria-hidden="true" />
+            The flow
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            From an approved proposal to a running project.
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Each step triggers the next one automatically. Here's what starts it, what you control, and what happens for you and your client.
+          </p>
+        </div>
+
+        <ol class="relative mt-14 flex flex-col gap-6">
+          <!-- Timeline rail (lg only) -->
+          <div class="pointer-events-none absolute bottom-0 left-[21px] top-10 hidden w-px bg-gradient-to-b from-blue-200 via-blue-100 to-transparent lg:block" aria-hidden="true"></div>
+
+          {steps.map((step, i) => (
+            <li class="relative lg:pl-20">
+              <!-- Timeline node (lg only) -->
+              <span class="absolute left-0 top-8 hidden h-11 w-11 items-center justify-center rounded-full bg-blue-600 font-mono text-sm font-semibold text-white lg:flex" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+
+              <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+                <span class="mb-4 inline-flex h-7 items-center rounded-full bg-blue-600 px-3 font-mono text-xs font-semibold text-white lg:hidden" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                <div class="flex flex-wrap items-center gap-4">
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                    <Icon name={step.icon} class="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <h3 class="text-xl font-semibold text-ink font-display">{step.title}</h3>
+                  <div class="flex flex-wrap gap-2 sm:ml-auto">
+                    {step.chips.map((chip) => (
+                      <span class="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">{chip}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div class="rounded-xl bg-gray-50 p-4">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-electric">
+                        <Icon name="ph:lightning-duotone" class="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p class="text-sm font-semibold text-ink">Triggered by</p>
+                    </div>
+                    <p class="mt-3 text-sm text-ink/70 leading-relaxed">{step.trigger}</p>
+                  </div>
+                  <div class="rounded-xl bg-blue-50 p-4">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-electric">
+                        <Icon name="ph:sliders-horizontal-duotone" class="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p class="text-sm font-semibold text-ink">You control</p>
+                    </div>
+                    <p class="mt-3 text-sm text-ink/70 leading-relaxed">{step.controls}</p>
+                  </div>
+                  <div class="rounded-xl bg-blue-100/60 p-4">
+                    <div class="flex items-center gap-2.5">
+                      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-electric">
+                        <Icon name="ph:check-circle-duotone" class="h-4 w-4" aria-hidden="true" />
+                      </span>
+                      <p class="text-sm font-semibold text-ink">What happens</p>
+                    </div>
+                    <p class="mt-3 text-sm text-ink/70 leading-relaxed">{step.outcome}</p>
+                  </div>
+                </div>
+
+                <p class="mt-6 flex w-full items-start gap-3 rounded-xl bg-[#eef1ff] px-4 py-3 text-sm font-medium text-blue-700">
+                  <Icon name="ph:arrow-right-bold" class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span>{step.next}</span>
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- Confirmation emails + client portal control, called out separately -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-5xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:seal-check-duotone" class="text-base" aria-hidden="true" />
+            Along the way
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            You're always in the loop. Your client only sees what you allow.
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Two things run underneath every step above — worth calling out on their own.
+          </p>
+        </div>
+
+        <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+            <div class="relative flex h-28 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-blue-50 to-white sm:h-32">
+              <span class={glow} aria-hidden="true"></span>
+              <span class="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-electric">
+                <Icon name="ph:envelope-simple-duotone" class="h-7 w-7" aria-hidden="true" />
+              </span>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-ink font-display">Confirmation on every decision</h3>
+            <p class="mt-2 text-sm text-ink/70 leading-relaxed">
+              Every time a client approves a proposal, or accepts or rejects a contract, both of
+              you get an email confirming exactly what happened. You never have to open Huzlly
+              just to check whether a client has responded yet.
+            </p>
+          </div>
+
+          <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+            <div class="relative flex h-28 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-b from-blue-50 to-white sm:h-32">
+              <span class={glow} aria-hidden="true"></span>
+              <span class="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-electric">
+                <Icon name="ph:shield-check-duotone" class="h-7 w-7" aria-hidden="true" />
+              </span>
+            </div>
+            <h3 class="mt-5 text-xl font-semibold text-ink font-display">Client access, on your terms</h3>
+            <p class="mt-2 text-sm text-ink/70 leading-relaxed">
+              The client portal is off by default and set per client, not sitewide. You choose
+              whether each client can see project and task progress, and whether they can message
+              you directly from the portal — independently, for every client you work with.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparisons -->
+    <section id="comparisons" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:scales-duotone" class="text-base" aria-hidden="true" />
+            Comparisons
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            How Huzlly stacks up
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Bonsai, HoneyBook, and Dubsado all do parts of this. Here's specifically where Huzlly is different.
+          </p>
+        </div>
+
+        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {comparisons.map((c) => (
+            <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 text-left ${softShadow} ${liftHover}`}>
+              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                <Icon name={c.icon} class="h-6 w-6" aria-hidden="true" />
+              </span>
+              <h3 class="mt-4 text-lg font-semibold text-ink font-display">{c.title}</h3>
+              <p class="mt-2 text-sm text-ink/70 leading-relaxed">{c.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="mt-10 text-center text-sm text-ink/70">
+          Curious what it costs? <a href="/pricing" class="rounded-sm font-medium text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink">See pricing for lean freelance software &rarr;</a>
+        </p>
+      </div>
+    </section>
+
+    <WaitlistCTA heading="See the flow in action"
+      subheading="Join the waitlist and we'll walk you through how each step fits your workflow — no sales calls, no pressure."
+    />
+  </main>
+</Layout>
