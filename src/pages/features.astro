@@ -34,7 +34,7 @@ const steps = [
       "Set which invoice is linked to a contract ahead of time. Acceptance is what fires it, so you're never stuck manually raising an invoice right after a client signs.",
     outcome:
       "If accepted, you and your client receive a confirmation email, and the invoice is sent to the client. If rejected, no further action is taken and you're notified.",
-    next: "The project is live. You're logging real work in it within the same minute the contract was signed.",
+    next: "Once the contract is signed, the invoice is sent and your project is created automatically.",
   },
   {
     icon: 'ph:list-checks-duotone',
@@ -53,12 +53,12 @@ const steps = [
     title: 'A Client Portal You Fully Control',
     chips: ['Off by default', 'Set per client, not sitewide'],
     trigger:
-      "You decide to give a specific client portal access — nothing is shared until you turn it on.",
+      "You give a specific client access to their portal. Nothing is shared until you turn it on.",
     controls:
-      'Control access per client rather than sitewide: project visibility, task visibility, and direct communication can each be switched on or off independently for every client.',
+      "Set portal access per client, not sitewide. Control project visibility, task visibility, and direct communication independently for each client.",
     outcome:
-      "Whatever you've allowed, your client can see: their proposals, contracts, and invoices to view or download, plus live project progress and task status. Where you've enabled communication, they can message you directly from the portal to request a change to a task or project.",
-    next: "The client sees exactly as much as you choose to share, and nothing more.",
+      "Your client sees everything you've enabled, from proposals, contracts, and invoices to live project progress and task status. If communication is enabled, they can message you directly from the portal to request changes to a task or project.",
+    next: "Your client sees exactly what you choose to share, and nothing more.",
   },
 ];
 
