@@ -91,7 +91,26 @@ const highlights = [
           About
         </div>
         <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
-          One flow, built on purpose <span class="text-blue-600">— not by accident.</span>
+          A simpler way to run your
+          <br />
+          <span class="relative inline-block text-blue-600">
+            freelance business.
+            <svg
+              class="pointer-events-none absolute inset-x-0 -bottom-2 sm:-bottom-3 h-3 w-full sm:h-4"
+              viewBox="0 0 300 16"
+              preserveAspectRatio="none"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 10C40 2 90 2 130 8C170 14 220 14 260 6C275 3 285 3 298 6"
+                stroke="#c7d2ff"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            </svg>
+          </span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-ink/70 leading-relaxed">
           Freelance client work shouldn't need five disconnected apps to run. Huzlly connects
@@ -108,15 +127,8 @@ const highlights = [
           </Button>
         </div>
       </div>
-    </section>
 
-    <!-- Highlights strip: qualitative, icon + short label only. Sits
-         between the hero and "Why it exists", styled as a horizontal row
-         of icon chips (same card/icon-square language used throughout this
-         page and the rest of the site), not a full section with its own
-         heading — a quiet beat before the page gets into the "why". -->
-    <section class="relative border-t border-[#e8e9f0] bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
-      <ul class="mx-auto grid max-w-5xl grid-cols-2 gap-4 sm:grid-cols-4">
+      <ul class="mx-auto mt-14 grid max-w-5xl grid-cols-2 gap-4 sm:grid-cols-4">
         {highlights.map((item) => (
           <li class={`flex flex-col items-center gap-3 rounded-2xl border border-[#e8e9f0] bg-white p-5 text-center ${softShadow} ${liftHover}`}>
             <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-electric">
