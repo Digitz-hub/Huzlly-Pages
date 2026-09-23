@@ -49,26 +49,29 @@ const tools = [
   { icon: 'ph:clipboard-text-duotone', label: 'Project setup' },
 ];
 
-// "Without Huzlly" scattered-chip styling: a pastel icon-square color plus
-// a slight rotate/offset per chip, parallel to the `tools` array above, so
-// the row reads as loose sticky notes rather than the site's usual mono-blue
-// chip treatment.
+// "Without Huzlly" scattered-chip composition: a pastel icon-square color
+// plus an absolute left/top position (as a % of the composition area) and a
+// slight rotation per chip, parallel to the `tools` array above, so the
+// chips read as loose sticky notes scattered around the card rather than
+// the site's usual mono-blue chip row. Positions are hand-placed to avoid
+// overlap: top-left, top-right, center-low, bottom-left, bottom-right.
 const beforeChipStyles = [
-  { bg: 'bg-amber-100', text: 'text-amber-600', pose: '-rotate-3 sm:-translate-y-1' },
-  { bg: 'bg-purple-100', text: 'text-purple-600', pose: 'rotate-2 sm:translate-y-2' },
-  { bg: 'bg-green-100', text: 'text-green-600', pose: '-rotate-2' },
-  { bg: 'bg-pink-100', text: 'text-pink-600', pose: 'rotate-3 sm:-translate-y-2' },
-  { bg: 'bg-blue-100', text: 'text-blue-600', pose: '-rotate-1 sm:translate-y-1' },
+  { bg: 'bg-amber-100', text: 'text-amber-600', top: 10, left: 13, rotate: -4 },
+  { bg: 'bg-purple-100', text: 'text-purple-600', top: 10, left: 60, rotate: 3 },
+  { bg: 'bg-green-100', text: 'text-green-600', top: 68, left: 64, rotate: 3 },
+  { bg: 'bg-pink-100', text: 'text-pink-600', top: 37, left: 37, rotate: -2 },
+  { bg: 'bg-blue-100', text: 'text-blue-600', top: 68, left: 27, rotate: -3 },
 ];
 
-// "With Huzlly" hub-and-spoke nodes, arranged around the central logo node
-// in the grid below (top-center, left, right, bottom-left, bottom-right).
+// "With Huzlly" hub-and-spoke nodes, absolutely positioned around the
+// central logo node (top-center, left-mid, right-mid, bottom-left,
+// bottom-right) so curved connectors can radiate to each one naturally.
 const afterNodes = [
-  { icon: 'ph:users-three-duotone', label: 'Clients', bg: 'bg-blue-100', text: 'text-blue-600', cell: 'col-start-2 row-start-1' },
-  { icon: 'ph:file-text-duotone', label: 'Proposals', bg: 'bg-purple-100', text: 'text-purple-600', cell: 'col-start-1 row-start-2' },
-  { icon: 'ph:signature-duotone', label: 'Contracts', bg: 'bg-orange-100', text: 'text-orange-600', cell: 'col-start-3 row-start-2' },
-  { icon: 'ph:folder-duotone', label: 'Projects', bg: 'bg-green-100', text: 'text-green-600', cell: 'col-start-1 row-start-3' },
-  { icon: 'ph:receipt-duotone', label: 'Invoices', bg: 'bg-pink-100', text: 'text-pink-600', cell: 'col-start-3 row-start-3' },
+  { icon: 'ph:users-three-duotone', label: 'Clients', bg: 'bg-blue-100', text: 'text-blue-600', pos: 'left-1/2 top-[6%] -translate-x-1/2' },
+  { icon: 'ph:file-text-duotone', label: 'Proposals', bg: 'bg-purple-100', text: 'text-purple-600', pos: 'left-0 top-[46%] -translate-y-1/2' },
+  { icon: 'ph:signature-duotone', label: 'Contracts', bg: 'bg-orange-100', text: 'text-orange-600', pos: 'right-0 top-[46%] -translate-y-1/2' },
+  { icon: 'ph:folder-duotone', label: 'Projects', bg: 'bg-green-100', text: 'text-green-600', pos: 'left-[6%] bottom-[4%]' },
+  { icon: 'ph:receipt-duotone', label: 'Invoices', bg: 'bg-pink-100', text: 'text-pink-600', pos: 'right-[6%] bottom-[4%]' },
 ];
 
 const personas = [
@@ -182,20 +185,33 @@ const highlights = [
               Juggling multiple tools, switching tabs, and doing the same work over and over again.
             </p>
 
-            <div class="relative mt-8 min-h-[140px] sm:min-h-[160px]" aria-hidden="true">
+            <div class="relative mt-8 h-[190px] sm:h-[220px] lg:h-[240px]" aria-hidden="true">
               <span class="pointer-events-none absolute left-2 top-0 h-24 w-24 rounded-full border border-dashed border-ink/10"></span>
               <span class="pointer-events-none absolute right-4 bottom-2 h-20 w-20 rounded-full border border-dashed border-ink/10"></span>
 
-              <ul class="relative flex flex-wrap items-center gap-3">
+              <!-- Decorative dashed curves looping between the scattered
+                   chips, communicating a disconnected workflow that keeps
+                   jumping between tools. Coordinates match the chips' %
+                   left/top below (viewBox 0-100 on both axes). -->
+              <svg class="pointer-events-none absolute inset-0 h-full w-full text-ink/15" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
+                <path d="M13,10 C35,22 28,45 37,37 C46,52 56,60 64,68" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3.2" stroke-linecap="round" />
+                <path d="M60,10 C46,32 38,50 27,68" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3.2" stroke-linecap="round" />
+                <path d="M64,68 C86,52 84,22 60,10" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3.2" stroke-linecap="round" />
+              </svg>
+
+              <div class="relative h-full w-full">
                 {tools.map((tool, i) => (
-                  <li class={`inline-flex items-center gap-2 rounded-2xl border border-[#e8e9f0] bg-white px-3 py-2 text-sm font-medium text-ink/70 shadow-sm ${beforeChipStyles[i].pose}`}>
+                  <div
+                    class={`absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 whitespace-nowrap rounded-2xl border border-[#e8e9f0] bg-white px-3 py-2 text-sm font-medium text-ink/70 shadow-sm`}
+                    style={`left: ${beforeChipStyles[i].left}%; top: ${beforeChipStyles[i].top}%; transform: translate(-50%, -50%) rotate(${beforeChipStyles[i].rotate}deg);`}
+                  >
                     <span class={`flex h-7 w-7 items-center justify-center rounded-lg ${beforeChipStyles[i].bg} ${beforeChipStyles[i].text}`}>
                       <Icon name={tool.icon} class="h-3.5 w-3.5" aria-hidden="true" />
                     </span>
                     {tool.label}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div class="mt-6 flex items-start gap-2" aria-hidden="true">
@@ -223,20 +239,24 @@ const highlights = [
                 Everything flows together — from getting the client to getting the work paid.
               </p>
 
+              <!-- Full radiating composition: hub-centered, nodes absolutely
+                   positioned around it, connected by curved (not straight)
+                   paths. Hidden on the smallest screens in favor of the
+                   simpler stacked layout just below, so nodes never crowd. -->
               <div
-                class="relative mx-auto mt-8 grid h-[200px] max-w-[260px] grid-cols-3 grid-rows-3 items-center justify-items-center gap-1 sm:h-[220px] sm:max-w-xs"
+                class="relative mx-auto mt-8 hidden h-[200px] w-full max-w-[260px] sm:block sm:h-[220px] sm:max-w-xs"
                 aria-hidden="true"
               >
                 <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 260 220" fill="none">
-                  <line x1="130" y1="110" x2="130" y2="28" stroke="#c7d2fe" stroke-width="1.5" />
-                  <line x1="130" y1="110" x2="30" y2="110" stroke="#c7d2fe" stroke-width="1.5" />
-                  <line x1="130" y1="110" x2="230" y2="110" stroke="#c7d2fe" stroke-width="1.5" />
-                  <line x1="130" y1="110" x2="45" y2="192" stroke="#c7d2fe" stroke-width="1.5" />
-                  <line x1="130" y1="110" x2="215" y2="192" stroke="#c7d2fe" stroke-width="1.5" />
+                  <path d="M130,110 C148,88 150,55 130,34" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
+                  <path d="M130,110 C92,106 64,102 48,100" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
+                  <path d="M130,110 C168,106 196,102 212,100" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
+                  <path d="M130,110 C102,140 78,168 62,188" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
+                  <path d="M130,110 C158,140 182,168 198,188" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
                 </svg>
 
                 {afterNodes.map((node) => (
-                  <span class={`${node.cell} z-10 inline-flex items-center gap-1.5 rounded-xl border border-[#e8e9f0] bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm`}>
+                  <span class={`absolute z-10 inline-flex items-center gap-1.5 rounded-xl border border-[#e8e9f0] bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm ${node.pos}`}>
                     <span class={`flex h-6 w-6 items-center justify-center rounded-md ${node.bg} ${node.text}`}>
                       <Icon name={node.icon} class="h-3.5 w-3.5" aria-hidden="true" />
                     </span>
@@ -244,9 +264,28 @@ const highlights = [
                   </span>
                 ))}
 
-                <span class="col-start-2 row-start-2 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
+                <span class="absolute left-1/2 top-1/2 z-10 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-blue-600 shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
                   <img src="/Favicon-White.svg" alt="" class="h-7 w-7" />
                 </span>
+              </div>
+
+              <!-- Smallest-breakpoint fallback: same hub + nodes, in a
+                   simple vertical connected chain so nothing gets cramped. -->
+              <div class="mx-auto mt-8 flex max-w-[220px] flex-col items-center gap-2.5 sm:hidden" aria-hidden="true">
+                <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
+                  <img src="/Favicon-White.svg" alt="" class="h-7 w-7" />
+                </span>
+                {afterNodes.map((node) => (
+                  <>
+                    <span class="h-3 w-px border-l border-dashed border-blue-200"></span>
+                    <span class="inline-flex items-center gap-1.5 rounded-xl border border-[#e8e9f0] bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm">
+                      <span class={`flex h-6 w-6 items-center justify-center rounded-md ${node.bg} ${node.text}`}>
+                        <Icon name={node.icon} class="h-3.5 w-3.5" aria-hidden="true" />
+                      </span>
+                      {node.label}
+                    </span>
+                  </>
+                ))}
               </div>
 
               <div class="mt-6 ml-auto flex max-w-[220px] items-start justify-end gap-2 text-right" aria-hidden="true">
