@@ -38,6 +38,8 @@ const liftHover =
   'transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-16px_rgba(20,24,43,0.20)] motion-reduce:transition-none motion-reduce:hover:translate-y-0';
 const glow =
   'pointer-events-none absolute inset-[-10%] rounded-full blur-[46px] opacity-[0.18] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
+const smallGlow =
+  'pointer-events-none absolute inset-[-40%] rounded-full blur-[18px] opacity-[0.22] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
 
 const tools = [
   { icon: 'ph:file-text-duotone', label: 'Proposal tool' },
@@ -52,6 +54,19 @@ const personas = [
   { icon: 'ph:pen-nib-duotone', label: 'Writers' },
   { icon: 'ph:briefcase-duotone', label: 'Consultants' },
   { icon: 'ph:chats-circle-duotone', label: 'Coaches' },
+];
+
+// New: qualitative highlights strip (icons + short labels only — no
+// numbers/metrics, since Huzlly is pre-launch/closed-beta). Each item is
+// drawn straight from themes already established elsewhere on this page:
+// one flow instead of five apps ("Why it exists"), flat pricing decided
+// after real use and living the same day (both from "Principles"), and
+// built for solo freelancers, not agencies/teams ("Who we build for").
+const highlights = [
+  { icon: 'ph:flow-arrow-duotone', label: 'One connected flow' },
+  { icon: 'ph:tag-duotone', label: 'Flat pricing, not per seat' },
+  { icon: 'ph:lightning-duotone', label: 'Live the same day' },
+  { icon: 'ph:user-circle-duotone', label: 'Built for solo freelancers' },
 ];
 ---
 
@@ -95,6 +110,24 @@ const personas = [
       </div>
     </section>
 
+    <!-- Highlights strip: qualitative, icon + short label only. Sits
+         between the hero and "Why it exists", styled as a horizontal row
+         of icon chips (same card/icon-square language used throughout this
+         page and the rest of the site), not a full section with its own
+         heading — a quiet beat before the page gets into the "why". -->
+    <section class="relative border-t border-[#e8e9f0] bg-white px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+      <ul class="mx-auto grid max-w-5xl grid-cols-2 gap-4 sm:grid-cols-4">
+        {highlights.map((item) => (
+          <li class={`flex flex-col items-center gap-3 rounded-2xl border border-[#e8e9f0] bg-white p-5 text-center ${softShadow} ${liftHover}`}>
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-electric">
+              <Icon name={item.icon} class="h-5 w-5" aria-hidden="true" />
+            </span>
+            <p class="text-sm font-semibold leading-snug text-ink">{item.label}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
     <!-- Why it exists -->
     <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
       <div class="mx-auto max-w-3xl text-center">
@@ -115,22 +148,33 @@ const personas = [
         </p>
       </div>
 
-      <!-- Decorative: five separate tools become one flow -->
-      <div class="mx-auto mt-12 flex max-w-4xl flex-col items-center gap-4 sm:flex-row sm:justify-center" aria-hidden="true">
-        <ul class="flex flex-wrap items-center justify-center gap-2">
-          {tools.map((tool) => (
-            <li class="inline-flex items-center gap-2 rounded-full bg-gray-100 px-3.5 py-2 text-sm font-medium text-ink/60">
-              <Icon name={tool.icon} class="h-4 w-4 text-ink/40" aria-hidden="true" />
-              {tool.label}
-            </li>
-          ))}
-        </ul>
-        <Icon name="ph:arrow-down-bold" class="h-5 w-5 shrink-0 text-blue-400 sm:hidden" aria-hidden="true" />
-        <Icon name="ph:arrow-right-bold" class="hidden h-5 w-5 shrink-0 text-blue-400 sm:block" aria-hidden="true" />
-        <span class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white">
-          <Icon name="ph:flow-arrow-duotone" class="h-4 w-4" aria-hidden="true" />
-          One flow
-        </span>
+      <!-- Decorative: five separate tools become one flow, now presented
+           as a mockup-style panel (gradient + glow), matching the card
+           treatment used for the "Who we build for" and "Where we are
+           now" panels below instead of sitting bare on the page. -->
+      <div class="mx-auto mt-12 max-w-4xl">
+        <div class={`relative overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-8 sm:p-10 ${softShadow}`}>
+          <span class={glow} aria-hidden="true"></span>
+          <div
+            class="relative z-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+            aria-hidden="true"
+          >
+            <ul class="flex flex-wrap items-center justify-center gap-2">
+              {tools.map((tool) => (
+                <li class="inline-flex items-center gap-2 rounded-full border border-[#e8e9f0] bg-white px-3.5 py-2 text-sm font-medium text-ink/60 shadow-sm">
+                  <Icon name={tool.icon} class="h-4 w-4 text-ink/40" aria-hidden="true" />
+                  {tool.label}
+                </li>
+              ))}
+            </ul>
+            <Icon name="ph:arrow-down-bold" class="h-5 w-5 shrink-0 text-blue-400 sm:hidden" aria-hidden="true" />
+            <Icon name="ph:arrow-right-bold" class="hidden h-5 w-5 shrink-0 text-blue-400 sm:block" aria-hidden="true" />
+            <span class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
+              <Icon name="ph:flow-arrow-duotone" class="h-4 w-4" aria-hidden="true" />
+              One flow
+            </span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -155,7 +199,7 @@ const personas = [
 
             <ul class="mt-8 flex flex-wrap items-center justify-center gap-3" aria-hidden="true">
               {personas.map((persona) => (
-                <li class="inline-flex items-center gap-2.5 rounded-full bg-white py-1.5 pl-1.5 pr-4 text-sm font-semibold text-ink">
+                <li class="inline-flex items-center gap-2.5 rounded-full border border-[#e8e9f0] bg-white py-1.5 pl-1.5 pr-4 text-sm font-semibold text-ink shadow-sm">
                   <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-electric">
                     <Icon name={persona.icon} class="h-4 w-4" aria-hidden="true" />
                   </span>
@@ -176,8 +220,16 @@ const personas = [
     </section>
 
     <!-- Principles -->
-    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-      <div class="mx-auto max-w-5xl">
+    <section class="relative overflow-hidden bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <!-- Faint decorative glow anchored to the section, echoing the glow
+           treatment used in the mockup panels elsewhere on the page so
+           this section doesn't read as flat text-only. -->
+      <div
+        class="pointer-events-none absolute -top-24 right-0 -z-0 h-72 w-72 rounded-full bg-[radial-gradient(circle_farthest-corner_at_50%_50%,rgba(59,78,255,0.12),transparent_70%)] blur-2xl sm:h-96 sm:w-96"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative z-10 mx-auto max-w-5xl">
         <div class="mx-auto max-w-3xl text-center">
           <div class={pillBadge}>
             <Icon name="ph:compass-duotone" class="text-base" aria-hidden="true" />
@@ -192,11 +244,20 @@ const personas = [
         </div>
 
         <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
-          {principles.map((principle) => (
-            <div class={`rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
-              <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-electric">
-                <Icon name={principle.icon} class="h-6 w-6" aria-hidden="true" />
-              </span>
+          {principles.map((principle, index) => (
+            <div class={`relative rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+              <div class="flex items-center justify-between">
+                <span class="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-blue-100 text-electric">
+                  <span class={smallGlow} aria-hidden="true"></span>
+                  <Icon name={principle.icon} class="relative z-10 h-6 w-6" aria-hidden="true" />
+                </span>
+                <span
+                  class="font-mono text-xs font-semibold tracking-widest text-ink/30"
+                  aria-hidden="true"
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </div>
               <h3 class="mt-5 text-lg sm:text-xl font-semibold leading-snug text-ink font-display">{principle.title}</h3>
               <p class="mt-2 text-sm sm:text-base text-ink/70 leading-relaxed">{principle.body}</p>
             </div>
@@ -222,16 +283,37 @@ const personas = [
           Huzlly is onboarding freelancers in small cohorts — 50 this round — so we can watch the flow get used before we scale it or price it.
         </p>
 
-        <div class={`mx-auto mt-10 flex max-w-md items-center gap-4 rounded-2xl border border-[#e8e9f0] bg-white p-5 text-left ${softShadow}`}>
-          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-electric">
-            <Icon name="ph:envelope-simple-duotone" class="h-6 w-6" aria-hidden="true" />
-          </span>
-          <p class="text-sm text-ink/70 leading-relaxed">
-            Questions or feedback? Reach us at
-            <a href="mailto:contact@huzlly.com" class="text-blue-600 font-semibold hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink rounded-md">
-              contact@huzlly.com
-            </a>
-          </p>
+        <!-- Decorative status panel: same gradient + glow card language
+             used for "Who we build for" above, with a small cohort visual
+             (overlapping avatar-style icons, purely decorative, no counts
+             beyond what the copy already states) alongside the existing
+             contact strip. -->
+        <div class={`relative mx-auto mt-10 max-w-md overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-6 text-left sm:p-8 ${softShadow}`}>
+          <span class={glow} aria-hidden="true"></span>
+          <div class="relative z-10">
+            <div class="flex items-center gap-2" aria-hidden="true">
+              <ul class="flex -space-x-2">
+                {Array.from({ length: 4 }).map(() => (
+                  <li class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-blue-100 text-electric">
+                    <Icon name="ph:user-duotone" class="h-4 w-4" aria-hidden="true" />
+                  </li>
+                ))}
+              </ul>
+              <span class="text-xs font-semibold uppercase tracking-widest text-ink/40">Closed beta cohort</span>
+            </div>
+
+            <div class="mt-5 flex items-center gap-4 border-t border-[#e8e9f0] pt-5">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                <Icon name="ph:envelope-simple-duotone" class="h-6 w-6" aria-hidden="true" />
+              </span>
+              <p class="text-sm text-ink/70 leading-relaxed">
+                Questions or feedback? Reach us at
+                <a href="mailto:contact@huzlly.com" class="text-blue-600 font-semibold hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink rounded-md">
+                  contact@huzlly.com
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
