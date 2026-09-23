@@ -4,11 +4,13 @@
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/ui/Button.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
+import FAQAccordion from '../components/sections/FAQAccordion.astro';
+import type { FAQItem } from '../components/sections/FAQAccordion.astro';
 import ProposalCard from '../components/ui/feature-cards/ProposalCard.astro';
 import ContractCard from '../components/ui/feature-cards/ContractCard.astro';
 import InvoiceCard from '../components/ui/feature-cards/InvoiceCard.astro';
 import ProjectCard from '../components/ui/feature-cards/ProjectCard.astro';
-import { ArrowRight } from 'lucide-astro';
+import { ArrowRight, ArrowUpRight } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 
 const steps = [
@@ -100,6 +102,39 @@ const featureList = [
   'Automated contract-to-invoice and project creation on contract acceptance',
   'Per-task time tracking with automatic project-level totals and timesheets',
   'Permission-controlled client portal for documents, project progress, and direct communication',
+];
+
+const featuresFaq: FAQItem[] = [
+  {
+    question: 'Who is Huzlly built for?',
+    answer:
+      'Huzlly is built for freelancers who work on their own, manage multiple clients, and want to build a freelance business of their own.',
+  },
+  {
+    question: 'What can I manage with Huzlly?',
+    answer:
+      'Huzlly brings the key parts of your freelance business together in one organized workspace, so you can spend less time managing and more time doing the work.',
+  },
+  {
+    question: "How does Huzlly's automated workflow work?",
+    answer:
+      "Huzlly connects the steps of your workflow, so actions like approvals and sign-offs can automatically move things forward without you having to manage every step manually.",
+  },
+  {
+    question: 'Can my clients access Huzlly?',
+    answer:
+      'Yes. You can give your clients access to a dedicated portal where they can stay updated on the work and everything you choose to share with them.',
+  },
+  {
+    question: 'Is Huzlly suitable for agencies or teams?',
+    answer:
+      "Huzlly is designed for independent freelancers rather than agencies or teams. It's built around the way solo professionals manage their own clients and work.",
+  },
+  {
+    question: 'How much does Huzlly cost?',
+    answer:
+      "Huzlly's pricing is still taking shape. Join the waitlist to get early access and be the first to know when pricing is announced.",
+  },
 ];
 
 // Presentation-only helpers (visual classes).
@@ -641,5 +676,30 @@ const softwareApplicationSchema = {
     <WaitlistCTA heading="See the flow in action"
       subheading="Join the waitlist and we'll walk you through how each step fits your workflow — no sales calls, no pressure."
     />
+
+    <!-- Features FAQ -->
+    <section id="features-faq" class="scroll-mt-20 bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl">
+        <div class="mx-auto max-w-2xl text-center">
+          <h2 class="font-display text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+            Frequently Asked Questions
+          </h2>
+          <p class="mt-4 text-lg text-ink/70">
+            Have questions about Huzlly? Find quick answers about who it's for, how it works, and what you can manage in one place.
+          </p>
+        </div>
+
+        <div class="mt-14">
+          <FAQAccordion items={featuresFaq} />
+        </div>
+
+        <div class="mt-10 text-center">
+          <Button variant="accent" href="/faq">
+            Check the full FAQ
+            <ArrowUpRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+        </div>
+      </div>
+    </section>
   </main>
 </Layout>
