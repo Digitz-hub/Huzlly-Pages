@@ -42,11 +42,33 @@ const smallGlow =
   'pointer-events-none absolute inset-[-40%] rounded-full blur-[18px] opacity-[0.22] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
 
 const tools = [
-  { icon: 'ph:file-text-duotone', label: 'Proposal tool' },
-  { icon: 'ph:signature-duotone', label: 'E-sign app' },
-  { icon: 'ph:receipt-duotone', label: 'Invoicing tool' },
-  { icon: 'ph:credit-card-duotone', label: 'Payment processor' },
-  { icon: 'ph:clipboard-text-duotone', label: 'Form builder' },
+  { icon: 'ph:file-text-duotone', label: 'Proposals' },
+  { icon: 'ph:signature-duotone', label: 'E-signatures' },
+  { icon: 'ph:receipt-duotone', label: 'Invoicing' },
+  { icon: 'ph:credit-card-duotone', label: 'Payments' },
+  { icon: 'ph:clipboard-text-duotone', label: 'Project setup' },
+];
+
+// "Without Huzlly" scattered-chip styling: a pastel icon-square color plus
+// a slight rotate/offset per chip, parallel to the `tools` array above, so
+// the row reads as loose sticky notes rather than the site's usual mono-blue
+// chip treatment.
+const beforeChipStyles = [
+  { bg: 'bg-amber-100', text: 'text-amber-600', pose: '-rotate-3 sm:-translate-y-1' },
+  { bg: 'bg-purple-100', text: 'text-purple-600', pose: 'rotate-2 sm:translate-y-2' },
+  { bg: 'bg-green-100', text: 'text-green-600', pose: '-rotate-2' },
+  { bg: 'bg-pink-100', text: 'text-pink-600', pose: 'rotate-3 sm:-translate-y-2' },
+  { bg: 'bg-blue-100', text: 'text-blue-600', pose: '-rotate-1 sm:translate-y-1' },
+];
+
+// "With Huzlly" hub-and-spoke nodes, arranged around the central logo node
+// in the grid below (top-center, left, right, bottom-left, bottom-right).
+const afterNodes = [
+  { icon: 'ph:users-three-duotone', label: 'Clients', bg: 'bg-blue-100', text: 'text-blue-600', cell: 'col-start-2 row-start-1' },
+  { icon: 'ph:file-text-duotone', label: 'Proposals', bg: 'bg-purple-100', text: 'text-purple-600', cell: 'col-start-1 row-start-2' },
+  { icon: 'ph:signature-duotone', label: 'Contracts', bg: 'bg-orange-100', text: 'text-orange-600', cell: 'col-start-3 row-start-2' },
+  { icon: 'ph:folder-duotone', label: 'Projects', bg: 'bg-green-100', text: 'text-green-600', cell: 'col-start-1 row-start-3' },
+  { icon: 'ph:receipt-duotone', label: 'Invoices', bg: 'bg-pink-100', text: 'text-pink-600', cell: 'col-start-3 row-start-3' },
 ];
 
 const personas = [
@@ -144,31 +166,99 @@ const highlights = [
         </p>
       </div>
 
-      <!-- Decorative: five separate tools become one flow, now presented
-           as a mockup-style panel (gradient + glow), matching the card
-           treatment used for the "Who we build for" and "Where we are
-           now" panels below instead of sitting bare on the page. -->
-      <div class="mx-auto mt-12 max-w-4xl">
-        <div class={`relative overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-8 sm:p-10 ${softShadow}`}>
-          <span class={glow} aria-hidden="true"></span>
-          <div
-            class="relative z-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
-            aria-hidden="true"
-          >
-            <ul class="flex flex-wrap items-center justify-center gap-2">
-              {tools.map((tool) => (
-                <li class="inline-flex items-center gap-2 rounded-full border border-[#e8e9f0] bg-white px-3.5 py-2 text-sm font-medium text-ink/60 shadow-sm">
-                  <Icon name={tool.icon} class="h-4 w-4 text-ink/40" aria-hidden="true" />
-                  {tool.label}
-                </li>
-              ))}
-            </ul>
-            <Icon name="ph:arrow-down-bold" class="h-5 w-5 shrink-0 text-blue-400 sm:hidden" aria-hidden="true" />
-            <Icon name="ph:arrow-right-bold" class="hidden h-5 w-5 shrink-0 text-blue-400 sm:block" aria-hidden="true" />
-            <span class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
-              <Icon name="ph:flow-arrow-duotone" class="h-4 w-4" aria-hidden="true" />
-              One flow
+      <!-- Decorative: before/after comparison — scattered tools on the left
+           becoming one connected workspace on the right, as a two-card
+           panel matching the card treatment used for the "Who we build
+           for" and "Principles" panels below. -->
+      <div class="mx-auto mt-12 max-w-5xl">
+        <div class="flex flex-col items-center gap-6 lg:flex-row lg:items-stretch lg:gap-6">
+          <!-- Without Huzlly -->
+          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow}`}>
+            <span class="inline-flex items-center rounded-full border border-[#e5e5e5] bg-gray-100 px-4 py-1.5 text-sm font-medium text-ink/50">
+              Without Huzlly
             </span>
+            <h3 class="mt-4 font-display text-xl font-bold text-ink">Tools everywhere</h3>
+            <p class="mt-1.5 max-w-xs text-sm text-ink/50">
+              Juggling multiple tools, switching tabs, and doing the same work over and over again.
+            </p>
+
+            <div class="relative mt-8 min-h-[140px] sm:min-h-[160px]" aria-hidden="true">
+              <span class="pointer-events-none absolute left-2 top-0 h-24 w-24 rounded-full border border-dashed border-ink/10"></span>
+              <span class="pointer-events-none absolute right-4 bottom-2 h-20 w-20 rounded-full border border-dashed border-ink/10"></span>
+
+              <ul class="relative flex flex-wrap items-center gap-3">
+                {tools.map((tool, i) => (
+                  <li class={`inline-flex items-center gap-2 rounded-2xl border border-[#e8e9f0] bg-white px-3 py-2 text-sm font-medium text-ink/70 shadow-sm ${beforeChipStyles[i].pose}`}>
+                    <span class={`flex h-7 w-7 items-center justify-center rounded-lg ${beforeChipStyles[i].bg} ${beforeChipStyles[i].text}`}>
+                      <Icon name={tool.icon} class="h-3.5 w-3.5" aria-hidden="true" />
+                    </span>
+                    {tool.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="mt-6 flex items-start gap-2" aria-hidden="true">
+              <svg class="mt-1 h-5 w-6 shrink-0 text-blue-300" viewBox="0 0 24 20" fill="none">
+                <path d="M20 3C14 3 4 6 3 16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                <path d="M3 10L3 16L9 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              </svg>
+              <p class="-rotate-1 max-w-[200px] text-sm italic text-blue-400/80">
+                Too many tools. Too much manual work.
+              </p>
+            </div>
+          </div>
+
+          <!-- Arrow -->
+          <Icon name="ph:arrow-down-bold" class="h-6 w-6 shrink-0 text-blue-400 lg:hidden" aria-hidden="true" />
+          <Icon name="ph:arrow-right-bold" class="hidden h-6 w-6 shrink-0 text-blue-400 lg:block" aria-hidden="true" />
+
+          <!-- With Huzlly -->
+          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-6 sm:p-8 ${softShadow}`}>
+            <span class={glow} aria-hidden="true"></span>
+            <div class="relative z-10">
+              <div class={pillBadge}>With Huzlly</div>
+              <h3 class="mt-4 font-display text-xl font-bold text-ink">One connected workspace</h3>
+              <p class="mt-1.5 max-w-xs text-sm text-ink/50">
+                Everything flows together — from getting the client to getting the work paid.
+              </p>
+
+              <div
+                class="relative mx-auto mt-8 grid h-[200px] max-w-[260px] grid-cols-3 grid-rows-3 items-center justify-items-center gap-1 sm:h-[220px] sm:max-w-xs"
+                aria-hidden="true"
+              >
+                <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 260 220" fill="none">
+                  <line x1="130" y1="110" x2="130" y2="28" stroke="#c7d2fe" stroke-width="1.5" />
+                  <line x1="130" y1="110" x2="30" y2="110" stroke="#c7d2fe" stroke-width="1.5" />
+                  <line x1="130" y1="110" x2="230" y2="110" stroke="#c7d2fe" stroke-width="1.5" />
+                  <line x1="130" y1="110" x2="45" y2="192" stroke="#c7d2fe" stroke-width="1.5" />
+                  <line x1="130" y1="110" x2="215" y2="192" stroke="#c7d2fe" stroke-width="1.5" />
+                </svg>
+
+                {afterNodes.map((node) => (
+                  <span class={`${node.cell} z-10 inline-flex items-center gap-1.5 rounded-xl border border-[#e8e9f0] bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm`}>
+                    <span class={`flex h-6 w-6 items-center justify-center rounded-md ${node.bg} ${node.text}`}>
+                      <Icon name={node.icon} class="h-3.5 w-3.5" aria-hidden="true" />
+                    </span>
+                    {node.label}
+                  </span>
+                ))}
+
+                <span class="col-start-2 row-start-2 z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
+                  <img src="/Favicon-White.svg" alt="" class="h-7 w-7" />
+                </span>
+              </div>
+
+              <div class="mt-6 ml-auto flex max-w-[220px] items-start justify-end gap-2 text-right" aria-hidden="true">
+                <p class="rotate-1 text-sm italic text-blue-500/80">
+                  One flow. Less busywork. More time for what you do best.
+                </p>
+                <svg class="mt-1 h-5 w-6 shrink-0 scale-x-[-1] text-blue-300" viewBox="0 0 24 20" fill="none">
+                  <path d="M20 3C14 3 4 6 3 16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+                  <path d="M3 10L3 16L9 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
