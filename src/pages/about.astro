@@ -6,7 +6,7 @@ import Button from '../components/ui/Button.astro';
 import HuzzlyWithIllustration from '../components/ui/HuzzlyWithIllustration.astro';
 import HuzzlyWithoutIllustration from '../components/ui/HuzzlyWithoutIllustration.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
-import { ArrowRight, UserRound, FolderKanban, ClipboardCheck, Monitor } from 'lucide-astro';
+import { ArrowRight, UserRound, FolderKanban, ClipboardCheck, Monitor, UserCheck } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 
 const principles = [
@@ -192,8 +192,8 @@ const highlights = [
           <span class={glow} aria-hidden="true"></span>
           <div class="relative z-10">
             <div class={pillBadge}>
-              <Icon name="ph:user-circle-duotone" class="text-base" aria-hidden="true" />
-              Solo freelancers, not agencies
+              <UserCheck class="h-4 w-4" stroke-width="1.75" aria-hidden="true" />
+              The team is you
             </div>
             <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
               Built for those who work for themselves
@@ -216,8 +216,8 @@ const highlights = [
 
             <div class="mt-8">
               <a href="/features" class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink rounded-md">
-                See if Huzlly fits how you work
-                <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+                See how Huzlly fits your work
+                <Icon name="ph:caret-right" class="h-4 w-4 shrink-0" aria-hidden="true" />
               </a>
             </div>
           </div>
