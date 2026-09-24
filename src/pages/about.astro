@@ -6,7 +6,7 @@ import Button from '../components/ui/Button.astro';
 import HuzzlyWithIllustration from '../components/ui/HuzzlyWithIllustration.astro';
 import HuzzlyWithoutIllustration from '../components/ui/HuzzlyWithoutIllustration.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
-import { ArrowRight } from 'lucide-astro';
+import { ArrowRight, UserRound, FolderKanban, ClipboardCheck, Monitor } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 
 const principles = [
@@ -44,10 +44,10 @@ const smallGlow =
   'pointer-events-none absolute inset-[-40%] rounded-full blur-[18px] opacity-[0.22] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
 
 const personas = [
-  { icon: 'ph:paint-brush-duotone', label: 'Designers' },
-  { icon: 'ph:pen-nib-duotone', label: 'Writers' },
-  { icon: 'ph:briefcase-duotone', label: 'Consultants' },
-  { icon: 'ph:chats-circle-duotone', label: 'Coaches' },
+  { icon: UserRound, label: 'Client Work' },
+  { icon: FolderKanban, label: 'Projects' },
+  { icon: ClipboardCheck, label: 'Business Admin' },
+  { icon: Monitor, label: 'Client Experience' },
 ];
 
 // New: qualitative highlights strip (icons + short labels only — no
@@ -196,19 +196,18 @@ const highlights = [
               Solo freelancers, not agencies
             </div>
             <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
-              We build for one freelancer running one flow
+              Built for those who work for themselves
             </h2>
             <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink/70">
-              Not agencies. Not teams that need multi-seat collaboration or approval chains.
-              Huzlly is deliberately single-user first, for designers, writers, consultants, and
-              coaches who are juggling every part of client work themselves.
+              Huzlly is built for independent professionals who manage their own clients,
+              projects, and business, giving you one organized place to keep everything moving.
             </p>
 
             <ul class="mt-8 flex flex-wrap items-center justify-center gap-3" aria-hidden="true">
               {personas.map((persona) => (
                 <li class="inline-flex items-center gap-2.5 rounded-full border border-[#e8e9f0] bg-white py-1.5 pl-1.5 pr-4 text-sm font-semibold text-ink shadow-sm">
                   <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-electric">
-                    <Icon name={persona.icon} class="h-4 w-4" aria-hidden="true" />
+                    <persona.icon class="h-4 w-4" stroke-width="1.75" aria-hidden="true" />
                   </span>
                   {persona.label}
                 </li>
