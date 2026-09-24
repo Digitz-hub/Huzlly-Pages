@@ -1,1 +1,333 @@
-Hi
+---
+// src/pages/about.astro
+
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import HuzzlyWithIllustration from '../components/ui/HuzzlyWithIllustration.astro';
+import HuzzlyWithoutIllustration from '../components/ui/HuzzlyWithoutIllustration.astro';
+import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
+import { ArrowRight } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
+
+const principles = [
+  {
+    icon: 'ph:feather-duotone',
+    title: 'Built for one person, not scaled down for one',
+    body: 'Most tools freelancers get pushed toward were built for agencies first and cut down for solos later. Huzlly started with one freelancer running one flow — everything else got left out, not stripped down.',
+  },
+  {
+    icon: 'ph:lightning-duotone',
+    title: 'Live the same day, not after a setup call',
+    body: 'No consultant, no onboarding session, no weeks of configuration before it does anything. Connect your flow and it runs — the same day you sign up.',
+  },
+  {
+    icon: 'ph:tag-duotone',
+    title: 'One flat price, decided after real use',
+    body: 'No per-seat fees, no usage tiers to track. And because that number matters, we’re setting it after watching real freelancers run real client flows through the beta, not before.',
+  },
+  {
+    icon: 'ph:stack-duotone',
+    title: 'Fewer apps, not more features bolted on',
+    body: 'The goal was never to out-feature the alternatives. It was to replace the five apps freelancers stitch together with one flow that just runs — and to keep it that way as it grows.',
+  },
+];
+
+// Presentation-only helpers (visual classes and decorative chip content).
+const pillBadge =
+  'inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]';
+const softShadow = 'shadow-[0_10px_26px_-16px_rgba(20,24,43,0.14)]';
+const liftHover =
+  'transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_-16px_rgba(20,24,43,0.20)] motion-reduce:transition-none motion-reduce:hover:translate-y-0';
+const glow =
+  'pointer-events-none absolute inset-[-10%] rounded-full blur-[46px] opacity-[0.18] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
+const smallGlow =
+  'pointer-events-none absolute inset-[-40%] rounded-full blur-[18px] opacity-[0.22] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
+
+const personas = [
+  { icon: 'ph:paint-brush-duotone', label: 'Designers' },
+  { icon: 'ph:pen-nib-duotone', label: 'Writers' },
+  { icon: 'ph:briefcase-duotone', label: 'Consultants' },
+  { icon: 'ph:chats-circle-duotone', label: 'Coaches' },
+];
+
+// New: qualitative highlights strip (icons + short labels only — no
+// numbers/metrics, since Huzlly is pre-launch/closed-beta). Each item is
+// drawn straight from themes already established elsewhere on this page:
+// one flow instead of five apps ("Why it exists"), flat pricing decided
+// after real use and living the same day (both from "Principles"), and
+// built for solo freelancers, not agencies/teams ("Who we build for").
+const highlights = [
+  { icon: 'ph:git-branch-duotone', label: 'One connected workflow' },
+  { icon: 'ph:squares-four-duotone', label: 'Everything stays organized' },
+  { icon: 'ph:magic-wand-duotone', label: 'Built around your work' },
+  { icon: 'ph:user-circle-duotone', label: 'Made for solo freelancers' },
+];
+---
+
+<Layout
+  title="About | Huzlly"
+  description="Why Huzlly exists: one automated flow for a freelancer's client workflow, built for solo freelancers instead of agencies, priced flat instead of per seat."
+  canonicalPath="/about"
+  ogImage="/og/og-about.png"
+>
+  <main>
+    <!-- Hero -->
+    <section class="relative isolate overflow-hidden bg-white px-4 pt-24 pb-20 sm:px-6 sm:pt-32 sm:pb-28 lg:px-8 lg:pt-40">
+      <!-- Soft blue glow at the top (CSS only). -->
+      <div
+        class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(ellipse_60%_100%_at_50%_0%,rgba(59,78,255,0.14),transparent_70%)]"
+        aria-hidden="true"
+      ></div>
+
+      <div class="mx-auto max-w-3xl text-center">
+        <div class={pillBadge}>
+          <Icon name="ph:heart-straight-duotone" class="text-base" aria-hidden="true" />
+          About
+        </div>
+        <h1 class="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-ink leading-[1.08]">
+          A simpler way to run your
+          <br />
+          <span class="text-blue-600">
+            freelance business.
+          </span>
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-ink/70 leading-relaxed">
+          Huzlly brings the business side of freelancing into one organized workspace, keeping
+          client work, projects, documents, and invoicing connected from start to finish.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Button href="/waitlist" size="lg" motion>
+            Join the waitlist
+            <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+          </Button>
+          <Button href="/features" variant="outline" size="lg">
+            See how it works
+          </Button>
+        </div>
+      </div>
+
+      <ul class="mx-auto mt-14 grid max-w-5xl grid-cols-2 gap-4 sm:grid-cols-4">
+        {highlights.map((item) => (
+          <li class={`flex flex-col items-center gap-3 rounded-2xl border border-[#e8e9f0] bg-white p-5 text-center ${softShadow} ${liftHover}`}>
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-electric">
+              <Icon name={item.icon} class="h-5 w-5" aria-hidden="true" />
+            </span>
+            <p class="text-sm font-semibold leading-snug text-ink">{item.label}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Why it exists -->
+    <section class="bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl text-center">
+        <div class={pillBadge}>
+          <Icon name="ph:lightbulb-duotone" class="text-base" aria-hidden="true" />
+          The problem we’re solving
+        </div>
+        <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+          Getting the work done is one thing. Managing everything else is another.
+        </h2>
+        <p class="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-ink/70">
+          Managing clients, projects, contracts, invoices, and everything in between can quickly
+          get messy. Huzlly brings it all together in one organized workspace, so you can spend
+          less time managing the business and more time doing the work.
+        </p>
+      </div>
+
+      <!-- Decorative: before/after comparison — scattered tools on the left
+           becoming one connected workspace on the right, as a two-card
+           panel matching the card treatment used for the "Who we build
+           for" and "Principles" panels below. -->
+      <div class="mx-auto mt-12 max-w-5xl">
+        <div class="flex flex-col items-center gap-6 lg:flex-row lg:items-stretch lg:gap-6">
+          <!-- Without Huzlly -->
+          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl bg-white p-6 sm:p-8 shadow-[0_14px_34px_-14px_rgba(20,24,43,0.22)]`}>
+            <span class="inline-flex items-center rounded-full border border-[#e5e5e5] bg-gray-100 px-4 py-1.5 text-sm font-medium text-ink/50">
+              Without Huzlly
+            </span>
+            <h3 class="mt-4 font-display text-xl font-bold text-ink">Too much to manage</h3>
+            <p class="mt-1.5 max-w-xs text-sm text-ink/50">
+              Every step sits separately, making it harder to keep track of what needs to happen next.
+            </p>
+
+            <!-- Single responsive illustration (replaces the old
+                 scattered absolutely-positioned chip composition, dashed
+                 decorative circles, and dashed connector paths) reused at
+                 every breakpoint via HuzzlyWithoutIllustration. The quote
+                 below is baked into the illustration itself, so the old
+                 separate quote block is removed. -->
+            <HuzzlyWithoutIllustration class="mt-8" />
+          </div>
+
+          <!-- Arrow -->
+          <Icon name="ph:arrow-down-bold" class="h-6 w-6 shrink-0 self-center text-blue-400 lg:hidden" aria-hidden="true" />
+          <Icon name="ph:arrow-right-bold" class="hidden h-6 w-6 shrink-0 self-center text-blue-400 lg:block" aria-hidden="true" />
+
+          <!-- With Huzlly -->
+          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl bg-gradient-to-b from-blue-50 to-white p-6 sm:p-8 shadow-[0_14px_34px_-14px_rgba(20,24,43,0.22)]`}>
+            <span class={glow} aria-hidden="true"></span>
+            <div class="relative z-10">
+              <div class="inline-flex items-center gap-2 rounded-full bg-blue-200 px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">With Huzlly</div>
+              <h3 class="mt-4 font-display text-xl font-bold text-ink">Everything flows together</h3>
+              <p class="mt-1.5 max-w-xs text-sm text-ink/50">
+                Keep the important parts of your freelance business connected, from client to payment.
+              </p>
+
+              <!-- Single responsive illustration (replaces the old
+                   desktop/tablet radiating-nodes composition and the
+                   mobile stacked-chain fallback) reused at every
+                   breakpoint via HuzzlyWithIllustration. -->
+              <HuzzlyWithIllustration class="mt-8" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who we build for -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-4xl">
+        <div class={`relative overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-8 text-center sm:p-12 ${softShadow}`}>
+          <span class={glow} aria-hidden="true"></span>
+          <div class="relative z-10">
+            <div class={pillBadge}>
+              <Icon name="ph:user-circle-duotone" class="text-base" aria-hidden="true" />
+              Solo freelancers, not agencies
+            </div>
+            <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+              We build for one freelancer running one flow
+            </h2>
+            <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink/70">
+              Not agencies. Not teams that need multi-seat collaboration or approval chains.
+              Huzlly is deliberately single-user first, for designers, writers, consultants, and
+              coaches who are juggling every part of client work themselves.
+            </p>
+
+            <ul class="mt-8 flex flex-wrap items-center justify-center gap-3" aria-hidden="true">
+              {personas.map((persona) => (
+                <li class="inline-flex items-center gap-2.5 rounded-full border border-[#e8e9f0] bg-white py-1.5 pl-1.5 pr-4 text-sm font-semibold text-ink shadow-sm">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-50 text-electric">
+                    <Icon name={persona.icon} class="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  {persona.label}
+                </li>
+              ))}
+            </ul>
+
+            <div class="mt-8">
+              <a href="/features" class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink rounded-md">
+                See if Huzlly fits how you work
+                <ArrowRight class="w-4 h-4" stroke-width="1.75" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Principles -->
+    <section class="relative overflow-hidden bg-gray-50/70 px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <!-- Faint decorative glow anchored to the section, echoing the glow
+           treatment used in the mockup panels elsewhere on the page so
+           this section doesn't read as flat text-only. -->
+      <div
+        class="pointer-events-none absolute -top-24 right-0 -z-0 h-72 w-72 rounded-full bg-[radial-gradient(circle_farthest-corner_at_50%_50%,rgba(59,78,255,0.12),transparent_70%)] blur-2xl sm:h-96 sm:w-96"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative z-10 mx-auto max-w-5xl">
+        <div class="mx-auto max-w-3xl text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:compass-duotone" class="text-base" aria-hidden="true" />
+            How we build it
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            A few things that aren't up for debate
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+            Decisions we made early and haven't reconsidered, whatever else changes along the way.
+          </p>
+        </div>
+
+        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6">
+          {principles.map((principle, index) => (
+            <div class={`relative rounded-2xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
+              <div class="flex items-center justify-between">
+                <span class="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-xl bg-blue-100 text-electric">
+                  <span class={smallGlow} aria-hidden="true"></span>
+                  <Icon name={principle.icon} class="relative z-10 h-6 w-6" aria-hidden="true" />
+                </span>
+                <span
+                  class="font-mono text-xs font-semibold tracking-widest text-ink/30"
+                  aria-hidden="true"
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </div>
+              <h3 class="mt-5 text-lg sm:text-xl font-semibold leading-snug text-ink font-display">{principle.title}</h3>
+              <p class="mt-2 text-sm sm:text-base text-ink/70 leading-relaxed">{principle.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Where we are now -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl text-center">
+        <div class={pillBadge}>
+          <span class="relative inline-flex h-2 w-2" aria-hidden="true">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75 motion-reduce:animate-none"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+          </span>
+          Where we are now
+        </div>
+        <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+          Pre-launch, in closed beta, on purpose
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-lg text-ink/70">
+          Huzlly is onboarding freelancers in small cohorts — 50 this round — so we can watch the flow get used before we scale it or price it.
+        </p>
+
+        <!-- Decorative status panel: same gradient + glow card language
+             used for "Who we build for" above, with a small cohort visual
+             (overlapping avatar-style icons, purely decorative, no counts
+             beyond what the copy already states) alongside the existing
+             contact strip. -->
+        <div class={`relative mx-auto mt-10 max-w-md overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-6 text-left sm:p-8 ${softShadow}`}>
+          <span class={glow} aria-hidden="true"></span>
+          <div class="relative z-10">
+            <div class="flex items-center gap-2" aria-hidden="true">
+              <ul class="flex -space-x-2">
+                {Array.from({ length: 4 }).map(() => (
+                  <li class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-blue-100 text-electric">
+                    <Icon name="ph:user-duotone" class="h-4 w-4" aria-hidden="true" />
+                  </li>
+                ))}
+              </ul>
+              <span class="text-xs font-semibold uppercase tracking-widest text-ink/40">Closed beta cohort</span>
+            </div>
+
+            <div class="mt-5 flex items-center gap-4 border-t border-[#e8e9f0] pt-5">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-electric">
+                <Icon name="ph:envelope-simple-duotone" class="h-6 w-6" aria-hidden="true" />
+              </span>
+              <p class="text-sm text-ink/70 leading-relaxed">
+                Questions or feedback? Reach us at
+                <a href="mailto:contact@huzlly.com" class="text-blue-600 font-semibold hover:text-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink rounded-md">
+                  contact@huzlly.com
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <WaitlistCTA
+      heading="Come run your flow through it"
+      subheading="Join the waitlist and we'll walk you through how Huzlly fits your workflow — no sales calls, no pressure."
+    />
+  </main>
+</Layout>
