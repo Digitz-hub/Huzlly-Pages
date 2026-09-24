@@ -4,6 +4,7 @@
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/ui/Button.astro';
 import HuzzlyWithIllustration from '../components/ui/HuzzlyWithIllustration.astro';
+import HuzzlyWithoutIllustration from '../components/ui/HuzzlyWithoutIllustration.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 import { ArrowRight } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
@@ -41,28 +42,6 @@ const glow =
   'pointer-events-none absolute inset-[-10%] rounded-full blur-[46px] opacity-[0.18] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
 const smallGlow =
   'pointer-events-none absolute inset-[-40%] rounded-full blur-[18px] opacity-[0.22] bg-[radial-gradient(circle_farthest-corner_at_50%_50%,transparent_0%,transparent_40%,#3B4EFF_100%)]';
-
-const tools = [
-  { icon: 'ph:file-text-duotone', label: 'Proposals' },
-  { icon: 'ph:signature-duotone', label: 'E-signatures' },
-  { icon: 'ph:receipt-duotone', label: 'Invoicing' },
-  { icon: 'ph:credit-card-duotone', label: 'Payments' },
-  { icon: 'ph:clipboard-text-duotone', label: 'Project setup' },
-];
-
-// "Without Huzlly" scattered-chip composition: a pastel icon-square color
-// plus an absolute left/top position (as a % of the composition area) and a
-// slight rotation per chip, parallel to the `tools` array above, so the
-// chips read as loose sticky notes scattered around the card rather than
-// the site's usual mono-blue chip row. Positions are hand-placed to avoid
-// overlap: top-left, top-right, center-low, bottom-left, bottom-right.
-const beforeChipStyles = [
-  { bg: 'bg-amber-100', text: 'text-amber-600', top: 10, left: 13, rotate: -4 },
-  { bg: 'bg-purple-100', text: 'text-purple-600', top: 10, left: 60, rotate: 3 },
-  { bg: 'bg-green-100', text: 'text-green-600', top: 68, left: 64, rotate: 3 },
-  { bg: 'bg-pink-100', text: 'text-pink-600', top: 37, left: 37, rotate: -2 },
-  { bg: 'bg-blue-100', text: 'text-blue-600', top: 68, left: 27, rotate: -3 },
-];
 
 const personas = [
   { icon: 'ph:paint-brush-duotone', label: 'Designers' },
@@ -175,44 +154,13 @@ const highlights = [
               Juggling multiple tools, switching tabs, and doing the same work over and over again.
             </p>
 
-            <div class="relative mt-8 h-[190px] sm:h-[220px] lg:h-[240px]" aria-hidden="true">
-              <span class="pointer-events-none absolute left-2 top-0 h-24 w-24 rounded-full border border-dashed border-ink/10"></span>
-              <span class="pointer-events-none absolute right-4 bottom-2 h-20 w-20 rounded-full border border-dashed border-ink/10"></span>
-
-              <!-- Decorative dashed curves looping between the scattered
-                   chips, communicating a disconnected workflow that keeps
-                   jumping between tools. Coordinates match the chips' %
-                   left/top below (viewBox 0-100 on both axes). -->
-              <svg class="pointer-events-none absolute inset-0 h-full w-full text-ink/15" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
-                <path d="M13,10 C35,22 28,45 37,37 C46,52 56,60 64,68" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3.2" stroke-linecap="round" />
-                <path d="M60,10 C46,32 38,50 27,68" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3.2" stroke-linecap="round" />
-                <path d="M64,68 C86,52 84,22 60,10" stroke="currentColor" stroke-width="0.7" stroke-dasharray="2 3.2" stroke-linecap="round" />
-              </svg>
-
-              <div class="relative h-full w-full">
-                {tools.map((tool, i) => (
-                  <div
-                    class={`absolute inline-flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 whitespace-nowrap rounded-2xl border border-[#e8e9f0] bg-white px-3 py-2 text-sm font-medium text-ink/70 shadow-sm`}
-                    style={`left: ${beforeChipStyles[i].left}%; top: ${beforeChipStyles[i].top}%; transform: translate(-50%, -50%) rotate(${beforeChipStyles[i].rotate}deg);`}
-                  >
-                    <span class={`flex h-7 w-7 items-center justify-center rounded-lg ${beforeChipStyles[i].bg} ${beforeChipStyles[i].text}`}>
-                      <Icon name={tool.icon} class="h-3.5 w-3.5" aria-hidden="true" />
-                    </span>
-                    {tool.label}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div class="mt-6 flex items-start gap-2" aria-hidden="true">
-              <svg class="mt-1 h-5 w-6 shrink-0 text-blue-300" viewBox="0 0 24 20" fill="none">
-                <path d="M20 3C14 3 4 6 3 16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
-                <path d="M3 10L3 16L9 15" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-              </svg>
-              <p class="-rotate-1 max-w-[200px] text-sm italic text-blue-400/80">
-                Too many tools. Too much manual work.
-              </p>
-            </div>
+            <!-- Single responsive illustration (replaces the old
+                 scattered absolutely-positioned chip composition, dashed
+                 decorative circles, and dashed connector paths) reused at
+                 every breakpoint via HuzzlyWithoutIllustration. The quote
+                 below is baked into the illustration itself, so the old
+                 separate quote block is removed. -->
+            <HuzzlyWithoutIllustration class="mt-8" />
           </div>
 
           <!-- Arrow -->
