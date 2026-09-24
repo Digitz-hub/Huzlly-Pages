@@ -3,6 +3,7 @@
 
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/ui/Button.astro';
+import HuzzlyWithIllustration from '../components/ui/HuzzlyWithIllustration.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
 import { ArrowRight } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
@@ -61,17 +62,6 @@ const beforeChipStyles = [
   { bg: 'bg-green-100', text: 'text-green-600', top: 68, left: 64, rotate: 3 },
   { bg: 'bg-pink-100', text: 'text-pink-600', top: 37, left: 37, rotate: -2 },
   { bg: 'bg-blue-100', text: 'text-blue-600', top: 68, left: 27, rotate: -3 },
-];
-
-// "With Huzlly" hub-and-spoke nodes, absolutely positioned around the
-// central logo node (top-center, left-mid, right-mid, bottom-left,
-// bottom-right) so curved connectors can radiate to each one naturally.
-const afterNodes = [
-  { icon: 'ph:users-three-duotone', label: 'Clients', bg: 'bg-blue-100', text: 'text-blue-600', pos: 'left-1/2 top-[6%] -translate-x-1/2' },
-  { icon: 'ph:file-text-duotone', label: 'Proposals', bg: 'bg-purple-100', text: 'text-purple-600', pos: 'left-0 top-[46%] -translate-y-1/2' },
-  { icon: 'ph:signature-duotone', label: 'Contracts', bg: 'bg-orange-100', text: 'text-orange-600', pos: 'right-0 top-[46%] -translate-y-1/2' },
-  { icon: 'ph:folder-duotone', label: 'Projects', bg: 'bg-green-100', text: 'text-green-600', pos: 'left-[6%] bottom-[4%]' },
-  { icon: 'ph:receipt-duotone', label: 'Invoices', bg: 'bg-pink-100', text: 'text-pink-600', pos: 'right-[6%] bottom-[4%]' },
 ];
 
 const personas = [
@@ -239,54 +229,11 @@ const highlights = [
                 Everything flows together — from getting the client to getting the work paid.
               </p>
 
-              <!-- Full radiating composition: hub-centered, nodes absolutely
-                   positioned around it, connected by curved (not straight)
-                   paths. Hidden on the smallest screens in favor of the
-                   simpler stacked layout just below, so nodes never crowd. -->
-              <div
-                class="relative mx-auto mt-8 hidden h-[200px] w-full max-w-[260px] sm:block sm:h-[220px] sm:max-w-xs"
-                aria-hidden="true"
-              >
-                <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 260 220" fill="none">
-                  <path d="M130,110 C148,88 150,55 130,34" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
-                  <path d="M130,110 C92,106 64,102 48,100" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
-                  <path d="M130,110 C168,106 196,102 212,100" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
-                  <path d="M130,110 C102,140 78,168 62,188" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
-                  <path d="M130,110 C158,140 182,168 198,188" stroke="#c7d2fe" stroke-width="2" stroke-linecap="round" fill="none" />
-                </svg>
-
-                {afterNodes.map((node) => (
-                  <span class={`absolute z-10 inline-flex items-center gap-1.5 rounded-xl border border-[#e8e9f0] bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm ${node.pos}`}>
-                    <span class={`flex h-6 w-6 items-center justify-center rounded-md ${node.bg} ${node.text}`}>
-                      <Icon name={node.icon} class="h-3.5 w-3.5" aria-hidden="true" />
-                    </span>
-                    {node.label}
-                  </span>
-                ))}
-
-                <span class="absolute left-1/2 top-1/2 z-10 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-2xl bg-blue-600 shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
-                  <img src="/Favicon-White.svg" alt="" class="h-7 w-7" />
-                </span>
-              </div>
-
-              <!-- Smallest-breakpoint fallback: same hub + nodes, in a
-                   simple vertical connected chain so nothing gets cramped. -->
-              <div class="mx-auto mt-8 flex max-w-[220px] flex-col items-center gap-2.5 sm:hidden" aria-hidden="true">
-                <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 shadow-[0_10px_20px_-8px_rgba(37,99,235,0.55)]">
-                  <img src="/Favicon-White.svg" alt="" class="h-7 w-7" />
-                </span>
-                {afterNodes.map((node) => (
-                  <>
-                    <span class="h-3 w-px border-l border-dashed border-blue-200"></span>
-                    <span class="inline-flex items-center gap-1.5 rounded-xl border border-[#e8e9f0] bg-white px-2.5 py-1.5 text-xs font-semibold text-ink shadow-sm">
-                      <span class={`flex h-6 w-6 items-center justify-center rounded-md ${node.bg} ${node.text}`}>
-                        <Icon name={node.icon} class="h-3.5 w-3.5" aria-hidden="true" />
-                      </span>
-                      {node.label}
-                    </span>
-                  </>
-                ))}
-              </div>
+              <!-- Single responsive illustration (replaces the old
+                   desktop/tablet radiating-nodes composition and the
+                   mobile stacked-chain fallback) reused at every
+                   breakpoint via HuzzlyWithIllustration. -->
+              <HuzzlyWithIllustration class="mt-8" />
 
               <div class="mt-6 ml-auto flex max-w-[220px] items-start justify-end gap-2 text-right" aria-hidden="true">
                 <p class="rotate-1 text-sm italic text-blue-500/80">
