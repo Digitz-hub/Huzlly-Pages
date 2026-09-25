@@ -52,6 +52,19 @@ const pricingFaq: FAQItem[] = [
       'Pricing will be announced closer to launch. Join the waitlist to receive updates and be among the first to know when our plans are available.',
   },
 ];
+
+const pricingFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: pricingFaq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
 ---
 
 <Layout
@@ -138,6 +151,8 @@ const pricingFaq: FAQItem[] = [
         </div>
       </div>
     </section>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(pricingFaqSchema)} />
   </main>
 </Layout>
 
