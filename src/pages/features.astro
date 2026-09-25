@@ -137,6 +137,16 @@ const featuresFaq: FAQItem[] = [
   },
 ];
 
+const featuresFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: featuresFaq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+
 // Presentation-only helpers (visual classes).
 const pillBadge =
   'inline-flex items-center gap-2 rounded-full border border-[#d7deff] bg-[#eef1ff] px-4 py-1.5 text-sm font-medium text-[#3f5ce0]';
@@ -698,5 +708,7 @@ const softwareApplicationSchema = {
         </div>
       </div>
     </section>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(featuresFaqSchema)} />
   </main>
 </Layout>
