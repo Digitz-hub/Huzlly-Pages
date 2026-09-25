@@ -6,6 +6,8 @@ import Button from '../components/ui/Button.astro';
 import HuzzlyWithIllustration from '../components/ui/HuzzlyWithIllustration.astro';
 import HuzzlyWithoutIllustration from '../components/ui/HuzzlyWithoutIllustration.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
+import FAQAccordion from '../components/sections/FAQAccordion.astro';
+import type { FAQItem } from '../components/sections/FAQAccordion.astro';
 import { ArrowRight, UserRound, FolderKanban, ClipboardCheck, Monitor, UserCheck } from 'lucide-astro';
 import { Icon } from 'astro-icon/components';
 
@@ -61,6 +63,34 @@ const highlights = [
   { icon: 'ph:squares-four-duotone', label: 'Everything stays organized' },
   { icon: 'ph:magic-wand-duotone', label: 'Built around your work' },
   { icon: 'ph:user-circle-duotone', label: 'Made for solo freelancers' },
+];
+
+const items: FAQItem[] = [
+  {
+    question: 'Why was Huzlly built?',
+    answer:
+      'Freelancing is more than the work you deliver. There are clients to manage, projects to keep moving, documents to handle, invoices to send, and plenty of details in between. Huzlly was built to bring that business side into one organized workspace.',
+  },
+  {
+    question: 'Who is Huzlly built for?',
+    answer:
+      'Huzlly is built for freelancers and independent professionals who manage their own clients and projects. It is designed around the way individuals run their freelance businesses.',
+  },
+  {
+    question: 'What makes Huzlly different?',
+    answer:
+      'Huzlly is built around the complete flow of running a freelance business, rather than focusing on just one part of it. The goal is to keep the important pieces connected without adding unnecessary complexity.',
+  },
+  {
+    question: 'Is Huzlly available yet?',
+    answer:
+      'Huzlly is currently in its early stage, with access opening gradually as the product moves toward its next chapter. You can join the waitlist to hear when access becomes available.',
+  },
+  {
+    question: 'What is Huzlly working toward next?',
+    answer:
+      'Huzlly is continuing to evolve around one simple goal: making the business side of freelancing simpler, more connected, and easier to manage. More is taking shape as the product moves forward.',
+  },
 ];
 ---
 
@@ -325,5 +355,24 @@ const highlights = [
       heading="Come run your flow through it"
       subheading="Join the waitlist and we'll walk you through how Huzlly fits your workflow — no sales calls, no pressure."
     />
+
+    <!-- FAQ -->
+    <section class="bg-white px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+      <div class="mx-auto max-w-3xl">
+        <div class="text-center">
+          <div class={pillBadge}>
+            <Icon name="ph:question-duotone" class="text-base" aria-hidden="true" />
+            FAQ
+          </div>
+          <h2 class="mt-6 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-ink">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="mt-10">
+          <FAQAccordion items={items} />
+        </div>
+      </div>
+    </section>
   </main>
 </Layout>
