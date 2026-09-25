@@ -92,6 +92,19 @@ const items: FAQItem[] = [
       'Huzlly is continuing to evolve around one simple goal: making the business side of freelancing simpler, more connected, and easier to manage. More is taking shape as the product moves forward.',
   },
 ];
+
+const aboutFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
 ---
 
 <Layout
@@ -366,5 +379,7 @@ const items: FAQItem[] = [
         </div>
       </div>
     </section>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(aboutFaqSchema)} />
   </main>
 </Layout>
