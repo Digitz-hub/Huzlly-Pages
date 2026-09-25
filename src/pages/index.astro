@@ -7,7 +7,7 @@ import TheProblem from '../components/sections/TheProblem.astro';
 import HowItWorks, { stageSummaries } from '../components/sections/HowItWorks.astro';
 import WhyUs from '../components/sections/WhyUs.astro';
 import WaitlistCTA from '../components/sections/WaitlistCTA.astro';
-import HomeFAQ from '../components/sections/HomeFAQ.astro';
+import HomeFAQ, { homeFaqItems } from '../components/sections/HomeFAQ.astro';
 
 
 const softwareSchema = {
@@ -47,6 +47,16 @@ const howItWorksSchema = {
     description: s.headline,
   })),
 };
+
+const homeFaqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: homeFaqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
 ---
 
 <Layout
@@ -63,5 +73,6 @@ const howItWorksSchema = {
     <HomeFAQ />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(softwareSchema)} />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(howItWorksSchema)} />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(homeFaqSchema)} />
   </main>
 </Layout>
