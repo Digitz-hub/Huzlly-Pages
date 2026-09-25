@@ -8,7 +8,7 @@ import Button from '../ui/Button.astro';
 import FAQAccordion from './FAQAccordion.astro';
 import type { FAQItem } from './FAQAccordion.astro';
 
-const items: FAQItem[] = [
+export const homeFaqItems: FAQItem[] = [
   {
     question: 'What is Huzlly?',
     answer:
@@ -59,7 +59,7 @@ const items: FAQItem[] = [
       </div>
 
       <div>
-        <FAQAccordion items={items} />
+        <FAQAccordion items={homeFaqItems} />
       </div>
     </div>
 
