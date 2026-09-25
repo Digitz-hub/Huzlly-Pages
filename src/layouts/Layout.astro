@@ -8,6 +8,7 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description: string;
+  keywords?: string;
   ogImage?: string;
   canonicalPath: string;
   noindex?: boolean;
@@ -19,6 +20,7 @@ export interface Props {
 const {
   title,
   description,
+  keywords,
   ogImage = '/og/og-home.png',
   canonicalPath,
   noindex = false,
@@ -88,6 +90,7 @@ const organizationSchema = {
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
     <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
