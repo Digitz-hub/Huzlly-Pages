@@ -172,12 +172,12 @@ const items: FAQItem[] = [
       <div class="mx-auto mt-12 max-w-5xl">
         <div class="flex flex-col items-center gap-6 lg:flex-row lg:items-stretch lg:gap-6">
           <!-- Without Huzlly -->
-          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl bg-white p-6 sm:p-8 shadow-[0_14px_34px_-14px_rgba(20,24,43,0.22)]`}>
+          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl border border-[#e8e9f0] bg-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
             <span class="inline-flex items-center rounded-full border border-[#e5e5e5] bg-gray-100 px-4 py-1.5 text-sm font-medium text-ink/50">
               Without Huzlly
             </span>
             <h3 class="mt-4 font-display text-xl font-bold text-ink">Too much to manage</h3>
-            <p class="mt-1.5 max-w-xs text-sm text-ink/50">
+            <p class="mt-2 max-w-xs text-sm text-ink/50">
               Every step sits separately, making it harder to keep track of what needs to happen next.
             </p>
 
@@ -187,7 +187,7 @@ const items: FAQItem[] = [
                  every breakpoint via HuzzlyWithoutIllustration. The quote
                  below is baked into the illustration itself, so the old
                  separate quote block is removed. -->
-            <HuzzlyWithoutIllustration class="mt-8" />
+            <HuzzlyWithoutIllustration class="mt-6" />
           </div>
 
           <!-- Arrow -->
@@ -195,12 +195,12 @@ const items: FAQItem[] = [
           <Icon name="ph:arrow-right-bold" class="hidden h-6 w-6 shrink-0 self-center text-blue-400 lg:block" aria-hidden="true" />
 
           <!-- With Huzlly -->
-          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl bg-gradient-to-b from-blue-50 to-white p-6 sm:p-8 shadow-[0_14px_34px_-14px_rgba(20,24,43,0.22)]`}>
+          <div class={`relative flex-1 w-full overflow-hidden rounded-3xl border border-[#e8e9f0] bg-gradient-to-b from-blue-50 to-white p-6 sm:p-8 ${softShadow} ${liftHover}`}>
             <span class={glow} aria-hidden="true"></span>
             <div class="relative z-10">
               <div class="inline-flex items-center gap-2 rounded-full bg-blue-200 px-4 py-1.5 text-sm font-medium text-[#3f5ce0]">With Huzlly</div>
               <h3 class="mt-4 font-display text-xl font-bold text-ink">Everything flows together</h3>
-              <p class="mt-1.5 max-w-xs text-sm text-ink/50">
+              <p class="mt-2 max-w-xs text-sm text-ink/50">
                 Keep the important parts of your freelance business connected, from client to payment.
               </p>
 
@@ -208,7 +208,7 @@ const items: FAQItem[] = [
                    desktop/tablet radiating-nodes composition and the
                    mobile stacked-chain fallback) reused at every
                    breakpoint via HuzzlyWithIllustration. -->
-              <HuzzlyWithIllustration class="mt-8" />
+              <HuzzlyWithIllustration class="mt-6" />
             </div>
           </div>
         </div>
